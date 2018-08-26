@@ -1,0 +1,17 @@
+(PutName (put-name lst index name) result
+  where =>
+  (
+    lst => ("list" 1 1)
+    index => ("number" 1 1)
+    name => ("string" 1 1)
+    result => ("list" 1 1)
+  )
+  examples =>
+  (
+    ((put-name (1 2 3) 1 "a") (1 "a" => 2 3))
+    ((put-name (1 "a" => 2 3) 1 null) (1 2 3))
+    ((put-name (1 "a" => 2 3) 2 "a") (1 2 "a" => 3))
+  )
+  related => (get-name)
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

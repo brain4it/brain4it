@@ -1,0 +1,30 @@
+(Smtp (smtp "host" => host "port" => port "from" => from 
+  "to" => to "cc" => cc "bcc" => bcc "subject" => subject "body" => body
+  "username" => username "password" => password)
+  null
+  where =>
+  (
+    host => ("string" 1 1)
+    port => ("string" 0 1)
+    from => ("string" 0 1)
+    to => ("object" 0 1)
+    cc => ("object" 0 1)
+    bcc => ("object" 0 1)
+    subject => ("string" 0 1)
+    body => ("string" 0 1)
+    username => ("string" 0 1)
+    password => ("string" 0 1)
+  )
+  examples =>
+  (
+    ((stmp 
+      "host" => "stmp.brain4it.org" "port" => 25 
+      "from" => "admin@brain4it.org" 
+      "to" => "realor@brain4it.org" 
+      "subject" => "Hello"
+      "body" => "Hello world"))
+  )
+  bundle => "org.brain4it.lib.MailLibrary"
+)
+
+ 

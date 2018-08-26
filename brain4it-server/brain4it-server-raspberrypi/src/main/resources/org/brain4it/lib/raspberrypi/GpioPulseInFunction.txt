@@ -1,0 +1,14 @@
+(GpioPulseIn (gpio-pulse-in pin_num level timeout) ellapsed
+  where =>
+  (
+    pin_num => ("number" 1 1)
+    level => ("number" 1 1)
+    timeout => ("number" 0 1)
+    ellapsed => ("number" 1 1)
+  )
+  examples =>
+  (
+    ((gpio-pulse-in 2 1 1000) 452)
+  )
+  bundle => "org.brain4it.lib.RaspberryPiLibrary"
+)

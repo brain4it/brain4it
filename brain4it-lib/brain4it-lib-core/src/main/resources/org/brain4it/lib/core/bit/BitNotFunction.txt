@@ -1,0 +1,14 @@
+(BitNot (bit-not int_value) result
+  where =>
+  (
+    int_value => ("number" 1 1)
+    result => ("number" 1 1)
+  )
+  examples =>
+  (
+    ((bit-not 0xff) -256)
+    ((bit-and (bit-not 0xf0) 0xff) 15)
+  )
+  related => (bit-and bit-or bit-xor)
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

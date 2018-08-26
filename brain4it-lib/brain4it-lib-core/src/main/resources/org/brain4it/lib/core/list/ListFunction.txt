@@ -1,0 +1,13 @@
+(List (list value) result
+  where =>
+  (
+    value => ("object" 0 N)
+    result => ("object" 1 1)
+  )
+  examples =>
+  (
+    ((list "a" => (+ 1 2) 6) ("a" => 3 6))
+    ((list + 3 (* 2 2)) (+ 3 4))
+  )
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

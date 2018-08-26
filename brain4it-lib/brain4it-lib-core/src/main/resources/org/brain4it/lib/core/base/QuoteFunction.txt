@@ -1,0 +1,13 @@
+(Quote (quote expression) result
+  where =>
+  (
+    expression => ("object" 1 1)
+    result => ("object" 1 1)
+  )
+  examples =>
+  (
+    ((quote (+ 3 a)) (+ 3 a))
+  )
+  related => (eval)
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

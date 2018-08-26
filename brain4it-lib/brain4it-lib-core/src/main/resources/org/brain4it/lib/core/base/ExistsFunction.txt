@@ -1,0 +1,13 @@
+(Exists (exists variable) result
+  where =>
+  (
+    variable => ("reference" 1 1)
+    result => ("boolean" 1 1)
+  )
+  examples =>
+  (
+    ((exists counter) false)
+  )
+  related => (delete)
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

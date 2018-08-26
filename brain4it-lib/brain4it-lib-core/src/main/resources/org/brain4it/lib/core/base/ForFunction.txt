@@ -1,0 +1,16 @@
+(For (for init_code condition iter_code action) result
+  where =>
+  (
+    init_code => ("object" 1 1)
+    condition => ("boolean" 1 1)
+    iter_code => ("object" 1 1)
+    action => ("object" 0 N)
+    result => ("object" 1 1)
+  )
+  examples =>
+  (
+    ((for (set i 0) (< i 5) (++ i) (push lst i)) (0 1 2 3 4))
+  )
+  related => (while for-each)
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

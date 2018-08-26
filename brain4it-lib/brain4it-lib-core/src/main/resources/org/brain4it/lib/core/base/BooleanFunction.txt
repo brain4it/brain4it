@@ -1,0 +1,16 @@
+(Boolean (boolean expression) result  
+  where =>
+  (
+    expression => ("object" 1 1)
+    result => ("boolean" 1 1)
+  )
+  examples =>
+  (
+    ((boolean "false") false)
+    ((boolean 0) false)
+    ((boolean (1 2)) true)
+    ((boolean ()) false)
+  )
+  related => (number string reference list)
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

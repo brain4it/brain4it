@@ -1,0 +1,12 @@
+(Reverse (reverse lst) result
+  where =>
+  (
+    lst => ("list" 1 1)
+    result => ("list" 1 1)
+  )
+  examples =>
+  (
+    ((reverse (1 2 3)) (3 2 1))
+  )
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

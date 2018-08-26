@@ -1,0 +1,15 @@
+(Insert (insert lst index element) result
+  where =>
+  (
+    lst => ("list" 1 1)
+    index => ("number" 0 1)
+    element => ("object" 1 1)
+    result => ("number" 1 1)
+  )
+  examples =>
+  (
+    ((insert (1 2 4) 2 3) (1 2 3 4))
+  )
+  related => (remove)
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

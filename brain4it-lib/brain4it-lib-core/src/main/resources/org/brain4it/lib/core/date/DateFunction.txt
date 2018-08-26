@@ -1,0 +1,19 @@
+(Date (date operation date_millis field value) result
+  where =>
+  (
+    operation => ("string" 0 1)
+    date_millis => ("number" 0 1)
+    field => ("string" 0 1)
+    value => ("number" 0 1)
+    result => ("number" 1 1)
+  )
+  examples =>
+  (
+    ((date) 1509266462425)
+    ((date "now") 1509266462625)
+    ((date "add" (date) "day" -7) 1508657988101)
+    ((date "set" (date) "day_of_month" 3) 1507016618627)
+  )
+  related => (format-date parse-date)
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

@@ -1,0 +1,15 @@
+(MqttDisconnect (mqtt-disconnect connection_id)
+  closed
+  where =>
+  (
+    connection_id => ("string" 1 1)
+    closed => ("boolean" 1 1)
+  )
+  examples =>
+  (
+    ((mqtt-disconnect "9f77ba0388134fcc872bf1595ec32a83") true)
+  )
+  related => (mqtt-connect)
+  bundle => "org.brain4it.lib.MqttLibrary"
+)
+

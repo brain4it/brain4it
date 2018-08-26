@@ -1,0 +1,13 @@
+(Ceil (ceil value) result
+  where =>
+  (
+    value => ("number" 1 1)
+    result => ("number" 1 1)
+  )
+  examples =>
+  (
+    ((ceil 7.2) 8)
+  )
+  related => (floor round)
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

@@ -1,0 +1,51 @@
+/* 
+    Created on : 04-jul-2015, 16:32:19
+    Author     : realor
+*/
+
+.toolbar
+{
+  position: absolute;
+  top: 0;
+  left:0;
+  right:0;
+  display: inline-block;
+  border-bottom: 1px #d0d0d0 solid;
+  padding: 1px;
+  padding-right: 24px;
+  z-index: 100;
+  background-color: white;
+}
+
+.toolbar button
+{
+  font-family: 'gidoleregular';  
+  color: black;
+  font-size: 11pt;
+  padding: 4px 4px 4px 28px;
+  text-decoration: none;
+  border:1px solid #c0c0c0;
+  border-radius: 6px;
+  margin:2px 1px 2px 2px;
+  background-repeat: no-repeat;
+  background-position: 4px center;
+  background-color: white;
+  background-size: 20px;
+  outline:none;
+  display: inline-block;
+}
+
+.toolbar button:hover
+{
+  background-color: #e0e0ff;  
+}
+
+.toolbar button:active
+{
+  background-color: #7ec5e7;  
+}
+
+button::-moz-focus-inner 
+{
+  border: 0;
+}

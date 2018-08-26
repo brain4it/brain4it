@@ -1,0 +1,14 @@
+(Pow (pow value exponent) result
+  where =>
+  (
+    value => ("number" 1 1)
+    exponent => ("number" 1 1)
+    result => ("number" 1 1)
+  )
+  examples =>
+  (
+    ((pow 2 8) 256)
+  )
+  related => (log10 logn)
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

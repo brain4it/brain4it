@@ -1,0 +1,13 @@
+(BitAnd (bit-and int_value) result
+  where =>
+  (
+    int_value => ("number" 0 N)
+    result => ("number" 1 1)
+  )
+  examples =>
+  (
+    ((bit-and 0xff 0xf4) 244)
+  )
+  related => (bit-or bit-not bit-xor)
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

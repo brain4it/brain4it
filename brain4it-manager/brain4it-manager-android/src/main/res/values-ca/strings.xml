@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="appName">Brain4it Manager</string>
+  <string name="servers">Servidors</string>
+  <string name="actions">Accions</string>
+  <string name="console">Consola</string>
+  <string name="execute">Executa</string>
+  <string name="serverName">Nom del servidor</string>
+  <string name="serverUrl">URL del servidor</string>
+  <string name="module">Mòdul</string>
+  <string name="moduleName">Nom del mòdul</string>
+  <string name="accessKey">Clau d\'accés</string>
+
+  <string name="preferences">Preferències</string>
+  <string name="language">Idioma</string>
+  <string name="textSize">Mida del text de l\'editor</string>
+  <string name="indentSize">Mida de la indentació</string>
+  <string name="formatColumns">Columnes per encabir el codi</string>
+
+  <string name="addServer">Afegeix servidor</string>
+  <string name="editServer">Edita servidor</string>
+  <string name="removeServer">Treu servidor</string>
+  <string name="sortServers">Ordena servidors</string>
+
+  <string name="listModules">Llista mòduls</string>
+  <string name="addModule">Afegeix mòdul</string>
+  <string name="editModule">Edita mòdul</string>
+  <string name="createModule">Crea mòdul</string>
+  <string name="removeModule">Treu mòdul</string>
+  <string name="destroyModule">Destrueix mòdul</string>
+  <string name="importModule">Importa mòdul</string>
+
+  <string name="showDashboard">Dashboard</string>
+  <string name="showConsole">Consola</string>
+  <string name="showEditor">Editor</string>
+
+  <string name="path">Camí:</string>
+  <string name="ok">Ok</string>
+  <string name="modulesFound">%d mòduls trobats.</string>
+  <string name="confirmDestroyModule">Realment vols destruir el mòdul %s?</string>
+  <string name="confirmDiscardChanges">Descarta canvis?</string>
+  <string name="yes">Si</string>
+  <string name="no">No</string>
+  <string name="cancel">Cancel·la</string>
+  <string name="imp">Importa</string>
+
+  <string name="enterUrl">Introdueix URL:</string>
+
+  <string name="loadSuccessfull">Carregat correctament.</string>
+  <string name="saveSuccessfull">Desat correctament.</string>
+
+  <string name="threadDump">Bolcat de threads</string>
+  <string name="exit">Sortir</string>
+</resources>

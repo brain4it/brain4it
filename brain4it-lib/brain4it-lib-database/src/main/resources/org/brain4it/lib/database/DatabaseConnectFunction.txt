@@ -1,0 +1,35 @@
+(DatabaseConnect (db-connect 
+  "driver" => driver 
+  "url" => url 
+  "username" => username 
+  "password" => password
+  "auto-commit" => auto_commit)
+  connection_id
+  where =>
+  (
+    driver => ("string" 0 1)
+    url => ("string" 1 1)
+    username => ("string" 0 1)
+    password => ("string" 0 1)
+    auto_commit => ("boolean" 0 1)
+    connection_id => ("string" 1 1)
+  )
+  exceptions => 
+  (
+    ("SQLException")
+  )
+  examples =>
+  (
+    (
+      (db-connect driver => "oracle.jdbc.driver.OracleDriver" 
+         "url" => "jdbc:oracle:thin:@oracle:1521:demo" 
+         "username" => "scott" 
+         "password" => "tiger"
+         "auto-commit" => true)
+      "7f88ba0323134fcc872bf15958c32a83"
+    )
+  )
+  related => (db-disconnect)
+  bundle => "org.brain4it.lib.DatabaseLibrary"
+)
+

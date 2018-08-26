@@ -1,0 +1,16 @@
+(MqttPublish (mqtt-publish connection_id topic payload)
+  sent
+  where =>
+  (
+    connection_id => ("string" 1 1)
+    topic => ("string" 1 1)
+    payload => ("string" 1 1)
+    sent => ("boolean" 1 1)
+  )
+  examples =>
+  (
+    ((mqtt-publish conn "foo" "Hello world!") true) 
+  )
+  bundle => "org.brain4it.lib.MqttLibrary"
+)
+

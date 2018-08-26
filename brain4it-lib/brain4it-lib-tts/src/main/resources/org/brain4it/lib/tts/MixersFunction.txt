@@ -1,0 +1,12 @@
+(Mixers (mixers)
+  (mixer_name)
+  where =>
+  (
+    mixer_name => ("string" 0 1)
+  )
+  examples =>
+  (
+    ((mixers) ("Default Audio Device" "Built-in Microphone" "Built-in Output"))
+  )
+  bundle => "org.brain4it.lib.TtsLibrary"
+)

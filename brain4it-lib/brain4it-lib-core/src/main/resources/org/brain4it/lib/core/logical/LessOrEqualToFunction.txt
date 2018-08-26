@@ -1,0 +1,12 @@
+(LessOrEqualTo (<= value) result
+  where =>
+  (
+    value => ("object" 0 N)
+    result => ("boolean" 1 1)
+  )
+  examples =>
+  (
+    ((<= 1 2 2 3) true)
+  )
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

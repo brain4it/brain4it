@@ -1,0 +1,12 @@
+(GpioRead (gpio-read pin_num) result
+  where =>
+  (
+    pin_num => ("number" 1 1)
+    result => ("number" 1 1)
+  )
+  examples =>
+  (
+    ((gpio-read 2) 1)
+  )
+  bundle => "org.brain4it.lib.RaspberryPiLibrary"
+)

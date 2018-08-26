@@ -1,0 +1,16 @@
+(MqttSubscribe (mqtt-subscribe connection_id topic)
+  subscribed
+  where =>
+  (
+    connection_id => ("string" 1 1)
+    topic => ("string" 1 1)
+    subscribed => ("boolean" 1 1)
+  )
+  examples =>
+  (
+    ((mqtt-subscribe conn "foo") true) 
+  )
+  related => (mqtt-unsubscribe)
+  bundle => "org.brain4it.lib.MqttLibrary"
+)
+

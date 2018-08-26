@@ -1,0 +1,20 @@
+(Append (append list1 list2) result
+  where =>
+  (
+    list1 => ("list" 1 1)
+    list2 => ("list" 1 1)
+    result => ("list" 1 1)
+  )
+  examples => 
+  (
+    (
+      (append (1 2 3) (4 5 6))
+      (1 2 3 4 5 6)
+    )
+    (
+      (append (1 "a" => 2) (3 "a" => 8 9)) 
+      (1 "a" => 8 3 9)
+    )
+  )
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+  <item android:id="@+id/addServer"
+        android:title="@string/addServer"
+        android:icon="@drawable/item_add_server"
+        android:showAsAction="ifRoom" />
+  <item android:id="@+id/preferences"
+        android:title="@string/preferences"
+        android:icon="@drawable/item_preferences"
+        android:showAsAction="ifRoom" />
+  <item android:id="@+id/sortServers"
+        android:title="@string/sortServers" />
+  <item android:id="@+id/threadDump"
+        android:title="@string/threadDump" />
+  <item android:id="@+id/exit"
+        android:title="@string/exit" />
+</menu>

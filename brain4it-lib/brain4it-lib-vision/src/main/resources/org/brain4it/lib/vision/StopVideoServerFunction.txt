@@ -1,0 +1,20 @@
+(StopVideoServer (stop-video-server "port" => port)
+  result
+  where =>
+  (
+    port => ("number" 0 1)
+    result => ("string" 0 1)
+  )
+  examples =>
+  (
+    (
+      (stop-video-server)
+      "video server on port 8080 stopped."
+    )
+    (
+      (stop-video-server "port" => 9090)
+      "video server on port 9090 stopped."
+    )
+  )
+  bundle => "org.brain4it.lib.VisionLibrary"
+)

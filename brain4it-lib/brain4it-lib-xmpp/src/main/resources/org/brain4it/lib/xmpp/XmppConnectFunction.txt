@@ -1,0 +1,27 @@
+(XmppConnect (xmpp-connect domain username password
+  "connection-listener" => connection_listener
+  "incoming-listener" => incoming_listener
+  "outgoing-listener" => outgoing_listener)
+  connection_id
+  where =>
+  (
+    domain => ("string" 1 1)
+    username => ("string" 1 1)
+    password => ("string" 1 1)
+    connection_listener => ("function" 0 1)
+    incoming_listener => ("function" 0 1)
+    outgoing_listener => ("function" 0 1)
+    connection_id => ("string" 1 1)
+  )
+  examples =>
+  (
+    (
+      (xmpp-connect "suchat.org" "brain4it_bot" "p229s824k" 
+        "connection-listener" => (function (st de) (push log (list st de)))
+        "incoming-listener" => (function (pa me) (process_msg pa me)))
+      "7f71ba03551a4fcc972bf9595ec22a63"
+    )
+  )
+  bundle => "org.brain4it.lib.XmppLibrary"
+)
+

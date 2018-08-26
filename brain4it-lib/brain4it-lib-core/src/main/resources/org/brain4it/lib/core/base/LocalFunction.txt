@@ -1,0 +1,12 @@
+(Local (local variable) null
+  where =>
+  (
+    variable => ("reference" 0 N)
+  )
+  examples =>
+  (
+    ((local counter sensor_value))
+  )
+  related => (local-scope)
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

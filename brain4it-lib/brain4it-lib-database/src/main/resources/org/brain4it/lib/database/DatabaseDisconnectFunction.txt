@@ -1,0 +1,19 @@
+(DatabaseDisconnect (db-disconnect connection_id)
+  closed
+  where =>
+  (
+    connection_id => ("string" 1 1)
+    closed => ("boolean" 1 1)
+  )
+  exceptions => 
+  (
+    ("SQLException")
+  )
+  examples =>
+  (
+    ((db-disconnect conn) true) 
+  )
+  related => (db-connect)
+  bundle => "org.brain4it.lib.DatabaseLibrary"
+)
+

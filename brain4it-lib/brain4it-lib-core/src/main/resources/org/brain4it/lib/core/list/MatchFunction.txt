@@ -1,0 +1,22 @@
+(Match (match lst list_pattern expression) match_found
+  where =>
+  (
+    lst => ("list" 1 1)
+    list_pattern => ("list" 1 1)
+    expression => ("object" 0 1)
+    match_found => ("boolean" 1 1)
+  )
+  examples =>
+  (
+    (
+      (match 
+        (quote (* a (+ a 3) c))
+        (quote (+ a? b?))
+        (= (type-of b?) "number")
+      )
+      true
+    )
+  )
+  related => (merge)
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

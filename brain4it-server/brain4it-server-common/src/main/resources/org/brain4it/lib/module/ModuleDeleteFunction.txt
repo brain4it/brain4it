@@ -1,0 +1,16 @@
+(ModuleDelete (module-delete snapshot_pattern) result
+  where =>
+  (
+    snapshot_pattern => ("string" 1 1)
+    result => ("string" 1 1)
+  )
+  examples => 
+  (
+    (
+      (module-delete "backup*")
+      "Snapshots deleted."
+    )
+  )
+  bundle => "org.brain4it.lib.ModuleLibrary"
+)
+

@@ -1,0 +1,14 @@
+(GpioPwmc (gpio-pwmc clock range) frequency
+  where =>
+  (
+    clock => ("number" 1 1)
+    range => ("number" 0 1)
+    frequency => ("number" 1 1)
+  )
+  examples =>
+  (
+    ((gpio-pwmc 8 100) 24000) 
+  )
+  related => (gpio-mode gpio-pwm)
+  bundle => "org.brain4it.lib.RaspberryPiLibrary"
+)

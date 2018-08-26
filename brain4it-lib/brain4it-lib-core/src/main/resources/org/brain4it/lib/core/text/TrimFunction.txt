@@ -1,0 +1,12 @@
+(Trim (trim str) result
+  where =>
+  (
+    str => ("string" 1 1)
+    result => ("string" 1 1)
+  )
+  examples =>
+  (
+    ((trim " A sentence to trim.  ") "A sentence to trim.")
+  )
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

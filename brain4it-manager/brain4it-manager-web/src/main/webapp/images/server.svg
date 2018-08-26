@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="20"
+   height="20"
+   viewBox="0 0 5.2916668 5.2916669"
+   version="1.1"
+   id="svg8"
+   sodipodi:docname="server.svg"
+   inkscape:version="0.92.2 5c3e80d, 2017-08-06"
+   inkscape:export-filename="/Users/realor/Desktop/server.png"
+   inkscape:export-xdpi="691.20001"
+   inkscape:export-ydpi="691.20001">
+  <defs
+     id="defs2" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="22.627418"
+     inkscape:cx="13.118066"
+     inkscape:cy="9.7711315"
+     inkscape:document-units="px"
+     inkscape:current-layer="g1142"
+     showgrid="true"
+     inkscape:pagecheckerboard="true"
+     fit-margin-top="10"
+     fit-margin-left="10"
+     fit-margin-right="10"
+     fit-margin-bottom="10"
+     units="px"
+     inkscape:window-width="1366"
+     inkscape:window-height="705"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1">
+    <inkscape:grid
+       type="xygrid"
+       id="grid815"
+       originx="0"
+       originy="0" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Capa 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-15.227748,-167.38526)">
+    <g
+       id="g968"
+       transform="matrix(0.97727272,0,0,1,1.7580525,-3.9376664)">
+      <g
+         id="g1001">
+        <g
+           id="g1142"
+           style="stroke-width:0.26764221;stroke-miterlimit:4;stroke-dasharray:none;stroke:#000000;stroke-opacity:1;stroke-linejoin:round;stroke-linecap:round">
+          <path
+             inkscape:connector-curvature="0"
+             id="path869"
+             d="m 14.324417,174.23334 2.165892,0.79375 2.165892,-0.79375 v -0.52917 l -2.165891,0.79375 -2.165892,-0.79375 -10e-7,0.52917"
+             style="fill:#666666;fill-opacity:1;stroke:#666666;stroke-width:0.2676422;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke"
+             sodipodi:nodetypes="ccccccc" />
+          <path
+             style="fill:none;stroke:#666666;stroke-width:0.26764221;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
+             d="m 14.324417,172.64585 2.165891,-0.79375 2.165892,0.79374"
+             id="path873"
+             inkscape:connector-curvature="0" />
+          <path
+             sodipodi:nodetypes="ccccccc"
+             style="fill:#666666;fill-opacity:1;stroke:#666666;stroke-width:0.2676422;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke"
+             d="m 14.324416,175.29168 2.165892,0.79375 2.165892,-0.79375 v -0.52917 l -2.165891,0.79375 -2.165892,-0.79375 -1e-6,0.52917"
+             id="path875"
+             inkscape:connector-curvature="0" />
+          <path
+             inkscape:connector-curvature="0"
+             id="path877"
+             d="m 14.324416,173.17501 2.165892,0.79375 2.165892,-0.79375 v -0.52917 l -2.165891,0.79375 -2.165892,-0.79375 -1e-6,0.52917"
+             style="fill:#666666;fill-opacity:1;stroke:#666666;stroke-width:0.2676422;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke"
+             sodipodi:nodetypes="ccccccc" />
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>

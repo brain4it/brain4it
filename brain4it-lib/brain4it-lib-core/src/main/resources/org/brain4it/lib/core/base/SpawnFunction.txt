@@ -1,0 +1,13 @@
+(Spawn (spawn action) executor_id
+  where =>
+  (
+    action => ("object" 1 1)
+    executor_id => ("string" 1 1)
+  )
+  examples =>
+  (
+    ((spawn (eval loop)) 34)
+  )
+  related => (kill executors)
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

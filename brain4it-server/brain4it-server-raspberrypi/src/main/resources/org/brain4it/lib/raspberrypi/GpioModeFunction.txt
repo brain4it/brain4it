@@ -1,0 +1,13 @@
+(GpioMode (gpio-mode pin_num mode) result
+  where =>
+  (
+    pin_num => ("number" 1 1)
+    mode => ("string" 1 1)
+    result => ("string" 1 1)
+  )
+  examples =>
+  (
+    ((gpio-mode 21 "out") "out")
+  )
+  bundle => "org.brain4it.lib.RaspberryPiLibrary"
+)

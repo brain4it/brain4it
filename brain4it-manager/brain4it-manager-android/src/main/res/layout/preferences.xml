@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+  <TextView
+    android:id="@+id/languageLabel"
+    android:layout_width="match_parent" 
+    android:layout_height="wrap_content"
+    android:layout_margin="4dp"
+    android:text="@string/language"  />
+  <Spinner
+    android:id="@+id/languageSpinner"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" />  
+  <TextView
+    android:id="@+id/textSizeLabel"
+    android:layout_width="match_parent" 
+    android:layout_height="wrap_content"
+    android:layout_margin="4dp"
+    android:text="@string/textSize"  />
+  <EditText
+    android:id="@+id/textSizeEditText"
+    android:layout_width="140dp" 
+    android:layout_height="wrap_content"
+    android:digits="0123456789"
+    android:inputType="phone" />
+  <TextView
+    android:id="@+id/indentSizeLabel"
+    android:layout_width="match_parent" 
+    android:layout_height="wrap_content"
+    android:layout_margin="4dp"
+    android:text="@string/indentSize"  />
+  <EditText
+    android:id="@+id/indentSizeEditText"
+    android:layout_width="140dp" 
+    android:layout_height="wrap_content"
+    android:digits="0123456789"
+    android:inputType="phone" />  
+  <TextView
+    android:id="@+id/formatColumnsLabel"
+    android:layout_width="match_parent" 
+    android:layout_height="wrap_content"
+    android:layout_margin="4dp"
+    android:text="@string/formatColumns"  />
+  <EditText
+    android:id="@+id/formatColumnsEditText"
+    android:layout_width="140dp" 
+    android:layout_height="wrap_content"
+    android:digits="0123456789"
+    android:inputType="phone" />
+  <Button
+    android:id="@+id/setupOkButton"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="@string/ok"/>
+</LinearLayout>
+

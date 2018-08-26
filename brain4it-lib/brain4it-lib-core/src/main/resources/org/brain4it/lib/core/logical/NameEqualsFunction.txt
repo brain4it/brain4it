@@ -1,0 +1,13 @@
+(NameEquals (== value) result
+  where =>
+  (
+    value => ("object" 0 N)
+    result => ("boolean" 1 1)
+  )
+  examples =>
+  (
+    ((== (1 2) ("a" => 1 2)) false)
+    ((== ("a" => 1 2) ("a" => 1 2)) true)
+  )
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

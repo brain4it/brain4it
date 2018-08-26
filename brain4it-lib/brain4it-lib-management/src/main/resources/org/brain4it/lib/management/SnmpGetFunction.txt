@@ -1,0 +1,18 @@
+(SnmpGet (snmp-get ip_port oid)
+  result
+  where =>
+  (
+    ip_port => ("string" 1 1)
+    oid => ("string" 1 N)
+    result => ("list" 1 1)
+  )
+  examples =>
+  (
+    (
+      (snmp-get "10.1.1.1/161" "1.3.6.1.2.1.1.1.0")
+      ("1.3.6.1.2.1.1.1.0" => "Cisco Catalyst 4500 L3 Switch")      
+    )
+  )
+  bundle => "org.brain4it.lib.ManagementLibrary"
+)
+ 

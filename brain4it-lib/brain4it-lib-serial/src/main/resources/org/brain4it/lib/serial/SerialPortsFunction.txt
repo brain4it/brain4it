@@ -1,0 +1,15 @@
+(SerialPorts (serial-ports) (port)
+  where =>
+  (
+    port => ("string" 0 N)
+  )
+  examples =>
+  (
+    (
+      (serial-ports)
+      ("cu.Bluetooth-Incoming-Port" "tty.Bluetooth-Incoming-Port")
+    )
+  )
+  bundle => "org.brain4it.lib.SerialLibrary"
+)
+

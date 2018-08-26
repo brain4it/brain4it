@@ -1,0 +1,20 @@
+(Merge (merge lst variables) result
+  where =>
+  (
+    lst => ("list" 1 1)
+    variables => ("list" 1 1)
+    result => ("object" 1 1)
+  )
+  examples =>
+  (
+    (
+      (merge 
+        (quote (+ 2 3 x (* x y)))
+        ("x" => 4 "y" => 5)
+      )
+      (+ 2 3 4 (* 4 5))
+    )
+  )
+  related => (match)
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

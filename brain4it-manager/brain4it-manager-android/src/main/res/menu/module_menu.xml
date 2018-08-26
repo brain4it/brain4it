@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+  <item android:id="@+id/showDashboard"
+        android:title="@string/showDashboard"
+        android:icon="@drawable/item_dashboard"
+        android:showAsAction="ifRoom" />
+  <item android:id="@+id/showConsole"
+        android:title="@string/showConsole"
+        android:icon="@drawable/item_console" 
+        android:showAsAction="ifRoom" />
+  <item android:id="@+id/showEditor"
+        android:title="@string/showEditor" 
+        android:icon="@drawable/item_editor" 
+        android:showAsAction="ifRoom" />
+</menu>

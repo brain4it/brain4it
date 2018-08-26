@@ -1,0 +1,14 @@
+(XmppDisconnect (xmpp-disconnect connection_id)
+  closed
+  where =>
+  (
+    connection_id => ("string" 1 1)
+    closed => ("boolean" 1 1)
+  )
+  examples =>
+  (
+    ((xmpp-disconnect "7f71ba03551a4fcc972bf9595ec22a63") true)
+  )
+  bundle => "org.brain4it.lib.XmppLibrary"
+)
+

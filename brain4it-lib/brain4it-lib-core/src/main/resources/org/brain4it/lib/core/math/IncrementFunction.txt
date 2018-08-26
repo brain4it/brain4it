@@ -1,0 +1,20 @@
+(Increment (++ variable value) result
+  where =>
+  (
+    variable => ("reference" 1 1)
+    value => ("number" 0 1)
+    result => ("number" 1 1)
+  )
+  examples =>
+  (
+    (
+      (do
+        (set a 10)
+        (++ a 2)
+      )
+      12
+    )
+  )
+  related => (--)
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

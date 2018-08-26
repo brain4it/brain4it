@@ -1,0 +1,13 @@
+(And (and value) result
+  where =>
+  (
+    value => ("boolean" 0 N)
+    result => ("boolean" 1 1)
+  )
+  examples =>
+  (
+    ((and true false true) false)
+    ((and 1 5) true)
+  )
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

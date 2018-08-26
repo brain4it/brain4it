@@ -1,0 +1,12 @@
+(Not (not value) result
+  where =>
+  (
+    value => ("boolean" 1 1)
+    result => ("boolean" 1 1)
+  )
+  examples =>
+  (
+    ((not true) false)
+  )
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

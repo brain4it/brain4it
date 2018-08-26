@@ -1,0 +1,15 @@
+(ExactEquals (=== value) result
+  where =>
+  (
+    value => ("object" 0 N)
+    result => ("boolean" 1 1)
+  )
+  examples =>
+  (
+    ((=== 3 3.0 (+ 2 1)) false)
+    ((=== 3.5 (+ 2 1.5)) true)
+    ((=== (1 2) (list 1 2)) false)
+    ((do (set lst (1 2 3)) (=== lst lst)) true) 
+  )
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

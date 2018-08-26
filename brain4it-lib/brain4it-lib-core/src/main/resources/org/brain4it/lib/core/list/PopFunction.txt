@@ -1,0 +1,13 @@
+(Pop (pop lst) result
+  where =>
+  (
+    lst => ("list" 1 1)
+    result => ("object" 1 1)
+  )
+  examples =>
+  (
+    ((pop (1 2 3)) 3)
+  )
+  related => (push)
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

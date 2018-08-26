@@ -1,0 +1,114 @@
+/*
+    Created on : 05-abr-2015, 18:08:45
+    Author     : realor
+*/
+
+@font-face 
+{
+  font-family: 'gidoleregular';
+  src: url('../fonts/gidole.woff2') format('woff2'),
+       url('../fonts/gidole.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+body
+{
+  font-family: 'gidoleregular';
+  font-size: 14px;  
+  position:absolute;
+  top:0;
+  bottom:0;
+  left:0;
+  right:0;
+  margin:0;
+  overflow: hidden;
+}
+
+.console
+{
+  position:absolute;
+  top:0;
+  bottom:0;
+  left:0;
+  right:0;  
+}
+
+.toolbar .clear
+{
+  background-image: url(../images/clear.svg);
+}
+
+.toolbar .functions
+{
+  background-image: url(../images/functions.svg);  
+}
+
+.toolbar .previous_history
+{
+  background-image: url(../images/up.svg);
+}
+
+.toolbar .next_history
+{
+  background-image: url(../images/down.svg);  
+}
+
+.console_body
+{
+  position: absolute;
+  top: 0;
+  left:0;
+  right:0;
+  bottom:0;
+}
+
+.console_scroll
+{
+  position: absolute;
+  top: 0px;
+  left:0;
+  right:0;
+  height:60%;
+  overflow: auto;
+  background-color: white;
+  color: black;
+}
+
+.console_output
+{
+  position: absolute;
+  width:100%;
+  left: 0;
+  right: 0;
+  overflow:hidden;
+  font-family: Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+  font-size:14px;
+}
+
+.console_output .error
+{
+  color: red;
+}
+
+.console_output .formatted_string
+{
+  color: blue;
+}
+
+.console_input
+{
+  position: absolute;
+  height: 40%;
+  left: 0;
+  right:0;
+  bottom:0;
+}
+
+.console_output .cm-s-default,
+.console_output .error,
+.console_output .formatted_string
+{
+  border-bottom: 1px solid #e0e0e0;
+  padding: 1px;
+}

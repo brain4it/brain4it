@@ -1,0 +1,16 @@
+(SoftPwm (soft-pwm pin_num value range) result
+  where =>
+  (
+    pin_num => ("number" 1 1)
+    value => ("number" 1 1)
+    range => ("number" 0 1)
+    result => ("number" 1 1)
+  )
+  examples =>
+  (
+    ((soft-pwm 3 25 200) 25)
+    ((soft-pwm 3 35) 35)
+    ((soft-pwm 3 0 0) 0)
+  )
+  bundle => "org.brain4it.lib.RaspberryPiLibrary"
+)

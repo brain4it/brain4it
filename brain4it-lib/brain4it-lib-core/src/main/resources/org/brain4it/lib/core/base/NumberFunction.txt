@@ -1,0 +1,28 @@
+(Number (number expression 
+  "radix" => radix 
+  "pattern" => pattern 
+  "locale" => locale 
+  "type" => type) 
+  result
+  where =>
+  (
+    expression => ("object" 1 1)
+    radix => ("number" 0 1)
+    pattern => ("string" 0 1)
+    locale => ("string" 0 1)
+    type => ("string" 0 1)
+  )
+  exceptions =>
+  (
+    ("NumberFormatException")
+  )
+  examples => 
+  (
+    ((number "45") 45)
+    ((number "45.6" pattern => "0.0" locale => "en") 45.6)
+    ((number "1110" radix => 2) 14)
+    ((number 7.4 type => "integer") 7)
+  )
+  related => (boolean string reference list)
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

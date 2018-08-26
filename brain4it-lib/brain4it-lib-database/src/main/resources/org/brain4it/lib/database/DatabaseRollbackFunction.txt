@@ -1,0 +1,19 @@
+(DatabaseRollback (db-rollback connection_id)
+  rollbacked
+  where =>
+  (
+    connection_id => ("string" 1 1)
+    rollbacked => ("boolean" 1 1)
+  )
+  exceptions => 
+  (
+    ("SQLException")
+  )
+  examples =>
+  (
+    ((db-rollback conn) true) 
+  )
+  related => (db-commit)
+  bundle => "org.brain4it.lib.DatabaseLibrary"
+)
+

@@ -1,0 +1,13 @@
+(SerialClose (serial-close port) closed
+  where =>
+  (
+    port => ("string" 1 1)
+    closed => ("boolean" 1 1)
+  )
+  examples =>
+  (
+    ((serial-close "tty.Bluetooth-Incoming-Port") true)
+  )
+  bundle => "org.brain4it.lib.SerialLibrary"
+)
+

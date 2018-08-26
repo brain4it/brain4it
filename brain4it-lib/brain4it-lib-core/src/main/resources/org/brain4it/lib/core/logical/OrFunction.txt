@@ -1,0 +1,12 @@
+(Or (or value) result
+  where =>
+  (
+    value => ("boolean" 0 N)
+    result => ("boolean" 1 1)
+  )
+  examples =>
+  (
+    ((or true false (= 1 2)) true)
+  )
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

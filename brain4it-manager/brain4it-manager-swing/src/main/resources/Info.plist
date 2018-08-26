@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+  <dict>
+    <key>CFBundleDevelopmentRegion</key>
+    <string>English</string>
+    <key>CFBundleExecutable</key>
+    <string>JavaAppLauncher</string>
+    <key>CFBundleIconFile</key>
+    <string>brain4it.icns</string>
+    <key>CFBundleIdentifier</key>
+    <string>org.brain4it.manager.swing.ManagerApp</string>
+    <key>CFBundleDisplayName</key>
+    <string>Brain4it Manager</string>
+    <key>CFBundleInfoDictionaryVersion</key>
+    <string>6.0</string>
+    <key>CFBundleName</key>
+    <string>Brain4it Manager</string>
+    <key>CFBundlePackageType</key>
+    <string>APPL</string>
+    <key>CFBundleShortVersionString</key>
+    <string>1.0</string>
+    <key>CFBundleSignature</key>
+    <string>????</string>
+    <key>CFBundleVersion</key>
+    <string>1</string>
+    <key>NSHumanReadableCopyright</key>
+    <string>(c) 2018, Sant Feliu de Llobregat.</string>
+    <key>NSHighResolutionCapable</key>
+    <true/>
+    <key>NSSupportsAutomaticGraphicsSwitching</key>
+    <true/>
+    <key>JVMRuntime</key>
+    <string></string>
+    <key>JVMRuntimePath</key>
+    <string></string>
+    <key>JVMMainClassName</key>
+    <string>org.brain4it.manager.swing.ManagerApp</string>
+    <key>JVMClassPaths</key>
+    <array>
+      <string>org/brain4it/brain4it-manager-swing/1.0/brain4it-manager-swing-1.0.jar</string>
+      <string>org/brain4it/brain4it-manager-common/1.0/brain4it-manager-common-1.0.jar</string>
+      <string>org/brain4it/brain4it-client-java/1.0/brain4it-client-java-1.0.jar</string>
+      <string>org/brain4it/brain4it-lang/1.0/brain4it-lang-1.0.jar</string>
+      <string>junit/junit/4.12/junit-4.12.jar</string>
+      <string>org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar</string>
+    </array>
+    <key>JVMVersion</key>
+    <string>1.6+</string>
+    <key>JVMOptions</key>
+    <array>
+      <string>-Dapple.laf.useScreenMenuBar=true</string>
+      <string>-Xdock:name=Brain4it Manager</string>
+      <string>-Dapple.awt.application.name=Brain4it Manager</string>
+      <string>-Dcom.apple.macos.use-file-dialog-packages=true</string>
+      <string>-Dcom.apple.smallTabs=true</string>
+      <string>-Dcom.apple.macos.useScreenMenuBar=true</string>
+      <string>-Dcom.apple.mrj.application.apple.menu.about.name=Brain4it Manager</string>
+    </array>
+    <key>JVMArguments</key>
+    <array/>
+  </dict>
+</plist>

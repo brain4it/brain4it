@@ -1,0 +1,12 @@
+(Comment (### param) null
+  where =>
+  (
+    param => ("object" 0 N)
+  )
+  examples =>
+  (
+    ((do (### "This is a comment inside a do") (set counter 0)))
+    ((do (set i 0) (### (while (< i max_iter) (process_data i) (++ i))) (show_results)))
+  )
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

@@ -1,0 +1,14 @@
+(ParseDate (parse-date date_string date_pattern) date_millis
+  where =>
+  (
+    date_string => ("string" 1 1)
+    date_pattern => ("string" 0 1)
+    date_millis => ("number" 1 1)
+  )
+  examples =>
+  (
+    ((parse-date "25/02/1973" "dd/MM/yyyy") 99442800000)
+  )
+  related => (date format-date)
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

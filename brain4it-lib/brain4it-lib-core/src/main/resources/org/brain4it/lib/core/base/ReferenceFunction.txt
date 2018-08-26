@@ -1,0 +1,21 @@
+(Reference (reference expression) result
+  where =>
+  (
+    expression => ("object" 1 1)
+    result => ("reference" 1 1)
+  )
+  exceptions =>
+  (
+    ("InvalidReference")
+  )
+  examples =>
+  (
+    ((reference "persons") persons)
+    ((reference (quote alfa)) alfa)
+    ((reference "persons/5/name") persons/5/name)
+    ((reference ("persons" 5 "name")) persons/5/name)
+    ((reference ("Hello friend" "John Connor")) /"Hello friend"/"John Connor")
+  )
+  related => (boolean number string list)
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

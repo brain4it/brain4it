@@ -1,0 +1,13 @@
+(Speaker (speaker state) result
+  where =>
+  (
+    state => ("boolean" 0 1)
+    result => ("boolean" 1 1)
+  )
+  examples =>
+  (
+    ((speaker) true)
+    ((speaker false) false)
+  )
+  bundle => "org.brain4it.lib.AndroidLibrary"
+)

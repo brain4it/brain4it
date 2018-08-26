@@ -1,0 +1,645 @@
+/* 
+    manager.css
+    Created on : 30-mar-2014, 17:09:49
+    Author     : realor
+*/
+
+@font-face 
+{
+  font-family: 'gidoleregular';
+  src: url('../fonts/gidole.woff2') format('woff2'),
+       url('../fonts/gidole.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+body
+{
+  font-family: 'gidoleregular';
+  font-size: 12pt;
+  position:absolute;
+  margin:0;
+  padding: 0;
+  top:0;
+  bottom:0;
+  left:0;
+  right:0;
+}
+
+input[type="text"],
+input[type="password"]
+{
+  font-size: 14px;
+}
+
+#splash
+{
+  position: absolute;
+  padding: 0;
+  top:0;
+  bottom:0;
+  left:0;
+  right:0;
+  overflow: hidden;
+}
+
+#main
+{
+  position: absolute;
+  padding: 0;
+  top:0;
+  bottom:0;
+  left:0;
+  right:0;
+  display:none;
+  z-index: 0;
+}
+
+#main #header
+{
+  position: absolute;
+  top:0;
+  left:0;
+  right:0;
+  height:40px;
+  background: #f0f0f0;
+/*  border-bottom: 1px solid #d0d0d0;*/
+}
+
+#main #header .title
+{
+  position:absolute;
+  font-size: 18px;
+  text-align: left;
+  padding-left: 4px;
+  left:0;
+  width:50%;
+  top:0;
+  bottom:0;
+  color: #303030;
+}
+
+#main #header #slider
+{
+  position:absolute;
+  text-align: center;
+  left:40%;
+  right:40%;
+  top:0;
+  bottom:0;
+  z-index: 100;
+}
+
+#main #header #menu
+{
+  position:absolute;
+  font-size: 18px;
+  text-align: right;
+  padding-right: 4px;
+  right:0;
+  width:50%;
+  top:0;
+  bottom:0;
+  color: #303030;
+}
+
+#config
+{
+  position:absolute;
+  left: 0;
+  width:280px;
+  top:40px;
+  bottom:0;
+}
+
+#content
+{
+  position:absolute;
+  left:280px;
+  top:40px;
+  bottom:0;
+  right:0;
+}
+
+#toolbar
+{
+  position:absolute;
+  left: 0;
+  right: 0;
+  top:0;
+  height: 32px;
+  border-bottom: 1px solid #d0d0d0;
+  background-color: #f0f0f0;
+}
+
+#workspace_label
+{
+  position:absolute;
+  left: 0;
+  right: 0;
+  top:33px;  
+  height: 20px;
+  line-height: 20px;
+  font-size:15px;
+  bottom:0;
+  padding-left: 4px;
+  font-weight: bold;
+  border-right:1px solid #c0c0c0;
+}
+
+#workspace_label:hover
+{
+  cursor: pointer;
+}
+
+button
+{
+  font-family: 'gidoleregular';
+}
+
+#tree
+{
+  position:absolute;
+  left: 0;
+  right: 0;
+  top:53px;
+  bottom:0;
+  padding-top: 4px;
+  border-right:1px solid #c0c0c0;
+}
+
+/* Tree */
+#tree
+{
+  overflow: auto;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -ms-user-select: none;
+}
+
+#tree ul, #tree li
+{
+  list-style: none;
+  font-family: 'gidoleregular';
+  font-size: 14px;
+  padding-left: 0px;
+}
+
+#tree ul > li
+{
+  white-space: nowrap;
+  margin-left: 20px;
+  padding-left: 0;
+  background-color: white;
+  vertical-align: middle;
+}
+
+#tree li > a:focus > span.name
+{
+  background-color: #e0e0e0;
+}
+
+#tree li.selected > a > span.name
+{
+  background-color: #7ec5e7;
+}
+
+#tree li > a
+{
+  vertical-align: middle;
+  padding: 10px 2px 10px 44px;  
+  cursor:pointer;
+  text-decoration: none;
+  color: black;
+  display:inline-block;
+  margin-left: 0;
+  outline: none;
+  background-position: 0 center;
+  background-repeat: no-repeat;
+  background-size: 40px;
+}
+
+#tree li span.name
+{
+  font-size: 15px;
+  display:inline-block;
+  vertical-align: middle;
+  padding: 1px 2px 1px 2px;
+  border-radius: 4px;
+}
+
+#tree li span.info
+{
+  font-size: 12px;
+  display:block;
+  color: #606060;
+  vertical-align: middle;
+  padding: 0 2px 0 2px;
+}
+
+#tree ul > li.module
+{
+  margin-left: 0px;
+  border-bottom: 1px solid #F0F0F0;  
+}
+
+#tree ul > li.server a
+{
+  background-image: url(../images/server.svg);
+}
+
+#tree ul > li.module a
+{
+  background-image: url(../images/module.svg); 
+}
+
+#tree ul > li.module.air_conditioning a
+{
+  background-image: url(../images/modules/air_conditioning.svg);     
+}
+
+#tree ul > li.module.domotics a
+{
+  background-image: url(../images/modules/domotics.svg);     
+}
+
+#tree ul > li.module.energy a
+{
+  background-image: url(../images/modules/energy.svg);     
+}
+
+#tree ul > li.module.garbage_collection a
+{
+  background-image: url(../images/modules/garbage_collection.svg);     
+}
+
+#tree ul > li.module.irrigation a
+{
+  background-image: url(../images/modules/irrigation.svg);     
+}
+
+#tree ul > li.module.lighting a
+{
+  background-image: url(../images/modules/lighting.svg);     
+}
+
+#tree ul > li.module.math a
+{
+  background-image: url(../images/modules/math.svg);     
+}
+
+#tree ul > li.module.mobility a
+{
+  background-image: url(../images/modules/mobility.svg);     
+}
+
+#tree ul > li.module.public_lighting a
+{
+  background-image: url(../images/modules/public_lighting.svg);     
+}
+
+#tree ul > li.module.robotics1 a
+{
+  background-image: url(../images/modules/robotics1.svg);     
+}
+
+#tree ul > li.module.robotics2 a
+{
+  background-image: url(../images/modules/robotics2.svg);     
+}
+
+#tree ul > li.module.sensors a
+{
+  background-image: url(../images/modules/sensors.svg);     
+}
+
+#tree ul > li.module.weather a
+{
+  background-image: url(../images/modules/weather.svg);     
+}
+
+#tree > ul
+{
+  padding-left: 0;
+  margin-top: 0;
+}
+
+#tree button
+{
+  background-color: transparent;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: 10px;
+  border:none;
+  vertical-align: middle;
+  width:10px;
+  height:10px;
+  cursor: pointer;
+  margin-left: -14px;
+  outline: none;
+}
+
+#tree button:focus
+{
+  background-color: #e0e0e0;
+  border-radius: 3px;
+}
+
+#tree button.collapse
+{
+  background-image: url(../images/collapse.svg);
+}
+
+#tree button.expand
+{
+  background-image: url(../images/expand.svg);
+}
+
+#tree::-webkit-scrollbar 
+{
+  width: 0.4em;
+  height: 0.4em;
+}
+ 
+#tree::-webkit-scrollbar-track 
+{
+  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+}
+ 
+#tree::-webkit-scrollbar-thumb 
+{
+  background-color: #a0a0a0;
+  outline: 1px solid slategrey;
+}
+
+
+/* TabbedPanel */
+.tab_selectors
+{
+  text-align: left;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -ms-user-select: none;
+  border-bottom: 1px solid #d0d0d0;
+  min-height: 32px;
+  padding-left: 1px;
+  padding-right: 1px;
+  background-color: #f0f0f0;
+}
+
+.tab_selectors .tab
+{
+  display:inline-block;
+  line-height: 25px;
+  height: 25px;
+  padding-left: 6px;
+  padding-right: 6px;
+  color: black;
+  border: 1px solid #b0b0b0;
+  border-radius: 6px;
+  margin: 2px;
+}
+
+.tab_selectors .tab:hover
+{
+  border-color: gray;
+  cursor: pointer;
+}
+
+.tab_selectors .tab.selected
+{
+  border-color: gray;
+  background-color: #7ec5e7;
+  color: black;
+}
+
+.tab_selectors .tab span
+{
+  vertical-align: middle;
+}
+
+.tab_selectors .tab button.close_button
+{
+  background: url(../images/lowclose.svg) center center no-repeat;
+  background-size: 16px;
+  vertical-align: middle;
+  margin-left: 4px;
+  width: 16px;
+  height: 16px;
+  border: none;
+}
+
+.tab_selectors .tab button.close_button:hover
+{
+  background: url(../images/close.svg) center center no-repeat;
+  background-size: 16px;
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+.tab_panels
+{
+  position: absolute;
+  top: 25px;
+  left:0;
+  right:0;
+  bottom: 0;
+}
+
+.tab_panels > .panel
+{
+  position: absolute;
+  top: 0;
+  left:0;
+  right:0;
+  bottom: 0;
+  overflow: auto;
+}
+
+iframe.external
+{
+  position:absolute;
+  top:0;
+  bottom:0;
+  left:0;
+  right:0;
+}
+
+/* Menu */
+
+.new_ws
+{
+  font-size: 12px;
+  background-color: transparent;
+  line-height: 40px;
+  border: none;
+}
+
+.new_ws:hover
+{
+  cursor: pointer;  
+}
+
+.open_ws label
+{
+  font-size: 12px;
+  background-color: transparent;
+  line-height: 40px;
+}
+
+.open_ws label:hover
+{
+  cursor: pointer;  
+}
+
+.save_ws
+{
+  font-size: 12px;    
+  background-color: transparent;
+  border:none;
+  line-height: 40px;
+}
+
+.save_ws:hover
+{
+  cursor: pointer;  
+}
+
+/* ToolBar */
+
+#toolbar
+{
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -ms-user-select: none;
+}
+
+#toolbar .action
+{
+  display: inline-block;
+  width: 32px;
+  height: 32px;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size:20px;
+  border:none;
+  outline:none;
+  border-radius: 0;
+  background-color: transparent;
+}
+
+#toolbar .action:hover
+{
+  background-color: #7ec5e7;
+}
+
+#toolbar .action:focus
+{
+  background-color: #d0d0d0;  
+}
+
+#toolbar .action.add_server
+{
+  background-image: url(../images/add_server.svg);  
+}
+
+#toolbar .action.add_module
+{
+  background-image: url(../images/add_module.svg);  
+}
+
+#toolbar .action.remove
+{
+  background-image: url(../images/close.svg);
+}
+
+#toolbar .action.edit
+{
+  background-image: url(../images/edit.svg);
+}
+
+#toolbar .action.create_module
+{
+  background-image: url(../images/create_module.svg);  
+}
+
+#toolbar .action.destroy_module
+{
+  background-image: url(../images/destroy.svg);
+}
+
+#toolbar .action.list_modules
+{
+  background-image: url(../images/list_modules.svg);  
+}
+
+#toolbar .action.console
+{
+  background-image: url(../images/console.svg);
+}
+
+#toolbar .action.editor
+{
+  background-image: url(../images/editor.svg);  
+}
+
+#toolbar .action.dashboard
+{
+  background-image: url(../images/dashboard.svg);
+}
+
+.tab > span
+{
+  background-repeat:no-repeat;
+  background-position: left center;
+  padding-left: 24px;
+  background-size: 20px;
+  line-height: 25px;
+}
+
+.tab > span.console
+{
+  background-image: url(../images/console.svg);
+}
+
+.tab > span.editor
+{
+  background-image: url(../images/editor.svg);
+}
+
+.tab > span.dashboard
+{
+  background-image: url(../images/dashboard.svg);
+}
+
+.ball_button
+{
+  border: 1px solid black;
+  border-radius: 50%;
+  width: 12px;
+  height: 12px;
+  display: inline-block;
+  margin: 14px 4px 14px 4px;
+  background-color: transparent;
+  padding: 0;
+  outline: none;
+}
+
+.ball_button.selected
+{
+  background-color: black;
+}
+
+.expand_tab
+{
+  position:absolute;
+  top:4;
+  right:4;
+  width:20px;
+  height:20px;
+  background: url(../images/maximize.svg) center center no-repeat;
+}

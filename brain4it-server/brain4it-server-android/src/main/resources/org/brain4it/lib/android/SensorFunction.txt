@@ -1,0 +1,33 @@
+(Sensor (sensor operation type listener) null
+  where =>
+  (
+    operation => ("string" 1 1)
+    type => ("string" 0 1)
+    listener => ("function" 0 1)
+  )
+  examples =>
+  (
+    (
+      (do 
+        (sensor "register" "accelerometer" (function (d) (set accelerometer d)))
+        (sleep 1000)
+        accelerometer
+      )
+      (
+        "type" => "accelerometer" 
+        "timestamp" => 1509649001135 
+        "x" => 0.0 
+        "y" => 0.1 
+        "z" => 0.9
+      )
+    )
+    (
+      (sensor "unregister" "accelerometer") null
+    )
+    (
+      (sensor "types") 
+      ("accelerometer" "light" "magnetic" "gyroscope")
+    )
+  )
+  bundle => "org.brain4it.lib.AndroidLibrary"
+)

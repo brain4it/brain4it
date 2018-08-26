@@ -1,0 +1,14 @@
+(Sync (sync monitor action) result
+  where =>
+  (
+    monitor => ("object" 1 1)
+    action => ("object" 0 N)
+    result => ("object" 1 1)
+  )
+  examples =>
+  (
+    ((sync lock (++ counter) (test_sensor)))
+  )
+  related => (notify wait)
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

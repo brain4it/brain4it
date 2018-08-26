@@ -1,0 +1,26 @@
+(JmxGet (jmx-get url object attribute)
+  result
+  where =>
+  (
+    url => ("string" 1 1)
+    object => ("string" 1 1)
+    attribute => ("string" 0 1)
+    result => ("object" 1 1)
+  )
+  examples =>
+  (
+    (
+      (jmx-get 
+        "service:jmx:rmi:///jndi/rmi://hiperio:8888/jmxrmi" 
+        "java.lang:type=MemoryPool,name=PS Old Gen" "Usage"
+      )
+      ("committed" => 517996544 
+       "init" => 179306496 
+       "max" => 1048576000 
+       "used" => 515042368
+      )
+    )
+  )
+  bundle => "org.brain4it.lib.ManagementLibrary"
+)
+ 

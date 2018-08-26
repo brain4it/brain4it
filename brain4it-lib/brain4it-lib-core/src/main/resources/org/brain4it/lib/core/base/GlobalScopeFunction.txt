@@ -1,0 +1,12 @@
+(GlobalScope (global-scope) result
+  where =>
+  (
+    result => ("list" 1 1)
+  )
+  examples =>
+  (
+    ((global-scope) ("counter" => 8 "lst" => (1 2 3)))
+  )
+  related => (local-scope exists)
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

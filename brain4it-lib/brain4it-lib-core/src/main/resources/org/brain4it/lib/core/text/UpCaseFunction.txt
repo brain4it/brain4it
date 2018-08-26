@@ -1,0 +1,12 @@
+(UpCase (upcase string) result
+  where =>
+  (
+    string => ("string" 1 1)
+    result => ("string" 1 1)
+  )
+  examples =>
+  (
+    ((upcase "Abc123") "ABC123")
+  )
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

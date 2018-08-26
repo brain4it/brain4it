@@ -1,0 +1,16 @@
+(BitShift (bit-shift int_value shift) result
+  where =>
+  (
+    int_value => ("number" 1 1)
+    shift => ("number" 1 1)
+    result => ("number" 1 1)
+  )
+  examples =>
+  (
+    ((bit-shift 1 -4) 16)
+    ((bit-shift 16 4) 1)
+    ((bit-shift 16 0) 16)
+  )
+  related => (bit-and)
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

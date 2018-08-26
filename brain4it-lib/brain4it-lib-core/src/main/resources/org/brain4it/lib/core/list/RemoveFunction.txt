@@ -1,0 +1,22 @@
+(Remove (remove lst spec) result
+  where =>
+  (
+    lst => ("list" 1 1)
+    spec => ("object" 0 1)
+    result => ("list" 1 1)
+  )
+  examples => 
+  (
+    ((remove (1 2 3) 1) 2)
+    (
+      (do 
+        (set lst ("a" => 1 "b" => 2)) 
+        (remove lst "a")
+        lst
+      )
+      ("b" => 2)
+    )
+  )
+  related => (insert)
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

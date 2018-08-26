@@ -1,0 +1,13 @@
+(Log10 (log10 value) result
+  where =>
+  (
+    value => ("number" 1 1)
+    result => ("number" 1 1)
+  )
+  examples =>
+  (
+    ((log10 5) 0.6989700043360189)
+  )
+  related => (logn pow)
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

@@ -1,0 +1,40 @@
+(Try (try main_action catch_actions finally_action) result
+  where =>
+  (
+    main_action => ("object" 1 1)
+    catch_actions => ((excep_var catch_action) 1 1)
+    excep_var => ("reference" 1 1)
+    catch_action => ("object" 1 N)
+    finally_action => ("object" 1 1)
+    result => ("object" 1 1)
+  )
+  examples =>
+  (
+    (
+      (try
+        (do_work)
+        (ex "*" => null)
+      )
+    )
+    (
+      (try
+        (do_work)
+        null
+        (release_resources)
+      )
+    )
+    (
+      (try
+        (http "GET" "http://brain4it.org")
+        (ex
+           "IOException" => (set error 1)
+           "ConnectException" => (set error 2)
+           "*" => (set error ex)
+        )
+        (release_resources)
+      )
+    )
+  )
+  related => (throw)
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

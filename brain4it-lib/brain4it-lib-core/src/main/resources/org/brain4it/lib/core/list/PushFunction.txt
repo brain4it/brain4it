@@ -1,0 +1,14 @@
+(Push (push lst element) result
+  where =>
+  (
+    lst => ("list" 1 1)
+    element => ("object" 1 1)
+    result => ("list" 1 1)
+  )
+  examples =>
+  (
+    ((push (1 2) 3) (1 2 3))
+  )
+  related => (pop)
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

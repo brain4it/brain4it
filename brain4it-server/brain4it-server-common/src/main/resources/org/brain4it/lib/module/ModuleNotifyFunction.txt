@@ -1,0 +1,16 @@
+(ModuleNotify (module-notify function_name)
+  listeners
+  where =>
+  (
+    function_name => ("string" 1 N)
+    listeners => ("number" 1 1)
+  )
+  examples =>
+  (
+    ((module-notify "@door_state") 3)
+    ((module-notify "@display" "@temperature") 0)
+  )
+  related => (module-monitor)
+  bundle => "org.brain4it.lib.ModuleLibrary"
+)
+

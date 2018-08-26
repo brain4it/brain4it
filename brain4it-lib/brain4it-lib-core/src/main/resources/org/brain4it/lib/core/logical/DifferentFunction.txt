@@ -1,0 +1,13 @@
+(Different (!= value1 value2) result
+  where =>
+  (
+    value1 => ("object" 1 1)
+    value2 => ("object" 1 1)
+    result => ("boolean" 1 1)
+  )
+  examples =>
+  (
+    ((!= 4 5) true)
+  )
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

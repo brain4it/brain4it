@@ -1,0 +1,28 @@
+(Tts (tts text 
+  "voice" => voice 
+  "volume" => volume 
+  "rate" => rate 
+  "pitch" => pitch
+  "pitch-range" => pitch_range
+  "mixer" => mixer)
+  text
+  where =>
+  (
+    text => ("string" 1 1)
+    voice => ("string" 0 1)
+    volume => ("number" 0 1)
+    rate => ("number" 0 1)
+    pitch => ("number" 0 1)
+    pitch_range => ("number" 0 1)
+    mixer => ("string" 0 1)
+  )
+  examples =>
+  (
+    ((tts "Hello world") "Hello world")
+    ((tts (format-date (date)) "mixer" => "Built-in Output") 
+      "04-nov-2017 11:12:43")
+    ((tts "Hello world" voice => "kevin16/sharp" pitch => 200) "Hello world")
+    ((tts "Hello world" voice => "kevin16/slow" rate => 100) "Hello world")
+  )
+  bundle => "org.brain4it.lib.TtsLibrary"
+)

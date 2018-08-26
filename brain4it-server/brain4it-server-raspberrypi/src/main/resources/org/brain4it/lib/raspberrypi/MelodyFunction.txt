@@ -1,0 +1,12 @@
+(Melody (melody pin_num note_tempo_list) null
+  where =>
+  (
+    pin_num => ("number" 1 1)
+    note_tempo_list => ("list" 1 1)
+  )
+  examples => 
+  (
+    ((melody 2 1000 300 2000 500 1500 400) null)
+  )
+  bundle => "org.brain4it.lib.RaspberryPiLibrary"
+)

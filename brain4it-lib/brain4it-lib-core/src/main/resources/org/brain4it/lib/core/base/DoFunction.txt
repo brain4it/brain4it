@@ -1,0 +1,12 @@
+(Do (do action) result
+  where =>
+  (
+    action => ("object" 0 N)
+    result => ("object" 1 1)
+  )
+  examples =>
+  (
+    ((do (set counter 0) (if (> a 2) (++ counter))))
+  )
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

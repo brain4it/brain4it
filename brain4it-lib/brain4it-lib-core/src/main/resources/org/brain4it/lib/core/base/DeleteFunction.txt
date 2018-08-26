@@ -1,0 +1,13 @@
+(Delete (delete variable) result
+  where =>
+  (
+    variable => ("reference" 1 1)
+    result => ("boolean" 1 1)
+  )
+  examples =>
+  (
+    ((delete counter))
+  )
+  related => (set exists)
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

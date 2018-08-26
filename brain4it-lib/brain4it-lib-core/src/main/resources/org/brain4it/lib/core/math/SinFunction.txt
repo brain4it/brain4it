@@ -1,0 +1,13 @@
+(Sin (sin angle_rad) value
+  where =>
+  (
+    angle_rad => ("number" 1 1)
+    value => ("number" 1 1)
+  )
+  examples =>
+  (
+    ((sin 0.5) 0.479425538604203)
+  )
+  related => (asin cos tan)
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

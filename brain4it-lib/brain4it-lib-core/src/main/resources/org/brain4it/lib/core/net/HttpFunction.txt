@@ -1,0 +1,47 @@
+(Http (http method url
+  "body" => data
+  "properties" => properties
+  "connect-timeout" => connect_timeout
+  "read-timeout" => read_timeout
+  "input-format" => input_format
+  "output-format" => output_format
+  "download-file" => download_file
+  "upload-file" => upload_file)
+
+  ("status" => status
+   "message" => message
+   "headers" => headers
+   "body" => body)
+
+  where =>
+  (
+    method => ("string" 1 1)
+    url => ("string" 1 1)
+    data => ("object" 0 1)
+    properties => ("list" 0 1)
+    connect_timeout => ("number" 0 1)
+    read_timeout => ("number" 0 1)
+    input_format => ("string" 0 1)
+    output_format => ("string" 0 1)
+    download_file => ("string" 0 1)
+    upload_file => ("string" 0 1)
+    status => ("number" 1 1)
+    message => ("string" 1 1)
+    headers => ("list" 1 1)
+    body => ("object" 1 1)
+  )
+  exceptions => 
+  (
+    ("MalformedURLException")
+    ("UnknownHostException")
+    ("ConnectException")
+    ("TimeoutException")
+    ("IOException")
+  )
+  examples => 
+  (
+    ((http "GET" "http://brain4it.org"))
+    ((http "PUT" "http://smart.sfl.cat/api" body => "{data: 67}"))
+  )
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

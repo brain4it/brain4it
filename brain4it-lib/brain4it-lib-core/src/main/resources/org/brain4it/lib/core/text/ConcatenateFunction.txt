@@ -1,0 +1,12 @@
+(Concatenate (concat str) result
+  where =>
+  (
+    str => ("string" 0 N)
+    result => ("string" 1 1)
+  )
+  examples =>
+  (
+    ((do (set name "HAL") (concat "My name is " name)) "My name is HAL")
+  )
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

@@ -1,0 +1,15 @@
+(Call (call func parameter) result
+  where => 
+  (
+    func => ("function" 1 1)
+    parameter => ("object" 0 N)
+    result => ("object" 1 1)
+  )
+  examples =>
+  (
+    ((call + 4 5) 9)
+    ((call (function (x) (* 2 x)) 5) 10)
+  )
+  related => (function)
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

@@ -1,0 +1,30 @@
+(Paint (paint primitive) scene
+  where =>
+  (
+    primitive => ("list" 0 N)
+    scene => ("list" 1 1)
+  )
+  examples =>
+  (
+    (
+      (paint (list "text" (format-date (date)) 100 100 "font-family" => "Monospaced"))
+      ("text" "02/11/2017 13:21:36" 100 100 "font-family" => "Monospaced")
+    )
+    (
+      (paint 
+        ("group" color => "#ff0000"
+          ("line" 0 0 100 100)
+          ("rectangle" 0 0 100 100)
+        )
+      )
+      (
+        "group"
+        "color" => "#ff0000"
+        ("line" 0 0 100 100)
+        ("rectangle" 0 0 100 100)
+      )
+    )
+  )
+  bundle => "org.brain4it.lib.SwingLibrary"
+)
+

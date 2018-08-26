@@ -1,0 +1,14 @@
+(Substring (substring str from_index to_index) result
+  where =>
+  (
+    str => ("string" 1 1)
+    from_index => ("number" 1 1)
+    to_index => ("number" 0 1)
+  )
+  examples =>
+  (
+    ((substring "Federation" 2 4) "de")
+    ((substring "Federation" 2) "deration")
+  )
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

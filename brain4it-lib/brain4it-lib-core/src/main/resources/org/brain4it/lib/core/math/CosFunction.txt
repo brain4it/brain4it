@@ -1,0 +1,13 @@
+(Cos (cos angle_rad) value
+  where =>
+  (
+    angle_rad => ("number" 1 1)
+    value => ("number" 1 1)
+  )
+  examples =>
+  ( 
+    ((cos 3.1) 0.9991351502732795)
+  )
+  related => (acos sin tan)
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

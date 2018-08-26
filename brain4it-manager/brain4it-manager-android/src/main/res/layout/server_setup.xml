@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+  <TextView
+    android:id="@+id/serverNameLabel"
+    android:layout_width="match_parent" 
+    android:layout_height="wrap_content"
+    android:layout_margin="4dp"
+    android:text="@string/serverName"  />
+  <EditText 
+    android:id="@+id/serverNameInput"
+    android:inputType="textNoSuggestions"
+    android:layout_width="match_parent" 
+    android:layout_height="wrap_content" />
+  <TextView
+    android:id="@+id/serverUrlLabel"
+    android:layout_width="match_parent" 
+    android:layout_height="wrap_content"
+    android:layout_margin="4dp"
+    android:text="@string/serverUrl"  />
+  <EditText 
+    android:id="@+id/serverUrlInput"
+    android:inputType="textNoSuggestions"
+    android:layout_width="match_parent" 
+    android:layout_height="wrap_content" />
+  <TextView
+    android:id="@+id/accessKeyLabel"
+    android:layout_width="match_parent" 
+    android:layout_height="wrap_content"
+    android:layout_margin="4dp"
+    android:text="@string/accessKey"  />
+  <EditText 
+    android:id="@+id/accessKeyInput"
+    android:inputType="textNoSuggestions"
+    android:layout_width="match_parent" 
+    android:layout_height="wrap_content" />
+  <Button
+    android:id="@+id/serverOkButton"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="@string/ok"/>
+</LinearLayout>
+

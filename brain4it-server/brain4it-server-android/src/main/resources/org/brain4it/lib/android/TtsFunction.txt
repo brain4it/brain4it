@@ -1,0 +1,16 @@
+(Tts (tts text "volume" => volume "language" => language) result
+  where =>
+  (
+    text => ("string" 1 1)
+    volume => ("number" 0 1)
+    language => ("string" 0 1)
+    result => ("string" 1 1)
+  )
+  examples =>
+  (
+    ((tts "Hello world") "Hello world")
+    ((tts "My name is John" volume => 20) "My name is John")
+    ((tts "Hola mundo" language => "es") "Hola mundo")
+  )
+  bundle => "org.brain4it.lib.AndroidLibrary"
+)

@@ -1,0 +1,16 @@
+(Has (has lst spec) result
+  where =>
+  (
+    lst => ("list" 1 1)
+    spec => ("object" 1 1)
+    result => ("list" 1 1)
+  )
+  examples => 
+  (
+    ((has (1 2 3) 0) true)
+    ((has (1 2 3) 3) false)
+    ((has (1 "x" => 2 3) "x") true)
+    ((has (1 "x" => 2 3) "y") false)
+  )
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

@@ -1,0 +1,25 @@
+(ModuleSnapshots (module-snapshots snapshot_pattern) 
+  (snapshot)
+  where =>
+  (
+    snapshot_pattern => ("string" 0 1)
+    snapshot => (("name" => name
+                  "last-modified" => last_modified 
+                  "length" => length) 0 N)
+    name => ("string" 1 1)
+    last_modified => ("number" 1 1)
+    length => ("number" 1 1)
+  )
+  examples =>
+  (
+    (
+      (module-snapshots "b*")
+      (
+        ("name" => "backup1" "last-modified" => 1504118861000 length => 4235)
+        ("name" => "backup2" "last-modified" => 1504118876000 length => 4604)
+      )
+    )
+  )
+  bundle => "org.brain4it.lib.ModuleLibrary"
+)
+

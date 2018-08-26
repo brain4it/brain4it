@@ -1,0 +1,14 @@
+(IntegerDivision (div dividend divisor) result
+  where =>
+  (
+    dividend => ("number" 1 1)
+    divisor => ("number" 1 1)
+    result => ("number" 1 1)
+  )
+  examples =>
+  (
+    ((/ 3 2) 1)
+  )
+  related => (/ *)
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

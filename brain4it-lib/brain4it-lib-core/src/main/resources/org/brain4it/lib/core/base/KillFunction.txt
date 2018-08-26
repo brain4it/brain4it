@@ -1,0 +1,14 @@
+(Kill (kill executor_id) result
+  where =>
+  (
+    executor_id => ("number" 1 1)
+    result => ("boolean" 1 1)
+  )
+  examples =>
+  (
+    ((kill 23) true)
+    ((kill) true)
+  )
+  related => (executors spawn)
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

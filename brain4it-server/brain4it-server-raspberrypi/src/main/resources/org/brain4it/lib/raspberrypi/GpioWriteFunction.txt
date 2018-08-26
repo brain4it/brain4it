@@ -1,0 +1,13 @@
+(GpioWrite (gpio-write pin_num value) result
+  where =>
+  (
+    pin_num => ("number" 1 1)
+    value => ("number" 1 1)
+    result => ("number" 1 1)
+  )
+  examples =>
+  (
+    ((gpio-write 2 0) 0)
+  )
+  bundle => "org.brain4it.lib.RaspberryPiLibrary"
+)

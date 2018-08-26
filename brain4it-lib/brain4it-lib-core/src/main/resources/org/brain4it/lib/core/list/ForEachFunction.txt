@@ -1,0 +1,14 @@
+(ForEach (for-each lst elem_var action) result
+  where =>
+  (
+    lst => ("list" 1 1)
+    elem_var => ("reference" 1 1)
+    action => ("object" 0 N)
+    result => ("object" 1 1)
+  )
+  examples =>
+  (
+    ((for-each (1 2 3) x (push lst (* 2 x))))
+  )
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

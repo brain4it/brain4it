@@ -1,0 +1,15 @@
+(GetName (get-name lst index) result
+  where =>
+  (
+    lst => ("list" 1 1)
+    index => ("number" 1 1)
+    result => ("list" 1 1)
+  )
+  examples =>
+  (
+    ((get-name ("a" => 2 "b" => 5) 1) "b")
+    ((get-name (3 "a" => 2 "b" => 5) 0) null)
+  )
+  related => (put-name)
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

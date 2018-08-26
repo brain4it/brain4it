@@ -1,0 +1,33 @@
+CACHE MANIFEST
+# 2018-08-08 8:00
+
+CACHE:
+css/manager.css
+css/toolbar.css
+css/web_dialog.css
+css/console.css
+
+js/common/Brain4it.js
+js/common/WebDialog.js
+js/common/InputDialog.js
+js/common/MessageDialog.js
+js/common/ConfirmDialog.js
+js/common/Utils.js
+js/console/Console.js
+js/common/codemirror.js
+js/common/matchbrackets.js
+js/common/runmode.js
+js/common/cm_brain4it.js
+
+fonts/gidole.woff
+fonts/gidole.woff2
+fonts/lcd.ttf
+fonts/lcd.svg
+fonts/lcd.woff
+fonts/lcd.eot
+
+NETWORK:
+*
+
+FALLBACK:
+

@@ -1,0 +1,13 @@
+(Watch (watch expression value) result
+  where =>
+  (
+    expression => ("reference" 1 1)
+    value => ("object" 0 1)
+    result => ("object" 1 1)
+  )
+  examples =>
+  (
+    ((watch sensor_value 78) 79)
+  )
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

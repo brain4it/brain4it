@@ -1,0 +1,56 @@
+<html manifest="manager.appcache">
+  <head>
+    <title>Brain4it Manager</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, minimal-ui, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#f7f7f7">
+    <link rel="apple-touch-icon" sizes="180x180" href="favicons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicons/favicon-16x16.png">
+    <link rel="manifest" href="favicons/manifest.json">
+    <link rel="stylesheet" type="text/css" href="css/manager.css">
+    <link rel="stylesheet" type="text/css" href="css/web_dialog.css">
+    <script type="text/javascript" src="js/common/Brain4it.js" charset="utf-8"></script>
+    <script type="text/javascript" src="js/common/WebDialog.js" charset="utf-8"></script>
+    <script type="text/javascript" src="js/common/InputDialog.js" charset="utf-8"></script>
+    <script type="text/javascript" src="js/common/MessageDialog.js" charset="utf-8"></script>
+    <script type="text/javascript" src="js/common/ConfirmDialog.js" charset="utf-8"></script>
+    <script type="text/javascript" src="js/common/Utils.js" charset="utf-8"></script>
+    <script type="text/javascript" src="js/manager/Manager.js" charset="utf-8"></script>
+    <script type="text/javascript" src="js/manager/Tree.js" charset="utf-8"></script>
+    <script type="text/javascript" src="js/manager/TabbedPanel.js" charset="utf-8"></script>
+    <script type="text/javascript" src="js/manager/ToolBar.js" charset="utf-8"></script>
+    <script type="text/javascript" src="js/manager/ServerDialog.js" charset="utf-8"></script>
+    <script type="text/javascript" src="js/manager/ModuleDialog.js" charset="utf-8"></script>
+    <script type="text/javascript" src="js/manager/actions/AddServerAction.js" charset="utf-8"></script>
+    <script type="text/javascript" src="js/manager/actions/AddModuleAction.js" charset="utf-8"></script>
+    <script type="text/javascript" src="js/manager/actions/CreateModuleAction.js" charset="utf-8"></script>
+    <script type="text/javascript" src="js/manager/actions/DestroyModuleAction.js" charset="utf-8"></script>
+    <script type="text/javascript" src="js/manager/actions/EditAction.js" charset="utf-8"></script>
+    <script type="text/javascript" src="js/manager/actions/RemoveAction.js" charset="utf-8"></script>
+    <script type="text/javascript" src="js/manager/actions/ListModulesAction.js" charset="utf-8"></script>
+    <script type="text/javascript" src="js/manager/actions/OpenConsoleAction.js" charset="utf-8"></script>
+    <script type="text/javascript" src="js/manager/actions/OpenEditorAction.js" charset="utf-8"></script>
+    <script type="text/javascript" src="js/manager/actions/OpenDashboardAction.js" charset="utf-8"></script>
+  </head>
+  <body>
+    <div id="main">
+      <div id="header">
+        <div class="title">
+          <img src="images/brain4it.svg" alt="Brain4it" height="40"/>
+        </div>
+        <div id="slider"></div>
+        <div id="menu"></div>
+      </div>
+      <div id="config">
+        <div id="toolbar"></div>
+        <div id="workspace_label"></div>
+        <div id="tree"></div>        
+      </div>
+      <div id="content">
+      </div>
+    </div>
+  </body>
+</html>

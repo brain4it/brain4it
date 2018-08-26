@@ -1,0 +1,14 @@
+(MatchString (match-string str reg_exp) matches
+  where =>
+  (
+    str => ("string" 1 1)
+    reg_exp => ("string" 1 1)
+    matches => ("boolean" 1 1)
+  )
+  examples =>
+  (
+    ((match-string "Hello" ".*e.*") true)
+  )
+  related => (locate-string)
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

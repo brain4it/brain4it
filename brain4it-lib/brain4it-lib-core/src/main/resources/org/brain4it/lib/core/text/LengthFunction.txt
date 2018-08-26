@@ -1,0 +1,12 @@
+(Length (length str) result
+  where =>
+  (
+    str => ("string" 1 1)
+    result => ("number" 1 1)
+  )
+  examples =>
+  (
+    ((length "Brain4it") 8)
+  )
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

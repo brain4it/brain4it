@@ -1,0 +1,12 @@
+(Voices (voices)
+  (voice_name)
+  where =>
+  (
+    voice_name => ("string" 0 N)
+  )
+  examples =>
+  (
+    ((voices) ("kevin" "kevin16" "kevin16/sharp"))
+  )
+  bundle => "org.brain4it.lib.TtsLibrary"
+)

@@ -1,0 +1,12 @@
+(Abs (abs value) result
+  where =>
+  (
+    value => ("number" 1 1)
+    result => ("number" 1 1)
+  )
+  examples =>
+  (
+    ((abs -7.9) 7.9)
+  )
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

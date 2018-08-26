@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="appName">Brain4it Manager</string>
+  <string name="servers">Servidores</string>
+  <string name="actions">Acciones</string>
+  <string name="console">Consola</string>
+  <string name="execute">Ejecutar</string>
+  <string name="serverName">Nombre del servidor</string>
+  <string name="serverUrl">URL del servidor</string>
+  <string name="module">Módulo</string>
+  <string name="moduleName">Nombre del módulo</string>
+  <string name="accessKey">Clave de acceso</string>
+
+  <string name="preferences">Preferencias</string>
+  <string name="language">Idioma</string>
+  <string name="textSize">Tamaño del texto del editor</string>
+  <string name="indentSize">Tamaño de la indentación</string>
+  <string name="formatColumns">Columnas para ajustar el código</string>
+
+  <string name="addServer">Añadir servidor</string>
+  <string name="editServer">Editar servidor</string>
+  <string name="removeServer">Quitar servidor</string>
+  <string name="sortServers">Ordenar servidores</string>
+
+  <string name="listModules">Listar módulos</string>
+  <string name="addModule">Añadir módulo</string>
+  <string name="editModule">Editar módulo</string>
+  <string name="createModule">Crear módulo</string>
+  <string name="removeModule">Quitar módulo</string>
+  <string name="destroyModule">Destruir módulo</string>
+  <string name="importModule">Importar módulo</string>
+
+  <string name="showDashboard">Dashboard</string>
+  <string name="showConsole">Consola</string>
+  <string name="showEditor">Editor</string>
+
+  <string name="path">Ruta:</string>
+  <string name="ok">Ok</string>
+  <string name="modulesFound">%d módulos encontrados.</string>
+  <string name="confirmDestroyModule">Realmente quieres destruir el módulo %s?</string>
+  <string name="confirmDiscardChanges">Descartar cambios?</string>
+  <string name="yes">Si</string>
+  <string name="no">No</string>
+  <string name="cancel">Cancelar</string>
+  <string name="imp">Importar</string>
+
+  <string name="enterUrl">Introduce URL:</string>
+
+  <string name="loadSuccessfull">Cargado correctamente.</string>
+  <string name="saveSuccessfull">Guardado correctamente.</string>
+
+  <string name="threadDump">Volcado de threads</string>
+  <string name="exit">Salir</string>
+</resources>

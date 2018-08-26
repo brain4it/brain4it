@@ -1,0 +1,21 @@
+(Hnap (hnap connection operation value) result
+  where =>
+  (
+    connection => ((url username password) 1 1)
+    operation => ("string" 1 1)
+    value => ("object" 0 1)
+    url => ("string" 1 1)
+    username => ("string" 0 1)
+    password => ("string" 0 1)
+    result => ("object" 0 1)
+  )
+  examples =>
+  (
+    (
+      (hnap ("http://192.168.2.33/HNAP1" "admin" "111111") 
+       "getCurrentPowerConsumition")
+       3.5
+    )
+  )
+  bundle => "org.brain4it.lib.ManagementLibrary"
+)

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+  <TextView
+    android:id="@+id/serverPortLabel"
+    android:layout_width="match_parent" 
+    android:layout_height="wrap_content"
+    android:layout_margin="4dp"
+    android:text="@string/serverPort"  />
+  <EditText
+    android:id="@+id/serverPortInput"
+    android:layout_width="match_parent" 
+    android:layout_height="wrap_content"
+    android:inputType="number" />
+  <TextView
+    android:id="@+id/accessKeyLabel"
+    android:layout_width="match_parent" 
+    android:layout_height="wrap_content"
+    android:layout_margin="4dp"
+    android:text="@string/accessKey"  />
+  <EditText 
+    android:id="@+id/accessKeyInput"
+    android:layout_width="match_parent" 
+    android:layout_height="wrap_content" />
+  <TextView
+    android:id="@+id/restartLabel"
+    android:layout_width="match_parent" 
+    android:layout_height="wrap_content"
+    android:text="@string/restartNotice"
+    android:layout_margin="4dp"
+    android:textColor="#ff0000" />
+  <Button
+    android:id="@+id/serverOkButton"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="@string/ok"/>
+</LinearLayout>
+

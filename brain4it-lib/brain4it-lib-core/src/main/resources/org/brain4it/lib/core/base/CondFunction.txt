@@ -1,0 +1,27 @@
+(Cond (cond condition_actions) result
+  where =>
+  (
+    condition_actions => ((condition action) 0 N)
+    condition => ("boolean" 1 1)
+    action => ("object" 0 N)
+    result => ("object" 1 1)
+  )
+  examples =>
+  (
+    (
+      (do
+        (set a 1)
+        (set b 0)
+        (cond
+          ((= a 1) (-- b))
+          ((= a 2) (++ b))
+          (true (set b 0))
+        )
+        b
+      )
+      -1
+    )
+  )
+  related => (if)
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

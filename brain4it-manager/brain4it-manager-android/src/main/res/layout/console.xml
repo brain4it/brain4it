@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+  <LinearLayout android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="top">
+    <Button
+      android:id="@+id/parenthesis_button"
+      android:layout_width="0dp"
+      android:layout_height="match_parent"
+      android:layout_weight="0.125"
+      android:fontFamily="monospace"
+      android:textSize="13sp"
+      android:text="()" />
+    <Button
+      android:id="@+id/arrow_button"
+      android:layout_width="0dp"
+      android:layout_height="match_parent"
+      android:layout_weight="0.125"
+      android:fontFamily="monospace"
+      android:textSize="13sp"
+      android:text="=>" />
+    <Button
+      android:id="@+id/functions_button"
+      android:layout_width="0dp"
+      android:layout_height="match_parent"
+      android:layout_weight="0.125"
+      android:textSize="15sp"
+      android:textAllCaps="false" />
+    <Button
+      android:id="@+id/clear_button"
+      android:layout_width="0dp"
+      android:layout_height="match_parent"
+      android:textSize="15sp"
+      android:layout_weight="0.125" />
+    <Button
+      android:id="@+id/history_next_button"
+      android:layout_width="0dp"
+      android:layout_height="match_parent"
+      android:textSize="15sp"
+      android:layout_weight="0.125"/>
+    <Button
+      android:id="@+id/history_previous_button"
+      android:layout_width="0dp"
+      android:layout_height="match_parent"
+      android:textSize="15sp"
+      android:layout_weight="0.125"/>
+    <Button
+      android:id="@+id/execute_button"
+      android:layout_width="0dp"
+      android:layout_height="match_parent"
+      android:layout_weight="0.25"
+      android:textSize="15sp"
+      android:text="@string/execute"/>
+  </LinearLayout>
+  <org.brain4it.manager.android.view.CodeListView
+    android:id="@+id/output"
+    android:layout_width="match_parent" 
+    android:layout_height="0dp"
+    android:layout_weight="1"
+    android:background="#ffffffff"
+    android:textColor="#ff000000"
+    android:focusable="true"
+    android:scrollbars="vertical"
+    android:scrollbarThumbVertical="@drawable/scrollbar"
+    android:stackFromBottom="true"
+    android:gravity="bottom" />
+  <org.brain4it.manager.android.view.EditCode
+    android:id="@+id/input"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:scrollbars="vertical"
+    android:scrollbarThumbVertical="@drawable/scrollbar"
+    android:textCursorDrawable="@drawable/cursor"
+    android:inputType="textMultiLine|textNoSuggestions"
+    android:background="@drawable/console"
+    android:textColor="#ff000000"
+    android:fontFamily="monospace"
+    android:textSize="15sp"
+    android:paddingLeft="2dp"
+    android:paddingRight="2dp"
+    android:paddingTop="2dp"
+    android:paddingBottom="2dp"
+    android:gravity="top|left"
+    android:maxHeight="100dp" />
+</LinearLayout>
+

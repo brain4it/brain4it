@@ -1,0 +1,14 @@
+(Throw (throw exception) null
+  where =>
+  (
+    exception => ("object" 1 1)
+  )
+  examples =>
+  (
+    ((throw "InvalidNumber"))
+    ((throw "SensorFailed" "light-sensor-23"))
+    ((throw (list "InvalidData" data)))
+  )
+  related => (try)
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

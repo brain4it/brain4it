@@ -1,0 +1,28 @@
+(Eval (eval expression local_scope) result
+  where =>
+  (
+    expression => ("object" 1 1)
+    local_scope => ("list" 0 1)
+    result => ("object" 1 1)
+  )
+  examples => 
+  (
+    (
+      (eval (quote (+ 4 5))) 
+      9
+    )
+    (
+      (do
+        (set sum_code (list + 2 4))
+        (eval sum_code)
+      )
+      6
+    )
+    (
+      (eval (quote (+ x 2)) ("x" => 3))
+      5
+    )
+  )
+  related => (quote)
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

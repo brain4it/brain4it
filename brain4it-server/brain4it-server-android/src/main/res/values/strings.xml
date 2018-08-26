@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="appName">Brain4it Server</string>
+    <string name="start">Start</string>
+    <string name="stop">Stop</string>
+    <string name="starting">Starting...</string>
+    <string name="stopping">Stopping...</string>
+    <string name="serverPort">Server port (1024-65535)</string>
+    <string name="accessKey">Access key</string>
+    <string name="ok">Ok</string>
+    <string name="setup">Setup</string>
+    <string name="clear">Clear log</string>
+    <string name="threadDump">Thread dump</string>
+    <string name="restartNotice">Restart server to take effect.</string>
+</resources>

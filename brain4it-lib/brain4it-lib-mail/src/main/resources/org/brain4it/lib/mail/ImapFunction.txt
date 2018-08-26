@@ -1,0 +1,48 @@
+(Imap (imap "host" => host "port" => port "username" => username 
+  "password" => password "start" => start "end" => end "expunge" => expunge)
+  (message)
+  where =>
+  (
+    host => ("string" 1 1)
+    port => ("string" 0 1)
+    username => ("string" 1 1)
+    password => ("string" 1 1)
+    start => ("number" 0 1)
+    end => ("number" 0 1)
+    expunge => ("boolean" 0 1)
+    message => (
+     ("from" => from 
+      "subject" => subject 
+      "received" => received
+      "body" => body) 0 N)
+    from => ("string" 1 1)
+    subject => ("string" 1 1)
+    received => ("number" 1 1)
+    body => ("string" 1 1)
+  )
+  examples => 
+  (
+    (
+      (imap 
+        "host" => "imag.brain4it.org" 
+        "port" => 143
+        "username" => "demo"
+        "password" => "demo"
+      )
+      (
+        ("from" => "boss@brain4it.org"
+         "subject" => "Meeting"
+         "received" => 1508868595268
+         "body" => "See you later."
+        )
+        ("from" => "dog@brain4it.org"
+         "subject" => "Hungry"
+         "received" => 1508868594123
+         "body" => "I'm hungry..."
+        )
+      )
+    )
+  )
+  bundle => "org.brain4it.lib.MailLibrary"
+)
+ 

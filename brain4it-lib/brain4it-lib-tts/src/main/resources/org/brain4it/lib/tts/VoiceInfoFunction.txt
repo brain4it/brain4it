@@ -1,0 +1,46 @@
+(VoiceInfo (voice-info name)
+  ("name" => voice_name 
+   "description" => voice_description
+   "organization" => organization
+   "gender" => gender
+   "age" => age
+   "domain" => domain
+   "locale" => locale
+   "rate" => rate
+   "pitch" => pitch
+   "pitch-range" => pitch_range
+  )
+  where =>
+  (
+    name => ("string" 0 1)
+    voice_name => ("string" 1 1)
+    voice_description => ("string" 1 1)
+    organization => ("string" 1 1)
+    gender => ("string" 1 1)
+    age => ("string" 1 1)
+    domain => ("string" 1 1)
+    locale => ("string" 1 1)
+    rate => ("number" 1 1)
+    pitch => ("number" 1 1)
+    pitch_range => ("number" 1 1)
+  )
+  examples =>
+  (
+    (
+      (voice-info "kevin16")
+      (
+        "name" => "kevin16" 
+        "description" => "default 16-bit diphone voice" 
+        "organization" => "cmu" 
+        "gender" => "MALE" 
+        "age" => "YOUNGER_ADULT" 
+        "domain" => "general" 
+        "locale" => "en_US" 
+        "rate" => 150 
+        "pitch" => 100 
+        "pitch-range" => 11
+      )
+    )
+  )
+  bundle => "org.brain4it.lib.TtsLibrary"
+)

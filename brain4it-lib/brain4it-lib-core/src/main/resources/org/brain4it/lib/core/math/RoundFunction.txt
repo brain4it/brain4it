@@ -1,0 +1,15 @@
+(Round (round value) result
+  where =>
+  (
+    value => ("number" 1 1)
+    result => ("number" 1 1)
+  )
+  examples =>
+  (
+    ((round 7.8) 8)
+    ((round 7.5) 8)
+    ((round 7.4) 7)
+  )
+  related => (ceil floor)
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

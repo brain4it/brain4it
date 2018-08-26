@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="appName">Brain4it Manager</string>
+  <string name="servers">Servers</string>
+  <string name="actions">Actions</string>
+  <string name="console">Console</string>
+  <string name="execute">Execute</string>
+  <string name="serverName">Server name</string>
+  <string name="serverUrl">Server URL</string>
+  <string name="module">Module</string>
+  <string name="moduleName">Module name</string>
+  <string name="accessKey">Access key</string>
+
+  <string name="preferences">Preferences</string>
+  <string name="language">Language</string>
+  <string name="textSize">Editor text size</string>
+  <string name="indentSize">Indent size</string>
+  <string name="formatColumns">Columns to fit code</string>
+
+  <string name="addServer">Add server</string>
+  <string name="editServer">Edit server</string>
+  <string name="removeServer">Remove server</string>
+  <string name="sortServers">Sort servers</string>
+
+  <string name="listModules">List modules</string>
+  <string name="addModule">Add module</string>
+  <string name="editModule">Edit module</string>
+  <string name="createModule">Create module</string>
+  <string name="removeModule">Remove module</string>
+  <string name="destroyModule">Destroy module</string>
+  <string name="importModule">Import module</string>
+
+  <string name="showDashboard">Dashboard</string>
+  <string name="showConsole">Console</string>
+  <string name="showEditor">Editor</string>
+
+  <string name="path">Path:</string>
+  <string name="ok">Ok</string>
+  <string name="modulesFound">%d modules found.</string>
+  <string name="confirmDestroyModule">Do you really want to destroy the module %s?</string>
+  <string name="confirmDiscardChanges">Discard changes?</string>
+  <string name="yes">Yes</string>
+  <string name="no">No</string>
+  <string name="cancel">Cancel</string>
+  <string name="imp">Import</string>
+
+  <string name="enterUrl">Enter URL:</string>
+
+  <string name="loadSuccessfull">Load successfull.</string>
+  <string name="saveSuccessfull">Save successfull.</string>
+
+  <string name="threadDump">Thread dump</string>
+  <string name="exit">Exit</string>
+</resources>

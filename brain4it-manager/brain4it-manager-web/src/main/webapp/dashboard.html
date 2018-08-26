@@ -1,0 +1,58 @@
+<html manifest="dashboard.appcache">
+  <head>
+    <title>Brain4it Dashboard</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, minimal-ui, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#f7f7f7">
+    <link rel="apple-touch-icon" sizes="180x180" href="favicons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicons/favicon-16x16.png">
+    <link rel="manifest" href="favicons/manifest.json">
+    <link rel="stylesheet" type="text/css" href="css/web_dialog.css">
+    <link rel="stylesheet" type="text/css" href="css/toolbar.css">
+    <link rel="stylesheet" type="text/css" href="css/dashboard.css">
+    <script type="text/javascript" src="js/common/Brain4it.js" charset="utf-8"></script>
+    <script type="text/javascript" src="js/common/Utils.js" charset="utf-8"></script>
+    <script type="text/javascript" src="js/common/WebDialog.js" charset="utf-8"></script>
+    <script type="text/javascript" src="js/common/MessageDialog.js" charset="utf-8"></script>
+    <script type="text/javascript" src="js/dashboard/Dashboard.js" charset="utf-8"></script>
+    <script type="text/javascript" src="js/dashboard/Widget.js" charset="utf-8"></script>
+    <script type="text/javascript" src="js/dashboard/widgets/ButtonWidget.js" charset="utf-8"></script>
+    <script type="text/javascript" src="js/dashboard/widgets/DisplayWidget.js" charset="utf-8"></script>
+    <script type="text/javascript" src="js/dashboard/widgets/EditTextWidget.js" charset="utf-8"></script>
+    <script type="text/javascript" src="js/dashboard/widgets/GaugeWidget.js" charset="utf-8"></script>
+    <script type="text/javascript" src="js/dashboard/widgets/GraphWidget.js" charset="utf-8"></script>
+    <script type="text/javascript" src="js/dashboard/widgets/ImageWidget.js" charset="utf-8"></script>
+    <script type="text/javascript" src="js/dashboard/widgets/LedWidget.js" charset="utf-8"></script>
+    <script type="text/javascript" src="js/dashboard/widgets/RangeWidget.js" charset="utf-8"></script>
+    <script type="text/javascript" src="js/dashboard/widgets/SelectWidget.js" charset="utf-8"></script>
+    <script type="text/javascript" src="js/dashboard/widgets/StickWidget.js" charset="utf-8"></script>
+    <script type="text/javascript" src="js/dashboard/widgets/SwitchWidget.js" charset="utf-8"></script>
+    <script type="text/javascript">      
+      var dashboard;
+  
+      function init()
+      {
+        var params = getQueryParams();
+        var serverUrl = params["serverUrl"];
+        var module = params["module"];
+        var accessKey = params["accessKey"];
+        dashboard = new Brain4it.Dashboard(serverUrl, module, accessKey);
+        dashboard.init(document.body);
+      }
+      
+      function show()
+      {
+        dashboard.show();
+      }
+      function hide()
+      {
+        dashboard.hide();
+      }
+    </script>
+  </head>
+  <body onload="init()">
+  </body>
+</html>

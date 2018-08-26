@@ -1,0 +1,15 @@
+(ModuleLoad (module-load snapshot_name) result
+  where =>
+  (
+    snapshot_name => ("string" 0 1)
+    result => ("string" 1 1)
+  )
+  examples =>
+  (
+    ((module-load) "Module sample loaded.")
+    ((module-load "backup3") "Module sample loaded.")
+  )
+  related => (module-stop)
+  bundle => "org.brain4it.lib.ModuleLibrary"
+)
+

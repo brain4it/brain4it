@@ -1,0 +1,23 @@
+(Locate (locate lst elem_var condition from_index) result
+  where =>
+  (
+    lst => ("list" 1 1)
+    elem_var => ("reference" 1 1)
+    condition => ("object" 1 1)
+    from_index => ("number" 0 1)
+    result => ("number" 1 1)
+  )
+  examples => 
+  (
+    (
+      (locate (2 5 7) x (= x 5))
+      1
+    )
+    (
+      (locate (2 5 5) x (= x 5) 2)
+      2
+    )
+  )
+  related => (find)
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

@@ -1,0 +1,12 @@
+(ModuleInit (module-init) result
+  where =>
+  (
+    result => ("string" 1 1)
+  )
+  examples =>
+  (
+    ((module-init) "Module sample initialized.")
+  ) 
+  bundle => "org.brain4it.lib.ModuleLibrary"
+)
+

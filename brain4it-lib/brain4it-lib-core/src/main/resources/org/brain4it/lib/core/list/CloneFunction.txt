@@ -1,0 +1,20 @@
+(Clone (clone lst recursive) result
+  where =>
+  (
+    lst => ("list" 1 1)
+    recursive => ("boolean" 0 1)
+    result => ("list" 1 1)
+  )
+  examples =>
+  (
+    ((clone (1 2 (2 4))) (1 2 (2 4)))
+    (
+      (do 
+        (set fn (function (x) (* 2 x)))
+        (=== fn (clone fn true))
+      )
+      false
+    )
+  )
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

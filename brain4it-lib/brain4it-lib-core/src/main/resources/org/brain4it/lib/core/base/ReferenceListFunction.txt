@@ -1,0 +1,19 @@
+(ReferenceList (reference-list ref) result
+  where =>
+  (
+    ref => ("reference" 1 1)
+    result => ("list" 1 1)
+  )
+  exceptions =>
+  (
+    ("InvalidReference")
+  )
+  examples =>
+  (
+    ((reference-list alfa) ("alfa"))
+    ((reference-list persons/5/name) ("persons" 5 "name"))
+    ((reference-list /"Hello world"/2/msg) ("Hello world" 2 "msg"))
+  )
+  related => (reference)
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

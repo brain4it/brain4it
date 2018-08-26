@@ -1,0 +1,22 @@
+(Find (find lst elem_var condition) result
+  where =>
+  (
+    lst => ("list" 1 1)
+    elem_var => ("reference" 1 1)
+    condition => ("boolean" 1 1)
+    result => ("list" 1 1)
+  )
+  examples =>
+  (
+    (
+      (find (2 4 7) x (= (mod x 2) 0))
+      (2 4)
+    )
+    (
+      (find ("a" => 2 "b" => 3 4) x (= (mod x 2) 0)) 
+      ("a" => 2 4)
+    )
+  )
+  related => (locate)
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

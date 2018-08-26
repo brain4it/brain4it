@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.brain4it</groupId>
+    <artifactId>brain4it-lib</artifactId>
+    <version>1.0</version>
+  </parent>
+
+  <artifactId>brain4it-lib-vision</artifactId>
+  <packaging>jar</packaging>
+
+  <name>brain4it-lib-vision</name>
+  <description>brain4it vision library (based on boofcv)</description>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.brain4it</groupId>
+      <artifactId>brain4it-lib-core</artifactId>
+      <version>1.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.boofcv</groupId>
+      <artifactId>core</artifactId>
+      <version>0.26</version>
+    </dependency>
+    <dependency>
+      <groupId>org.boofcv</groupId>
+      <artifactId>feature</artifactId>
+      <version>0.26</version>
+    </dependency>
+    <dependency>
+      <groupId>org.boofcv</groupId>
+      <artifactId>recognition</artifactId>
+      <version>0.26</version>
+    </dependency>
+    <dependency>
+      <groupId>org.boofcv</groupId>
+      <artifactId>calibration</artifactId>
+      <version>0.26</version>
+    </dependency>
+    <dependency>
+      <groupId>com.github.sarxos</groupId>
+      <artifactId>webcam-capture</artifactId>
+      <version>0.3.12</version>
+    </dependency>
+    <dependency>
+      <groupId>com.github.sarxos</groupId>
+      <artifactId>webcam-capture-driver-ipcam</artifactId>
+      <version>0.3.12</version>
+    </dependency>
+    <dependency>
+      <groupId>com.github.sarxos</groupId>
+      <artifactId>webcam-capture-driver-v4l4j</artifactId>
+      <version>0.3.12</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.2.1</version>
+        <configuration>
+          <mainClass>org.brain4it.local.Console</mainClass>
+          <arguments>
+            <argument>Vision</argument>
+          </arguments>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>

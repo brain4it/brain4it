@@ -1,0 +1,47 @@
+<html manifest="console.appcache">
+  <head>
+    <title>Brain4it Console</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, minimal-ui, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#f7f7f7">
+    <link rel="apple-touch-icon" sizes="180x180" href="favicons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicons/favicon-16x16.png">
+    <link rel="manifest" href="favicons/manifest.json">
+    <link rel="stylesheet" type="text/css" href="css/codemirror.css">
+    <link rel="stylesheet" type="text/css" href="css/cm_brain4it.css">
+    <link rel="stylesheet" type="text/css" href="css/toolbar.css">
+    <link rel="stylesheet" type="text/css" href="css/console.css">
+    <script type="text/javascript" src="js/common/Brain4it.js" charset="utf-8"></script>
+    <script type="text/javascript" src="js/common/Utils.js" charset="utf-8"></script>
+    <script type="text/javascript" src="js/common/codemirror.js" charset="utf-8"></script>
+    <script type="text/javascript" src="js/common/matchbrackets.js" charset="utf-8"></script>
+    <script type="text/javascript" src="js/common/runmode.js" charset="utf-8"></script>
+    <script type="text/javascript" src="js/common/cm_brain4it.js" charset="utf-8"></script>
+    <script type="text/javascript" src="js/console/Console.js" charset="utf-8"></script>
+    <script type="text/javascript">
+
+      var brain4itConsole;
+      
+      function init()
+      {
+        var params = getQueryParams();
+        var serverUrl = params["serverUrl"];
+        var module = params["module"];
+        var accessKey = params["accessKey"];
+        brain4itConsole = new Brain4it.Console(serverUrl, module, accessKey);
+        brain4itConsole.init(document.body, 
+          {lineNumbers: false, styleActiveLine: true, matchBrackets: true});
+      }
+      
+      function show()
+      {
+        brain4itConsole.show();
+      }
+    </script>
+  </head>
+  <body onload="init()">
+  </body>
+</html>

@@ -1,0 +1,16 @@
+(ModuleSave (module-save snapshot_name backup) result
+  where =>
+  (
+    snapshot_name => ("string" 0 1)
+    backup => ("boolean" 0 1)
+    result => ("string" 1 1)
+  )
+  examples =>
+  (
+    ((module-save) "Module sample saved.")
+    ((module-save "backup3") "Module sample saved.")
+  )
+  related => (module-stop)
+  bundle => "org.brain4it.lib.ModuleLibrary"
+)
+

@@ -1,0 +1,15 @@
+(Equals (= value) result
+  where =>
+  (
+    value => ("object" 0 N)
+    result => ("boolean" 1 1)
+  )
+  examples =>
+  (
+    ((= 3 3.0 (+ 2 1)) true)
+    ((= 3 3.0 1) false)
+    ((= (1 2) (list 1 2)) true)
+    ((= (1 2) ("a" => 1 2)) true)
+  )
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

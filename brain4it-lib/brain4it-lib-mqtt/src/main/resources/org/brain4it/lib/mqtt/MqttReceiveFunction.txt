@@ -1,0 +1,18 @@
+(MqttReceive (mqtt-receive connection_id wait_millis)
+  message
+  where =>
+  (
+    connection_id => ("string" 1 1)
+    wait_millis => ("number" 0 1)
+    message => ((topic payload) 0 1)
+    topic => ("string" 1 1)
+    payload => ("string" 1 1)
+  )
+  examples =>
+  (
+    ((mqtt-receive conn 2000) ("foo" "Hello World!")) 
+  )
+  related => (mqtt-subscribe)
+  bundle => "org.brain4it.lib.MqttLibrary"
+)
+

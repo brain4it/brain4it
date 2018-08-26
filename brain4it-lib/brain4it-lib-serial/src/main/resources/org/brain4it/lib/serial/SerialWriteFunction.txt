@@ -1,0 +1,16 @@
+(SerialWrite (serial-write port data "charset" => charset) num_sent
+  where =>
+  (
+    port => ("string" 1 1)
+    data => ("object" 1 1)
+    charset => ("strint" 0 1)
+    num_sent => ("number" 1 1)
+  )
+  examples =>
+  (
+    ((serial-write "tty.usb1" 78) 1) 
+    ((serial-write port (127 22 87 0)) 4) 
+    ((serial-write port "Hello") 5)
+  )
+  bundle => "org.brain4it.lib.SerialLibrary"
+)

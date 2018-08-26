@@ -1,0 +1,19 @@
+(Gps (gps operation listener) null
+  where =>
+  (
+    operation => ("string" 1 1)
+    listener => ("function" 0 1)
+  )
+  examples =>
+  (
+    (
+      (gps "register" (function (l) (set location l)))
+      "registered"
+    )
+    (
+      (gps "unregister")
+      "unregistered"
+    )
+  )
+  bundle => "org.brain4it.lib.AndroidLibrary"
+)

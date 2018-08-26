@@ -1,0 +1,24 @@
+(TypeOf (type-of expression) result
+  where =>
+  (
+    expression => ("object" 1 1)
+    result => ("string" 1 1)
+  )
+  examples =>
+  (
+    (
+      (type-of "Brain4it")
+      "string"
+    )
+    (
+      (type-of 45)
+      "number"
+    )
+    (
+      (type-of (quote alfa))
+      "reference"
+    )
+  )
+  related => (subtype-of)
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

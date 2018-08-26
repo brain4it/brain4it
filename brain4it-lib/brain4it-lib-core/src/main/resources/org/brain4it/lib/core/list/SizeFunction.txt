@@ -1,0 +1,12 @@
+(Size (size lst) result
+  where =>
+  (
+    lst => ("list" 1 1)
+    result => ("number" 1 1)
+  )
+  examples =>
+  (
+    ((size (1 2 3)) 3)
+  )
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

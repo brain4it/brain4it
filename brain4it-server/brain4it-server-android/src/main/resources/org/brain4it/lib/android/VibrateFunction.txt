@@ -1,0 +1,12 @@
+(Vibrate (vibrate millis) null
+  where =>
+  (
+    millis => ("number" 0 1)
+  )
+  examples =>
+  (
+    ((vibrate) null)
+    ((vibrate 100) null)
+  )
+  bundle => "org.brain4it.lib.AndroidLibrary"
+)

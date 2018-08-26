@@ -1,0 +1,14 @@
+(NameIndex (name-index lst name) index
+  where =>
+  (
+    lst => ("list" 1 1)
+    name => ("string" 1 1)
+    index => ("number" 1 1)
+  )
+  examples =>
+  (
+    ((name-index ("a" => 4 "b" => 6) "b") 1)
+  )
+  related => (names)
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

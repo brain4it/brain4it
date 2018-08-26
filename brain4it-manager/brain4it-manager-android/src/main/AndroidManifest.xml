@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="org.brain4it.manager.android"
+          android:versionCode="1"
+          android:versionName="1.0">
+  <uses-sdk android:minSdkVersion="3" android:targetSdkVersion="16" />
+  <uses-permission android:name="android.permission.INTERNET" />
+  <uses-permission android:name="android.permission.VIBRATE"/>
+  <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+  <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+  
+  <application android:label="@string/appName" 
+               android:name=".ManagerApplication"
+               android:icon="@drawable/logo"
+               android:theme="@style/Brain4itTheme">
+    <activity android:name=".ServerListActivity"
+              android:launchMode="singleTop"
+              android:label="@string/appName">
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN" />
+        <category android:name="android.intent.category.LAUNCHER" />
+      </intent-filter>
+    </activity>
+    <activity android:name=".PreferencesActivity"
+              android:launchMode="standard">
+    </activity>
+    <activity android:name=".ServerSetupActivity"
+              android:launchMode="standard">
+    </activity>
+    <activity android:name=".ModuleListActivity"
+              android:launchMode="standard">
+    </activity>
+    <activity android:name=".ModuleSetupActivity"
+              android:launchMode="standard">
+    </activity>
+    <activity android:name=".DashboardActivity"
+              android:launchMode="standard"
+              android:windowSoftInputMode="adjustResize"
+              android:configChanges="orientation|screenSize">
+    </activity>
+    <activity android:name=".ConsoleActivity"
+              android:launchMode="standard"
+              android:screenOrientation="portrait">
+    </activity>
+    <activity android:name=".EditorActivity"
+              android:launchMode="standard"
+              android:screenOrientation="portrait">
+    </activity>
+  </application>
+</manifest> 

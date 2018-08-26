@@ -1,0 +1,13 @@
+(Sqrt (sqrt value) result
+  where =>
+  (
+    value => ("number" 1 1)
+    result => ("number" 1 1)
+  )
+  examples =>
+  (
+    ((sqrt 2) 1.4142135623730951)
+  )
+  related => (pow)
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

@@ -1,0 +1,19 @@
+(Parse (parse str format) result
+  where =>
+  (
+    str => ("string" 1 1)
+    format => ("string" 0 1)
+    result => ("object" 1 1)
+  )
+  exceptions => 
+  (
+    ("ParseException")
+  )
+  examples => 
+  (
+    ((parse "(1 2 3)") (1 2 3))
+    ((parse "[2, 4, 6]" "json") (2 4 6))
+  )
+  related => (string)
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

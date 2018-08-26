@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+  <item android:id="@+id/createModule"
+        android:title="@string/createModule"
+        android:icon="@drawable/item_create_module"
+        android:showAsAction="ifRoom" />
+  <item android:id="@+id/addModule"
+        android:title="@string/addModule"
+        android:icon="@drawable/item_add_module"
+        android:showAsAction="ifRoom" />
+  <item android:id="@+id/listModules"
+        android:title="@string/listModules"
+        android:icon="@drawable/item_list_modules"
+        android:showAsAction="ifRoom" />
+</menu>

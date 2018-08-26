@@ -1,0 +1,20 @@
+(Sort (sort lst comparator) result
+  where =>
+  (
+    lst => ("list" 1 1)
+    comparator => ("function" 0 1)
+    result => ("list" 1 1)
+  )
+  examples => 
+  (
+    (
+      (sort (7 4 6)) 
+      (4 6 7)
+    )
+    (
+      (sort ((7) (4) (2)) (function (a b) (- (first a) (first b))))
+      ((2) (4) (7))
+    )
+  )
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

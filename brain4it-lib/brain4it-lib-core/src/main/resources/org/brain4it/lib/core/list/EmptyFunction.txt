@@ -1,0 +1,13 @@
+(Empty (empty lst) result
+  where =>
+  (
+    lst => ("list" 1 1)
+    result => ("boolean" 1 1)
+  )
+  examples =>
+  (
+    ((empty (1 2 4)) false)
+    ((empty ()) true)
+  )
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

@@ -1,0 +1,12 @@
+(Delay (delay microseconds) result
+  where =>
+  (
+    microseconds => ("number" 1 1)
+    result => ("number" 1 1)
+  )
+  examples =>
+  (
+    ((delay 500) 500)
+  )
+  bundle => "org.brain4it.lib.RaspberryPiLibrary"
+)

@@ -1,0 +1,31 @@
+(String (string expression 
+   "pattern" => pattern 
+   "locale" => locale
+   "radix" => radix 
+   "unsigned" => unsigned
+   "escape" => escape
+   "format" => format) 
+  result
+  where =>
+  (
+    expression => ("object" 1 1)
+    pattern => ("string" 0 1)
+    locale => ("string" 0 1)
+    radix => ("number" 0 1)
+    unsigned => ("boolean" 0 1)
+    escape => ("boolean" 0 1)
+    format => ("string" 0 1)
+    result => ("string" 1 1)
+  )
+  examples =>
+  (
+    ((string (+ 4 5)) "9")
+    ((string 5.3429 pattern => "0.00" locale => "es") "5,34")
+    ((string (1 2 3) format => "json") "[1,2,3]")
+    ((string 23 radix => 16) 17)
+    ((string "Hello" escape => true) "\"Hello\"")
+    ((string 225 pattern => "unicode") "á")
+  )
+  related => (boolean number reference list)
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

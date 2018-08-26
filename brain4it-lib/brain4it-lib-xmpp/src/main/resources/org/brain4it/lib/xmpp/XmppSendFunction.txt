@@ -1,0 +1,16 @@
+(XmppSend (xmpp-send connection_id participant message)
+  bytes_sent
+  where =>
+  (
+    connection_id => ("string" 1 1)
+    participant => ("string" 1 1)
+    message => ("string" 1 1)
+    bytes_sent => ("number" 1 1)
+  )
+  examples =>
+  (
+    ((xmpp-send conn "realor@suchat.org" "Hello!") 6) 
+  )
+  bundle => "org.brain4it.lib.XmppLibrary"
+)
+

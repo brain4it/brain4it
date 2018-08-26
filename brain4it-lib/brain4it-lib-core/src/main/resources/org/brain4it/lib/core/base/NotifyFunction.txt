@@ -1,0 +1,12 @@
+(Notify (notify monitor) null
+  where =>
+  (
+    monitor => ("object" 1 1)
+  )
+  examples =>
+  (
+    ((notify lock))
+  )
+  related => (sync wait)
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

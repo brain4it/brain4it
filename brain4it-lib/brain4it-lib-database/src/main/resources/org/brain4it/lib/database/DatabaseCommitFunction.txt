@@ -1,0 +1,19 @@
+(DatabaseCommit (db-commit connection_id)
+  committed
+  where =>
+  (
+    connection_id => ("string" 1 1)
+    committed => ("boolean" 1 1)
+  )
+  exceptions => 
+  (
+    ("SQLException")
+  ) 
+  examples =>
+  (
+    ((db-commit conn) true) 
+  )
+  related => (db-rollback)
+  bundle => "org.brain4it.lib.DatabaseLibrary"
+)
+

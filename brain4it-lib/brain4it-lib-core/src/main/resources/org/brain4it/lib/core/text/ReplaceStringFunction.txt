@@ -1,0 +1,14 @@
+(ReplaceString (replace-string str reg_exp replace) result
+  where =>
+  (
+    str => ("string" 1 1)
+    reg_exp => ("string" 1 1)
+    replace => ("boolean" 1 1)
+    result => ("string" 1 1)
+  )
+  examples =>
+  (
+    ((replace-string "Hello" "ll" "r") "Hero")
+  )
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

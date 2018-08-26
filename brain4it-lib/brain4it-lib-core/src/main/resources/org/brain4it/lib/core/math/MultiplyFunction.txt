@@ -1,0 +1,13 @@
+(Multiply (* value) result
+  where =>
+  (
+    value => ("number" 0 N)
+    result => ("number" 1 1)
+  )
+  examples =>
+  (
+    ((* 2 4 5) 40)
+  )
+  related => (/ div)
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

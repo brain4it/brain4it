@@ -1,0 +1,11 @@
+(ModuleStart (module-start) result
+  where =>
+  (
+    result => ("string" 1 1)
+  )
+  examples =>
+  (
+    ((module-start) "Module facility started.")
+  )
+  bundle => "org.brain4it.lib.ModuleLibrary"
+)

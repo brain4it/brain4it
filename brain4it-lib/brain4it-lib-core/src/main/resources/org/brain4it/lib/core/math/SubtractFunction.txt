@@ -1,0 +1,15 @@
+(Subtract (- value1 value2) result
+  where =>
+  (
+    value1 => ("number" 1 1)
+    value2 => ("number" 0 1)
+    result => ("number" 1 1)
+  )
+  examples =>
+  (
+    ((- 10 2) 8)
+    ((- 5) -5)
+  )
+  related => (+)
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

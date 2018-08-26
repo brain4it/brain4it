@@ -1,0 +1,11 @@
+(AndroidNotify (android-notify message) message
+  where =>
+  (
+    message => ("string" 1 1)
+  )
+  examples =>
+  (
+    ((android-notify "Hello world!") "Hello world!")
+  )
+  bundle => "org.brain4it.lib.AndroidLibrary"
+)

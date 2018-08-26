@@ -1,0 +1,13 @@
+(Wait (wait monitor milliseconds) null
+  where =>
+  (
+    monitor => ("reference" 1 1)
+    milliseconds => ("number" 0 1)
+  )
+  examples =>
+  (
+    ((sync lock (while data (process_data data) (wait lock))))
+  )
+  related => (sync notify)
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

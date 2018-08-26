@@ -1,0 +1,14 @@
+(SubtypeOf (subtype-of expression) result
+  where =>
+  (
+    expression => ("object" 1 1)
+    result => ("string" 1 1)
+  )
+  examples =>
+  (
+    ((subtype-of 7.4) "double")
+    ((subtype-of sin) "function-reference")
+  )
+  related => (type-of)
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

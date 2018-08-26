@@ -1,0 +1,12 @@
+(Beep (beep volume) null
+  where =>
+  (
+    volume => ("number" 0 1)
+  )
+  examples =>
+  (
+    ((beep) null)
+    ((beep 40) null)
+  )
+  bundle => "org.brain4it.lib.AndroidLibrary"
+)

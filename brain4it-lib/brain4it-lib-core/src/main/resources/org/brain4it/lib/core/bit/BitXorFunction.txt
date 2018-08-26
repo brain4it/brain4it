@@ -1,0 +1,13 @@
+(BitXor (bit-xor int_value) result
+  where =>
+  (
+    int_value => ("number" 0 N)
+    result => ("number" 1 1)
+  )
+  examples =>
+  (
+    ((bit-xor 0x0f0 0x00) 240)
+  )
+  related => (bit-not bit-and bit-or)
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

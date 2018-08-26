@@ -1,0 +1,12 @@
+(Random (random max_value) result
+  where =>
+  (
+    max_value => ("number" 0 1)
+    result => ("number" 1 1)
+  )
+  examples =>
+  (
+    ((random 10) 8.836184088394907)
+  )
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

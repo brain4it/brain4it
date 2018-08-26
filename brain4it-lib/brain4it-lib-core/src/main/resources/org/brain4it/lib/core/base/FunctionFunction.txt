@@ -1,0 +1,14 @@
+(Function (function (parameter) action) result
+  where =>
+  (
+    parameter => ("reference" 0 N)
+    action => ("object" 0 N)
+    result => ("object" 1 1)
+  )
+  examples => 
+  (
+    ((function (x y) (+ x y)))
+  )
+  related => (call functions)
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

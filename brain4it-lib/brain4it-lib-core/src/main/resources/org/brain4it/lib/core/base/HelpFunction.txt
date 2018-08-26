@@ -1,0 +1,14 @@
+(Help (help func "format" => format "language" => language) result
+  where =>
+  (
+    func => ("reference" 1 1)
+    format => ("string" 1 1)
+    language => ("string" 1 1)
+    result => ("object" 1 1)
+  )
+  examples =>
+  (
+    ((help sin))
+  )
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

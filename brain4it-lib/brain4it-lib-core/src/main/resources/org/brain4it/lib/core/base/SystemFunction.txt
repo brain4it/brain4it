@@ -1,0 +1,14 @@
+(System (system command) 
+  (exit_code output)
+  where =>
+  (
+    command => ("string" 1 1)
+    exit_code => ("number" 1 1)
+    output => ("string" 0 N)
+  )
+  examples =>
+  (
+    ((system "ls -la") (0 "doc.txt 533" "work.xls 1235"))
+  )
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

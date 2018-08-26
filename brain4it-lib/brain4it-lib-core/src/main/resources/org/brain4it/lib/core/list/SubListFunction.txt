@@ -1,0 +1,15 @@
+(Sublist (sublist lst from_index to_index) result
+  where =>
+  (
+    lst => ("list" 1 1)
+    from_index => ("number" 1 1)
+    to_index => ("number" 0 1)
+    result => ("list" 1 1)
+  )
+  examples => 
+  (
+    ((sublist (1 2 3 4 5) 2) (3 4 5))
+    ((sublist (1 2 3 4 5) 2 4) (3 4))
+  )
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

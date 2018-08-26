@@ -1,0 +1,13 @@
+(Atan (atan value) angle_rad
+  where =>
+  (
+    value => ("number" 1 1)
+    angle_rad => ("number" 1 1)
+  )
+  examples =>
+  (
+    ((atan 0.5) 0.4636476090008061)
+  )
+  related => (tan sin cos)
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

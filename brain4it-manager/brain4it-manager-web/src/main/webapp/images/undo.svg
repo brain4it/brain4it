@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   height="20"
+   version="1.1"
+   viewBox="0 0 20 20"
+   width="20"
+   id="svg9"
+   sodipodi:docname="undo.svg"
+   inkscape:version="0.92.2 5c3e80d, 2017-08-06"
+   inkscape:export-filename="/Users/realor/Desktop/undo.png"
+   inkscape:export-xdpi="86.248993"
+   inkscape:export-ydpi="86.248993">
+  <metadata
+     id="metadata13">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="640"
+     inkscape:window-height="480"
+     id="namedview11"
+     showgrid="true"
+     inkscape:snap-global="false"
+     inkscape:zoom="21.610951"
+     inkscape:cx="11.135637"
+     inkscape:cy="10.719829"
+     inkscape:current-layer="Group">
+    <inkscape:grid
+       type="xygrid"
+       id="grid820" />
+  </sodipodi:namedview>
+  <defs
+     id="defs4" />
+  <g
+     id="Icons with numbers"
+     style="fill:none;fill-rule:evenodd;stroke:none;stroke-width:1"
+     transform="translate(0,4)">
+    <g
+       id="Group"
+       transform="translate(-384,-144)"
+       style="fill:#000000">
+      <path
+         d="m 386.25436,151.22325 c 0,4.30309 3.48832,7.79142 7.79139,7.79142 4.30309,0 7.7914,-3.48833 7.7914,-7.79142 0,-4.10142 -3.16905,-7.46267 -7.19205,-7.76868 v 2.40754 c 2.69696,0.29811 4.7947,2.58465 4.7947,5.36114 0,2.97907 -2.41501,5.39404 -5.39405,5.39404 -2.97904,0 -5.39404,-2.41497 -5.39404,-5.39404 m 1.19867,-6.59272 4.79472,3.59605 v -7.19207 z"
+         id="Shape"
+         inkscape:connector-curvature="0"
+         sodipodi:nodetypes="cssccssccccc"
+         style="stroke-width:1.19867718;fill:#666666;fill-opacity:1" />
+    </g>
+  </g>
+</svg>

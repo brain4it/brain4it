@@ -1,0 +1,11 @@
+(Sleep (sleep milliseconds) null
+  where =>
+  (
+    milliseconds => ("number" 1 1)
+  )
+  examples =>
+  (
+    ((sleep 1000)) 
+  )
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

@@ -1,0 +1,14 @@
+(Split (split str reg_exp) (part)
+  where =>
+  (
+    str => ("string" 1 1)
+    reg_exp => ("list" 0 1)
+    part => ("string" 0 N)
+  )
+  examples =>
+  (
+    ((split "My name is HAL") ("My" "name" "is" "HAL"))
+    ((split "1,2,3" "\\,") ("1" "2" "3"))
+  )
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

@@ -1,0 +1,15 @@
+(AudioPwm (audio-pwm volume period left_pulse right_pulse) null
+  where =>
+  (
+    volume => ("number" 0 1)
+    period => ("number" 0 1)
+    left_pulse => ("number" 0 1)
+    right_pulse => ("number" 0 1)
+  )
+  examples => 
+  (
+    ((audio-pwm 100 16 1.5 1.6) null)
+    ((audio-pwm 0) null)
+  )
+  bundle => "org.brain4it.lib.AndroidLibrary"
+)

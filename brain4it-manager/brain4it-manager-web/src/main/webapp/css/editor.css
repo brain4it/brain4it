@@ -1,0 +1,78 @@
+/*
+    Created on : 05-abr-2015, 20:02:41
+    Author     : realor
+*/
+
+@font-face 
+{
+  font-family: 'gidoleregular';
+  src: url('../fonts/gidole.woff2') format('woff2'),
+       url('../fonts/gidole.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+body
+{
+  font-family: 'gidoleregular';  
+  font-size: 14px;
+  position:absolute;
+  top:0;
+  bottom:0;
+  left:0;
+  right:0;
+  margin:0;
+  overflow: hidden;
+}
+
+.editor
+{
+  position:absolute;
+  top:0;
+  bottom:0;
+  left:0;
+  right:0;
+}
+
+.editor_body
+{
+  position: absolute;
+  top: 31px;
+  left:0;
+  right:0;
+  bottom:0;
+  font-family: Arial;
+  font-size: 14px;
+  background-color: white;
+}
+
+.toolbar .load
+{
+  background-image: url(../images/load.svg);
+}
+
+.toolbar .save
+{
+  background-image: url(../images/save.svg);
+}
+
+.editor_body .path_name
+{
+  position:absolute;
+  top: 0px;
+  left: 0;
+  right:0;
+  height: 20px;
+  line-height: 20px;
+  margin-left: 4px;
+}
+
+.editor_body .text_area
+{
+  position:absolute;
+  top: 21px;
+  left:0;
+  right:0;
+  bottom:0;
+}
+

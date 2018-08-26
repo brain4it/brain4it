@@ -1,0 +1,38 @@
+(DatabaseExecute (db-execute connection_id sql 
+  "parameters" => parameters 
+  "max-rows" => max_rows)
+  result
+  where =>
+  (
+    connection_id => ("string" 1 1)
+    sql => ("string" 1 1)
+    parameters => ("list" 0 1)
+    max_rows => ("number" 0 1)
+    result => ("object" 1 1)
+  )
+  exceptions => 
+  (
+    ("SQLException")
+  )
+  examples =>
+  (
+    (
+      (db-execute conn "select * from dual") (("DUMMY" => "X"))
+    )
+    (
+      (db-execute conn "update emp set salary = salary * {factor}" 
+        "parameters" => ("factor" => 1.2))
+      341
+    )
+    (
+      (db-execute conn "select * from emp where name = {emp}" 
+       "parameters" => ("emp" => "JOHN") "max-rows" => 2)
+      (
+        ("EMP_ID" => "23" "NAME" => "JOHN" "SURNAME" => "CONNOR")
+        ("EMP_ID" => "36" "NAME" => "JOHN" "SURNAME" => "WALKER")
+      )
+    )
+  )
+  bundle => "org.brain4it.lib.DatabaseLibrary"
+)
+

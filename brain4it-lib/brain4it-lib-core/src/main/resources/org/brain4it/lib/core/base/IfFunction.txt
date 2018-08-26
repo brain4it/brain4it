@@ -1,0 +1,16 @@
+(If (if condition action_when_true action_when_false) result
+  where =>
+  (
+    condition => ("boolean" 1 1)
+    action_when_true => ("object" 1 1)
+    action_when_false => ("object" 0 1)
+    result => ("object" 1 1)
+  )
+  examples =>
+  (
+    ((if (= 1 1) 23) 23)
+    ((if (> 1 2) "GREATER" "LESS") "LESS")
+  )
+  related => (cond)
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

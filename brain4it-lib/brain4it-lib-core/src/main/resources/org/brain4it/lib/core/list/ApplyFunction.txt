@@ -1,0 +1,21 @@
+(Apply (apply lst elem_var expression) result
+  where =>
+  (
+    lst => ("list" 1 1)
+    elem_var => ("reference" 1 1)
+    expression => ("object" 1 1)
+    result => ("list" 1 1)
+  )
+  examples =>
+  (
+    (
+      (apply (1 2 3) x (* 2 x))
+      (2 4 6)
+    )
+    (
+      (apply ("a" => 2 3 "b" => 7) x (* x x))
+      ("a" => 4 9 "b" => 49)
+    )
+  )
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

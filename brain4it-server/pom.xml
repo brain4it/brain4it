@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>org.brain4it</groupId>
+  <artifactId>brain4it-server</artifactId>
+  <version>1.0</version>
+  <packaging>pom</packaging>
+
+  <parent>
+    <groupId>org.brain4it</groupId>
+    <artifactId>brain4it-parent-pom</artifactId>
+    <version>1.0</version>
+  </parent>
+
+  <name>brain4it-server</name>
+  <description>brain4it server pom</description>
+
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.12</version>			
+    </dependency>
+  </dependencies>
+
+  <modules>
+    <module>brain4it-server-common</module>
+    <module>brain4it-server-standalone</module>
+    <module>brain4it-server-swing</module>
+    <module>brain4it-server-raspberrypi</module>
+    <module>brain4it-server-web</module>
+    <module>brain4it-server-android</module>
+  </modules>
+
+</project>

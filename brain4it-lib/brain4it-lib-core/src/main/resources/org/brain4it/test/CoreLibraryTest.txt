@@ -1,0 +1,630 @@
+(do
+
+  (### "****** Base functions ******")
+
+  (### assert)
+  (assert (= (+ 1 1) (- 3 1)))
+  (assert (= (* 2 2) 4) "Not equals")
+  (assert true)
+  (try 
+    (do 
+      (assert false) 
+      (throw "AssertError")
+    )
+    (ex 
+     "AssertError" => (throw ex) 
+     "AssertFailed" => null
+    )
+  )
+
+  (### boolean)
+  (assert (= (boolean "true") true))
+  (assert (= (boolean "false") false))
+  (assert (= (boolean null) false) "null must evaluate to false")
+  (assert (= (boolean (list)) false) "Empty list must evaluate to false")
+  (assert (= (boolean 0) false) "Zero must evaluate to false")
+  (assert (= (boolean (+ 1 (random 10))) true) "Non zero number must evaluate to true")
+
+  (### call)
+  (assert (= (call sin 0.5) 0.479425538604203))
+  (do (set f sin) (assert (= (call f 0.5) 0.479425538604203)))
+  (assert (= (call (function (x) x) 3) 3))
+
+  (### comment)
+  (assert (= null (### (+ 4 5))))
+
+  (### cond)
+  (set a 3)
+  (assert
+    (=
+      (cond
+        ((= a 1) "A")
+        ((= a 2) "B")
+        ((= a 3) "C")
+        ((= a 4) "D")
+        (true "E")
+      )
+      "C"
+    )
+  )
+
+  (### delete)
+  (do (set a 89) (delete a) (assert (not (exists a))))
+  (do 
+    (set john (sex => "Male" age => 50))
+    (assert (delete john/sex))
+    (assert (not (exists john/sex)))
+  )
+
+  (### do)
+  (assert (= (do (set a 0) (++ a) (++ a)) 2))
+  (assert (= (do) null))
+
+  (### eval)
+  (assert (= 3 (eval (quote (+ 2 1)))))
+  (assert (= 5 (eval 5)))
+  (assert (= "hello" (eval "hello")))
+  (assert (= (eval (quote (+ x 4)) ("x" => 9)) 13))
+
+  (### executors)
+  (assert (= (size (executors)) 0))
+
+  (### exists)
+  (assert (not (exists alfa23)))
+  (assert (not (exists alfa23/delta/gamma)))
+  (do (set a 0) (assert (exists a)))
+  (do (delete a) (assert (not (exists a))))
+  (do 
+    (set lst (1 2 name => "John")) 
+    (assert (exists lst/0))
+    (assert (exists lst/1))
+    (assert (exists lst/2))
+    (assert (not (exists lst/3)))
+    (assert (exists lst/name))
+  )
+
+  (### for)
+  (assert (= (for (set i 0) (< i 10) (++ i) i) 9))
+
+  (### function)
+  (do 
+    (set test (function (x) (* 2 x)))
+    (assert (= (test 4) 8))
+    (assert (= (test (+ 1 2)) 6))
+    (assert (= (call test (+ 1 2)) 6))
+
+    (set test (function (x y) (+ x y)))
+    (assert (= (test 4 (+ 1 2)) 7))
+    (assert (= (test (+ 1 2) 4) 7))
+    (assert (= (test (+ 1 2) (* 2 3)) 9))
+    (assert (= (test (+ 1 2)) 3))
+    (assert (= (call test (+ 1 2) 1) 4))
+
+    (set test (function (x y "m" "n") (+ x y m n)))
+    (assert (= (test 4) 4))
+    (assert (= (test 4 (+ 1 1) 3) 6))
+    (assert (= (test 4 (+ 1 1) z => 3) 6))
+    (assert (= (test 4 (+ 1 1) m => 3) 9))
+    (assert (= (test 4 (+ 1 1) n => 3) 9))
+    (assert (= (test 4 (+ 1 1) m => 3 n => 1) 10))
+    (assert (= (call test 4 (+ 1 1) m => 3 n => 1) 10))
+
+    (set test (function (str "trimmed" "upcase" => up)
+       (if up (set str (upcase str)))
+       (if trimmed (set str (trim str)))
+       str)
+    )
+    (assert (= (test "hello") "hello"))
+    (assert (= (test "hello " trimmed => true) "hello"))
+    (assert (= (test " hello " trimmed => true) "hello"))
+    (assert (= (test " hello " upcase => true) " HELLO "))
+    (assert (= (test " hello " trimmed => true upcase => true) "HELLO"))
+  )
+
+  (### functions)
+  (assert (functions))
+  (assert (= 1 (size (functions "while"))))
+
+  (### global-scope)
+  (do (set a 0) (assert (global-scope)))
+
+  (### help)
+  (assert (= (type-of (help sin)) "string"))
+  (assert (= (type-of (help sin)) format => "string"))
+  (assert (help sin format => "list"))
+  (assert (help sin format => "list" language => "en"))
+
+  (### if)
+  (assert (if (= 1 1) 1 0))
+  (assert (= (if false "ON" "OFF") "OFF"))
+  (assert (= (if (= 2 2) "done") "done"))
+  (assert (= (if (= 2 3) "done") null))
+
+  (### kill)
+  (do (spawn (while true)) (sleep 1000) (assert (kill)))
+
+  (### local)
+  (do
+    (set y 23) 
+    (call (function (x) (local y) (set y x)) 88) 
+    (assert (= y 23))
+  )
+
+  (### local-scope)
+  (do (local x) (set x 0) (assert (local-scope)))
+  
+  (### notify)
+  (do (set monitor "mon01") (notify monitor))
+
+  (### number)
+  (assert (= 23 (number "23")))
+  (assert (= 10 (number "1010" radix => 2)))
+  (assert (= (subtype-of (number "1010" radix => 2 type => "double")) "double"))
+
+  (### parse)
+  (assert (= (1 2 3) (parse "(1 2 3)")))
+  (assert (= (1 2 "abc") (parse "[1, 2, \"abc\"]" format => "json")))
+  (assert (= (eval (parse "(+ 2 3)")) 5))
+
+  (### quote)
+  (assert (= (list + 1 2) (quote (+ 1 2))))
+
+  (### reference)
+  (assert (= (reference (quote alfa)) (quote alfa)))
+  (assert (= (reference "start_process") (quote start_process)))
+  (assert (= (reference "persons/john/cars/1") (quote persons/john/cars/1)))
+  (assert (= (reference ("persons" 0)) (quote persons/0)))
+  (assert (= (reference ("action")) (quote /action)))
+
+  (### reference-list)
+  (assert (= (reference-list a/b/2) ("a" "b" 2)))
+
+  (### set)
+  (do (set a 34) (assert (= a 34)))
+  (do (set (reference "a") 44) (assert (= a 44)))
+
+  (### sleep)
+  (sleep 1000)
+
+  (### executor)
+  (spawn (sleep 1000))
+
+  (### string)
+  (assert (= (string 45) "45"))
+  (assert (= (string (1 2 3)) "(1 2 3)"))
+  (assert (= (string 7 radix => 2) "111"))
+
+  (### subtype-of)
+  (assert (= (subtype-of null) "null"))
+  (assert (= (subtype-of (= 3 4)) "boolean"))
+  (assert (= (subtype-of 45) "integer"))
+  (assert (= (subtype-of 12345678900) "long"))
+  (assert (= (subtype-of 45.3) "double"))
+  (assert (= (subtype-of "text") "string"))
+  (assert (= (subtype-of subtype-of) "hard-reference"))
+  (assert (= (subtype-of (quote alfa)) "soft-reference"))
+  (assert (= (subtype-of ()) "data-list"))
+  (assert (= (subtype-of (1 2 3)) "data-list"))
+  (assert (= (subtype-of (quote (sin x))) "code-list"))
+  (assert (= (subtype-of (function (x) x)) "function-list"))
+
+  (### sync)
+  (do
+    (set monitor (list))
+    (= (sync monitor (set a 34)) 34)
+  )
+
+  (### system)
+  (assert system)
+
+  (### throw)
+  (do
+    (try
+      (throw "network error")
+      (ex "*" => (set msg (first ex)))
+    )
+    (assert (= msg "network error"))
+  )
+
+  (### try)
+  (do
+    (try
+      (throw "Error-202")
+      (ex
+        "FileNotFoundException" => (set a 0)
+        "Error-202" => (set a 99)
+      )
+      (++ a)
+    )
+    (assert (= a 100))
+  )
+
+  (### type-of)
+  (assert (= (type-of null) "null"))
+  (assert (= (type-of (= 3 4)) "boolean"))
+  (assert (= (type-of 45) "number"))
+  (assert (= (type-of 12345678900) "number"))
+  (assert (= (type-of 45.3) "number"))
+  (assert (= (type-of "text") "string"))
+  (assert (= (type-of subtype-of) "reference"))
+  (assert (= (type-of (quote alfa)) "reference"))
+  (assert (= (type-of (1 2 3)) "list"))
+
+  (### wait)
+  (wait (list) 1000)
+
+  (### watch)
+  (do
+    (set a 0)
+    (spawn (do (watch a 0) (set b 99)))
+    (set a 1)
+    (sleep 500)
+    (assert (= b 99))
+  )
+ 
+  (### while)
+  (do
+    (set a 0)
+    (set b 0)
+    (while 
+      (< a 5)
+      (++ a)
+      (set b a)
+    )
+    (assert (= b 5))
+  )
+
+
+  (### "****** Bitwise functions ******")
+
+  (### bit-and)
+  (assert (= (bit-and 0x000000FF 0x000C00F0) 0x000000F0))
+
+  (### bit-not)
+  (assert (= (bit-and (bit-not 0x80) 0xFF) 0x7F))
+
+  (### bit-or)
+  (assert (= (bit-or 0xFF 0xF0) 0xFF))
+
+  (### bit-xor)
+  (assert (= (bit-xor 0xFF 0xF0) 0x0F))
+
+  (### bit-shift)
+  (assert (= (bit-shift 1 -4) 16))
+  (assert (= (bit-shift 16 4) 1))
+  (assert (= (bit-shift 16 0) 16))
+
+  (### "****** Date functions ******")
+
+  (### date)
+  (assert (date))
+  (assert (= (date "add" 1501578000000 "month" 1) 1504256400000))
+  (assert (= (date "set" 1501578000000 "month" 1) 1485943200000))
+
+  (### parse-date)
+  (assert (= (parse-date (format-date 1500000)) 1500000))
+
+  (### format-date)
+  (assert (= (parse-date (format-date 1800000)) 1800000))
+
+
+  (### "****** List functions ******")
+
+  (### append)
+  (assert (= (append (1 2 a => 8) (9 a => 3 "aaa")) (1 2 a => 3 9 "aaa")))
+
+  (### apply)
+  (assert (= (apply (1 2 3) x (* x x))) (1 4 9))
+  (assert (= (apply ("a" => 1 "b" => 2 8) x (+ x 1))) ("a" => 2 "b" => 3 9))
+
+  (### clone)
+  (assert (= (1 2 3) (clone (1 2 3))))
+  (assert (not (=== (1 2 3) (clone (1 2 3)))))
+  (assert (= (1 2 (3)) (clone (1 2 (3)) true)))
+  (assert (not (=== (1 2 (3)) (clone (1 2 (3)) true))))
+
+  (### empty)
+  (assert (empty (list)))
+  (assert (not (empty (1 2 3))))
+
+  (### find)
+  (assert (= (find (1 2 3 4) x (= (mod x 2) 0)) (2 4)))
+  (assert (= (find (1 2 3 4) x false) ()))
+  (assert (= (find (1 2 3 4) x true) (1 2 3 4)))
+  (assert (= (find ("a" => 2 "b" => 3 4) x (= (mod x 2) 0)) ("a" => 2 4)))
+
+  (### first)
+  (assert (= (first (1 2 3)) 1))
+  (assert (= (first (list)) null))
+
+  (### for-each)
+  (do 
+    (set a (list))
+    (for-each (1 2 3 4) x (push a (* 2 x)))
+    (assert (= a (2 4 6 8)))
+  )
+
+  (### get)
+  (assert (= (get (1 2 3) 1) 2))
+  (assert (= (get (1 2 a => 3) "a") 3))
+  (assert (= (get (1 2 (3 4 5)) (2 2)) 5))
+
+  (### get-name)
+  (assert (= (get-name (b => 8 c => 9) 1) "c"))
+
+  (### has)
+  (assert (has (a => 8 b => 9 c => 10) "b"))
+  (assert (not (has (a => 8 b => 9 c => 10) "d")))
+  (assert (not (has (1 2 3) ("alfa"))))
+  (assert (not (has (1 2 3) ("alfa" "beta"))))
+
+  (### locate)
+  (assert (= (locate (1 2 3 4) x (> x 3)) 3))
+  (assert (= (locate (1 2 3 4) x (= x 9)) -1))
+
+  (### name-index)
+  (assert (= (name-index (1 2 3 4) "size") -1))
+  (assert (= (name-index (1 a => 2 b => 3 4) "b") 2))
+
+  (### insert)
+  (assert (= (insert (1 2 3) 0 "a") ("a" 1 2 3)))
+  (assert (= (insert (1 2 3) 2 "a") (1 2 "a" 3)))
+
+  (### last)
+  (assert (= (last (1 2 3)) 3))
+  (assert (= (last (list)) null))
+
+  (### list)
+  (assert (= (list 0.1 +2 .4 -.52 +.81 -3.2) (0.1 2 0.4 -0.52 +0.81 -3.2)))
+  (assert (= (list 1 2 (+ 2 2)) (1 2 4)))
+  (assert (= (list 23 res => (+ 2 2)) (23 "res" => 4)))
+
+  (### match)
+  (assert (match (1 2 3) (x? y? 3) true))
+
+  (### merge)
+  (assert (= (merge (x 2 y) ("x" => 9 "y" => 10)) (9 2 10)))
+
+  (### names)
+  (assert (= (names (a => 0 b => 1 c => 2)) ("a" "b" "c")))
+
+  (### pop)
+  (do
+    (set a (1 2 4))
+    (assert (= (pop a) 4))
+    (assert (= a (1 2)))
+  )
+
+  (### push)
+  (assert (= (push (1 2) 3) (1 2 3)))
+
+  (### put)
+  (do
+    (set a (1 2 0))
+    (put a 2 3)
+    (assert (= a (1 2 3)))
+    (put a 0 99)
+    (put a "b" 22)
+    (assert (= a (99 2 3 "b" => 22)))
+    (put a "b" 23)
+    (assert (= a (99 2 3 "b" => 23)))
+    (put a 4 24)
+    (assert (= a (99 2 3 "b" => 23 24)))
+    (put a 6 25)
+    (assert (= a (99 2 3 "b" => 23 24 null 25)))
+    (put a "b" 21)
+    (put a "c" 26)
+    (assert (= a (99 2 3 "b" => 21 24 null 25 "c" => 26)))
+    (assert (= a/0 99))
+    (assert (= a/1 2))
+    (assert (= a/b 21))
+    (set a/film (name => "Matrix"))
+    (assert (= a/film/name "Matrix"))
+  )
+
+  (### remove)
+  (do
+    (set a (1 2 3 c => "aaa"))
+    (remove a 0)
+    (assert (= a (2 3 "aaa")))
+    (remove a "c")
+    (assert (= a (2 3)))
+  )
+
+  (### reverse)
+  (assert (= (reverse (1 2 3)) (3 2 1)))
+ 
+  (### size)
+  (assert (= (size (list)) 0))
+  (assert (= (size (1 2 3)) 3))
+
+  (### sort)
+  (assert (= (sort (3 6 1 2 9)) (1 2 3 6 9)))
+  (assert (= (sort (3 6 1 2 9) (function (x y) (- y x))) (9 6 3 2 1)))
+
+  (### sublist)
+  (assert (= (sublist (1 2 3 4) 1 3) (2 3)))
+  (assert (= (sublist (1 2 3 4) 1) (2 3 4)))
+
+
+  (### "****** Logical functions ******")
+
+  (### and)
+  (assert (and true 1 (= 2 2)))
+
+  (### !=)
+  (assert (!= 1 3 5))
+
+  (### =)
+  (assert (= 3 (+ 2 1) 3))
+  (assert (= (1 2 "A" => (3 5)) (1 2 "A" => (3 5))))
+  (assert (not (= (1 3 "A" => (3 5)) (1 2 "A" => (3 5)))))
+  (assert (= (1 2 "A" => (3 5)) (1 2 "B" => (3 5))))
+  (assert (= (1 2 (3 5)) (1 2 "A" => (3 5))))
+
+  (### ==)
+  (assert (== 3 (+ 2 1) 3))
+  (assert (== (1 2 "A" => (3 5)) (1 2 "A" => (3 5))))
+  (assert (not (== (1 3 "A" => (3 5)) (1 2 "A" => (3 5)))))
+  (assert (not (== (1 2 "A" => (3 5)) (1 2 "B" => (3 5)))))
+  (assert (not (== (1 2 (3 5)) (1 2 "A" => (3 5)))))
+
+  (### ===)
+  (assert (=== (<#1> 1 2 3) <@1>))
+  (assert (not (=== (1 2 "A" => (3 5)) (1 2 "A" => (3 5)))))
+  (assert (not (=== (1 3 "A" => (3 5)) (1 2 "A" => (3 5)))))
+  (assert (not (=== (1 2 "A" => (3 5)) (1 2 "B" => (3 5)))))
+  (assert (not (=== (1 2 (3 5)) (1 2 "A" => (3 5)))))
+
+  (### >=)
+  (assert (>= 9 4 4 (* 2 1)))
+
+  (### >)
+  (assert (> 9 4 3 (* 2 1)))
+
+  (### <=)
+  (assert (<= 1 2 2 (* 2 3)))
+
+  (### <)
+  (assert (< 1 2 3 (* 2 3)))
+
+  (### not)
+  (assert (not false))
+
+  (### or)
+  (assert (or false 4 true))
+
+
+  (### "****** Math functions ******")
+  
+  (### abs)
+  (assert (= (abs -3) 3))  
+  (assert (= (abs 0) 0))  
+  (assert (= (abs -5.6) 5.6))  
+
+  (### acos)
+  (assert (= (acos 0) 1.5707963267948966))
+
+  (### asin)
+  (assert (= (asin 0) 0))
+
+  (### atan)
+  (assert (= (atan 0) 0))
+
+  (### ceil)
+  (assert (= (ceil 8.9) 9))
+
+  (### cos)
+  (assert (= (cos 0) 1))
+
+  (### --)
+  (assert 
+    (do
+      (set a 10)
+      (-- a 5)
+      (assert (= a 5))
+    )
+  )
+
+  (### /)
+  (assert (= (/ 5 2) 2.5))
+  (assert (= (/ 1 0) Infinity))
+  (assert (= (/ -1 0) -Infinity))
+
+  (### floor)
+  (assert (= (floor 5.1) 5))
+
+  (### ++)
+  (assert 
+    (do
+      (set a 10)
+      (++ a 5)
+      (assert (= a 15))
+    )
+  )
+
+  (### div)
+  (assert (= (div 5 2) 2))
+ 
+  (### log10)
+  (assert (= (log10 1) 0))
+
+  (### logn)
+  (assert (= (logn 1) 0))
+
+  (### mod)
+  (assert (= (mod 5 2) 1))
+
+  (### *)
+  (assert (= (* -2 3 4) -24))
+  (assert (= (*) 1))
+  (assert (= (* 0 Infinity) NaN))
+  (assert (= (* Infinity -Infinity) -Infinity))
+
+  (### pow)
+  (assert (= (pow 2 2) 4))
+
+  (### random)
+  (assert (< (random 100) 100))
+
+  (### round)
+  (assert (= (round 5.9) 6))
+  (assert (= (round 5.1) 5))
+
+  (### sin)
+  (assert (= (sin 0) 0))
+
+  (### sqrt)
+  (assert (= (sqrt 4) 2))
+
+  (### -)
+  (assert (= (- 5 2) 3))
+  (assert (= (- 5) -5))
+
+  (### +)
+  (assert (= (+ 1 2 3) 6))
+  (assert (= (+) 0))
+
+  (### tan)
+  (assert (= (tan 0) 0))
+
+
+  (### "****** Net functions ******")
+
+  (### http)
+  (assert http)
+
+  (### "****** Text functions *******")
+  
+  (### concat)
+  (assert (= (concat "aaa" "bbb" (+ 5 6)) "aaabbb11"))
+
+  (### downcase)
+  (assert (= (downcase "ABCde8") "abcde8"))
+
+  (### locate-string)
+  (assert (= (locate-string "01234567890123456" "4") 4))
+  (assert (= (locate-string "01234567890123456" "23" 8) 12))
+
+  (### length)
+  (assert (= (length "hello") 5))
+  (assert (= (length "") 0))
+
+  (### match-string)
+  (assert (match-string "Hello world" ".* world"))
+
+  (### split)
+  (assert (= (split "Hello world") ("Hello" "world")))
+  (assert (= (split "1,2,3" "\\,") ("1" "2" "3")))
+
+  (### substring)
+  (assert (= (substring "Hello world" 6) "world"))
+  (assert (= (substring "Hello world" 1 5) "ello"))
+
+  (### trim)
+  (assert (= (trim " Hello world ") "Hello world"))
+ 
+  (### upcase)
+  (assert (= (upcase "ABCde8") "ABCDE8"))
+
+)

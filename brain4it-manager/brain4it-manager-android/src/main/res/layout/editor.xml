@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+  <LinearLayout android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="top">
+    <LinearLayout android:orientation="horizontal"
+      android:layout_width="0dp"
+      android:layout_height="match_parent" 
+      android:layout_weight="0.75">
+      <TextView
+        android:id="@+id/path_label"
+        android:gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:paddingLeft="2dp"
+        android:paddingRight="4dp"
+        android:paddingTop="6dp"
+        android:paddingBottom="6dp"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:textSize="15sp"
+        android:background="@null"
+        android:text="@string/path" />
+      <EditText
+        android:id="@+id/path"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:inputType="textNoSuggestions"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:scrollHorizontally="true"
+        android:paddingLeft="0dp"
+        android:paddingRight="6dp"
+        android:paddingTop="6dp"
+        android:paddingBottom="6dp"
+        android:fontFamily="monospace"
+        android:background="@null"
+        android:textSize="15sp" />      
+    </LinearLayout>
+    <Button
+      android:id="@+id/load_button"
+      android:layout_width="0dp"
+      android:layout_height="match_parent" 
+      android:textSize="15sp"
+      android:layout_weight="0.125" />
+    <Button
+      android:id="@+id/save_button"
+      android:layout_width="0dp"
+      android:layout_height="match_parent"
+      android:textSize="15sp"
+      android:layout_weight="0.125" />
+  </LinearLayout>
+  <org.brain4it.manager.android.view.EditCode
+    android:id="@+id/input"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:scrollbars="vertical"
+    android:scrollbarThumbVertical="@drawable/scrollbar"
+    android:textCursorDrawable="@drawable/cursor"
+    android:inputType="textMultiLine|textNoSuggestions"
+    android:background="#ffffffff"
+    android:textColor="#ff000000"
+    android:fontFamily="monospace"
+    android:textSize="15sp"
+    android:paddingLeft="2dp"
+    android:paddingRight="1dp"
+    android:paddingTop="1dp"
+    android:paddingBottom="1dp"
+    android:gravity="top|left"
+    android:layout_weight="1" />
+</LinearLayout>
+

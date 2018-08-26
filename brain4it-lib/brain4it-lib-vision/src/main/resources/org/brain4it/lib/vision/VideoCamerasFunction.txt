@@ -1,0 +1,33 @@
+(VideoCameras (video-cameras)
+  (camera)
+  where =>
+  (
+    camera => 
+    (
+      (
+        "name" => name 
+        "resolutions" => (resolution)
+        "device" => device
+        "fps" => fps
+      )
+    0 N
+    )
+    name => ("string" 1 1)
+    device => ("string" 1 1)
+    fps => ("number" 0 1)
+    resolution => ((width height) 1 N)
+    width => ("number" 1 1)
+    height => ("number" 1 1)
+  )
+  examples =>
+  (
+    (
+      (video-cameras)
+      (("name" => "Cámara FaceTime HD (integrada) 0x1a11000005ac8510" 
+        "device" => "Cámara FaceTime HD (integrada) 0x1a11000005ac8510" 
+        "resolutions" => ((176 144) (320 240) (640 480)))
+      )
+    )
+  )
+  bundle => "org.brain4it.lib.VisionLibrary"
+)

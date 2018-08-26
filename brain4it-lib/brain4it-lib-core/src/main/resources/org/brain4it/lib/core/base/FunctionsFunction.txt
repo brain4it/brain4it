@@ -1,0 +1,14 @@
+(Functions (functions pattern)
+  (func_ref)
+  where =>
+  (
+    pattern => ("string" 0 1)
+    func_ref => ("reference" 0 N)
+  )
+  examples =>
+  (
+    ((functions "si.*") (sin size))
+  )
+  related => (function call)
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

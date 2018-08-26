@@ -1,0 +1,26 @@
+(StartVideoServer (start-video-server 
+  "port" => port
+  "camera" => camera
+  "resolution" => resolution
+  )
+  result
+  where =>
+  (
+    port => ("number" 0 1)
+    camera => ("string" 0 1)
+    resolution => ("string" 0 1)
+    result => ("string" 0 1)
+  )
+  examples =>
+  (
+    (
+      (start-video-server)
+      "video server listening on port 8080, resolution: VGA 640x480 (4:3)"
+    )
+    (
+      (start-video-server "port" => 9090 resolution => "QVGA")
+      "video server listening on port 9090, resolution: VGA 320x240 (4:3)"
+    )
+  )
+  bundle => "org.brain4it.lib.VisionLibrary"
+)

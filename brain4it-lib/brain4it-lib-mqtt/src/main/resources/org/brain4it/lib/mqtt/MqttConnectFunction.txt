@@ -1,0 +1,21 @@
+(MqttConnect (mqtt-connect host "username" => username "password" => password)
+  connection_id
+  where =>
+  (
+    host => ("string" 1 1)
+    username => ("string" 0 1)
+    password => ("string" 0 1)
+    connection_id => ("string" 1 1)
+  )
+  examples =>
+  (
+    (
+      (mqtt-connect "tcp://iot.eclipse.org:1883" 
+        "username" => "brain4it_bot" "password" => "3248523")
+      "9f77ba0388134fcc872bf1595ec32a83"
+    )
+  )
+  related => (mqtt-disconnect)
+  bundle => "org.brain4it.lib.MqttLibrary"
+)
+

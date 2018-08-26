@@ -1,0 +1,13 @@
+(Asin (asin value) angle_rad
+  where =>
+  (
+    value => ("number" 1 1)
+    angle_rad => ("number" 1 1)
+  )
+  examples =>
+  (
+    ((asin 1) 1.5707963267948966)
+  )
+  related => (sin cos tan)
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

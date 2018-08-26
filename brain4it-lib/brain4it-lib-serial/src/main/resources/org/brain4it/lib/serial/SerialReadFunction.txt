@@ -1,0 +1,16 @@
+(SerialRead (serial-read port "mode" => mode "count" => count) result
+  where =>
+  (
+    port => ("string" 1 1)
+    mode => ("string" 0 1)
+    count => ("number" 0 1)
+    result => ("object" 1 1)
+  )
+  examples =>
+  (
+    ((serial-read port "mode" => "bytes") (45 12))
+    ((serial-read "tty.usb2" "mode" => "line") "G123 14,78")
+  )
+  bundle => "org.brain4it.lib.SerialLibrary"
+)
+

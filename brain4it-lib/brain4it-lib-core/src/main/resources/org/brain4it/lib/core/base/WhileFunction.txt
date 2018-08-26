@@ -1,0 +1,14 @@
+(While (while condition action) result
+  where =>
+  (
+    condition => ("boolean" 1 1)
+    action => ("object" 0 N)
+    result => ("object" 1 1)
+  )
+  examples =>
+  (
+    ((while (< i data_size) (process_data i) (++ i)))
+  )
+  related => (for for-each)
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

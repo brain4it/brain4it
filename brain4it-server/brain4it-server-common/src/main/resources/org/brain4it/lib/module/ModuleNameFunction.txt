@@ -1,0 +1,12 @@
+(ModuleName (module-name) name
+  where =>
+  (
+    name => ("string" 1 1)
+  )
+  examples =>
+  (
+    ((module-name) "energy_manager")
+  )
+  bundle => "org.brain4it.lib.ModuleLibrary"
+)
+

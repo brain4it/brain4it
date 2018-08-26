@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.brain4it</groupId>
+    <artifactId>brain4it-manager</artifactId>
+    <version>1.0</version>
+  </parent>
+      
+  <artifactId>brain4it-manager-swing</artifactId>
+  <packaging>jar</packaging>
+  
+  <name>brain4it-manager-swing</name>
+  <description>brain4it desktop manager application</description>
+  
+  <dependencies>
+    <dependency>
+      <groupId>org.brain4it</groupId>
+      <artifactId>brain4it-manager-common</artifactId>
+      <version>1.0</version>
+    </dependency>
+  </dependencies>
+	
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.2.1</version>
+        <configuration>
+          <mainClass>org.brain4it.manager.swing.ManagerApp</mainClass>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifest>
+              <mainClass>org.brain4it.manager.swing.ManagerApp</mainClass>
+            </manifest>
+          </archive>
+          <descriptorRefs>
+            <descriptorRef>jar-with-dependencies</descriptorRef>
+          </descriptorRefs>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>sh.tak.appbundler</groupId>
+        <artifactId>appbundle-maven-plugin</artifactId>
+        <version>1.2.0</version>
+        <configuration>
+          <mainClass>org.brain4it.manager.swing.ManagerApp</mainClass>
+          <!--
+          <dictionaryFile>Info.plist</dictionaryFile>
+          <iconFile>brain4it.icns</iconFile>
+          -->
+        </configuration>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>bundle</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+  <repositories>
+    <repository>
+      <id>unknown-jars-temp-repo</id>
+      <name>A temporary repository created by NetBeans for libraries and jars it could not identify. Please replace the dependencies in this repository with correct ones and delete this repository.</name>
+      <url>file:${project.basedir}/lib</url>
+    </repository>
+  </repositories>
+</project>

@@ -1,0 +1,30 @@
+(ModuleMonitor (module-monitor server_url module_name function_name listener
+  "polling-interval" => polling_interval
+  "access-key" => access_key)
+  result
+  where =>
+  (
+    server_url => ("string" 1 1)
+    module_name => ("string" 1 1)
+    function_name => ("string" 1 1)
+    listener => ("function" 1 1)
+    polling_interval => ("number" 0 1)
+    access_key => ("string" 0 1)
+    result => ("string" 1 1)
+  )
+  examples => 
+  (
+    (
+      (module-monitor "http://localhost:9999" "test" "@temperature" 
+        (function (fn temp server_time) (set temperature temp)))
+      "registered"
+    )
+    (
+      (module-monitor "http://localhost:9999" "test" "@temperature" null)
+      "unregistered"
+    )
+  )
+  related => (module-notify)
+  bundle => "org.brain4it.lib.ModuleLibrary"
+)
+

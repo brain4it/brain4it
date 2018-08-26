@@ -1,0 +1,11 @@
+(ModuleStop (module-stop) result
+  where =>
+  (
+    result => ("string" 1 1)
+  )
+  examples =>
+  (
+    ((module-stop) "Module facility stopped.")
+  )
+  bundle => "org.brain4it.lib.ModuleLibrary"
+)

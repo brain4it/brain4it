@@ -1,0 +1,13 @@
+(Sum (+ value) result
+  where =>
+  (
+    value => ("number" 0 N)
+    result => ("number" 1 1)
+  )
+  examples =>
+  (
+    ((+ 1 2 8) 11)
+  )
+  related => (-)
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

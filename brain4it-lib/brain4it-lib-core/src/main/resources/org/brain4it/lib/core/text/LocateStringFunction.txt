@@ -1,0 +1,17 @@
+(LocateString (locate-string str substring from_index) result
+  where =>
+  (
+    str => ("string" 1 1)
+    substring => ("string" 1 1)
+    from_index => ("number" 0 1)
+    result => ("number" 1 1)
+  )
+  examples =>
+  (
+    ((locate-string "My car is red" "is") 7)
+    ((locate-string "My car is red" "r") 5)
+    ((locate-string "My car is red" "r" 7) 10)
+  )
+  related => (match-string)
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

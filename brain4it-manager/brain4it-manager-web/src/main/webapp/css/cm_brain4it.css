@@ -1,0 +1,63 @@
+/* 
+    Created on : 16-may-2015, 17:33:58
+    Author     : realor
+*/
+
+.CodeMirror
+{
+  width:100%;
+  height:100%;
+  font-family: Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+  font-size:14px;
+  border-top: 1px gray solid;
+}
+
+div.CodeMirror span.CodeMirror-matchingbracket 
+{
+  color:black; 
+  background:yellow;
+}
+
+div.CodeMirror span.CodeMirror-nonmatchingbracket 
+{
+  color:black; 
+  background:#ffA0A0;
+}
+
+div.CodeMirror-cursors 
+{
+  visibility: hidden;
+  position: relative;
+  z-index: 10;
+}
+
+.CodeMirror div.CodeMirror-cursor 
+{
+  border-left: 2px solid black;
+}
+
+.cm-s-default .cm-bracket
+{
+  color: black;
+}
+
+.cm-s-default .cm-keyword
+{
+  color: black;
+  font-weight: bold;
+}
+
+.cm-s-default .cm-string
+{
+  color:blue;
+}
+
+.cm-s-default .cm-atom
+{
+  color:#408000;
+}
+
+.cm-s-default .cm-tag
+{
+  color:orange;
+}

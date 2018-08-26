@@ -1,0 +1,12 @@
+(Executors (executors) (executor_code)
+  where =>
+  (
+    executor_code => ("object" 0 N)
+  )
+  examples =>
+  (
+    ((executors) ("23" => (eval loop) "25" => (executors)))
+  )
+  related => (spawn kill)
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

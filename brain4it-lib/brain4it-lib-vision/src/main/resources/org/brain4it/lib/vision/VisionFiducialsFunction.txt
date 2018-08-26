@@ -1,0 +1,47 @@
+(VisionFiducials (vision-fiducials url 
+  "camera-parameters" => camera_parameters) 
+  ("size" => (width height) "detections" => (detection))
+  where =>
+  (
+    url => ("string" 1 1)
+    camera_parameters => ((cx cy fx fy) 0 1)
+    width => ("number" 1 1)
+    height => ("number" 1 1)
+    detection => 
+    (
+      ("id" => id 
+       "origin" => (ox oy)
+       "x-axis" => (x y)
+       "y-axis" => (x y)
+       "z-axis" => (x y)
+       "normal" => (nx ny nz)
+      ) 0 N
+    )
+    id => ("number" 1 1)
+    ox => ("number" 1 1)
+    oy => ("number" 1 1)
+    x => ("number" 1 1)
+    y => ("number" 1 1)
+    nx => ("number" 1 1)
+    ny => ("number" 1 1)
+    nz => ("number" 1 1)
+    cx => ("number" 1 1)
+    cy => ("number" 1 1)
+    fx => ("number" 1 1)
+    fy => ("number" 1 1)
+  )
+  examples =>
+  (
+    (
+      (vision-fiducials "http://localhost:8080/photo.jpg")
+      ("size" => (640 480)
+       "detections" =>
+         (("id" => 45 "origin" => (230 240) 
+           "x-axis" => (120 20) "y-axis" => (12 110) "z-axis" => (1 2)
+           "normal" => (0 0 1))
+         )
+      )
+    )
+  )
+  bundle => "org.brain4it.lib.VisionLibrary"
+)

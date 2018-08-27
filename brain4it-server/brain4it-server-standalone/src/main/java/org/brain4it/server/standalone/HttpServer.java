@@ -49,6 +49,7 @@ import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLServerSocketFactory;
 import org.brain4it.lang.Executor;
+import org.brain4it.server.MonitorService;
 import org.brain4it.server.RestService;
 import org.brain4it.server.module.ModuleManager;
 /**
@@ -59,6 +60,7 @@ public class HttpServer
 {
   private final ModuleManager moduleManager;
   private final RestService restService;
+  private final MonitorService monitorService;
   private final int port;
   private SslParameters sslParameters;
   private ServerSocket serverSocket;
@@ -72,6 +74,7 @@ public class HttpServer
   {
     this.moduleManager = moduleManager;
     this.restService = new RestService(moduleManager);
+    this.monitorService = new MonitorService(moduleManager);
     this.port = port;
   }
 
@@ -92,6 +95,11 @@ public class HttpServer
     return restService;
   }
 
+  public MonitorService getMonitorService()
+  {
+    return monitorService;
+  }
+  
   public SslParameters getSslParameters()
   {
     return sslParameters;
@@ -297,8 +305,8 @@ public class HttpServer
           try
           {            
             request.read();
-            SAHttpDispatcher dispatcher =
-              new SAHttpDispatcher(request, response, restService);
+            SAHttpDispatcher dispatcher = new SAHttpDispatcher(
+              request, response, restService, monitorService);
             onServe(request, response);
             dispatcher.dispatch();
           }

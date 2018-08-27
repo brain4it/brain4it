@@ -40,6 +40,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.brain4it.lang.Executor;
+import org.brain4it.server.MonitorService;
 import org.brain4it.server.RestService;
 import org.brain4it.server.module.ModuleManager;
 import org.brain4it.server.store.FileSystemStore;
@@ -60,6 +61,7 @@ public class RestServlet extends HttpServlet
 
   private ModuleManager moduleManager;
   private RestService restService;
+  private MonitorService monitorService;
 
   @Override
   public void init() throws ServletException
@@ -99,6 +101,7 @@ public class RestServlet extends HttpServlet
       moduleManager.init();
       
       restService = new RestService(moduleManager);
+      monitorService = new MonitorService(moduleManager);
       
       value = servletContext.getInitParameter(MAX_WAIT_TIME_PARAM);
       if (value != null)
@@ -113,6 +116,7 @@ public class RestServlet extends HttpServlet
           throw new NumberFormatException(MAX_WAIT_TIME_PARAM + ": " + value);
         }
         restService.setMaxWaitTime(maxWaitTime);
+        monitorService.setMaxWaitTime(maxWaitTime);
       }
 
       value = servletContext.getInitParameter(MONITOR_TIME_PARAM);
@@ -127,7 +131,7 @@ public class RestServlet extends HttpServlet
         {
           throw new NumberFormatException(MONITOR_TIME_PARAM + ": " + value);
         }
-        restService.setMonitorTime(monitorTime);
+        monitorService.setMonitorTime(monitorTime);
       }
       
       log("Initialization completed.");
@@ -159,7 +163,7 @@ public class RestServlet extends HttpServlet
     HttpServletResponse response) throws ServletException, IOException
   {
     ServletHttpDispatcher dispatcher = 
-      new ServletHttpDispatcher(request, response, restService);
+      new ServletHttpDispatcher(request, response, restService, monitorService);
     
     dispatcher.dispatch();
   }

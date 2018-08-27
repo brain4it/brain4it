@@ -59,7 +59,6 @@ public abstract class HttpDispatcher
       String method = getMethod();
       String path = getPath();
       String accessKey = getRequestHeader(ACCESS_KEY_HEADER);
-      RestService restService = getRestService();
 
       setResponseHeader("Access-Control-Allow-Origin", "*");
       setResponseHeader("Access-Control-Expose-Headers", SERVER_TIME_HEADER);
@@ -76,20 +75,20 @@ public abstract class HttpDispatcher
           break;
         case "GET":
         {
-          Object result = restService.get(path, accessKey);
+          Object result = getRestService().get(path, accessKey);
           sendResult(result);
           break;
         }
         case "PUT":
         {
           Object data = readData();
-          Object result = restService.put(path, data, accessKey);
+          Object result = getRestService().put(path, data, accessKey);
           sendResult(result);
           break;
         }
         case "DELETE":
         {
-          Object result = restService.delete(path, accessKey);
+          Object result = getRestService().delete(path, accessKey);
           sendResult(result);
           break;
         }
@@ -100,7 +99,7 @@ public abstract class HttpDispatcher
           BList requestContext = getContextList();
           if (monitor == null)
           {
-            Object result = restService.execute(path, data, accessKey,
+            Object result = getRestService().execute(path, data, accessKey,
               requestContext);
             sendResult(result, requestContext);
           }
@@ -109,9 +108,9 @@ public abstract class HttpDispatcher
             int pollingInterval = Integer.parseInt(monitor);
             setResponseHeader("Transfer-Encoding", "chunked");
             setResponseHeader("X-Content-Type-Options", "nosniff");
-            setCharacterEncoding(BPL_CHARSET);
-            BList functions = (BList) data;
-            restService.monitor(path, functions, requestContext,
+            setCharacterEncoding(BPL_CHARSET);            
+            BList functions = (BList)data;
+            getMonitorService().monitor(path, functions, requestContext,
               pollingInterval, getResponseWriter());
           }
           break;
@@ -281,4 +280,6 @@ public abstract class HttpDispatcher
   protected abstract PrintWriter getResponseWriter() throws IOException;
 
   protected abstract RestService getRestService();
+
+  protected abstract MonitorService getMonitorService();
 }

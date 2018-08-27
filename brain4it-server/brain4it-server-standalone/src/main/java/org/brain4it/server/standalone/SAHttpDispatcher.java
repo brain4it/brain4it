@@ -33,9 +33,9 @@ package org.brain4it.server.standalone;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Reader;
-import java.io.Writer;
 import java.util.Collection;
 import org.brain4it.server.HttpDispatcher;
+import org.brain4it.server.MonitorService;
 import org.brain4it.server.RestService;
 
 /**
@@ -47,13 +47,15 @@ public class SAHttpDispatcher extends HttpDispatcher
   private final HttpRequest request;
   private final HttpResponse response;
   private final RestService restService;
+  private final MonitorService monitorService;
   
   public SAHttpDispatcher(HttpRequest request, HttpResponse response, 
-    RestService restService)
+    RestService restService, MonitorService monitorService)
   {
     this.request = request;
     this.response = response;
     this.restService = restService;
+    this.monitorService = monitorService;
   }
   
   @Override
@@ -144,5 +146,11 @@ public class SAHttpDispatcher extends HttpDispatcher
   protected RestService getRestService()
   {
     return restService;
+  }
+
+  @Override
+  protected MonitorService getMonitorService()
+  {
+    return monitorService;
   }
 }

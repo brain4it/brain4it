@@ -191,6 +191,7 @@ public class Runner
         throw new NumberFormatException(MAX_WAIT_TIME_PARAM + ": " + value);
       }
       server.getRestService().setMaxWaitTime(maxWaitTime);
+      server.getMonitorService().setMaxWaitTime(maxWaitTime);
     }
 
     value = properties.getProperty(MONITOR_TIME_PARAM);
@@ -205,7 +206,7 @@ public class Runner
       {
         throw new NumberFormatException(MONITOR_TIME_PARAM + ": " + value);
       }
-      server.getRestService().setMonitorTime(monitorTime);
+      server.getMonitorService().setMonitorTime(monitorTime);
     }
     return server;
   }

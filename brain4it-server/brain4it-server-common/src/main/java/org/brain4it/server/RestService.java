@@ -31,18 +31,9 @@
 
 package org.brain4it.server;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.brain4it.io.IOConstants;
-import org.brain4it.io.Printer;
-import org.brain4it.lang.BSoftReference;
 import org.brain4it.lang.Executor;
 import org.brain4it.lang.BList;
 import org.brain4it.lang.Function;
@@ -58,7 +49,6 @@ import static org.brain4it.server.ServerConstants.*;
 public class RestService
 {
   private int maxWaitTime = 300; // 300 seconds = 5 minutes
-  private int monitorTime = 10; // 10 seconds
   private static final Logger LOGGER = Logger.getLogger("RestService");
 
   private final ModuleManager moduleManager;
@@ -86,24 +76,11 @@ public class RestService
     this.maxWaitTime = maxWaitTime;
   }
 
-  public int getMonitorTime()
-  {
-    return monitorTime;
-  }
-
-  public void setMonitorTime(int monitorTime)
-  {
-    if (maxWaitTime <= 0)
-      throw new IllegalArgumentException("monitorTime: " + monitorTime);
-
-    this.monitorTime = monitorTime;
-  }
-
   public Object get(String path, String accessKey) throws Exception
   {
     LOGGER.log(Level.FINEST, "path: {0}", path);
     Object result;
-    PathParser parser = new PathParser(path);
+    PathParser parser = new PathParser(moduleManager, path);
 
     String moduleName = parser.getModuleName();
     if (moduleName == null)
@@ -135,7 +112,7 @@ public class RestService
   {
     LOGGER.log(Level.FINEST, "path: {0} value: {1}", new Object[]{path, value});    
     Object result;
-    PathParser parser = new PathParser(path);
+    PathParser parser = new PathParser(moduleManager, path);
     checkSecurity(parser, accessKey);
 
     String moduleName = parser.getModuleName();
@@ -184,7 +161,7 @@ public class RestService
   {
     LOGGER.log(Level.FINEST, "path: {0}", path);
     Object result;
-    PathParser parser = new PathParser(path);
+    PathParser parser = new PathParser(moduleManager, path);
     checkSecurity(parser, accessKey);
 
     String moduleName = parser.getModuleName();
@@ -215,7 +192,7 @@ public class RestService
   {
     LOGGER.log(Level.FINEST, "path: {0} data: {1}", new Object[]{path, data});
     Object result;
-    PathParser parser = new PathParser(path);
+    PathParser parser = new PathParser(moduleManager, path);
     String moduleName = parser.getModuleName();
 
     if (moduleName == null)
@@ -244,154 +221,6 @@ public class RestService
       else result = Executor.execute(code, module, functions, maxWaitTime);
     }
     return result;
-  }
-
-  public void monitor(String path, BList exteriorFunctions,
-    BList requestContext, int pollingInterval, PrintWriter writer) 
-    throws Exception
-  {
-    LOGGER.log(Level.INFO, "Monitor start");
-    
-    PathParser parser = new PathParser(path);
-    Module module = parser.getModule();
-
-    if (module == null) throw new Exception("Module is required");
-
-    ArrayList<String> functionNames = getFunctionNames(exteriorFunctions);
-    final LinkedBlockingQueue<String> queue =
-      new LinkedBlockingQueue(functionNames.size());
-    Module.Listener listener = new Module.Listener()
-    {
-      @Override
-      public void onChange(Module module, String functionName)
-      {
-        synchronized (queue)
-        {
-          if (!queue.contains(functionName))
-          {
-            queue.offer(functionName);
-          }
-        }
-      }
-    };
-    // register module listeners
-    for (String functionName : functionNames)
-    {
-      module.addListener(functionName, listener);
-    }
-    try
-    {
-      HashMap<String, Object> lastSentData = new HashMap<String, Object>();
-      int monitorMillis = 1000 * monitorTime;
-      if (pollingInterval <= 0) pollingInterval = monitorMillis;
-      long waitMillis = Math.min(pollingInterval, monitorMillis);
-      long lastSentMillis = 0;
-      long lastPollMillis = 0;
-      do
-      {
-        long nowMillis = System.currentTimeMillis();
-        // Polling at pollingInterval milliseconds
-        if (nowMillis - lastPollMillis > pollingInterval)
-        {
-          requestAllData(functionNames, queue);
-          lastPollMillis = nowMillis;
-        }
-        // get functionName to invoke
-        String functionName = queue.poll(waitMillis, TimeUnit.MILLISECONDS);
-        if (functionName != null)
-        {
-          // send data if value returned by function has changed
-          if (sendMonitorData(module, functionName, lastSentData,
-            requestContext, writer))
-          {
-            lastSentMillis = System.currentTimeMillis();
-          }
-        }
-        if (nowMillis - lastSentMillis > monitorMillis)
-        {
-          writer.println(); // send \n to check if connection is still alive
-          lastSentMillis = System.currentTimeMillis();
-        }
-      } while (!writer.checkError()); // flush and check if client is gone
-    }
-    finally
-    {
-      // unregister module listeners
-      for (String functionName : functionNames)
-      {
-        module.removeListener(functionName, listener);
-      }
-    }
-    LOGGER.log(Level.INFO, "Monitor end");
-  }
-  
-  private ArrayList<String> getFunctionNames(BList exteriorFunctions)
-  {
-    ArrayList<String> functionNames = new ArrayList<String>();
-    for (int i = 0; i < exteriorFunctions.size(); i++)
-    {
-      Object element = exteriorFunctions.get(i);
-      if (element instanceof String)
-      {
-        String functionName = (String)element;
-        if (isExteriorFunction(functionName))
-        {
-          functionNames.add(functionName);
-        }
-      }
-    }
-    return functionNames;
-  }
-
-  private void requestAllData(ArrayList<String> functionNames,
-    LinkedBlockingQueue<String> queue)
-  {
-    synchronized (queue)
-    {
-      for (String functionName : functionNames)
-      {
-        if (!queue.contains(functionName))
-        {
-          queue.offer(functionName);
-        }
-      }
-    }
-  }
-
-  private boolean sendMonitorData(Module module, String functionName,
-    HashMap<String, Object> lastSentData, BList requestContext, 
-    PrintWriter writer) throws Exception
-  {
-    Object result = null;
-    long serverTime = System.currentTimeMillis();
-    boolean send;
-    try
-    {
-      Map<String, Function> functions = moduleManager.getFunctions();
-      BList code = Utils.createFunctionCall(functions, functionName, 
-        requestContext);      
-      result = Executor.execute(code, module, functions, maxWaitTime);
-      Object last = lastSentData.get(functionName);
-      send = !Utils.equals(result, last) ||
-        !lastSentData.containsKey(functionName);
-    }
-    catch (Exception ex)
-    {
-      send = false;
-    }
-    if (send)
-    {
-      if (result instanceof BList) result = ((BList)result).clone(true);
-      Printer printer = new Printer(writer);
-      BList list = new BList(3);
-      list.add(functionName);
-      list.add(result);
-      list.add(serverTime);
-      printer.print(list);
-      writer.println(); // \n is the block separator
-      lastSentData.put(functionName, result);
-    }
-    return send;
   }
 
   private void checkSecurity(PathParser parser, String accessKey)
@@ -426,82 +255,5 @@ public class RestService
   private boolean isExteriorFunction(String functionName)
   {
     return functionName.startsWith(EXTERIOR_FUNCTION_PREFIX);
-  }
-
-  class PathParser
-  {
-    // not multitenant path format: <moduleName>/<modulePath>
-    // multitenant path format: <tenant>/<moduleName>/<modulePath>
-    private String tenant;
-    private String moduleName;
-    private String modulePath;
-    private BList pathList;
-
-    public PathParser(String path)
-    {
-      // remove starting and ending slashes
-      while (path.startsWith("/")) path = path.substring(1);
-      while (path.endsWith("/")) path = path.substring(0, path.length() - 1);
-
-      if (moduleManager.isMultiTenant())
-      {
-        int index = path.indexOf("/");
-        if (index == -1 && path.length() > 0)
-        {
-          tenant = path;
-          path = "";
-        }
-        else if (index > 0)
-        {
-          tenant = path.substring(0, index);
-          path = path.substring(index + 1);
-        }
-      }
-
-      int index = path.indexOf("/");
-      if (index == -1 && path.length() > 0)
-      {
-        moduleName = path;
-      }
-      else if (index > 0)
-      {
-        moduleName = path.substring(0, index);
-        modulePath = path.substring(index + 1).trim();
-        if (modulePath.length() == 0) modulePath = null;
-        else if (modulePath.charAt(0) == '"')
-        {
-          modulePath = IOConstants.PATH_REFERENCE_SEPARATOR + modulePath;
-        }
-      }
-    }
-
-    public String getTenant()
-    {
-      return tenant;
-    }
-
-    public String getModuleName()
-    {
-      return moduleName;
-    }
-
-    public String getModulePath()
-    {
-      return modulePath;
-    }
-
-    public Module getModule() throws IOException
-    {
-      return moduleManager.getModule(tenant, moduleName, true);
-    }
-
-    public BList getPathList()
-    {
-      if (pathList == null && modulePath != null)
-      {
-        pathList = BSoftReference.stringToPath(modulePath, true);
-      }
-      return pathList;
-    }
   }
 }

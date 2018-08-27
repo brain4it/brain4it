@@ -39,6 +39,7 @@ import java.util.Collections;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.brain4it.server.HttpDispatcher;
+import org.brain4it.server.MonitorService;
 import org.brain4it.server.RestService;
 import static org.brain4it.server.ServerConstants.URL_CHARSET;
 
@@ -51,13 +52,16 @@ public class ServletHttpDispatcher extends HttpDispatcher
   private final HttpServletRequest request;
   private final HttpServletResponse response;
   private final RestService restService;
+  private final MonitorService monitorService;
   
-  public ServletHttpDispatcher(HttpServletRequest request, 
-    HttpServletResponse response, RestService restService)
+  public ServletHttpDispatcher(
+    HttpServletRequest request, HttpServletResponse response, 
+    RestService restService, MonitorService monitorService)
   {
     this.request = request;
     this.response = response;
     this.restService = restService;
+    this.monitorService = monitorService;
   }
   
   @Override
@@ -159,5 +163,11 @@ public class ServletHttpDispatcher extends HttpDispatcher
   protected RestService getRestService()
   {
     return restService;
+  }
+
+  @Override
+  protected MonitorService getMonitorService()
+  {
+    return monitorService;
   }
 }

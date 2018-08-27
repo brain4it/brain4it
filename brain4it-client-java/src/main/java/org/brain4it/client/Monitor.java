@@ -468,28 +468,4 @@ public class Monitor
   {
     public void onChange(String functionName, Object value, long serverTime);
   }
-
-  public static void main(String[] args)
-  {
-    //Monitor monitor = new Monitor("http://localhost:9999", "select");
-//    Monitor monitor = new Monitor("https://smartcity.santfeliu.cat/brain4it-server-web/modules", "lights");
-    Monitor monitor = new Monitor("http://localhost:8084/brain4it-server-web/modules", "select");
-    
-    Listener listener =  new Listener()
-    {
-      @Override
-      public void onChange(String functionName, Object value, long serverTime)
-      {
-        System.out.println(">>>[" + Printer.toString(value) + "]");
-      }
-    };
-
-    monitor.watch("@display", listener);
-    monitor.watch("@get-value", listener);
-    monitor.watch("@get-options", listener); 
-    
-    try { Thread.sleep(40000); } catch (Exception ex) {};
-    
-    monitor.unwatchAll();    
-  }
 }

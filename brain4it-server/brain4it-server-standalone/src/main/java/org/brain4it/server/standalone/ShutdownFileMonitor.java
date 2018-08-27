@@ -31,6 +31,9 @@
 package org.brain4it.server.standalone;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -39,6 +42,7 @@ import java.io.File;
 public class ShutdownFileMonitor extends Thread
 {
   private final String filename;
+  private static final Logger LOGGER = Logger.getLogger("ShutdownFileMonitor");
   
   public ShutdownFileMonitor(String filename)
   {
@@ -48,10 +52,22 @@ public class ShutdownFileMonitor extends Thread
   @Override
   public void run()
   {
+    File file = new File(filename);
     try
     {
-      File file = new File(filename);
       file.createNewFile();
+    }
+    catch (IOException ex)
+    {
+      LOGGER.log(Level.WARNING, "Shutdown file {0} could not be created: {1}", 
+        new Object[]{filename, ex.toString()});
+      return;
+    }
+
+    try
+    {
+      LOGGER.log(Level.INFO, "Remove file {0} to stop server.", 
+        file.getCanonicalPath());
       while (file.exists())
       {
         Thread.sleep(1000);
@@ -63,7 +79,7 @@ public class ShutdownFileMonitor extends Thread
     }
     finally
     {
-      System.exit(0);      
+      System.exit(0);
     }
   }
 }

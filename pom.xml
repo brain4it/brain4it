@@ -21,7 +21,6 @@
   <modules>
     <module>brain4it-lang</module>
     <module>brain4it-client-java</module>
-    <module>brain4it-server-constants</module>
     <module>brain4it-lib</module>
     <module>brain4it-manager</module>
     <module>brain4it-server</module>

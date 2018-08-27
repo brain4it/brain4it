@@ -25,6 +25,7 @@
   </dependencies>
 
   <modules>
+    <module>brain4it-server-constants</module>
     <module>brain4it-server-common</module>
     <module>brain4it-server-standalone</module>
     <module>brain4it-server-swing</module>

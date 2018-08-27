@@ -34,7 +34,7 @@
     </dependency>
     <dependency>
       <groupId>org.brain4it</groupId>
-      <artifactId>brain4it-lib</artifactId>
+      <artifactId>brain4it-lib-core</artifactId>
       <version>1.0</version>
     </dependency>
     <dependency>

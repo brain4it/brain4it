@@ -34,8 +34,11 @@ import java.io.BufferedInputStream;
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.ConnectException;
+import java.net.HttpURLConnection;
 import java.net.Socket;
 import java.net.URL;
 import java.util.HashMap;
@@ -136,8 +139,10 @@ public class Monitor
   public synchronized void watch(String functionName, Listener listener, 
     boolean replace)
   {
-    // if replace is true this method replaces all the previous listeners for
-    // functionName by the new listener
+    // if replace is true this method replaces all the previous
+    // functionName listeners by the new listener
+
+    LOGGER.log(Level.FINEST, "Watch function: {0}", functionName);
     
     boolean newFunction;
     HashSet<Listener> functionListeners = listeners.get(functionName);
@@ -156,7 +161,6 @@ public class Monitor
       newFunction = false;
     }
     functionListeners.add(listener);
-    LOGGER.log(Level.FINEST, "Watch function: {0}", functionName);
     if (newFunction) updateWorker(); // start or reconnect worked thread
   }
 
@@ -255,6 +259,7 @@ public class Monitor
     Socket socket;
     BufferedInputStream input;
     BufferedWriter writer;
+    String monitorSessionId;
     
     @Override
     public void run()
@@ -286,54 +291,61 @@ public class Monitor
           if (port == -1) port = "https".equals(protocol) ? 443 : 80;
           
           socket = createSocket(protocol, host, port);
-          socket.setSoTimeout(0);
-          writer = new BufferedWriter(
-            new OutputStreamWriter(socket.getOutputStream(), BPL_CHARSET));          
           try
           {
-            writer.write("POST " + path + "/" + moduleName + " HTTP/1.1\r\n");
-            setHeader("Host", host + ":" + port);
-            setHeader(MONITOR_HEADER, pollingInterval);
-            if (accessKey != null)
-            {
-              setHeader(ACCESS_KEY_HEADER, accessKey);
-            }
-            if (sessionId != null)
-            {
-              setHeader(SESSION_ID_HEADER, sessionId);
-            }
-            String functionNames = getMonitoredFunctionNames();
-            setHeader("Content-Length", functionNames.length());
-            setHeader("Content-Type", BPL_MIMETYPE +
-              "; charset=" + BPL_CHARSET);
-            writer.write("\r\n");
-            writer.write(functionNames);
-            writer.flush();
-            
-            input = new BufferedInputStream(socket.getInputStream());
-            String header;
+            socket.setSoTimeout(0);
+            writer = new BufferedWriter(
+              new OutputStreamWriter(socket.getOutputStream(), BPL_CHARSET));          
             try
             {
-              do
+              writer.write("POST " + path + "/" + moduleName + " HTTP/1.1\r\n");
+              setHeader("Host", host + ":" + port);
+              setHeader(MONITOR_HEADER, pollingInterval);
+              if (accessKey != null)
               {
-                header = readLine();
-              } while (header.length() > 0);
+                setHeader(ACCESS_KEY_HEADER, accessKey);
+              }
+              if (sessionId != null)
+              {
+                setHeader(SESSION_ID_HEADER, sessionId);
+              }
+              String functionNames = getMonitoredFunctionNames();
+              setHeader("Content-Length", functionNames.length());
+              setHeader("Content-Type", BPL_MIMETYPE +
+                "; charset=" + BPL_CHARSET);
+              writer.write("\r\n");
+              writer.write(functionNames);
+              writer.flush();
 
-              String chunk = readChunk();
-              while (chunk != null && !end)
+              input = new BufferedInputStream(socket.getInputStream());
+              String header;
+              try
               {
-                processChunk(chunk);
-                chunk = readChunk();
+                do
+                {
+                  header = readLine();
+                } while (header.length() > 0);
+
+                String chunk = readChunk();
+                while (chunk != null && !end)
+                {
+                  processChunk(chunk);
+                  chunk = readChunk();
+                }
+              }
+              finally
+              {
+                input.close();
               }
             }
             finally
             {
-              input.close();
+              writer.close();
             }
           }
           finally
           {
-            writer.close();
+            socket.close();
           }
         }
         catch (ConnectException ex)
@@ -402,6 +414,11 @@ public class Monitor
             listener.onChange(functionName, value, serverTime);
           }
         }
+        else if (data instanceof String)
+        {
+          monitorSessionId = (String)data;
+          LOGGER.log(Level.INFO, "monitorSessionId: {0}", monitorSessionId);
+        }
       }
       catch (Exception ex)
       {
@@ -439,22 +456,83 @@ public class Monitor
       catch (InterruptedException iex)
       {
         // ignore exception and retry connection
-      }   
+      }
     }
     
     private void cancel()
     {
-      try
+      // cancels the current monitoring session asynchronously
+      Thread thread = new Thread()
       {
-        if (socket != null)
+        @Override
+        public void run()
         {
-          socket.close();
+          try
+          {
+            if (socket != null)
+            {
+              // close open socket to unblock Worker
+              socket.close();
+            }
+          }
+          catch (IOException ex)
+          {
+            // ignore
+          }
+          
+          try
+          {
+            // send unwatch request to server
+            if (monitorSessionId != null)
+            {
+              LOGGER.log(Level.INFO, "Stopping monitor: {0}", monitorSessionId);          
+
+              URL url = new URL(serverUrl);
+              HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+              conn.setDoInput(true);
+              conn.setDoOutput(true);
+              conn.setRequestMethod("POST");
+              conn.setRequestProperty(MONITOR_HEADER, "0");
+              conn.setRequestProperty("Content-Type", BPL_MIMETYPE);
+              String data = "\"" + monitorSessionId + "\"";
+              byte[] bytes = data.getBytes(BPL_CHARSET);
+              OutputStream os = conn.getOutputStream();
+              try
+              {
+                os.write(bytes);
+                os.flush();
+              }
+              finally
+              {
+                os.close();
+              }
+              conn.connect();
+              InputStream is = conn.getInputStream();
+              ByteArrayOutputStream bos = new ByteArrayOutputStream();
+              try
+              {
+                byte[] buffer = new byte[1024];
+                int count = is.read(buffer);
+                while (count != -1)
+                {
+                  bos.write(buffer, 0, count);
+                  count = is.read(buffer);
+                }
+              }
+              finally
+              {
+                is.close();    
+              }
+              monitorSessionId = null;
+            }
+          }
+          catch (Exception ex)
+          {
+            // ignore        
+          }                
         }
-      }
-      catch (IOException ex)
-      {
-        // ignore
-      }      
+      };
+      thread.start();
     }
     
     private void end()

@@ -65,7 +65,8 @@ public class Runner
   public static final String STORE_CLASS_PARAM = "storeClass";
   public static final String MULTI_TENANT_PARAM = "multiTenant";
   public static final String MAX_WAIT_TIME_PARAM = "maxWaitTime";
-  public static final String MONITOR_TIME_PARAM = "monitorTime";
+  public static final String MONITOR_MAX_WAIT_TIME_PARAM = "monitorMaxWaitTime";
+  public static final String MONITOR_PING_TIME_PARAM = "monitorPingTime";
 
   /* default values */
   public static final int DEFAULT_PORT_VALUE = 9999;
@@ -191,22 +192,37 @@ public class Runner
         throw new NumberFormatException(MAX_WAIT_TIME_PARAM + ": " + value);
       }
       server.getRestService().setMaxWaitTime(maxWaitTime);
-      server.getMonitorService().setMaxWaitTime(maxWaitTime);
     }
 
-    value = properties.getProperty(MONITOR_TIME_PARAM);
+    value = properties.getProperty(MONITOR_MAX_WAIT_TIME_PARAM);
     if (value != null)
     {
-      int monitorTime;
+      int maxWaitTime;
       try
       {
-        monitorTime = Integer.parseInt(value);
+        maxWaitTime = Integer.parseInt(value);
       }
       catch (NumberFormatException ex)
       {
-        throw new NumberFormatException(MONITOR_TIME_PARAM + ": " + value);
+        throw new NumberFormatException(
+          MONITOR_MAX_WAIT_TIME_PARAM + ": " + value);
       }
-      server.getMonitorService().setMonitorTime(monitorTime);
+      server.getMonitorService().setMaxWaitTime(maxWaitTime);
+    }
+    
+    value = properties.getProperty(MONITOR_PING_TIME_PARAM);
+    if (value != null)
+    {
+      int pingTime;
+      try
+      {
+        pingTime = Integer.parseInt(value);
+      }
+      catch (NumberFormatException ex)
+      {
+        throw new NumberFormatException(MONITOR_PING_TIME_PARAM + ": " + value);
+      }
+      server.getMonitorService().setPingTime(pingTime);
     }
     return server;
   }
@@ -232,7 +248,7 @@ public class Runner
     }));
     server.start();
   }
-  
+    
   public static void main(String args[]) throws Exception
   {
     Properties properties = new Properties();

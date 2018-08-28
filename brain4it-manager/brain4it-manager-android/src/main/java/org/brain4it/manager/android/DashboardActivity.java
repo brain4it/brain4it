@@ -363,18 +363,8 @@ public class DashboardActivity extends ModuleActivity
   {
     if (monitor != null)
     {
-      final Monitor zombieMonitor = monitor;
+      monitor.unwatchAll();
       monitor = null;
-      Thread thread = new Thread()
-      {
-        @Override
-        public void run()
-        {
-          // It performs I/O, so it can not be invoked in event thread
-          zombieMonitor.unwatchAll();
-        }
-      };
-      thread.start();
     }
   }
 }

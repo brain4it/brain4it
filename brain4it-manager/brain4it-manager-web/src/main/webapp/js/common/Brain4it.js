@@ -1673,10 +1673,11 @@ Brain4it.Monitor = function(serverUrl, module, accessKey, sessionId)
   this.accessKey = accessKey;
   this.sessionId = sessionId || null;
   this.listeners = {};
-  this.request = new XMLHttpRequest();
+  this.watchRequest = new XMLHttpRequest();
   this.connectionDelay = 100;
   this.pollingInterval = 0;
   this.timerId = null;
+  this.monitorSessionId = null;
 };
 
 Brain4it.Monitor.prototype =
@@ -1703,7 +1704,7 @@ Brain4it.Monitor.prototype =
     {
       clearTimeout(this.timerId);
     }
-    this.timerId = setTimeout(function(){scope.sendRequest();},
+    this.timerId = setTimeout(function(){scope.sendWatchRequest();},
       this.connectionDelay);
   },
 
@@ -1722,32 +1723,41 @@ Brain4it.Monitor.prototype =
         }
       }
     }
-    this.sendRequest();
+    this.sendWatchRequest();
   },
 
   unwatchAll : function()
   {
     this.listeners = {};
-    var request = this.request;
-    if (request.readyState > 0) request.abort();
+    var watchRequest = this.watchRequest;
+    if (watchRequest.readyState > 0) 
+    {
+      watchRequest.abort();
+      this.sendUnwatchRequest();
+    }
   },
 
-  sendRequest : function()
+  sendWatchRequest : function()
   {
     var scope = this;
-    var request = this.request;
+    var watchRequest = this.watchRequest;
 
-    if (request.readyState > 0) request.abort();
+    if (watchRequest.readyState > 0) 
+    {
+      // cancel previous request
+      watchRequest.abort();
+      this.sendUnwatchRequest();
+    }
 
     var list = new Brain4it.List();
     for (var functionName in this.listeners)
     {
       list.add(functionName);
     }
-    if (list.size() === 0) return;
+    if (list.size() === 0) return; // Monitor is idle, so exit
 
-    request.open("POST", this.url, true);
-    request.setRequestHeader("Content-Type",
+    watchRequest.open("POST", this.url, true);
+    watchRequest.setRequestHeader("Content-Type",
       Brain4it.MIMETYPE + "; charset=" + Brain4it.CHARSET);
     var pollingInterval = 0;
     if (typeof this.pollingInterval === "number")
@@ -1757,19 +1767,20 @@ Brain4it.Monitor.prototype =
         pollingInterval = this.pollingInterval;
       }
     }
-    request.setRequestHeader(Brain4it.MONITOR_HEADER, String(pollingInterval));
+    watchRequest.setRequestHeader(Brain4it.MONITOR_HEADER, 
+      String(pollingInterval));
     if (this.accessKey)
     {
-      request.setRequestHeader(Brain4it.ACCESS_KEY_HEADER, this.accessKey);
+      watchRequest.setRequestHeader(Brain4it.ACCESS_KEY_HEADER, this.accessKey);
     }
     if (this.sessionId)
     {
-      request.setRequestHeader(Brain4it.SESSION_ID_HEADER, this.sessionId);
+      watchRequest.setRequestHeader(Brain4it.SESSION_ID_HEADER, this.sessionId);
     }
     var index = 0;
-    request.onprogress = function()
+    watchRequest.onprogress = function()
     {
-      var response = request.response;
+      var response = watchRequest.response;
       var chunkEnd = response.indexOf("\n", index);
       while (chunkEnd !== -1)
       {
@@ -1779,18 +1790,33 @@ Brain4it.Monitor.prototype =
         chunkEnd = response.indexOf("\n", index);
       }
     };
-    request.onreadystatechange = function (event)
+    watchRequest.onreadystatechange = function(event)
     {
-      if (request.readyState === 4)
+      if (watchRequest.readyState === 4)
       {
         console.info("request terminated");
-        scope.sendRequest();
+        scope.sendWatchRequest();
       }
     };
     var printer = new Brain4it.Printer();
     var functionNames = printer.print(list);
     console.info(functionNames);
-    request.send(functionNames);
+    watchRequest.send(functionNames);
+  },
+  
+  sendUnwatchRequest : function()
+  {
+    if (this.monitorSessionId)
+    {
+      var unwatchRequest = new XMLHttpRequest();
+      unwatchRequest.open("POST", this.url, false); // synchronous call
+      unwatchRequest.setRequestHeader("Content-Type",
+        Brain4it.MIMETYPE + "; charset=" + Brain4it.CHARSET);
+      unwatchRequest.setRequestHeader(Brain4it.MONITOR_HEADER, "0");
+      unwatchRequest.send('"' + this.monitorSessionId + '"');
+      this.monitorSessionId = null;
+      console.info("unwatch request sent");
+    }
   },
 
   processChunk : function(chunk)
@@ -1813,6 +1839,10 @@ Brain4it.Monitor.prototype =
             functionListeners[i](functionName, value, serverTime);
           }
         }
+      }
+      else if (typeof change === "string")
+      {
+        this.monitorSessionId = change;
       }
     }
     catch (ex)

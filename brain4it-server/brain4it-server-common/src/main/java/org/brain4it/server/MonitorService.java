@@ -32,10 +32,12 @@ package org.brain4it.server;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.TimeUnit;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.brain4it.io.Printer;
@@ -53,15 +55,19 @@ import static org.brain4it.server.ServerConstants.*;
  */
 public class MonitorService
 {
-  private int maxWaitTime = 300; // 300 seconds = 5 minutes
-  private int monitorTime = 10; // 10 seconds
+  private int maxWaitTime = 10; // 10 seconds
+  private int pingTime = 30; // 30 seconds
+  private final Map<String, FunctionQueue> sessions;
   
   private final ModuleManager moduleManager;
+  private static final String END = "END";
   private static final Logger LOGGER = Logger.getLogger("MonitorService");
   
   public MonitorService(ModuleManager moduleManager)
   {
     this.moduleManager = moduleManager;
+    this.sessions = Collections.synchronizedMap(
+      new HashMap<String, FunctionQueue>());
   }
 
   public ModuleManager getModuleManager()
@@ -82,47 +88,44 @@ public class MonitorService
     this.maxWaitTime = maxWaitTime;
   }
 
-  public int getMonitorTime()
+  public int getPingTime()
   {
-    return monitorTime;
+    return pingTime;
   }
 
-  public void setMonitorTime(int monitorTime)
+  public void setPingTime(int pingTime)
   {
     if (maxWaitTime <= 0)
-      throw new IllegalArgumentException("monitorTime: " + monitorTime);
+      throw new IllegalArgumentException("pingTime: " + pingTime);
 
-    this.monitorTime = monitorTime;
+    this.pingTime = pingTime;
   }
   
-  public void monitor(String path, BList exteriorFunctions,
+  public void watch(String path, BList exteriorFunctions,
     BList requestContext, int pollingInterval, PrintWriter writer) 
     throws Exception
   {
-    LOGGER.log(Level.INFO, "Monitor start");
+    String monitorSessionId = UUID.randomUUID().toString();
+
+    LOGGER.log(Level.INFO, "Monitor watch: {0}", monitorSessionId);
     
     PathParser parser = new PathParser(moduleManager, path);
     Module module = parser.getModule();
 
     if (module == null) throw new Exception("Module is required");
 
-    ArrayList<String> functionNames = getFunctionNames(exteriorFunctions);
-    final LinkedBlockingQueue<String> queue =
-      new LinkedBlockingQueue(functionNames.size());
+    final FunctionQueue queue = new FunctionQueue();
+    sessions.put(monitorSessionId, queue);
+    
     Module.Listener listener = new Module.Listener()
     {
       @Override
       public void onChange(Module module, String functionName)
       {
-        synchronized (queue)
-        {
-          if (!queue.contains(functionName))
-          {
-            queue.offer(functionName);
-          }
-        }
+        queue.append(functionName);
       }
     };
+    List<String> functionNames = getFunctionNames(exteriorFunctions);
     // register module listeners
     for (String functionName : functionNames)
     {
@@ -130,8 +133,12 @@ public class MonitorService
     }
     try
     {
+      // send monitorSessionId
+      writer.println("\"" + monitorSessionId + "\"");
+      writer.flush();
+      
       HashMap<String, Object> lastSentData = new HashMap<String, Object>();
-      int monitorMillis = 1000 * monitorTime;
+      int monitorMillis = 1000 * pingTime;
       if (pollingInterval <= 0) pollingInterval = monitorMillis;
       long waitMillis = Math.min(pollingInterval, monitorMillis);
       long lastSentMillis = 0;
@@ -142,13 +149,16 @@ public class MonitorService
         // Polling at pollingInterval milliseconds
         if (nowMillis - lastPollMillis > pollingInterval)
         {
-          requestAllData(functionNames, queue);
+          // request all functions
+          queue.append(functionNames);
           lastPollMillis = nowMillis;
         }
         // get functionName to invoke
-        String functionName = queue.poll(waitMillis, TimeUnit.MILLISECONDS);
+        String functionName = queue.poll(waitMillis);
         if (functionName != null)
         {
+          if (functionName.equals(END)) break;
+
           // send data if value returned by function has changed
           if (sendMonitorData(module, functionName, lastSentData,
             requestContext, writer))
@@ -170,11 +180,23 @@ public class MonitorService
       {
         module.removeListener(functionName, listener);
       }
+      sessions.remove(monitorSessionId);
     }
-    LOGGER.log(Level.INFO, "Monitor end");
+    LOGGER.log(Level.INFO, "Monitor end: {0}", monitorSessionId);
   }
   
-  private ArrayList<String> getFunctionNames(BList exteriorFunctions)
+  public String unwatch(String monitorSessionId)
+  {
+    LOGGER.log(Level.INFO, "Monitor unwatch: {0}", monitorSessionId);
+    FunctionQueue queue = sessions.get(monitorSessionId);
+    if (queue != null)
+    {
+      queue.end();
+    }
+    return "unwatched";
+  }
+  
+  private List<String> getFunctionNames(BList exteriorFunctions)
   {
     ArrayList<String> functionNames = new ArrayList<String>();
     for (int i = 0; i < exteriorFunctions.size(); i++)
@@ -191,22 +213,7 @@ public class MonitorService
     }
     return functionNames;
   }
-
-  private void requestAllData(ArrayList<String> functionNames,
-    LinkedBlockingQueue<String> queue)
-  {
-    synchronized (queue)
-    {
-      for (String functionName : functionNames)
-      {
-        if (!queue.contains(functionName))
-        {
-          queue.offer(functionName);
-        }
-      }
-    }
-  }
-
+   
   private boolean sendMonitorData(Module module, String functionName,
     HashMap<String, Object> lastSentData, BList requestContext, 
     PrintWriter writer) throws Exception
@@ -246,5 +253,50 @@ public class MonitorService
   private boolean isExteriorFunction(String functionName)
   {
     return functionName.startsWith(EXTERIOR_FUNCTION_PREFIX);
+  }
+  
+  class FunctionQueue extends LinkedList<String>
+  {
+    public synchronized String poll(long waitMillis)
+    {
+      String functionName = poll();
+      if (functionName == null)
+      {
+        try
+        {
+          wait(waitMillis);
+          functionName = poll();
+        }
+        catch (InterruptedException ex)
+        {
+          // ignore
+        }
+      }
+      return functionName;
+    }
+    
+    public synchronized void append(String functionName)
+    {
+      if (!contains(functionName))
+      {
+        offer(functionName);
+        notify();
+      }
+    }
+    
+    public synchronized void append(List<String> functionNames)
+    {
+      for (String functionName : functionNames)
+      {
+        append(functionName);
+      }
+    }
+    
+    public synchronized void end()
+    {
+      clear();
+      offer(END);
+      notify();
+    }
   }
 }

@@ -57,7 +57,8 @@ public class RestServlet extends HttpServlet
   private static final String ACCESS_KEY_FILE_PARAM = "accessKeyFile";
   private static final String LIBRARIES_PARAM = "libraries";
   private static final String MAX_WAIT_TIME_PARAM = "maxWaitTime";
-  private static final String MONITOR_TIME_PARAM = "monitorTime";
+  private static final String MONITOR_MAX_WAIT_TIME_PARAM = "monitorMaxWaitTime";
+  private static final String MONITOR_PING_TIME_PARAM = "monitorPingTime";
 
   private ModuleManager moduleManager;
   private RestService restService;
@@ -116,10 +117,25 @@ public class RestServlet extends HttpServlet
           throw new NumberFormatException(MAX_WAIT_TIME_PARAM + ": " + value);
         }
         restService.setMaxWaitTime(maxWaitTime);
-        monitorService.setMaxWaitTime(maxWaitTime);
       }
 
-      value = servletContext.getInitParameter(MONITOR_TIME_PARAM);
+      value = servletContext.getInitParameter(MONITOR_MAX_WAIT_TIME_PARAM);
+      if (value != null)
+      {
+        int maxWaitTime;
+        try
+        {
+          maxWaitTime = Integer.parseInt(value);
+        }
+        catch (NumberFormatException ex)
+        {
+          throw new NumberFormatException(MONITOR_MAX_WAIT_TIME_PARAM + ": " +
+            value);
+        }
+        monitorService.setMaxWaitTime(maxWaitTime);
+      }
+      
+      value = servletContext.getInitParameter(MONITOR_PING_TIME_PARAM);
       if (value != null)
       {
         int monitorTime;
@@ -129,9 +145,10 @@ public class RestServlet extends HttpServlet
         }
         catch (NumberFormatException ex)
         {
-          throw new NumberFormatException(MONITOR_TIME_PARAM + ": " + value);
+          throw new NumberFormatException(MONITOR_PING_TIME_PARAM + ": " + 
+            value);
         }
-        monitorService.setMonitorTime(monitorTime);
+        monitorService.setPingTime(monitorTime);
       }
       
       log("Initialization completed.");

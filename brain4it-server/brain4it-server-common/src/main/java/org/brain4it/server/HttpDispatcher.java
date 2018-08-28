@@ -99,19 +99,30 @@ public abstract class HttpDispatcher
           BList requestContext = getContextList();
           if (monitor == null)
           {
+            // execute code fragment or exterior function
             Object result = getRestService().execute(path, data, accessKey,
               requestContext);
             sendResult(result, requestContext);
           }
           else
           {
-            int pollingInterval = Integer.parseInt(monitor);
-            setResponseHeader("Transfer-Encoding", "chunked");
-            setResponseHeader("X-Content-Type-Options", "nosniff");
-            setCharacterEncoding(BPL_CHARSET);            
-            BList functions = (BList)data;
-            getMonitorService().monitor(path, functions, requestContext,
-              pollingInterval, getResponseWriter());
+            if (data instanceof BList) // start monitoring session
+            {
+              setCharacterEncoding(BPL_CHARSET);
+              setResponseHeader("Transfer-Encoding", "chunked");
+              setResponseHeader("X-Content-Type-Options", "nosniff");
+              int pollingInterval = Integer.parseInt(monitor);
+              BList functions = (BList)data;
+              getMonitorService().watch(path, functions, requestContext,
+                pollingInterval, getResponseWriter()); 
+              // do not returns until a stop signal or network error
+            }
+            else if (data instanceof String) // stop monitoring session
+            {
+              String monitorSessionId = (String)data;
+              sendResult(getMonitorService().unwatch(monitorSessionId));
+            }
+            else throw new IOException("Invalid monitor service argument");
           }
           break;
         }

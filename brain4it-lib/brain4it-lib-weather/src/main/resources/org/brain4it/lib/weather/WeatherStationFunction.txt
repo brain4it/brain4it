@@ -1,0 +1,33 @@
+(WeatherStation (weather-station station_type address "options" => options)
+  data
+  where =>
+  (
+    station_type => ("string" 1 1)
+    address => ("string" 1 1)
+    options => ("list" 0 1)
+    data => ("list" 1 1)
+  )
+  examples =>
+  (
+    (
+      (weather-station "vantage" "10.1.1.21:22222")
+      (
+        "timestamp" => 1535545911726 
+        "date" => "Wed Aug 29 14:31:51 CEST 2018" 
+        "pressure" => 1016 
+        "humidity" => 72 
+        "humidity-inside" => 49 
+        "temperature" => 28.72222222222222 
+        "temperature-inside" => 27.16666666666667 
+        "rain" => 0 
+        "solar-radiation" => 287 
+        "uv-radiation" => 2 
+        "wind-speed-avg" => 0 
+        "wind-speed" => 2.7 
+        "wind-direction" => 151 
+        "station-type" => "Vantage Pro or Vantage Pro 2"
+      )
+    )
+  )
+  bundle => "org.brain4it.lib.WeatherLibrary"
+)

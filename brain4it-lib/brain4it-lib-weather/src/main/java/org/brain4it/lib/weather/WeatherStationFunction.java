@@ -36,7 +36,7 @@ import org.brain4it.lang.BList;
 import org.brain4it.lang.Context;
 import org.brain4it.lang.Function;
 import org.brain4it.lang.Utils;
-import org.brain4it.lib.weather.vantage.VantageStation;
+import org.brain4it.lib.weather.davis.DavisStation;
 
 /**
  *
@@ -48,6 +48,7 @@ public class WeatherStationFunction implements Function
   public Object invoke(Context context, BList args) throws Exception
   {
     Utils.checkArguments(args, 2);
+
     String stationType = (String)context.evaluate(args.get(1));
     if (stationType == null)
       throw new RuntimeException("station type must be specified");
@@ -64,10 +65,10 @@ public class WeatherStationFunction implements Function
   {
     WeatherStation station;
     
-    switch (stationType)
+    switch (stationType.toLowerCase())
     {
-      case "vantage" : station = new VantageStation(); break;
-      default: 
+      case "davis" : station = new DavisStation(); break;
+      default:
         throw new BException("Unsupported weather station: " + stationType);
     }
     return station;

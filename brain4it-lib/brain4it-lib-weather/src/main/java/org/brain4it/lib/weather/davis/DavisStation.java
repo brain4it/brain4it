@@ -28,7 +28,7 @@
  *   and 
  *   https://www.gnu.org/licenses/lgpl.txt
  */
-package org.brain4it.lib.weather.vantage;
+package org.brain4it.lib.weather.davis;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -42,7 +42,7 @@ import org.brain4it.lib.weather.WeatherStation;
  *
  * @author colladorm, realor
  */
-public class VantageStation implements WeatherStation
+public class DavisStation implements WeatherStation
 {
   protected static final String IN = "< ";
   protected static final String OUT = "> ";
@@ -55,6 +55,11 @@ public class VantageStation implements WeatherStation
   {
     // address format: <host>:<port> or <host>
     // examples: "10.1.1.12:22222" or "10.1.1.12"
+    
+    if (address == null)
+    {
+      throw new IOException("host address must be specified");
+    }
     
     BList data = null;
     String[] parts = address.split(":");
@@ -136,7 +141,7 @@ public class VantageStation implements WeatherStation
       if ("Vantage Pro or Vantage Pro 2".equals(stationType))
       {
         BList current = loop();
-        current.put(STATION_TYPE, "Vantage Pro or Vantage Pro 2");
+        current.put(STATION_INFO, "Vantage Pro or Vantage Pro 2");
         return current;
       } 
       else
@@ -425,7 +430,8 @@ public class VantageStation implements WeatherStation
             }
             buf.append(s);
             buf.append('>');
-          } else
+          } 
+          else
           {
             buf.append((char) bytes[i]);
           }

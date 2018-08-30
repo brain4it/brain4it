@@ -10,7 +10,7 @@
   examples =>
   (
     (
-      (weather-station "vantage" "10.1.1.21:22222")
+      (weather-station "davis" "10.1.1.21:22222")
       (
         "timestamp" => 1535545911726 
         "date" => "Wed Aug 29 14:31:51 CEST 2018" 
@@ -25,9 +25,13 @@
         "wind-speed-avg" => 0 
         "wind-speed" => 2.7 
         "wind-direction" => 151 
-        "station-type" => "Vantage Pro or Vantage Pro 2"
+        "station-info" => "Vantage Pro or Vantage Pro 2"
       )
     )
   )
+  exceptions => 
+  (
+    ("IOException")
+  )  
   bundle => "org.brain4it.lib.WeatherLibrary"
 )

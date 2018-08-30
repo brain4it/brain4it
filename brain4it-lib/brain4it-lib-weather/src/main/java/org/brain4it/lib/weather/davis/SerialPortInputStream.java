@@ -14,10 +14,30 @@
  *  limitations under the License.
  *  under the License.
  */
-package org.brain4it.lib.weather.vantage;
+package org.brain4it.lib.weather.davis;
 
-public interface Constants
+import java.io.IOException;
+import java.io.InputStream;
+
+public class SerialPortInputStream extends InputStream
 {
-  public static final byte ACK = 0x06;
-  public static final byte NAK = 0x21;
+  private final RingBuffer buffer;
+
+  public SerialPortInputStream(RingBuffer buffer)
+  {
+    this.buffer = buffer;
+  }
+
+  @Override
+  public int read() throws IOException
+  {
+    return buffer.read();
+  }
+
+  @Override
+  public void close() throws IOException
+  {
+    buffer.clear();
+    super.close();
+  }
 }

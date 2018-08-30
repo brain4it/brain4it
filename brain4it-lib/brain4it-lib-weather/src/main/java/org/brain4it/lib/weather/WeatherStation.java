@@ -39,7 +39,7 @@ import org.brain4it.lang.BList;
  */
 public interface WeatherStation
 {
-  public static final String STATION_TYPE = "station-type";
+  public static final String STATION_INFO = "station-info";
   public static final String TIMESTAMP = "timestamp";
   public static final String DATE = "date";
   public static final String PRESSURE = "pressure";

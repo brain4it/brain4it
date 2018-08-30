@@ -14,13 +14,13 @@
  *  limitations under the License.
  *  under the License.
  */
-package org.brain4it.lib.weather.vantage;
+package org.brain4it.lib.weather.davis;
 
 public class RingBuffer
 {
   private static final int BUFFER_SIZE = 2048;
 
-  private int[] buffer = new int[BUFFER_SIZE];
+  private final int[] buffer = new int[BUFFER_SIZE];
   private int readIndex = 0;
   private int writeIndex = 0;
 

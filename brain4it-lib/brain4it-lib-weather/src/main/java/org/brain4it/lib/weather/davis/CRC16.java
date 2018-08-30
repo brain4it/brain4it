@@ -14,7 +14,7 @@
  *  limitations under the License.
  *  under the License.
  */
-package org.brain4it.lib.weather.vantage;
+package org.brain4it.lib.weather.davis;
 
 public class CRC16
 {

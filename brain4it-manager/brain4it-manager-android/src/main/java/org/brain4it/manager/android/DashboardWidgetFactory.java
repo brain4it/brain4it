@@ -42,11 +42,13 @@ import org.brain4it.manager.android.view.EditTextWidget;
 import org.brain4it.manager.android.view.GaugeWidget;
 import org.brain4it.manager.android.view.GraphWidget;
 import org.brain4it.manager.android.view.ImageWidget;
+import org.brain4it.manager.android.view.IndicatorWidget;
 import org.brain4it.manager.android.view.LedWidget;
 import org.brain4it.manager.android.view.RangeWidget;
 import org.brain4it.manager.android.view.SelectWidget;
 import org.brain4it.manager.android.view.StickWidget;
 import org.brain4it.manager.android.view.SwitchWidget;
+import static org.brain4it.manager.widgets.WidgetType.*;
 
 /**
  *
@@ -59,17 +61,18 @@ public class DashboardWidgetFactory
  
   public DashboardWidgetFactory()
   {
-    types.put("button", ButtonWidget.class);
-    types.put("display", DisplayWidget.class);
-    types.put("editText", EditTextWidget.class);
-    types.put("gauge", GaugeWidget.class);
-    types.put("graph", GraphWidget.class);
-    types.put("image", ImageWidget.class);
-    types.put("led", LedWidget.class);
-    types.put("range", RangeWidget.class);
-    types.put("select", SelectWidget.class);
-    types.put("stick", StickWidget.class);
-    types.put("switch", SwitchWidget.class);
+    types.put(BUTTON, ButtonWidget.class);
+    types.put(DISPLAY, DisplayWidget.class);
+    types.put(EDIT_TEXT, EditTextWidget.class);
+    types.put(GAUGE, GaugeWidget.class);
+    types.put(GRAPH, GraphWidget.class);
+    types.put(IMAGE, ImageWidget.class);
+    types.put(INDICATOR, IndicatorWidget.class);
+    types.put(LED, LedWidget.class);
+    types.put(RANGE, RangeWidget.class);
+    types.put(SELECT, SelectWidget.class);
+    types.put(STICK, StickWidget.class);
+    types.put(SWITCH, SwitchWidget.class);
   }
   
   public static DashboardWidgetFactory getInstance()

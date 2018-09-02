@@ -56,6 +56,7 @@ public abstract class WidgetType
   public static final String GAUGE = "gauge";
   public static final String GRAPH = "graph";
   public static final String IMAGE = "image";
+  public static final String INDICATOR = "indicator";
   public static final String LED = "led";
   public static final String RANGE = "range";
   public static final String SELECT = "select";
@@ -222,6 +223,7 @@ public abstract class WidgetType
     TYPES.put(GAUGE, new GaugeWidgetType());
     TYPES.put(GRAPH, new GraphWidgetType());
     TYPES.put(IMAGE, new ImageWidgetType());
+    TYPES.put(INDICATOR, new IndicatorWidgetType());
     TYPES.put(LED, new LedWidgetType());
     TYPES.put(RANGE, new RangeWidgetType());
     TYPES.put(SELECT, new SelectWidgetType());

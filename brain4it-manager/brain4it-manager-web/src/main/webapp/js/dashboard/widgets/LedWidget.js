@@ -15,16 +15,20 @@ Brain4it.LedWidget.prototype.init = function(name, setup)
   this.ledElem.className = setup.getByName("className") || "led";
 
   this.ledColor = setup.getByName("color") || "#FFFF00";
-  
+
   this.element.appendChild(this.ledElem);
+  
+  var outputId = name + "_output";  
+  this.outputElem = document.createElement("output");
+  this.outputElem.id = outputId;  
+  this.ledElem.appendChild(this.outputElem);
+  
   var label = setup.getByName("label");
   if (label)
   {
-    this.outputElem = document.createElement("output");
-    this.ledElem.appendChild(this.outputElem);
-    
     this.labelElem = document.createElement("label");
     this.labelElem.innerHTML = "" + label;
+    this.labelElem.htmlFor = outputId;
     this.ledElem.appendChild(this.labelElem);
   }
   var func = setup.getByName("get-value");

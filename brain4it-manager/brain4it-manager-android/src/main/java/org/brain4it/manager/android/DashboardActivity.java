@@ -315,7 +315,7 @@ public class DashboardActivity extends ModuleActivity
     }
     catch (Exception ex)
     {
-      // ignore
+      // unsupported widget or init fail: ignore
     }
     return (View)widget;
   }

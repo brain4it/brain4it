@@ -47,7 +47,7 @@ body
 .dashboard
 {
   position: absolute;
-  top: 31px;
+  top: 36px;
   bottom: 0;
   left: 0;
   right: 0;
@@ -343,6 +343,51 @@ button::-moz-focus-inner
 .image_area img
 {
   height: 100%;
+}
+
+.indicator
+{
+  position: absolute;
+  top: 2px;
+  bottom: 2px;
+  right: 2px;
+  left: 2px;
+  border: 1px solid #c0c0c0;
+  border-radius: 3px;
+  padding: 5px;
+  display: flex;
+  flex-direction: column;
+}
+
+.indicator label
+{
+  overflow: hidden;
+}
+
+.indicator .value_div
+{
+  display: flex;
+  flex-direction: row;
+  flex-grow: 100;
+}
+
+.indicator .value_div output
+{
+  text-align: right;
+  padding-right: 4px;
+  font-size: 24px;
+  flex-grow: 100;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.indicator .value_div .units
+{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
 }
 
 .led

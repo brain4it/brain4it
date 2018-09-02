@@ -70,8 +70,7 @@ public class LedWidget extends LinearLayout implements DashboardWidget
   protected final Monitor.Listener monitorListener = new Monitor.Listener()
   {
     @Override
-    public void onChange(String reference, final Object value, 
-      long serverTime)
+    public void onChange(String reference, final Object value, long serverTime)
     {
       post(new Runnable()
       {

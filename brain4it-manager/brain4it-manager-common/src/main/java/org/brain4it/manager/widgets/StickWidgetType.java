@@ -37,8 +37,7 @@ import static org.brain4it.manager.widgets.WidgetProperty.*;
  * @author realor
  */
 public class StickWidgetType extends WidgetType
-{
-  
+{  
   public StickWidgetType()
   {
     addProperty(SET_VALUE, OBJECT, true, null);

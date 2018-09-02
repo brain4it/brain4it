@@ -39,6 +39,7 @@ import java.awt.RadialGradientPaint;
 import java.awt.RenderingHints;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import org.brain4it.client.Monitor;
 import org.brain4it.lang.BSoftReference;
@@ -53,7 +54,7 @@ import org.brain4it.manager.widgets.WidgetType;
  *
  * @author realor
  */
-public class LedWidget extends JComponent implements DashboardWidget
+public class LedWidget extends JPanel implements DashboardWidget
 {
   protected DashboardPanel dashboard;
   protected String getValueFunction;
@@ -74,8 +75,6 @@ public class LedWidget extends JComponent implements DashboardWidget
         public void run()
         {
           on = Utils.toBoolean(value);
-          invalidate();
-          revalidate();
           repaint();
         }
       });

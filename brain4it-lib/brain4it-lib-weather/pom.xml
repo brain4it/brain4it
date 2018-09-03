@@ -15,6 +15,19 @@
   <name>brain4it-lib-weather</name>
   <description>brain4it weather library</description>
 
+  <dependencies>
+    <dependency>
+      <groupId>org.brain4it</groupId>
+      <artifactId>brain4it-lib-core</artifactId>
+      <version>${brain4it-version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.scream3r</groupId>
+      <artifactId>jssc</artifactId>
+      <version>2.8.0</version>
+    </dependency>
+  </dependencies>
+
   <build>
     <plugins>
       <plugin>
@@ -30,17 +43,5 @@
       </plugin>
     </plugins>
   </build>
-
-  <dependencies>
-    <dependency>
-      <groupId>org.brain4it</groupId>
-      <artifactId>brain4it-lib-core</artifactId>
-      <version>1.0</version>
-    </dependency>
-    <dependency>
-      <groupId>org.scream3r</groupId>
-      <artifactId>jssc</artifactId>
-      <version>2.8.0</version>
-    </dependency>
-  </dependencies>
+  
 </project>

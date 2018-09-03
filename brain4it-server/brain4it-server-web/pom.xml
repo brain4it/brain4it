@@ -30,52 +30,52 @@
     <dependency>
       <groupId>org.brain4it</groupId>
       <artifactId>brain4it-server-common</artifactId>
-      <version>1.0</version>
+      <version>${brain4it-version}</version>
     </dependency>
     <dependency>
       <groupId>org.brain4it</groupId>
       <artifactId>brain4it-lib-core</artifactId>
-      <version>1.0</version>
+      <version>${brain4it-version}</version>
     </dependency>
     <dependency>
       <groupId>org.brain4it</groupId>
       <artifactId>brain4it-lib-database</artifactId>
-      <version>1.0</version>
+      <version>${brain4it-version}</version>
     </dependency>
     <dependency>
       <groupId>org.brain4it</groupId>
       <artifactId>brain4it-lib-mail</artifactId>
-      <version>1.0</version>
+      <version>${brain4it-version}</version>
     </dependency>
     <dependency>
       <groupId>org.brain4it</groupId>
       <artifactId>brain4it-lib-management</artifactId>
-      <version>1.0</version>
+      <version>${brain4it-version}</version>
     </dependency>
     <dependency>
       <groupId>org.brain4it</groupId>
       <artifactId>brain4it-lib-mqtt</artifactId>
-      <version>1.0</version>
+      <version>${brain4it-version}</version>
     </dependency>
     <dependency>
       <groupId>org.brain4it</groupId>
       <artifactId>brain4it-lib-serial</artifactId>
-      <version>1.0</version>
+      <version>${brain4it-version}</version>
     </dependency>
     <dependency>
       <groupId>org.brain4it</groupId>
       <artifactId>brain4it-lib-vision</artifactId>
-      <version>1.0</version>
+      <version>${brain4it-version}</version>
     </dependency>
     <dependency>
       <groupId>org.brain4it</groupId>
       <artifactId>brain4it-lib-weather</artifactId>
-      <version>1.0</version>
+      <version>${brain4it-version}</version>
     </dependency>
     <dependency>
       <groupId>org.brain4it</groupId>
       <artifactId>brain4it-lib-xmpp</artifactId>
-      <version>1.0</version>
+      <version>${brain4it-version}</version>
     </dependency>
   </dependencies>
 

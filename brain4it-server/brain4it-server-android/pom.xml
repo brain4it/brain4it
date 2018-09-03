@@ -26,7 +26,7 @@
     <dependency>
       <groupId>org.brain4it</groupId>
       <artifactId>brain4it-server-standalone</artifactId>
-      <version>1.0</version>
+      <version>${brain4it-version}</version>
     </dependency>
   </dependencies>
 

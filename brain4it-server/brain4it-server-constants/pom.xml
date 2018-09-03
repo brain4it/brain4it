@@ -4,7 +4,7 @@
 
   <parent>
     <groupId>org.brain4it</groupId>
-    <artifactId>brain4it-parent-pom</artifactId>
+    <artifactId>brain4it-server</artifactId>
     <version>1.0</version>
   </parent>
 
@@ -18,7 +18,7 @@
     <dependency>
       <groupId>org.brain4it</groupId>
       <artifactId>brain4it-lang</artifactId>
-      <version>1.0</version>
+      <version>${brain4it-version}</version>
     </dependency>
   </dependencies>
 

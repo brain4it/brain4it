@@ -20,7 +20,7 @@
     <dependency>
       <groupId>org.brain4it</groupId>
       <artifactId>brain4it-lib-core</artifactId>
-      <version>1.0</version>
+      <version>${brain4it-version}</version>
     </dependency>
     <dependency>
       <groupId>org.boofcv</groupId>

@@ -58,7 +58,7 @@ public class SerialLibrary extends Library
 
   @Override
   public void load()
-  {
+  {    
     functions.put("serial-ports", new SerialPortsFunction(this));
     functions.put("serial-open", new SerialOpenFunction(this));
     functions.put("serial-close", new SerialCloseFunction(this));

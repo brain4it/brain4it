@@ -13,15 +13,17 @@ Brain4it.LedWidget.prototype.init = function(name, setup)
   this._onRemoteChange = this.onRemoteChange.bind(this);
   this.ledElem = document.createElement("div");
   this.ledElem.className = setup.getByName("className") || "led";
+  this.element.appendChild(this.ledElem);
 
   this.ledColor = setup.getByName("color") || "#FFFF00";
-
-  this.element.appendChild(this.ledElem);
   
-  var outputId = name + "_output";  
+  this.divElem = document.createElement("div");
+  this.ledElem.appendChild(this.divElem);
+  
+  var outputId = name + "_output";
   this.outputElem = document.createElement("output");
   this.outputElem.id = outputId;  
-  this.ledElem.appendChild(this.outputElem);
+  this.divElem.appendChild(this.outputElem);
   
   var label = setup.getByName("label");
   if (label)
@@ -40,6 +42,7 @@ Brain4it.LedWidget.prototype.init = function(name, setup)
   var scope = this;
   window.addEventListener("resize",
     function() { scope.updateLayout(); }, false);
+  this.updateLayout();
 };
 
 Brain4it.LedWidget.prototype.onRemoteChange = 
@@ -59,13 +62,14 @@ Brain4it.LedWidget.prototype.onRemoteChange =
 
 Brain4it.LedWidget.prototype.updateLayout = function()
 {
-  var height = this.labelElem.clientHeight;
-  height = Math.floor(0.5 * height);
-  
-  if (height > 40) height = 30;
-  else if (height < 14) height = 14;
-  
-  this.labelElem.style.fontSize = height + "px";
+  var width = this.divElem.offsetWidth;
+  var height = this.divElem.offsetHeight;
+  var size = Math.min(width, height);
+
+  this.outputElem.style.top = ((height - size) / 2) + "px";
+  this.outputElem.style.bottom = ((height - size) / 2) + "px";
+  this.outputElem.style.left = ((width - size) / 2) + "px";
+  this.outputElem.style.right = ((width - size) / 2) + "px";
 };
 
 Brain4it.Dashboard.prototype.widgetTypes['led'] = Brain4it.LedWidget;

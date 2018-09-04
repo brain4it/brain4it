@@ -241,10 +241,10 @@ button::-moz-focus-inner
 .display
 {
   position: absolute;
-  top:4pt;
-  bottom:4pt;
-  left:4pt;
-  right:4pt;
+  top:2pt;
+  bottom:2pt;
+  left:2pt;
+  right:2pt;
   border: 3px solid #404080;
   overflow: hidden;
   background: #6060FF;
@@ -259,10 +259,10 @@ button::-moz-focus-inner
 .editText
 {
   position:absolute;
-  top:4px;
-  bottom:4px;
-  left:4px;
-  right:4px;
+  top:2pt;
+  bottom:2pt;
+  left:2pt;
+  right:2pt;
 }
 
 .editText label
@@ -309,19 +309,20 @@ button::-moz-focus-inner
 {
   width:100%;
   text-align: center;
-  font-family: Arial;
 }
 
 .range label
 {
   display:inline-block;
   margin-right: 2px;
+  overflow: hidden;  
 }
 
 .range output
 {
   display:inline-block;
   margin-left: 2px;
+  overflow: hidden;
 }
 
 .range input[type='range']
@@ -348,10 +349,10 @@ button::-moz-focus-inner
 .indicator
 {
   position: absolute;
-  top: 2px;
-  bottom: 2px;
-  right: 2px;
-  left: 2px;
+  top: 2pt;
+  bottom: 2pt;
+  right: 2pt;
+  left: 2pt;
   border: 1px solid #c0c0c0;
   border-radius: 3px;
   padding: 5px;
@@ -393,19 +394,32 @@ button::-moz-focus-inner
 .led
 {
   position: absolute;
-  top: 5%;
-  bottom: 5%;
-  right: 5%;
-  left: 5%;
+  top: 2pt;
+  bottom: 2pt;
+  right: 2pt;
+  left: 2pt;
+  display: flex;
+  flex-direction: column;
 }
 
-.led output
+.led div
 {
-  position: absolute;
-  left:25%;
-  top: 0;
-  width: 50%;
-  height: 50%;
+  flex-grow: 100;
+  position: relative;
+  top:0;
+  right:0;
+  bottom:0;
+  left:0;
+  margin: 8px;
+}
+
+.led div output
+{
+  position:absolute;
+  top:0;
+  right:0;
+  bottom:0;
+  left:0;
   border: 1px solid black;
   border-radius: 50%;
   background-color: gray;
@@ -413,13 +427,8 @@ button::-moz-focus-inner
 
 .led label
 {
-  position: absolute;
-  left:0;
-  right:0;
-  top: 60%;
-  bottom: 0;
   text-align: center;
-  line-height: 100%;
+  overflow: hidden;
 }
 
 .select
@@ -435,6 +444,7 @@ button::-moz-focus-inner
   width:100%;
   text-align: center;
   font-size:14px;
+  margin-bottom: 4pt;
 }
 
 .select select

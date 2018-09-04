@@ -71,8 +71,6 @@ Brain4it.RangeWidget.prototype.init = function(name, setup)
   {
     this.rangeElem.disabled = true;
   }
-  window.addEventListener("resize",
-    function() { scope.updateLayout(); }, false);
 };
 
 Brain4it.RangeWidget.prototype.onChange = function()
@@ -102,18 +100,6 @@ Brain4it.RangeWidget.prototype.onRemoteChange =
       }
     }
   }
-};
-
-Brain4it.RangeWidget.prototype.updateLayout = function()
-{
-  var height = 0.3 * this.element.clientHeight;
-  height = Math.floor(0.75 * height);
-
-  if (height > 24) height = 24;
-  else if (height < 14) height = 14;
-  
-  this.labelElem.style.fontSize = height + "px";
-  this.outputElem.style.fontSize = height + "px";
 };
 
 Brain4it.Dashboard.prototype.widgetTypes['range'] = Brain4it.RangeWidget;

@@ -96,7 +96,6 @@ Brain4it.RangeWidget.prototype.onRemoteChange =
         var intValue = Math.floor(value);
         this.outputElem.value = intValue;
         this.rangeElem.value = intValue;
-        this.updateLayout();
       }
     }
   }

@@ -410,7 +410,7 @@ button::-moz-focus-inner
   right:0;
   bottom:0;
   left:0;
-  margin: 8px;
+  margin: 10pt;
 }
 
 .led div output

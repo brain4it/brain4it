@@ -110,7 +110,14 @@ Brain4it.TabbedPanel.prototype =
       var iframe = this.getIFrame(name);
       if (iframe && iframe.contentWindow.hide)
       {
-        iframe.contentWindow.hide();
+        try
+        {
+          iframe.contentWindow.hide();
+        }
+        catch (ex)
+        {
+          // ignore
+        }
       }
       this.panelNames.splice(index, 1);
       var tabElem = this.getTab(name);

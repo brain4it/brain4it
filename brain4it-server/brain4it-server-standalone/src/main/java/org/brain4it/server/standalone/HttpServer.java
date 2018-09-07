@@ -36,6 +36,7 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.security.KeyStore;
 import java.util.Collections;
 import java.util.HashSet;
@@ -65,6 +66,7 @@ public class HttpServer
   private SslParameters sslParameters;
   private ServerSocket serverSocket;
   private Thread thread;
+  private int keepAliveTime = 5; // 5 seconds
   private final Set<Socket> connections =
     Collections.synchronizedSet(new HashSet<Socket>());
   static final String SERVER_NAME = "Brain4it";
@@ -85,6 +87,19 @@ public class HttpServer
     this.sslParameters = sslParameters;
   }
 
+  public int getKeepAliveTime()
+  {
+    return keepAliveTime;
+  }
+
+  public void setKeepAliveTime(int keepAliveTime)
+  {
+    if (keepAliveTime <= 0)
+      throw new IllegalArgumentException("keepAliveTime: " + keepAliveTime);
+
+    this.keepAliveTime = keepAliveTime;
+  }
+
   public ModuleManager getModuleManager()
   {
     return moduleManager;
@@ -99,7 +114,7 @@ public class HttpServer
   {
     return monitorService;
   }
-  
+
   public SslParameters getSslParameters()
   {
     return sslParameters;
@@ -298,41 +313,51 @@ public class HttpServer
     {
       try
       {
-        HttpRequest request = new HttpRequest(socket);
-        try
+        socket.setSoTimeout(keepAliveTime * 1000);
+        boolean keepAlive = true;
+        while (keepAlive)
         {
+          HttpRequest request = new HttpRequest(socket);
           HttpResponse response = new HttpResponse(socket);
           try
-          {            
-            request.read();
+          {
+            request.read(); // may throw:
+            // BadRequestException,  SocketTimeoutException or IOException
+
             SAHttpDispatcher dispatcher = new SAHttpDispatcher(
               request, response, restService, monitorService);
             onServe(request, response);
+            // dispatch request and generate response
             dispatcher.dispatch();
+            // flush buffered response
+            response.getWriter().flush();
+            if (!request.isKeepAlive() || response.isChunked())
+            {
+              keepAlive = false;
+            }
           }
           catch (BadRequestException ex)
           {
-            onError("Dispatch request", ex);
             response.setStatusCode(HttpURLConnection.HTTP_BAD_REQUEST);
             response.setStatusMessage("BAD_REQUEST");
+            response.getWriter().flush();
+            keepAlive = false;
+          }
+          catch (SocketTimeoutException ex)
+          {
+            // client is gone
+            keepAlive = false;
           }
           catch (IOException ex)
           {
-            onError("Dispatch request", ex);
+            // IO error
+            keepAlive = false;
           }
-          finally
-          {
-            response.close();
-          }
-        }
-        finally
-        {
-          request.close();
         }
       }
       catch (IOException ex)
       {
-        // ignore: close exception
+        // ignore
       }
       finally
       {
@@ -365,8 +390,8 @@ public class HttpServer
   protected void onServerShutdown()
   {
     LOGGER.log(Level.INFO, "Server shutdown");
-  }  
-  
+  }
+
   protected void onStop()
   {
     LOGGER.log(Level.INFO, "Server stopped.");

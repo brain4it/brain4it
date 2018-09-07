@@ -32,9 +32,6 @@
 package org.brain4it.server.standalone;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.Properties;
 import org.brain4it.server.module.ModuleManager;
 import org.brain4it.server.store.FileSystemStore;
 import org.brain4it.server.store.Store;
@@ -45,12 +42,12 @@ import org.brain4it.server.store.Store;
  */
 public class Runner
 {
-  static 
+  static
   {
-    System.setProperty("java.util.logging.manager", 
+    System.setProperty("java.util.logging.manager",
       ServerLogManager.class.getName());
-  }  
-  
+  }
+
   /* properties */
   public static final String PORT_PARAM = "port";
   public static final String SHUTDOWN_FILE_PARAM = "shutdownFile";
@@ -67,6 +64,7 @@ public class Runner
   public static final String MAX_WAIT_TIME_PARAM = "maxWaitTime";
   public static final String MONITOR_MAX_WAIT_TIME_PARAM = "monitorMaxWaitTime";
   public static final String MONITOR_PING_TIME_PARAM = "monitorPingTime";
+  public static final String KEEP_ALIVE_TIME_PARAM = "keepAliveTime";
 
   /* default values */
   public static final int DEFAULT_PORT_VALUE = 9999;
@@ -75,81 +73,39 @@ public class Runner
   public static final String DEFAULT_STORE_CLASS_VALUE =
     FileSystemStore.class.getName();
 
-  public static void loadProperties(String args[], Properties properties)
-    throws IOException
+  public static HttpServer createServer(Configuration configuration)
+    throws Exception
   {
-    for (String arg : args)
-    {
-      if (arg.startsWith("-"))
-      {
-        int index = arg.indexOf("=");
-        String property;
-        String value;
-        if (index != -1)
-        {
-          property = arg.substring(1, index);
-          value = arg.substring(index + 1);
-        }
-        else
-        {
-          property = arg.substring(1);
-          value = "true";
-        }
-        properties.put(property, value);
-      }
-      else
-      {
-        File file = new File(arg);
-        FileInputStream fis = new FileInputStream(file);
-        try
-        {
-          properties.load(fis);
-        }
-        finally
-        {
-          fis.close();
-        }
-      }
-    }
-  }
-
-  public static HttpServer createServer(Properties properties) throws Exception
-  {    
     // set libraries
-    String libraries = properties.getProperty(LIBRARIES_PARAM);
+    String libraries = configuration.getProperty(LIBRARIES_PARAM);
 
-    // set network properties
-    String value = properties.getProperty(PORT_PARAM);
-    int port;
-    try
+    // set server port
+    int port = DEFAULT_PORT_VALUE;
+    if (configuration.containsKey(PORT_PARAM))
     {
-      port = (value == null) ? DEFAULT_PORT_VALUE : Integer.parseInt(value);
-    }
-    catch (NumberFormatException ex)
-    {
-      throw new NumberFormatException(PORT_PARAM + ": " + value);
+      port = configuration.getIntegerProperty(PORT_PARAM);
     }
 
     boolean multiTenant =
-      Boolean.valueOf(properties.getProperty(MULTI_TENANT_PARAM, "false"));
+      configuration.getBooleanProperty(MULTI_TENANT_PARAM);
 
     // set SSL properties
     SslParameters sslParameters = null;
-    String keyStoreFile = properties.getProperty(KEY_STORE_FILE_PARAM);
+    String keyStoreFile = configuration.getProperty(KEY_STORE_FILE_PARAM);
     if (keyStoreFile != null)
     {
       sslParameters = new SslParameters();
       sslParameters.setKeyStoreFile(keyStoreFile);
-      sslParameters.setKeyStoreType(properties.getProperty(KEY_STORE_TYPE_PARAM, 
+      sslParameters.setKeyStoreType(configuration.getProperty(KEY_STORE_TYPE_PARAM,
         DEFAULT_KEY_STORE_TYPE_VALUE));
-      sslParameters.setSslProtocol(properties.getProperty(SSL_PROTOCOL_PARAM, 
+      sslParameters.setSslProtocol(configuration.getProperty(SSL_PROTOCOL_PARAM,
         DEFAULT_SSL_PROTOCOL_VALUE));
-      String keyStorePassword = properties.getProperty(KEY_STORE_PASS_PARAM);
+      String keyStorePassword = configuration.getProperty(KEY_STORE_PASS_PARAM);
       if (keyStorePassword != null)
       {
         sslParameters.setKeyStorePassword(keyStorePassword.toCharArray());
       }
-      String keyPassword = properties.getProperty(KEY_PASS_PARAM);
+      String keyPassword = configuration.getProperty(KEY_PASS_PARAM);
       if (keyPassword == null)
       {
         keyPassword = keyStorePassword;
@@ -161,15 +117,15 @@ public class Runner
     }
 
     // set store properties
-    String storeClassname = properties.getProperty(STORE_CLASS_PARAM, 
+    String storeClassname = configuration.getProperty(STORE_CLASS_PARAM,
       DEFAULT_STORE_CLASS_VALUE);
     Class<?> storeClass = Class.forName(storeClassname);
     Store store = (Store)storeClass.newInstance();
-    store.init(properties);
+    store.init(configuration);
 
-    String accessKey = properties.getProperty(ACCESS_KEY_PARAM);
+    String accessKey = configuration.getProperty(ACCESS_KEY_PARAM);
 
-    String accessKeyFilename = properties.getProperty(ACCESS_KEY_FILE_PARAM);
+    String accessKeyFilename = configuration.getProperty(ACCESS_KEY_FILE_PARAM);
     File accessKeyFile = accessKeyFilename == null ?
       null : new File(accessKeyFilename);
 
@@ -179,64 +135,43 @@ public class Runner
     moduleManager.addLibraries(libraries);
     HttpServer server = new HttpServer(moduleManager, port, sslParameters);
 
-    value = properties.getProperty(MAX_WAIT_TIME_PARAM);
-    if (value != null)
+    if (configuration.containsKey(MAX_WAIT_TIME_PARAM))
     {
-      int maxWaitTime;
-      try
-      {
-        maxWaitTime = Integer.parseInt(value);
-      }
-      catch (NumberFormatException ex)
-      {
-        throw new NumberFormatException(MAX_WAIT_TIME_PARAM + ": " + value);
-      }
-      server.getRestService().setMaxWaitTime(maxWaitTime);
+      int time = configuration.getIntegerProperty(MAX_WAIT_TIME_PARAM);
+      server.getRestService().setMaxWaitTime(time);
     }
 
-    value = properties.getProperty(MONITOR_MAX_WAIT_TIME_PARAM);
-    if (value != null)
+    if (configuration.containsKey(MONITOR_MAX_WAIT_TIME_PARAM))
     {
-      int maxWaitTime;
-      try
-      {
-        maxWaitTime = Integer.parseInt(value);
-      }
-      catch (NumberFormatException ex)
-      {
-        throw new NumberFormatException(
-          MONITOR_MAX_WAIT_TIME_PARAM + ": " + value);
-      }
-      server.getMonitorService().setMaxWaitTime(maxWaitTime);
+      int time = configuration.getIntegerProperty(MONITOR_MAX_WAIT_TIME_PARAM);
+      server.getMonitorService().setMaxWaitTime(time);
     }
-    
-    value = properties.getProperty(MONITOR_PING_TIME_PARAM);
-    if (value != null)
+
+    if (configuration.containsKey(MONITOR_PING_TIME_PARAM))
     {
-      int pingTime;
-      try
-      {
-        pingTime = Integer.parseInt(value);
-      }
-      catch (NumberFormatException ex)
-      {
-        throw new NumberFormatException(MONITOR_PING_TIME_PARAM + ": " + value);
-      }
-      server.getMonitorService().setPingTime(pingTime);
+      int time = configuration.getIntegerProperty(MONITOR_PING_TIME_PARAM);
+      server.getMonitorService().setPingTime(time);
     }
+
+    if (configuration.containsKey(KEEP_ALIVE_TIME_PARAM))
+    {
+      int time = configuration.getIntegerProperty(KEEP_ALIVE_TIME_PARAM);
+      server.setKeepAliveTime(time);
+    }
+
     return server;
   }
 
-  public static void runServer(final HttpServer server, Properties properties)
-    throws Exception
+  public static void runServer(final HttpServer server,
+    Configuration configuration) throws Exception
   {
-    String shutdownFilename = properties.getProperty(SHUTDOWN_FILE_PARAM);
+    String shutdownFilename = configuration.getProperty(SHUTDOWN_FILE_PARAM);
     if (shutdownFilename != null)
     {
       ShutdownFileMonitor monitor = new ShutdownFileMonitor(shutdownFilename);
       monitor.start();
     }
-    
+
     Runtime.getRuntime().addShutdownHook(new Thread(new Runnable()
     {
       @Override
@@ -248,12 +183,12 @@ public class Runner
     }));
     server.start();
   }
-    
+
   public static void main(String args[]) throws Exception
   {
-    Properties properties = new Properties();
-    Runner.loadProperties(args, properties);
-    HttpServer server = Runner.createServer(properties);
-    Runner.runServer(server, properties);
+    Configuration configuration = new Configuration();
+    configuration.load(args);
+    HttpServer server = Runner.createServer(configuration);
+    Runner.runServer(server, configuration);
   }
 }

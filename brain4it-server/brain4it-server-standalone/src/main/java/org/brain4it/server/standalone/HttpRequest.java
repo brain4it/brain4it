@@ -1,31 +1,31 @@
 /*
  * Brain4it
- * 
+ *
  * Copyright (C) 2018, Ajuntament de Sant Feliu de Llobregat
- * 
- * This program is licensed and may be used, modified and redistributed under 
- * the terms of the European Public License (EUPL), either version 1.1 or (at 
- * your option) any later version as soon as they are approved by the European 
+ *
+ * This program is licensed and may be used, modified and redistributed under
+ * the terms of the European Public License (EUPL), either version 1.1 or (at
+ * your option) any later version as soon as they are approved by the European
  * Commission.
- * 
- * Alternatively, you may redistribute and/or modify this program under the 
- * terms of the GNU Lesser General Public License as published by the Free 
- * Software Foundation; either  version 3 of the License, or (at your option) 
- * any later version. 
- *   
- * Unless required by applicable law or agreed to in writing, software 
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT 
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- *   
- * See the licenses for the specific language governing permissions, limitations 
+ *
+ * Alternatively, you may redistribute and/or modify this program under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either  version 3 of the License, or (at your option)
+ * any later version.
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *
+ * See the licenses for the specific language governing permissions, limitations
  * and more details.
- *   
- * You should have received a copy of the EUPL1.1 and the LGPLv3 licenses along 
- * with this program; if not, you may find them at: 
- *   
+ *
+ * You should have received a copy of the EUPL1.1 and the LGPLv3 licenses along
+ * with this program; if not, you may find them at:
+ *
  *   https://joinup.ec.europa.eu/software/page/eupl/licence-eupl
- *   http://www.gnu.org/licenses/ 
- *   and 
+ *   http://www.gnu.org/licenses/
+ *   and
  *   https://www.gnu.org/licenses/lgpl.txt
  */
 
@@ -69,7 +69,7 @@ public class HttpRequest
     remotePort = socket.getPort();
     is = new BufferedInputStream(socket.getInputStream());
   }
-  
+
   public Socket getSocket()
   {
     return socket;
@@ -99,7 +99,7 @@ public class HttpRequest
   {
     return remotePort;
   }
-  
+
   public String getHeader(String name)
   {
     return headers.get(name.toLowerCase());
@@ -114,7 +114,7 @@ public class HttpRequest
   {
     return characterEncoding;
   }
-  
+
   public InputStream getInputStream() throws IOException
   {
     if (bodyStream == null)
@@ -135,7 +135,7 @@ public class HttpRequest
     }
     return bodyStream;
   }
-  
+
   public Reader getReader() throws IOException
   {
     if (bodyReader == null)
@@ -154,22 +154,23 @@ public class HttpRequest
     return bodyReader;
   }
 
-  public void read() throws IOException
+  public void read() throws BadRequestException, IOException
   {
     readMethodUri(is);
-    readHeader(is);
+    readHeaders(is);
   }
 
-  public void close() throws IOException
+  public boolean isKeepAlive()
   {
-    is.close();
+    return !"close".equalsIgnoreCase(headers.get("connection"));
   }
-  
-  private void readMethodUri(InputStream in) throws IOException
+
+  private void readMethodUri(InputStream in)
+    throws BadRequestException, IOException
   {
     String request = readLine(in);
     String[] parts = request.split(" ");
-    if (parts.length != 3) 
+    if (parts.length != 3)
       throw new BadRequestException(request);
     method = parts[0];
     try
@@ -183,7 +184,7 @@ public class HttpRequest
     version = parts[2];
   }
 
-  private void readHeader(InputStream in) throws IOException
+  private void readHeaders(InputStream in) throws IOException
   {
     String str;
     do
@@ -198,7 +199,7 @@ public class HttpRequest
       }
     } while (str.length() > 0);
   }
-  
+
   private String readLine(InputStream in) throws IOException
   {
     ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -223,13 +224,13 @@ public class HttpRequest
     }
     return out.toString(); // ASCII Encoding
   }
-  
+
   static class BodyInputStream extends InputStream
   {
     private final InputStream is;
     private final int length;
     private int totalRead;
-    
+
     BodyInputStream(InputStream is, int length)
     {
       this.is = is;
@@ -237,17 +238,17 @@ public class HttpRequest
     }
 
     @Override
-    public int read(byte b[], int off, int len) throws IOException 
+    public int read(byte b[], int off, int len) throws IOException
     {
       if (b == null)
       {
         throw new NullPointerException();
       }
-      else if (off < 0 || len < 0 || len > b.length - off) 
+      else if (off < 0 || len < 0 || len > b.length - off)
       {
         throw new IndexOutOfBoundsException();
-      } 
-      else if (len == 0) 
+      }
+      else if (len == 0)
       {
         return 0;
       }
@@ -262,7 +263,7 @@ public class HttpRequest
       }
       return numRead;
     }
-    
+
     @Override
     public final int read() throws IOException
     {

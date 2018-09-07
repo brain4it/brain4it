@@ -103,7 +103,7 @@ public class ModuleManager
 
     LOGGER.log(Level.INFO, "Store: {0}", store.getClass().getName());
     LOGGER.log(Level.INFO, "Multi-tenant mode: {0}", multiTenant);          
-    LOGGER.log(Level.INFO, "Access key: {0}", accessKeyFile != null);
+    LOGGER.log(Level.INFO, "Access key: {0}", accessKey != null);
     LOGGER.log(Level.INFO, "Access key file: {0}", accessKeyFile);
   }
 

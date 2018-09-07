@@ -39,10 +39,10 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.Properties;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import org.brain4it.lib.SwingLibrary;
+import org.brain4it.server.standalone.Configuration;
 import org.brain4it.server.standalone.ServerLogManager;
 
 /**
@@ -119,13 +119,13 @@ public class SwingRunner extends JFrame
   
   public static void main(String args[]) throws Exception
   {
-    Properties properties = new Properties();
-    Runner.loadProperties(args, properties);
-    final HttpServer server = Runner.createServer(properties);
+    Configuration configuration = new Configuration();
+    configuration.load(args);
+    final HttpServer server = Runner.createServer(configuration);
     server.getModuleManager().getLibraries().add(new SwingLibrary());
-    Runner.runServer(server, properties);
+    Runner.runServer(server, configuration);
 
-    final boolean fs = "true".equals(properties.getProperty(FULLSCREEN));
+    final boolean fs = "true".equals(configuration.getProperty(FULLSCREEN));
     SwingUtilities.invokeLater(new Runnable()
     {
       @Override

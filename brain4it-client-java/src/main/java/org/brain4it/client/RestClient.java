@@ -31,7 +31,6 @@
 
 package org.brain4it.client;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -42,8 +41,10 @@ import java.net.URLEncoder;
 import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
+import org.brain4it.io.IOUtils;
 import org.brain4it.io.Parser;
 import org.brain4it.io.Printer;
+import org.brain4it.net.SSLUtils;
 import static org.brain4it.server.ServerConstants.*;
 
 /**
@@ -365,6 +366,7 @@ public class RestClient
     URL url = (path == null) ? 
       new URL(serverUrl) : new URL(serverUrl + "/" + urlEncode(path));
     HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+    SSLUtils.skipCertificateValidation(conn);
     conn.setConnectTimeout(connectionTimeout);
     conn.setReadTimeout(readTimeout);
     conn.setRequestMethod(method);
@@ -387,15 +389,7 @@ public class RestClient
         conn.setDoOutput(true);
         byte[] bytes = dataString.getBytes(BPL_CHARSET);
         OutputStream os = conn.getOutputStream();
-        try
-        {
-          os.write(bytes);
-          os.flush();
-        }
-        finally
-        {
-          os.close();
-        }
+        IOUtils.writeBytes(bytes, os);
       }
 
       conn.connect();
@@ -405,14 +399,14 @@ public class RestClient
       byte[] response;
       try
       {
-        response = readInputStream(conn.getInputStream());
+        response = IOUtils.readBytes(conn.getInputStream());
       }
       catch (IOException ex)
       {
         InputStream errorStream = conn.getErrorStream();
         if (errorStream != null)
         {
-          response = readInputStream(errorStream);
+          response = IOUtils.readBytes(errorStream);
         }
         else throw ex;
       }
@@ -447,26 +441,6 @@ public class RestClient
       }
     }
     return buffer.toString();
-  }
-  
-  private byte[] readInputStream(InputStream is) throws IOException
-  {
-    ByteArrayOutputStream os = new ByteArrayOutputStream();
-    try
-    {
-      byte[] buffer = new byte[1024];
-      int count = is.read(buffer);
-      while (count != -1)
-      {
-        os.write(buffer, 0, count);
-        count = is.read(buffer);
-      }
-    }
-    finally
-    {
-      is.close();    
-    }
-    return os.toByteArray();
   }
   
   public interface Callback

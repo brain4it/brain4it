@@ -31,7 +31,6 @@
 
 package org.brain4it.lib.core.net;
 
-import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -39,9 +38,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLSession;
+import org.brain4it.io.IOUtils;
 import org.brain4it.lang.Context;
 import org.brain4it.lang.BList;
 import org.brain4it.io.Parser;
@@ -52,6 +49,7 @@ import org.brain4it.io.Printer;
 import org.brain4it.io.XMLParser;
 import org.brain4it.io.XMLPrinter;
 import org.brain4it.lang.Function;
+import org.brain4it.net.SSLUtils;
 import static org.brain4it.server.ServerConstants.*;
 
 /**
@@ -95,19 +93,7 @@ public class HttpFunction implements Function
 
     URL url = new URL(surl);
     HttpURLConnection conn = (HttpURLConnection)url.openConnection();
-    if (conn instanceof HttpsURLConnection)
-    {
-      HttpsURLConnection sconn = (HttpsURLConnection)conn;
-      sconn.setHostnameVerifier(new HostnameVerifier()
-      {
-        @Override
-        public boolean verify(String hostname, SSLSession session)
-        {
-          // skip hostname check
-          return true;
-        }
-      });
-    }
+    SSLUtils.skipCertificateValidation(conn);
     conn.setUseCaches(false);
     conn.setConnectTimeout(connectTimeout);
     conn.setReadTimeout(readTimeout);
@@ -129,15 +115,7 @@ public class HttpFunction implements Function
         conn.setDoOutput(true);
         OutputStream os = conn.getOutputStream();
         FileInputStream is = new FileInputStream(uploadFilename);
-        try
-        {
-          writeStream(is, os);
-        }
-        finally
-        {
-          is.close();
-        }
-        os.flush();
+        IOUtils.copy(is, os);
       }
       int responseCode = conn.getResponseCode();
       String responseMessage = conn.getResponseMessage();
@@ -177,17 +155,7 @@ public class HttpFunction implements Function
       else
       {
         FileOutputStream os = new FileOutputStream(downloadFilename);
-        try
-        {
-          writeStream(conn.getInputStream(), os);
-        }
-        catch (IOException ex)
-        {
-        }
-        finally
-        {
-          os.close();
-        }
+        IOUtils.copy(conn.getInputStream(), os);
       }
       return result;
     }
@@ -330,7 +298,7 @@ public class HttpFunction implements Function
     byte[] response = null;
     try
     {
-      response = readBytes(conn.getInputStream());
+      response = IOUtils.readBytes(conn.getInputStream());
     }
     catch (IOException ex)
     {
@@ -339,7 +307,7 @@ public class HttpFunction implements Function
       {
         try
         {
-          response = readBytes(errorStream);
+          response = IOUtils.readBytes(errorStream);
         }
         catch (IOException ex2)
         {
@@ -347,31 +315,5 @@ public class HttpFunction implements Function
       }
     }
     return response;
-  }
-
-  protected byte[] readBytes(InputStream is) throws IOException
-  {
-    ByteArrayOutputStream os = new ByteArrayOutputStream();
-    try
-    {
-      writeStream(is, os);
-    }
-    finally
-    {
-      is.close();
-    }
-    return os.toByteArray();
-  }
-
-  protected void writeStream(InputStream is, OutputStream os)
-    throws IOException
-  {
-    byte[] buffer = new byte[1024];
-    int numRead = is.read(buffer);
-    while (numRead > 0)
-    {
-      os.write(buffer, 0, numRead);
-      numRead = is.read(buffer);
-    }
   }
 }

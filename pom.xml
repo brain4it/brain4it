@@ -14,11 +14,12 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.12</version>			
+      <version>4.12</version>
     </dependency>
   </dependencies>
 
   <modules>
+    <module>brain4it-common</module>
     <module>brain4it-lang</module>
     <module>brain4it-client-java</module>
     <module>brain4it-lib</module>

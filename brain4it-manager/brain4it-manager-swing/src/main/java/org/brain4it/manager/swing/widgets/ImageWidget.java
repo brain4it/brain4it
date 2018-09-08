@@ -50,6 +50,7 @@ import org.brain4it.manager.swing.DashboardWidget;
 import org.brain4it.manager.video.MjpegStream;
 import org.brain4it.manager.widgets.ImageWidgetType;
 import org.brain4it.manager.widgets.WidgetType;
+import org.brain4it.net.SSLUtils;
 
 /**
  *
@@ -159,6 +160,7 @@ public class ImageWidget extends JComponent implements DashboardWidget
       {
         URL url = new URL(currentUrl);
         HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+        SSLUtils.skipCertificateValidation(conn);
         String contentType = conn.getContentType();
         conn.disconnect();
         if (contentType == null)

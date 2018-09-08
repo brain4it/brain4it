@@ -1,31 +1,31 @@
 /*
  * Brain4it
- * 
+ *
  * Copyright (C) 2018, Ajuntament de Sant Feliu de Llobregat
- * 
- * This program is licensed and may be used, modified and redistributed under 
- * the terms of the European Public License (EUPL), either version 1.1 or (at 
- * your option) any later version as soon as they are approved by the European 
+ *
+ * This program is licensed and may be used, modified and redistributed under
+ * the terms of the European Public License (EUPL), either version 1.1 or (at
+ * your option) any later version as soon as they are approved by the European
  * Commission.
- * 
- * Alternatively, you may redistribute and/or modify this program under the 
- * terms of the GNU Lesser General Public License as published by the Free 
- * Software Foundation; either  version 3 of the License, or (at your option) 
- * any later version. 
- *   
- * Unless required by applicable law or agreed to in writing, software 
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT 
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- *   
- * See the licenses for the specific language governing permissions, limitations 
+ *
+ * Alternatively, you may redistribute and/or modify this program under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either  version 3 of the License, or (at your option)
+ * any later version.
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *
+ * See the licenses for the specific language governing permissions, limitations
  * and more details.
- *   
- * You should have received a copy of the EUPL1.1 and the LGPLv3 licenses along 
- * with this program; if not, you may find them at: 
- *   
+ *
+ * You should have received a copy of the EUPL1.1 and the LGPLv3 licenses along
+ * with this program; if not, you may find them at:
+ *
  *   https://joinup.ec.europa.eu/software/page/eupl/licence-eupl
- *   http://www.gnu.org/licenses/ 
- *   and 
+ *   http://www.gnu.org/licenses/
+ *   and
  *   https://www.gnu.org/licenses/lgpl.txt
  */
 package org.brain4it.manager.android.view;
@@ -49,6 +49,7 @@ import org.brain4it.manager.android.DashboardWidget;
 import org.brain4it.manager.video.MjpegStream;
 import org.brain4it.manager.widgets.ImageWidgetType;
 import org.brain4it.manager.widgets.WidgetType;
+import org.brain4it.net.SSLUtils;
 
 /**
  *
@@ -83,24 +84,24 @@ public class ImageWidget extends ImageView implements DashboardWidget
       }
     }
   };
-  
+
   public ImageWidget(Context context)
   {
     super(context);
     setBackgroundColor(Color.BLACK);
   }
-  
+
   @Override
   public void init(DashboardActivity dashboard, String name, BList properties)
     throws Exception
   {
     this.dashboard = dashboard;
-    
-    ImageWidgetType type = 
+
+    ImageWidgetType type =
       (ImageWidgetType)WidgetType.getType(WidgetType.IMAGE);
 
     type.validate(properties);
-    
+
     BSoftReference func = type.getUrlFunction(properties);
     if (func != null)
     {
@@ -115,7 +116,7 @@ public class ImageWidget extends ImageView implements DashboardWidget
       }
     }
   }
-  
+
   public void setImage(Bitmap image)
   {
     this.image = image;
@@ -124,11 +125,11 @@ public class ImageWidget extends ImageView implements DashboardWidget
       @Override
       public void run()
       {
-        setImageBitmap(ImageWidget.this.image);     
+        setImageBitmap(ImageWidget.this.image);
       }
     });
   }
-  
+
   public Bitmap getImage()
   {
     return image;
@@ -140,7 +141,7 @@ public class ImageWidget extends ImageView implements DashboardWidget
     active = false;
     hideImage();
   }
-  
+
   @Override
   protected void onVisibilityChanged(View changedView, final int visibility)
   {
@@ -184,6 +185,7 @@ public class ImageWidget extends ImageView implements DashboardWidget
       {
         URL url = new URL(currentUrl);
         HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+        SSLUtils.skipCertificateValidation(conn);
         String contentType = conn.getContentType();
         conn.disconnect();
         if (contentType == null)
@@ -205,7 +207,7 @@ public class ImageWidget extends ImageView implements DashboardWidget
         else if (contentType.startsWith("multipart/x-mixed-replace"))
         {
           videoThread = new VideoThread(currentUrl);
-          videoThread.start();       
+          videoThread.start();
         }
       }
       catch (IOException ex)
@@ -230,12 +232,12 @@ public class ImageWidget extends ImageView implements DashboardWidget
   {
     String url;
     boolean end;
-    
+
     VideoThread(String url)
     {
       this.url = url;
     }
-    
+
     @Override
     public void run()
     {

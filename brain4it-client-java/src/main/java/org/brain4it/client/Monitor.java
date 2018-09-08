@@ -41,21 +41,25 @@ import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.Socket;
 import java.net.URL;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.net.ssl.SSLSocketFactory;
+import org.brain4it.io.IOUtils;
 import org.brain4it.io.Parser;
 import org.brain4it.io.Printer;
 import org.brain4it.lang.BList;
+import org.brain4it.net.SSLUtils;
 import static org.brain4it.server.ServerConstants.*;
 
 /**
- * The Monitor class watch for changes of the value returned by exterior 
- * functions of a module, and notifies these changes to the interested 
+ * The Monitor class watch for changes of the value returned by exterior
+ * functions of a module, and notifies these changes to the interested
  * listeners.
- * 
+ *
  * @author realor
  */
 public class Monitor
@@ -134,16 +138,16 @@ public class Monitor
   {
     // adds new listener for functionName
     watch(functionName, listener, false);
-  }  
-  
-  public synchronized void watch(String functionName, Listener listener, 
+  }
+
+  public synchronized void watch(String functionName, Listener listener,
     boolean replace)
   {
     // if replace is true this method replaces all the previous
     // functionName listeners by the new listener
 
     LOGGER.log(Level.FINEST, "Watch function: {0}", functionName);
-    
+
     boolean newFunction;
     HashSet<Listener> functionListeners = listeners.get(functionName);
     if (functionListeners == null)
@@ -152,7 +156,7 @@ public class Monitor
       functionListeners = new HashSet<Listener>();
       listeners.put(functionName, functionListeners);
     }
-    else 
+    else
     {
       if (replace)
       {
@@ -176,8 +180,8 @@ public class Monitor
     {
       if (listener == null) // remove all listeners for that function
       {
-        listeners.remove(functionName);        
-        LOGGER.log(Level.FINEST, "Unwatch function listeners: {0}", 
+        listeners.remove(functionName);
+        LOGGER.log(Level.FINEST, "Unwatch function listeners: {0}",
           functionName);
         updateWorker(); // stop or reconnect
       }
@@ -187,7 +191,7 @@ public class Monitor
         {
           listeners.remove(functionName);
         }
-        LOGGER.log(Level.FINEST, "Unwatch function listener: {0}", 
+        LOGGER.log(Level.FINEST, "Unwatch function listener: {0}",
           functionName);
         updateWorker(); // stop or reconnect
       }
@@ -200,7 +204,7 @@ public class Monitor
     listeners.clear();
     updateWorker(); // stop Worker thread
   }
-    
+
   public synchronized Listener[] getListeners(String functionName)
   {
     HashSet<Listener> functionListeners = listeners.get(functionName);
@@ -218,7 +222,7 @@ public class Monitor
   {
     return listeners.isEmpty();
   }
-  
+
   protected synchronized void updateWorker()
   {
     if (listeners.isEmpty())
@@ -242,7 +246,7 @@ public class Monitor
       }
     }
   }
-  
+
   protected synchronized String getMonitoredFunctionNames()
   {
     BList list = new BList();
@@ -250,9 +254,9 @@ public class Monitor
     {
       list.add(functionName);
     }
-    return Printer.toString(list);    
+    return Printer.toString(list);
   }
-      
+
   protected class Worker extends Thread
   {
     boolean end;
@@ -260,7 +264,7 @@ public class Monitor
     BufferedInputStream input;
     BufferedWriter writer;
     String monitorSessionId;
-    
+
     @Override
     public void run()
     {
@@ -289,13 +293,13 @@ public class Monitor
           String path = url.getPath();
           String protocol = url.getProtocol();
           if (port == -1) port = "https".equals(protocol) ? 443 : 80;
-          
+
           socket = createSocket(protocol, host, port);
           try
           {
             socket.setSoTimeout(0);
             writer = new BufferedWriter(
-              new OutputStreamWriter(socket.getOutputStream(), BPL_CHARSET));          
+              new OutputStreamWriter(socket.getOutputStream(), BPL_CHARSET));
             try
             {
               writer.write("POST " + path + "/" + moduleName + " HTTP/1.1\r\n");
@@ -359,7 +363,7 @@ public class Monitor
       }
       LOGGER.log(Level.INFO, "Monitor.Worker end");
     }
-    
+
     private String readLine() throws IOException
     {
       ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -392,14 +396,14 @@ public class Monitor
       input.read(); // read LF(10)
       return bos.toString(BPL_CHARSET);
     }
-    
+
     private void processChunk(String chunk)
     {
       try
       {
-        if (chunk.length() == 0) 
-          return; // the server keep alive sent at monitorTime interval
-        
+        if (chunk.length() == 0)
+          return; // the ping sent by the server at monitorPingTime intervals
+
         Object data = Parser.fromString(chunk);
         if (data instanceof BList)
         {
@@ -426,13 +430,21 @@ public class Monitor
       }
     }
 
-    private Socket createSocket(String protocol, String host, int port) 
+    private Socket createSocket(String protocol, String host, int port)
       throws IOException
     {
       if ("https".equals(protocol))
       {
-        SSLSocketFactory ssf = (SSLSocketFactory)SSLSocketFactory.getDefault();
-        return ssf.createSocket(host, port);    
+        SSLSocketFactory factory;
+        try
+        {
+          factory = SSLUtils.getNoValidationSSLSocketFactory();
+        }
+        catch (KeyManagementException | NoSuchAlgorithmException ex)
+        {
+          factory = (SSLSocketFactory)SSLSocketFactory.getDefault();
+        }
+        return factory.createSocket(host, port);
       }
       else
       {
@@ -444,10 +456,10 @@ public class Monitor
     {
       writer.write(header + ": " + value + "\r\n");
     }
-    
+
     private void recover(Exception ex)
     {
-      LOGGER.log(Level.WARNING, "Connection error: {0}", ex.toString());          
+      LOGGER.log(Level.WARNING, "Connection error: {0}", ex.toString());
       try
       {
         // wait a 5 seconds and retry connection
@@ -458,7 +470,7 @@ public class Monitor
         // ignore exception and retry connection
       }
     }
-    
+
     private void cancel()
     {
       // cancels the current monitoring session asynchronously
@@ -479,13 +491,13 @@ public class Monitor
           {
             // ignore
           }
-          
+
           try
           {
             // send unwatch request to server
             if (monitorSessionId != null)
             {
-              LOGGER.log(Level.INFO, "Stopping monitor: {0}", monitorSessionId);          
+              LOGGER.log(Level.INFO, "Stopping monitor: {0}", monitorSessionId);
 
               URL url = new URL(serverUrl);
               HttpURLConnection conn = (HttpURLConnection)url.openConnection();
@@ -494,47 +506,27 @@ public class Monitor
               conn.setRequestMethod("POST");
               conn.setRequestProperty(MONITOR_HEADER, "0");
               conn.setRequestProperty("Content-Type", BPL_MIMETYPE);
+
               String data = "\"" + monitorSessionId + "\"";
               byte[] bytes = data.getBytes(BPL_CHARSET);
               OutputStream os = conn.getOutputStream();
-              try
-              {
-                os.write(bytes);
-                os.flush();
-              }
-              finally
-              {
-                os.close();
-              }
+              IOUtils.writeBytes(bytes, os);
+
               conn.connect();
               InputStream is = conn.getInputStream();
-              ByteArrayOutputStream bos = new ByteArrayOutputStream();
-              try
-              {
-                byte[] buffer = new byte[1024];
-                int count = is.read(buffer);
-                while (count != -1)
-                {
-                  bos.write(buffer, 0, count);
-                  count = is.read(buffer);
-                }
-              }
-              finally
-              {
-                is.close();    
-              }
+              IOUtils.readBytes(is); // read unwatch response
               monitorSessionId = null;
             }
           }
           catch (Exception ex)
           {
-            // ignore        
-          }                
+            // ignore
+          }
         }
       };
       thread.start();
     }
-    
+
     private void end()
     {
       end = true;

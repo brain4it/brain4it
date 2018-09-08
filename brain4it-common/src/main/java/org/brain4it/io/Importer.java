@@ -31,34 +31,33 @@
 package org.brain4it.io;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
+import java.net.URL;
 
 /**
- *
+ * A utility class to read a file as text asynchronously.
+ * 
  * @author realor
  */
-public class Exporter
+public class Importer
 {
   public static final String FILE_SCHEME = "file://";  
   private final String url;
   private final String charset;
   
-  public Exporter(String url, String charset)
+  public Importer(String url, String charset)
   {
     this.url = url;
     this.charset = charset;
   }
 
-  public Exporter(File file, String charset)
+  public Importer(File file, String charset)
   {
     this.url = FILE_SCHEME + file.getAbsolutePath();
     this.charset = charset;
   }
   
-  public void exportData(final String data)
+  public void importData()
   {
     Thread thread = new Thread()
     {
@@ -67,13 +66,9 @@ public class Exporter
       {
         try
         {
-          if (url.startsWith(FILE_SCHEME))
-          {
-            File file = new File(url.substring(FILE_SCHEME.length()));
-            write(new FileOutputStream(file), data, charset);
-            onSuccess(data);
-          }
-          else throw new IOException("Unsupported scheme: " + url);
+          URL u = new URL(url);
+          String data = IOUtils.readString(u.openStream(), charset);
+          onSuccess(data);
         }
         catch (IOException ex)
         {
@@ -85,25 +80,10 @@ public class Exporter
   }
   
   protected void onSuccess(String data)
-  {
+  {    
   }
 
   protected void onError(Exception ex)
   {    
-  }
-
-  public void write(OutputStream os, String data, String charset)
-    throws IOException
-  {
-    OutputStreamWriter writer = 
-     new OutputStreamWriter(os, charset);
-    try
-    {
-      writer.append(data);
-    }
-    finally
-    {
-      writer.close();
-    }
   }
 }

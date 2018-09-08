@@ -35,6 +35,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import org.brain4it.net.SSLUtils;
 
 /**
  *
@@ -60,6 +61,7 @@ public class MjpegStream
   public MjpegStream(URL url) throws Exception
   {
     HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+    SSLUtils.skipCertificateValidation(conn);
     conn.connect();
     String contentType = conn.getHeaderField("Content-Type");
     if (contentType != null && contentType.startsWith(CONTENT_TYPE))

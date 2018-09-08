@@ -31,35 +31,33 @@
 package org.brain4it.io;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.net.URL;
 
 /**
- *
+ * A utility class to write text to a File or URL asynchronously.
+ * 
  * @author realor
  */
-public class Importer
+public class Exporter
 {
   public static final String FILE_SCHEME = "file://";  
   private final String url;
   private final String charset;
   
-  public Importer(String url, String charset)
+  public Exporter(String url, String charset)
   {
     this.url = url;
     this.charset = charset;
   }
 
-  public Importer(File file, String charset)
+  public Exporter(File file, String charset)
   {
     this.url = FILE_SCHEME + file.getAbsolutePath();
     this.charset = charset;
   }
   
-  public void importData()
+  public void exportData(final String data)
   {
     Thread thread = new Thread()
     {
@@ -68,9 +66,13 @@ public class Importer
       {
         try
         {
-          URL u = new URL(url);
-          String data = read(u.openStream(), charset);
-          onSuccess(data);
+          if (url.startsWith(FILE_SCHEME))
+          {
+            File file = new File(url.substring(FILE_SCHEME.length()));
+            IOUtils.writeString(data, charset, new FileOutputStream(file));
+            onSuccess(data);
+          }
+          else throw new IOException("Unsupported scheme: " + url);
         }
         catch (IOException ex)
         {
@@ -82,31 +84,10 @@ public class Importer
   }
   
   protected void onSuccess(String data)
-  {    
+  {
   }
 
   protected void onError(Exception ex)
   {    
   }
-  
-  private String read(InputStream is, String charset) throws IOException
-  {
-    try
-    {
-      final char[] buffer = new char[1024];
-      final StringBuilder out = new StringBuilder();
-      Reader in = new InputStreamReader(is, charset);
-      int numRead = in.read(buffer);
-      while (numRead != -1)
-      {
-        out.append(buffer, 0, numRead);
-        numRead = in.read(buffer);
-      }
-      return out.toString();
-    }
-    finally
-    {
-      is.close();
-    }
-  }  
 }

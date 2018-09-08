@@ -27,6 +27,11 @@
       <artifactId>brain4it-server-constants</artifactId>
       <version>${brain4it-version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.brain4it</groupId>
+      <artifactId>brain4it-common</artifactId>
+      <version>${brain4it-version}</version>
+    </dependency>
   </dependencies>
   
   <build>

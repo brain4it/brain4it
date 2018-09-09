@@ -31,12 +31,12 @@
 package org.brain4it.client;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedWriter;
+import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.Socket;
@@ -47,6 +47,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 import org.brain4it.io.IOUtils;
 import org.brain4it.io.Parser;
@@ -216,7 +217,9 @@ public class Monitor
   }
 
   /**
-   * Returns true if there is no listener registered
+   * Returns <tt>true</tt> if there are no listeners in this monitor
+   * 
+   * @return <tt>true</tt> if there are no listeners in this monitor
    */
   public synchronized boolean isIdle()
   {
@@ -262,7 +265,7 @@ public class Monitor
     boolean end;
     Socket socket;
     BufferedInputStream input;
-    BufferedWriter writer;
+    BufferedOutputStream output;
     String monitorSessionId;
 
     @Override
@@ -298,11 +301,10 @@ public class Monitor
           try
           {
             socket.setSoTimeout(0);
-            writer = new BufferedWriter(
-              new OutputStreamWriter(socket.getOutputStream(), BPL_CHARSET));
+            output = new BufferedOutputStream(socket.getOutputStream());
             try
             {
-              writer.write("POST " + path + "/" + moduleName + " HTTP/1.1\r\n");
+              write("POST " + path + "/" + moduleName + " HTTP/1.1\r\n");
               setHeader("Host", host + ":" + port);
               setHeader(MONITOR_HEADER, pollingInterval);
               if (accessKey != null)
@@ -314,14 +316,16 @@ public class Monitor
                 setHeader(SESSION_ID_HEADER, sessionId);
               }
               String functionNames = getMonitoredFunctionNames();
-              setHeader("Content-Length", functionNames.length());
+              byte bytes[] = functionNames.getBytes(BPL_CHARSET);
+              setHeader("Content-Length", bytes.length);
               setHeader("Content-Type", BPL_MIMETYPE +
                 "; charset=" + BPL_CHARSET);
-              writer.write("\r\n");
-              writer.write(functionNames);
-              writer.flush();
+              write("\r\n");
+              output.write(bytes);
+              output.flush();
 
               input = new BufferedInputStream(socket.getInputStream());
+
               String header;
               try
               {
@@ -344,7 +348,7 @@ public class Monitor
             }
             finally
             {
-              writer.close();
+              output.close();
             }
           }
           finally
@@ -444,7 +448,11 @@ public class Monitor
         {
           factory = (SSLSocketFactory)SSLSocketFactory.getDefault();
         }
-        return factory.createSocket(host, port);
+        SSLSocket sslSocket = (SSLSocket)factory.createSocket(host, port);
+        sslSocket.setTcpNoDelay(true);
+        sslSocket.startHandshake();
+
+        return sslSocket;
       }
       else
       {
@@ -454,7 +462,14 @@ public class Monitor
 
     private void setHeader(String header, Object value) throws IOException
     {
-      writer.write(header + ": " + value + "\r\n");
+      write(header + ": " + value + "\r\n");
+    }
+
+    private void write(String text)
+      throws UnsupportedEncodingException, IOException
+    {
+      byte bytes[] = text.getBytes(BPL_CHARSET);
+      output.write(bytes);
     }
 
     private void recover(Exception ex)

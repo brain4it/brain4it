@@ -96,7 +96,7 @@ public class SSLUtils
   {
     if (noValidationSSLContext == null)
     {
-      noValidationSSLContext = SSLContext.getInstance("SSL");
+      noValidationSSLContext = SSLContext.getInstance("TLS");
       noValidationSSLContext.init(null, trustAllCerts,
         new java.security.SecureRandom());
     }
@@ -115,7 +115,7 @@ public class SSLUtils
   {
     if (noValidationSSLSocketFactory == null)
     {
-      noValidationSSLSocketFactory =
+      noValidationSSLSocketFactory = 
         getNoValidationSSLContext().getSocketFactory();
     }
     return noValidationSSLSocketFactory;

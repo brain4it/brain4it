@@ -1,31 +1,31 @@
 /*
  * Brain4it
- * 
+ *
  * Copyright (C) 2018, Ajuntament de Sant Feliu de Llobregat
- * 
- * This program is licensed and may be used, modified and redistributed under 
- * the terms of the European Public License (EUPL), either version 1.1 or (at 
- * your option) any later version as soon as they are approved by the European 
+ *
+ * This program is licensed and may be used, modified and redistributed under
+ * the terms of the European Public License (EUPL), either version 1.1 or (at
+ * your option) any later version as soon as they are approved by the European
  * Commission.
- * 
- * Alternatively, you may redistribute and/or modify this program under the 
- * terms of the GNU Lesser General Public License as published by the Free 
- * Software Foundation; either  version 3 of the License, or (at your option) 
- * any later version. 
- *   
- * Unless required by applicable law or agreed to in writing, software 
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT 
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- *   
- * See the licenses for the specific language governing permissions, limitations 
+ *
+ * Alternatively, you may redistribute and/or modify this program under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either  version 3 of the License, or (at your option)
+ * any later version.
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *
+ * See the licenses for the specific language governing permissions, limitations
  * and more details.
- *   
- * You should have received a copy of the EUPL1.1 and the LGPLv3 licenses along 
- * with this program; if not, you may find them at: 
- *   
+ *
+ * You should have received a copy of the EUPL1.1 and the LGPLv3 licenses along
+ * with this program; if not, you may find them at:
+ *
  *   https://joinup.ec.europa.eu/software/page/eupl/licence-eupl
- *   http://www.gnu.org/licenses/ 
- *   and 
+ *   http://www.gnu.org/licenses/
+ *   and
  *   https://www.gnu.org/licenses/lgpl.txt
  */
 
@@ -48,9 +48,9 @@ import org.brain4it.net.SSLUtils;
 import static org.brain4it.server.ServerConstants.*;
 
 /**
- * The RestClient class lets you make calls to the REST API of a Brain4it 
+ * The RestClient class lets you make calls to the REST API of a Brain4it
  * server.
- * 
+ *
  * @author realor
  */
 public class RestClient
@@ -69,20 +69,20 @@ public class RestClient
   private Map<String, List<String>> headers;
 
   public RestClient()
-  {    
+  {
   }
-  
+
   public RestClient(String serverUrl)
   {
     this(serverUrl, null);
   }
-  
+
   public RestClient(String serverUrl, String accessKey)
   {
     this.serverUrl = serverUrl;
     this.accessKey = accessKey;
-  }  
-  
+  }
+
   public String getServerUrl()
   {
     return serverUrl;
@@ -112,7 +112,7 @@ public class RestClient
   {
     this.sessionId = sessionId;
   }
-  
+
   public int getConnectionTimeout()
   {
     return connectionTimeout;
@@ -166,18 +166,18 @@ public class RestClient
   public void setData(Object data)
   {
     this.dataString = Printer.toString(data);
-  }  
-  
+  }
+
   public int getStatus()
   {
     return status;
-  }  
+  }
 
   public Map<String, List<String>> getHeaders()
   {
     return headers;
   }
-  
+
   public String getResultString()
   {
     return resultString;
@@ -187,7 +187,7 @@ public class RestClient
   {
     return Parser.fromString(resultString);
   }
-  
+
   // synchronous methods
   public String listModules() throws IOException
   {
@@ -196,7 +196,7 @@ public class RestClient
     this.dataString = null;
     return send();
   }
-  
+
   public String createModule(String moduleName) throws IOException
   {
     this.method = "PUT";
@@ -218,27 +218,27 @@ public class RestClient
     this.method = "GET";
     this.path = moduleName + absolutePath(modulePath);
     this.dataString = null;
-    return send();    
+    return send();
   }
 
-  public String put(String moduleName, String modulePath, String value) 
+  public String put(String moduleName, String modulePath, String value)
     throws IOException
   {
     this.method = "PUT";
     this.path = moduleName + absolutePath(modulePath);
     this.dataString = value;
-    return send();    
+    return send();
   }
 
-  public String delete(String moduleName, String modulePath) 
+  public String delete(String moduleName, String modulePath)
     throws IOException
   {
     this.method = "DELETE";
     this.path = moduleName + absolutePath(modulePath);
     this.dataString = null;
-    return send();    
+    return send();
   }
-  
+
   public String execute(String moduleName, String command)
     throws IOException
   {
@@ -247,16 +247,16 @@ public class RestClient
     this.dataString = command;
     return send();
   }
-  
-  public String invokeFunction(String moduleName, String functionName, 
+
+  public String invokeFunction(String moduleName, String functionName,
      String data) throws IOException
   {
     this.method = "POST";
     this.path = moduleName + absolutePath(functionName);
     this.dataString = data;
-    return send();    
+    return send();
   }
-  
+
   // asynchronous methods
   public void listModules(Callback callback)
   {
@@ -265,7 +265,7 @@ public class RestClient
     this.dataString = null;
     send(callback);
   }
-  
+
   public void createModule(String moduleName, Callback callback)
   {
     this.method = "PUT";
@@ -287,26 +287,26 @@ public class RestClient
     this.method = "GET";
     this.path = moduleName + absolutePath(modulePath);
     this.dataString = null;
-    send(callback);    
+    send(callback);
   }
 
-  public void put(String moduleName, String modulePath, String value, 
+  public void put(String moduleName, String modulePath, String value,
     Callback callback)
   {
     this.method = "PUT";
     this.path = moduleName + absolutePath(modulePath);
     this.dataString = value;
-    send(callback);    
+    send(callback);
   }
 
-  public void delete(String moduleName, String modulePath, Callback callback) 
+  public void delete(String moduleName, String modulePath, Callback callback)
   {
     this.method = "DELETE";
     this.path = moduleName + absolutePath(modulePath);
     this.dataString = null;
-    send(callback);    
+    send(callback);
   }
-  
+
   public void execute(String moduleName, String cmd, Callback callback)
   {
     this.method = "POST";
@@ -315,22 +315,22 @@ public class RestClient
     send(callback);
   }
 
-  public void invokeFunction(String moduleName, String functionName, 
+  public void invokeFunction(String moduleName, String functionName,
      String data, Callback callback)
   {
     this.method = "POST";
     this.path = moduleName + absolutePath(functionName);
     this.dataString = data;
-    send(callback);    
+    send(callback);
   }
-  
+
   public void send(Callback callback)
   {
     if (thread != null) throw new RuntimeException("Request in process");
     thread = new SendThread(callback);
     thread.start();
   }
-  
+
   public String send() throws IOException
   {
     if (thread != null) throw new RuntimeException("Request in process");
@@ -345,45 +345,45 @@ public class RestClient
       thread.interrupt();
     }
   }
-  
+
   public boolean isRequestInProcess()
   {
     return thread != null;
   }
-  
+
   private String absolutePath(String modulePath)
   {
     if (modulePath == null) throw new RuntimeException("Invalid null path");
     if (modulePath.startsWith("/")) return modulePath;
     return "/" + modulePath;
   }
-  
+
   private String internalSend() throws IOException
   {
     status = 0;
     headers = null;
     if (serverUrl == null) throw new RuntimeException("Invalid url");
-    URL url = (path == null) ? 
+    URL url = (path == null) ?
       new URL(serverUrl) : new URL(serverUrl + "/" + urlEncode(path));
     HttpURLConnection conn = (HttpURLConnection)url.openConnection();
-    SSLUtils.skipCertificateValidation(conn);
-    conn.setConnectTimeout(connectionTimeout);
-    conn.setReadTimeout(readTimeout);
-    conn.setRequestMethod(method);
-    conn.setUseCaches(false);
-    conn.setDoInput(true);
-    conn.setRequestProperty("content-type", BPL_MIMETYPE + 
-      "; charset=" + BPL_CHARSET);
-    if (accessKey != null)
-    {
-      conn.setRequestProperty(ACCESS_KEY_HEADER, accessKey);
-    }
-    if (sessionId != null)
-    {
-      conn.setRequestProperty(SESSION_ID_HEADER, sessionId);
-    }
     try
     {
+      SSLUtils.skipCertificateValidation(conn);
+      conn.setConnectTimeout(connectionTimeout);
+      conn.setReadTimeout(readTimeout);
+      conn.setRequestMethod(method);
+      conn.setUseCaches(false);
+      conn.setDoInput(true);
+      conn.setRequestProperty("content-type", BPL_MIMETYPE +
+        "; charset=" + BPL_CHARSET);
+      if (accessKey != null)
+      {
+        conn.setRequestProperty(ACCESS_KEY_HEADER, accessKey);
+      }
+      if (sessionId != null)
+      {
+        conn.setRequestProperty(SESSION_ID_HEADER, sessionId);
+      }
       if (dataString != null && !method.equals("GET"))
       {
         conn.setDoOutput(true);
@@ -426,7 +426,7 @@ public class RestClient
       conn.disconnect();
     }
   }
-  
+
   private String urlEncode(String path) throws UnsupportedEncodingException
   {
     StringBuilder buffer = new StringBuilder();
@@ -442,23 +442,23 @@ public class RestClient
     }
     return buffer.toString();
   }
-  
+
   public interface Callback
   {
-    public void onSuccess(RestClient client, String resultString);            
-    public void onError(RestClient client, Exception ex);            
+    public void onSuccess(RestClient client, String resultString);
+    public void onError(RestClient client, Exception ex);
   }
-  
+
   class SendThread extends Thread
   {
     private final Callback callback;
     private boolean aborted = false;
-    
+
     SendThread(Callback callback)
     {
       this.callback = callback;
     }
-    
+
     @Override
     public void run()
     {
@@ -481,7 +481,7 @@ public class RestClient
       }
     }
   }
-  
+
   public static void main(String args[]) throws Exception
   {
     if (args.length < 3)

@@ -33,6 +33,7 @@ package org.brain4it.server.standalone;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -154,7 +155,7 @@ public class HttpRequest
     return bodyReader;
   }
 
-  public void read() throws BadRequestException, IOException
+  public void read() throws IOException
   {
     readMethodUri(is);
     readHeaders(is);
@@ -165,10 +166,11 @@ public class HttpRequest
     return !"close".equalsIgnoreCase(headers.get("connection"));
   }
 
-  private void readMethodUri(InputStream in)
-    throws BadRequestException, IOException
+  private void readMethodUri(InputStream in) throws IOException
   {
     String request = readLine(in);
+    if (request.length() == 0) throw new EOFException();
+
     String[] parts = request.split(" ");
     if (parts.length != 3)
       throw new BadRequestException(request);

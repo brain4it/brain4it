@@ -42,12 +42,6 @@ import org.brain4it.server.store.Store;
  */
 public class Runner
 {
-  static
-  {
-    System.setProperty("java.util.logging.manager",
-      ServerLogManager.class.getName());
-  }
-
   /* properties */
   public static final String PORT_PARAM = "port";
   public static final String SHUTDOWN_FILE_PARAM = "shutdownFile";

@@ -38,9 +38,9 @@ import org.brain4it.lang.Utils;
 
 /**
  * The Invoker class serializes multiple HTTP calls to exterior functions of
- * a module to ensure that they are processed in the same order in which they 
- * were generated. 
- * 
+ * a module to ensure that they are processed in the same order in which they
+ * were generated.
+ *
  * @author realor
  *
  */
@@ -67,15 +67,15 @@ public class Invoker
     boolean coalesce, RestClient.Callback callback)
   {
     return invoke(functionName, value, coalesce, 0, 0, callback);
-  }  
-  
+  }
+
   public synchronized boolean invoke(String functionName, Object value,
-    boolean coalesce, int connectTimeout, int readTimeout, 
+    boolean coalesce, int connectTimeout, int readTimeout,
     RestClient.Callback callback)
   {
-    if (functionName == null) 
+    if (functionName == null)
       throw new RuntimeException("functionName is required");
-    
+
     boolean found = false;
 
     if (coalesce && callback != null)
@@ -114,22 +114,22 @@ public class Invoker
     public void run()
     {
       setName("Invoker.Worker-" + getId());
-      LOGGER.log(Level.FINEST, "Invoker.Worker start");
+      LOGGER.log(Level.FINE, "Invoker.Worker start");
 
       Call call = getCall();
       while (call != null)
       {
         invoke(call);
         call = getCall();
-      }   
+      }
       synchronized (Invoker.this)
       {
         worker = null;
       }
-      LOGGER.log(Level.FINEST, "Invoker.Worker end");
+      LOGGER.log(Level.FINE, "Invoker.Worker end");
     }
   }
-  
+
   protected synchronized Call getCall()
   {
     Call call = queue.poll();
@@ -142,7 +142,7 @@ public class Invoker
         call = queue.poll();
       }
       catch (InterruptedException ex)
-      {        
+      {
       }
     }
     return call;
@@ -164,13 +164,13 @@ public class Invoker
       }
       restClient.setConnectionTimeout(call.getConnectTimeout());
       restClient.setReadTimeout(call.getReadTimeout());
-      
-      String resultString = restClient.invokeFunction(moduleName, 
+
+      String resultString = restClient.invokeFunction(moduleName,
         call.functionName, valueString);
 
-      LOGGER.log(Level.FINEST, "call function: {0}, value: {1}, result: {2}",
+      LOGGER.log(Level.FINE, "call function: {0}, value: {1}, result: {2}",
         new Object[]{call.functionName, valueString, resultString});
-      
+
       if (call.callback != null)
       {
         call.callback.onSuccess(restClient, resultString);
@@ -180,14 +180,14 @@ public class Invoker
     {
       LOGGER.log(Level.WARNING, "call function: {0}, error: {1}",
         new Object[]{call.functionName, ex.toString()});
-      
+
       if (call.callback != null)
       {
         call.callback.onError(restClient, ex);
       }
     }
   }
-  
+
   protected class Call
   {
     String functionName;
@@ -196,7 +196,7 @@ public class Invoker
     int readTimeout;
     RestClient.Callback callback;
 
-    Call(String functionName, Object value, 
+    Call(String functionName, Object value,
       int connectTimeout, int readTimeout, RestClient.Callback callback)
     {
       this.functionName = functionName;
@@ -225,10 +225,10 @@ public class Invoker
     {
       return readTimeout;
     }
-    
+
     public RestClient.Callback getCallback()
     {
       return callback;
     }
-  }  
+  }
 }

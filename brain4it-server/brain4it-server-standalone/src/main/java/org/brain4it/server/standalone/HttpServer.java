@@ -37,6 +37,7 @@ import java.net.HttpURLConnection;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
+import java.io.EOFException;
 import java.security.KeyStore;
 import java.util.Collections;
 import java.util.HashSet;
@@ -313,6 +314,8 @@ public class HttpServer
     {
       try
       {
+        LOGGER.log(Level.FINEST,
+          "New handler on socket {0}", socket.getPort());
         socket.setSoTimeout(keepAliveTime * 1000);
         boolean keepAlive = true;
         while (keepAlive)
@@ -321,8 +324,11 @@ public class HttpServer
           HttpResponse response = new HttpResponse(socket);
           try
           {
-            request.read(); // may throw:
-            // BadRequestException,  SocketTimeoutException or IOException
+            request.read(); // may throw: BadRequestException,
+            // EOFException, SocketTimeoutException or IOException
+
+            LOGGER.log(Level.FINEST, "{0} {1} on socket {2}", new Object[]{
+              request.getMethod(), request.getPath(), socket.getPort()});
 
             SAHttpDispatcher dispatcher = new SAHttpDispatcher(
               request, response, restService, monitorService);
@@ -330,27 +336,36 @@ public class HttpServer
             // dispatch request and generate response
             dispatcher.dispatch();
             // flush buffered response
-            response.getWriter().flush();
-            if (!request.isKeepAlive() || response.isChunked())
-            {
-              keepAlive = false;
-            }
+            response.finish();
+            keepAlive = request.isKeepAlive();
           }
           catch (BadRequestException ex)
           {
+            // Bad HTTP request
+            LOGGER.log(Level.FINEST, "Bad request on socket {0}",
+              socket.getPort());
             response.setStatusCode(HttpURLConnection.HTTP_BAD_REQUEST);
             response.setStatusMessage("BAD_REQUEST");
-            response.getWriter().flush();
+            response.finish();
+            keepAlive = false;
+          }
+          catch (EOFException ex)
+          {
+            // client has gone
+            LOGGER.log(Level.FINEST, "EOF on socket {0}", socket.getPort());
             keepAlive = false;
           }
           catch (SocketTimeoutException ex)
           {
-            // client is gone
+            // no more requests in keepAliveTime
+            LOGGER.log(Level.FINEST, "Timeout on socket {0}", socket.getPort());
             keepAlive = false;
           }
           catch (IOException ex)
           {
-            // IO error
+            // IO error: SocketException
+            LOGGER.log(Level.FINEST, "I/O Error on socket {0}",
+              socket.getPort());
             keepAlive = false;
           }
         }
@@ -363,6 +378,7 @@ public class HttpServer
       {
         try
         {
+          LOGGER.log(Level.FINEST, "Close socket {0}", socket.getPort());
           socket.close();
         }
         catch (IOException ex)

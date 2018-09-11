@@ -1,31 +1,31 @@
 /*
  * Brain4it
- * 
+ *
  * Copyright (C) 2018, Ajuntament de Sant Feliu de Llobregat
- * 
- * This program is licensed and may be used, modified and redistributed under 
- * the terms of the European Public License (EUPL), either version 1.1 or (at 
- * your option) any later version as soon as they are approved by the European 
+ *
+ * This program is licensed and may be used, modified and redistributed under
+ * the terms of the European Public License (EUPL), either version 1.1 or (at
+ * your option) any later version as soon as they are approved by the European
  * Commission.
- * 
- * Alternatively, you may redistribute and/or modify this program under the 
- * terms of the GNU Lesser General Public License as published by the Free 
- * Software Foundation; either  version 3 of the License, or (at your option) 
- * any later version. 
- *   
- * Unless required by applicable law or agreed to in writing, software 
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT 
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- *   
- * See the licenses for the specific language governing permissions, limitations 
+ *
+ * Alternatively, you may redistribute and/or modify this program under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either  version 3 of the License, or (at your option)
+ * any later version.
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *
+ * See the licenses for the specific language governing permissions, limitations
  * and more details.
- *   
- * You should have received a copy of the EUPL1.1 and the LGPLv3 licenses along 
- * with this program; if not, you may find them at: 
- *   
+ *
+ * You should have received a copy of the EUPL1.1 and the LGPLv3 licenses along
+ * with this program; if not, you may find them at:
+ *
  *   https://joinup.ec.europa.eu/software/page/eupl/licence-eupl
- *   http://www.gnu.org/licenses/ 
- *   and 
+ *   http://www.gnu.org/licenses/
+ *   and
  *   https://www.gnu.org/licenses/lgpl.txt
  */
 package org.brain4it.server;
@@ -58,11 +58,11 @@ public class MonitorService
   private int maxWaitTime = 10; // 10 seconds
   private int pingTime = 30; // 30 seconds
   private final Map<String, FunctionQueue> sessions;
-  
+
   private final ModuleManager moduleManager;
   private static final String END = "END";
   private static final Logger LOGGER = Logger.getLogger("MonitorService");
-  
+
   public MonitorService(ModuleManager moduleManager)
   {
     this.moduleManager = moduleManager;
@@ -100,15 +100,15 @@ public class MonitorService
 
     this.pingTime = pingTime;
   }
-  
+
   public void watch(String path, BList exteriorFunctions,
-    BList requestContext, int pollingInterval, PrintWriter writer) 
+    BList requestContext, int pollingInterval, PrintWriter writer)
     throws Exception
   {
     String monitorSessionId = UUID.randomUUID().toString();
 
-    LOGGER.log(Level.INFO, "Monitor watch: {0}", monitorSessionId);
-    
+    LOGGER.log(Level.FINE, "Monitor watch: {0}", monitorSessionId);
+
     PathParser parser = new PathParser(moduleManager, path);
     Module module = parser.getModule();
 
@@ -116,7 +116,7 @@ public class MonitorService
 
     final FunctionQueue queue = new FunctionQueue();
     sessions.put(monitorSessionId, queue);
-    
+
     Module.Listener listener = new Module.Listener()
     {
       @Override
@@ -136,7 +136,7 @@ public class MonitorService
       // send monitorSessionId
       writer.println("\"" + monitorSessionId + "\"");
       writer.flush();
-      
+
       HashMap<String, Object> lastSentData = new HashMap<String, Object>();
       int monitorMillis = 1000 * pingTime;
       if (pollingInterval <= 0) pollingInterval = monitorMillis;
@@ -182,12 +182,12 @@ public class MonitorService
       }
       sessions.remove(monitorSessionId);
     }
-    LOGGER.log(Level.INFO, "Monitor end: {0}", monitorSessionId);
+    LOGGER.log(Level.FINE, "Monitor end: {0}", monitorSessionId);
   }
-  
+
   public String unwatch(String monitorSessionId)
   {
-    LOGGER.log(Level.INFO, "Monitor unwatch: {0}", monitorSessionId);
+    LOGGER.log(Level.FINE, "Monitor unwatch: {0}", monitorSessionId);
     FunctionQueue queue = sessions.get(monitorSessionId);
     if (queue != null)
     {
@@ -195,7 +195,7 @@ public class MonitorService
     }
     return "unwatched";
   }
-  
+
   private List<String> getFunctionNames(BList exteriorFunctions)
   {
     ArrayList<String> functionNames = new ArrayList<String>();
@@ -213,9 +213,9 @@ public class MonitorService
     }
     return functionNames;
   }
-   
+
   private boolean sendMonitorData(Module module, String functionName,
-    HashMap<String, Object> lastSentData, BList requestContext, 
+    HashMap<String, Object> lastSentData, BList requestContext,
     PrintWriter writer) throws Exception
   {
     Object result = null;
@@ -224,8 +224,8 @@ public class MonitorService
     try
     {
       Map<String, Function> functions = moduleManager.getFunctions();
-      BList code = Utils.createFunctionCall(functions, functionName, 
-        requestContext);      
+      BList code = Utils.createFunctionCall(functions, functionName,
+        requestContext);
       result = Executor.execute(code, module, functions, maxWaitTime);
       Object last = lastSentData.get(functionName);
       send = !Utils.equals(result, last) ||
@@ -254,7 +254,7 @@ public class MonitorService
   {
     return functionName.startsWith(EXTERIOR_FUNCTION_PREFIX);
   }
-  
+
   class FunctionQueue extends LinkedList<String>
   {
     public synchronized String poll(long waitMillis)
@@ -274,7 +274,7 @@ public class MonitorService
       }
       return functionName;
     }
-    
+
     public synchronized void append(String functionName)
     {
       if (!contains(functionName))
@@ -283,7 +283,7 @@ public class MonitorService
         notify();
       }
     }
-    
+
     public synchronized void append(List<String> functionNames)
     {
       for (String functionName : functionNames)
@@ -291,7 +291,7 @@ public class MonitorService
         append(functionName);
       }
     }
-    
+
     public synchronized void end()
     {
       clear();

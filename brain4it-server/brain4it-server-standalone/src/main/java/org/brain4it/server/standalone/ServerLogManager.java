@@ -34,7 +34,8 @@ import java.io.IOException;
 import java.util.logging.LogManager;
 
 /**
- *
+ * LogManager that continues logging after program shutdown 
+ * 
  * @author realor
  */
 public class ServerLogManager extends LogManager
@@ -48,10 +49,20 @@ public class ServerLogManager extends LogManager
   }
   
   public static void resetFinally() 
-  { 
-    instance.reset0(); 
+  {
+    if (instance != null)
+    {
+      instance.reset0(); 
+    }
   }  
 
+  /**
+   * Reset method that do not removes logging handlers.
+   * 
+   * This must be done with resetFinally method.
+   * 
+   * @throws SecurityException 
+   */
   @Override
   public void reset() throws SecurityException
   {
@@ -66,8 +77,7 @@ public class ServerLogManager extends LogManager
   {
     try
     {
-      readConfiguration(
-        ServerLogManager.class.getResourceAsStream("/logging.properties"));
+      readConfiguration();
     }
     catch (IOException ex)
     {      

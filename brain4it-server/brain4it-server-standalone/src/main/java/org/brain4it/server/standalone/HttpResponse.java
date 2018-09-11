@@ -52,6 +52,7 @@ public class HttpResponse
   private final HashMap<String, String> headers = new HashMap<String, String>();
   private boolean committed;
   private boolean chunked;
+  private boolean finished;
   private String characterEncoding = "UTF-8";
   private final PrintWriter writer;
   private final Socket socket;
@@ -138,9 +139,23 @@ public class HttpResponse
     return chunked;
   }
 
+  public boolean isFinished()
+  {
+    return finished;
+  }
+
   public PrintWriter getWriter()
   {
     return writer;
+  }
+
+  public void finish()
+  {
+    if (!finished)
+    {
+      finished = true;
+      writer.flush();
+    }
   }
 
   public class ResponseWriter extends Writer
@@ -171,14 +186,14 @@ public class HttpResponse
       if (!committed)
       {
         // send response header
-        writeBytes(version + " " + statusCode + " " + statusMessage);
+        writeString(version + " " + statusCode + " " + statusMessage);
         writeCRLF();
 
         for (String headerName : headers.keySet())
         {
           if (!headerName.equals("content-length"))
           {
-            writeBytes(headerName + ": " + headers.get(headerName));
+            writeString(headerName + ": " + headers.get(headerName));
             writeCRLF();
           }
         }
@@ -195,9 +210,16 @@ public class HttpResponse
           // send buffer as a chunk
           byte[] data = buffer.toString().getBytes(characterEncoding);
           buffer.setLength(0);
-          writeBytes(Integer.toHexString(data.length)); // chunk size
+          writeString(Integer.toHexString(data.length)); // chunk size
           writeCRLF();
           out.write(data); // chunk data
+          writeCRLF();
+          out.flush();
+        }
+        if (finished)
+        {
+          writeString("0");
+          writeCRLF();
           writeCRLF();
           out.flush();
         }
@@ -209,7 +231,7 @@ public class HttpResponse
           committed = true;
           byte[] data = buffer.toString().getBytes(characterEncoding);
           buffer.setLength(0);
-          writeBytes("content-length: " + data.length);
+          writeString("content-length: " + data.length);
           writeCRLF();
           writeCRLF(); // headers termination
           out.write(data);
@@ -225,9 +247,7 @@ public class HttpResponse
       out.close();
     }
 
-    /* private functions */
-
-    private void writeBytes(String data) throws IOException
+    private void writeString(String data) throws IOException
     {
       out.write(data.getBytes(characterEncoding));
     }

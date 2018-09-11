@@ -78,7 +78,7 @@ public class RestService
 
   public Object get(String path, String accessKey) throws Exception
   {
-    LOGGER.log(Level.FINEST, "path: {0}", path);
+    LOGGER.log(Level.FINE, "path: {0}", path);
     Object result;
     PathParser parser = new PathParser(moduleManager, path);
 
@@ -110,7 +110,7 @@ public class RestService
   public Object put(String path, Object value, String accessKey)
     throws Exception
   {
-    LOGGER.log(Level.FINEST, "path: {0} value: {1}", new Object[]{path, value});    
+    LOGGER.log(Level.FINE, "path: {0} value: {1}", new Object[]{path, value});
     Object result;
     PathParser parser = new PathParser(moduleManager, path);
     checkSecurity(parser, accessKey);
@@ -159,7 +159,7 @@ public class RestService
 
   public Object delete(String path, String accessKey) throws Exception
   {
-    LOGGER.log(Level.FINEST, "path: {0}", path);
+    LOGGER.log(Level.FINE, "path: {0}", path);
     Object result;
     PathParser parser = new PathParser(moduleManager, path);
     checkSecurity(parser, accessKey);
@@ -190,7 +190,7 @@ public class RestService
   public Object execute(String path, Object data, String accessKey,
     BList requestContext) throws Exception
   {
-    LOGGER.log(Level.FINEST, "path: {0} data: {1}", new Object[]{path, data});
+    LOGGER.log(Level.FINE, "path: {0} data: {1}", new Object[]{path, data});
     Object result;
     PathParser parser = new PathParser(moduleManager, path);
     String moduleName = parser.getModuleName();
@@ -213,7 +213,7 @@ public class RestService
       }
       else if (isExteriorFunction(functionName))
       {
-        // call exterior function passing header and data as arguments        
+        // call exterior function passing header and data as arguments
         code = Utils.createFunctionCall(functions, functionName,
           requestContext, data);
       }

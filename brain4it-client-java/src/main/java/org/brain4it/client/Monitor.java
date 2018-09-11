@@ -30,25 +30,19 @@
  */
 package org.brain4it.client;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.ConnectException;
 import java.net.HttpURLConnection;
-import java.net.Socket;
 import java.net.URL;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
+import java.text.ParseException;
+import java.net.ConnectException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.net.ssl.SSLSocket;
-import javax.net.ssl.SSLSocketFactory;
 import org.brain4it.io.IOUtils;
 import org.brain4it.io.Parser;
 import org.brain4it.io.Printer;
@@ -218,7 +212,7 @@ public class Monitor
 
   /**
    * Returns <tt>true</tt> if there are no listeners in this monitor
-   * 
+   *
    * @return <tt>true</tt> if there are no listeners in this monitor
    */
   public synchronized boolean isIdle()
@@ -263,16 +257,13 @@ public class Monitor
   protected class Worker extends Thread
   {
     boolean end;
-    Socket socket;
-    BufferedInputStream input;
-    BufferedOutputStream output;
     String monitorSessionId;
 
     @Override
     public void run()
     {
       setName("Monitor.Worker-" + getId());
-      LOGGER.log(Level.INFO, "Monitor.Worker start");
+      LOGGER.log(Level.FINE, "Monitor.Worker start");
 
       try
       {
@@ -290,70 +281,51 @@ public class Monitor
           {
             throw new RuntimeException("Invalid url");
           }
-          URL url = new URL(serverUrl);
-          String host = url.getHost();
-          int port = url.getPort();
-          String path = url.getPath();
-          String protocol = url.getProtocol();
-          if (port == -1) port = "https".equals(protocol) ? 443 : 80;
-
-          socket = createSocket(protocol, host, port);
+          URL url = new URL(serverUrl + "/" + moduleName);
+          HttpURLConnection conn = (HttpURLConnection)url.openConnection();
           try
           {
-            socket.setSoTimeout(0);
-            output = new BufferedOutputStream(socket.getOutputStream());
+            SSLUtils.skipCertificateValidation(conn);
+            conn.setDoInput(true);
+            conn.setDoOutput(true);
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty(MONITOR_HEADER, "0");
+            conn.setRequestProperty("Content-Type", BPL_MIMETYPE +
+               "; charset=" + BPL_CHARSET);
+            if (accessKey != null)
+            {
+              conn.setRequestProperty(ACCESS_KEY_HEADER, accessKey);
+            }
+            if (sessionId != null)
+            {
+              conn.setRequestProperty(SESSION_ID_HEADER, sessionId);
+            }
+            String functionNames = getMonitoredFunctionNames();
+            OutputStream os = conn.getOutputStream();
+            IOUtils.writeString(functionNames, BPL_CHARSET, os);
+
+            conn.connect();
+
+            BufferedReader reader = new BufferedReader(
+              new InputStreamReader(conn.getInputStream(), BPL_CHARSET));
             try
             {
-              write("POST " + path + "/" + moduleName + " HTTP/1.1\r\n");
-              setHeader("Host", host + ":" + port);
-              setHeader(MONITOR_HEADER, pollingInterval);
-              if (accessKey != null)
+              String chunk = reader.readLine();
+              // chunk is null when server sends a 0 size block
+              while (chunk != null && !end)
               {
-                setHeader(ACCESS_KEY_HEADER, accessKey);
-              }
-              if (sessionId != null)
-              {
-                setHeader(SESSION_ID_HEADER, sessionId);
-              }
-              String functionNames = getMonitoredFunctionNames();
-              byte bytes[] = functionNames.getBytes(BPL_CHARSET);
-              setHeader("Content-Length", bytes.length);
-              setHeader("Content-Type", BPL_MIMETYPE +
-                "; charset=" + BPL_CHARSET);
-              write("\r\n");
-              output.write(bytes);
-              output.flush();
-
-              input = new BufferedInputStream(socket.getInputStream());
-
-              String header;
-              try
-              {
-                do
-                {
-                  header = readLine();
-                } while (header.length() > 0);
-
-                String chunk = readChunk();
-                while (chunk != null && !end)
-                {
-                  processChunk(chunk);
-                  chunk = readChunk();
-                }
-              }
-              finally
-              {
-                input.close();
+                processChunk(chunk);
+                chunk = reader.readLine();
               }
             }
             finally
             {
-              output.close();
+              reader.close();
             }
           }
           finally
           {
-            socket.close();
+            conn.disconnect();
           }
         }
         catch (ConnectException ex)
@@ -362,53 +334,21 @@ public class Monitor
         }
         catch (IOException ex)
         {
-           // Cancelling a HTTPS connection throws a SocketException
+          // Cancelling a HTTPS connection throws a SocketException
         }
       }
-      LOGGER.log(Level.INFO, "Monitor.Worker end");
-    }
-
-    private String readLine() throws IOException
-    {
-      ByteArrayOutputStream bos = new ByteArrayOutputStream();
-      int b = input.read();
-      while (b != 13 && b != 10 && b != -1) // !CR(13) and !LF(10) and !EOF(-1)
-      {
-        bos.write(b);
-        b = input.read();
-      }
-      if (b == -1) return null;
-      if (b == 13) input.read(); // read LF(10)
-      return bos.toString(BPL_CHARSET);
-    }
-
-    private String readChunk() throws IOException
-    {
-      String length = readLine();
-      if (length == null) return null;
-      int chunkLength = Integer.parseInt(length, 16);
-      if (chunkLength == 0) return null;
-      ByteArrayOutputStream bos = new ByteArrayOutputStream();
-      while (chunkLength > 0)
-      {
-        int b = input.read();
-        if (b == -1) return null;
-        bos.write(b);
-        chunkLength--;
-      }
-      input.read(); // read CR(13)
-      input.read(); // read LF(10)
-      return bos.toString(BPL_CHARSET);
+      LOGGER.log(Level.FINE, "Monitor.Worker end");
     }
 
     private void processChunk(String chunk)
     {
+      if (chunk.length() == 0) return;
+      // empty chunk: the ping sent by the server at monitorPingTime intervals
+
       try
       {
-        if (chunk.length() == 0)
-          return; // the ping sent by the server at monitorPingTime intervals
-
         Object data = Parser.fromString(chunk);
+
         if (data instanceof BList)
         {
           BList change = (BList)data;
@@ -425,51 +365,13 @@ public class Monitor
         else if (data instanceof String)
         {
           monitorSessionId = (String)data;
-          LOGGER.log(Level.INFO, "monitorSessionId: {0}", monitorSessionId);
+          LOGGER.log(Level.FINE, "monitorSessionId: {0}", monitorSessionId);
         }
       }
-      catch (Exception ex)
+      catch (ParseException ex)
       {
-        // Ignore
+        LOGGER.log(Level.WARNING, "Bad data: {0}", chunk);
       }
-    }
-
-    private Socket createSocket(String protocol, String host, int port)
-      throws IOException
-    {
-      if ("https".equals(protocol))
-      {
-        SSLSocketFactory factory;
-        try
-        {
-          factory = SSLUtils.getNoValidationSSLSocketFactory();
-        }
-        catch (KeyManagementException | NoSuchAlgorithmException ex)
-        {
-          factory = (SSLSocketFactory)SSLSocketFactory.getDefault();
-        }
-        SSLSocket sslSocket = (SSLSocket)factory.createSocket(host, port);
-        sslSocket.setTcpNoDelay(true);
-        sslSocket.startHandshake();
-
-        return sslSocket;
-      }
-      else
-      {
-        return new Socket(host, port);
-      }
-    }
-
-    private void setHeader(String header, Object value) throws IOException
-    {
-      write(header + ": " + value + "\r\n");
-    }
-
-    private void write(String text)
-      throws UnsupportedEncodingException, IOException
-    {
-      byte bytes[] = text.getBytes(BPL_CHARSET);
-      output.write(bytes);
     }
 
     private void recover(Exception ex)
@@ -496,23 +398,10 @@ public class Monitor
         {
           try
           {
-            if (socket != null)
-            {
-              // close open socket to unblock Worker
-              socket.close();
-            }
-          }
-          catch (IOException ex)
-          {
-            // ignore
-          }
-
-          try
-          {
             // send unwatch request to server
             if (monitorSessionId != null)
             {
-              LOGGER.log(Level.INFO, "Stopping monitor: {0}", monitorSessionId);
+              LOGGER.log(Level.FINE, "Stopping monitor: {0}", monitorSessionId);
 
               URL url = new URL(serverUrl);
               HttpURLConnection conn = (HttpURLConnection)url.openConnection();
@@ -533,9 +422,10 @@ public class Monitor
               monitorSessionId = null;
             }
           }
-          catch (Exception ex)
+          catch (IOException ex)
           {
-            // ignore
+            // server down or IO error, worker will end sooner or later
+            LOGGER.log(Level.WARNING, "Unwatch failure: {0}", ex.toString());
           }
         }
       };

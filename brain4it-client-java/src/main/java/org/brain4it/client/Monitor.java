@@ -405,6 +405,7 @@ public class Monitor
 
               URL url = new URL(serverUrl);
               HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+              SSLUtils.skipCertificateValidation(conn);
               conn.setDoInput(true);
               conn.setDoOutput(true);
               conn.setRequestMethod("POST");

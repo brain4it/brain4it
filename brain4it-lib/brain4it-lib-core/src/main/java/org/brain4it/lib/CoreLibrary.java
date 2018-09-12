@@ -1,36 +1,48 @@
 /*
  * Brain4it
- * 
+ *
  * Copyright (C) 2018, Ajuntament de Sant Feliu de Llobregat
- * 
- * This program is licensed and may be used, modified and redistributed under 
- * the terms of the European Public License (EUPL), either version 1.1 or (at 
- * your option) any later version as soon as they are approved by the European 
+ *
+ * This program is licensed and may be used, modified and redistributed under
+ * the terms of the European Public License (EUPL), either version 1.1 or (at
+ * your option) any later version as soon as they are approved by the European
  * Commission.
- * 
- * Alternatively, you may redistribute and/or modify this program under the 
- * terms of the GNU Lesser General Public License as published by the Free 
- * Software Foundation; either  version 3 of the License, or (at your option) 
- * any later version. 
- *   
- * Unless required by applicable law or agreed to in writing, software 
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT 
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- *   
- * See the licenses for the specific language governing permissions, limitations 
+ *
+ * Alternatively, you may redistribute and/or modify this program under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either  version 3 of the License, or (at your option)
+ * any later version.
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *
+ * See the licenses for the specific language governing permissions, limitations
  * and more details.
- *   
- * You should have received a copy of the EUPL1.1 and the LGPLv3 licenses along 
- * with this program; if not, you may find them at: 
- *   
+ *
+ * You should have received a copy of the EUPL1.1 and the LGPLv3 licenses along
+ * with this program; if not, you may find them at:
+ *
  *   https://joinup.ec.europa.eu/software/page/eupl/licence-eupl
- *   http://www.gnu.org/licenses/ 
- *   and 
+ *   http://www.gnu.org/licenses/
+ *   and
  *   https://www.gnu.org/licenses/lgpl.txt
  */
 
 package org.brain4it.lib;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
+import org.brain4it.lang.BList;
+import org.brain4it.lang.Context;
+import org.brain4it.lang.Executor;
+import org.brain4it.lang.Function;
+import org.brain4it.lang.Utils;
 import org.brain4it.lib.core.base.*;
 import org.brain4it.lib.core.list.*;
 import org.brain4it.lib.core.bit.*;
@@ -45,6 +57,11 @@ import static org.brain4it.io.IOConstants.FUNCTION_FUNCTION_NAME;
 
 public class CoreLibrary extends Library
 {
+  private int taskIdSequence = -1;
+  private final Timer timer = new Timer();
+  private final Map<Integer, Task> tasks =
+    Collections.synchronizedMap(new HashMap<Integer, Task>());
+
   @Override
   public String getName()
   {
@@ -54,7 +71,7 @@ public class CoreLibrary extends Library
   @Override
   public void load()
   {
-    functions.put(COMMENT_FUNCTION_NAME, new CommentFunction());    
+    functions.put(COMMENT_FUNCTION_NAME, new CommentFunction());
     functions.put("assert", new AssertFunction());
     functions.put("set", new SetFunction());
     functions.put("if", new IfFunction());
@@ -93,7 +110,7 @@ public class CoreLibrary extends Library
     functions.put("global-scope", new GlobalScopeFunction());
     functions.put("local-scope", new LocalScopeFunction());
     functions.put("system", new SystemFunction());
-    
+
     functions.put("and", new AndFunction());
     functions.put("or", new OrFunction());
     functions.put("not", new NotFunction());
@@ -111,7 +128,7 @@ public class CoreLibrary extends Library
     functions.put("bit-not", new BitNotFunction());
     functions.put("bit-xor", new BitXorFunction());
     functions.put("bit-shift", new BitShiftFunction());
-    
+
     functions.put("+", new SumFunction());
     functions.put("-", new SubtractFunction());
     functions.put("*", new MultiplyFunction());
@@ -182,7 +199,11 @@ public class CoreLibrary extends Library
     functions.put("date", new DateFunction());
     functions.put("parse-date", new ParseDateFunction());
     functions.put("format-date", new FormatDateFunction());
-    
+
+    functions.put("timer-schedule", new TimerScheduleFunction(this));
+    functions.put("timer-cancel", new TimerCancelFunction(this));
+    functions.put("timer-tasks", new TimerTasksFunction(this));
+
     // deprecated functions names
     if ("true".equals(System.getProperty("skynet-names")))
     {
@@ -199,5 +220,129 @@ public class CoreLibrary extends Library
       functions.put("clear", functions.get("delete"));
       functions.put("delete", functions.get("remove"));
     }
-  }  
+  }
+
+  @Override
+  public void unload()
+  {
+    timer.cancel();
+    tasks.clear();
+  }
+
+  public Timer getTimer()
+  {
+    return timer;
+  }
+
+  public Task createTask(Context context, BList userFunction, boolean overlap)
+  {
+    synchronized (tasks)
+    {
+      do
+      {
+        taskIdSequence++;
+        if (taskIdSequence > Short.MAX_VALUE) taskIdSequence = 0;
+      } while (tasks.containsKey(taskIdSequence));
+      
+      int taskId = taskIdSequence;
+      Task task = new Task(taskId, context, userFunction, overlap);
+      tasks.put(taskId, task);
+      return task;
+    }
+  }
+
+  public Task getTask(int taskId)
+  {
+    return tasks.get(taskId);
+  }
+  
+  public Task removeTask(int taskId)
+  {
+    return tasks.remove(taskId);
+  }
+
+  public Collection<Task> getTasks(Context context)
+  {
+    ArrayList<Task> contextTasks = new ArrayList<Task>();
+    synchronized (tasks)
+    {
+      for (Task task : tasks.values())
+      {
+        if (task.getGlobalScope() == context.getGlobalScope())
+        {
+          contextTasks.add(task);
+        }
+      }
+    }
+    return contextTasks;
+  }
+
+  public static class Task extends TimerTask implements Executor.Callback
+  {
+    private final int taskId;
+    private final BList globalScope;
+    private final Map<String, Function> contextFunctions;
+    private final BList userFunction;
+    private final boolean overlap;
+    private final BList call;
+    private boolean running;
+
+    Task(int taskId, Context context, BList userFunction, boolean overlap)
+    {
+      this.taskId = taskId;
+      this.globalScope = context.getGlobalScope();
+      this.contextFunctions = context.getFunctions();
+      this.userFunction = userFunction;
+      this.overlap = overlap;
+      this.call = Utils.createFunctionCall(contextFunctions, userFunction);
+    }
+
+    public int getTaskId()
+    {
+      return taskId;
+    }
+
+    public BList getGlobalScope()
+    {
+      return globalScope;
+    }
+
+    public BList getUserFunction()
+    {
+      return userFunction;
+    }
+
+    public boolean isOverlap()
+    {
+      return overlap;
+    }
+
+    @Override
+    public void run()
+    {
+      if (canExecute())
+      {
+        Executor.spawn(call, globalScope, contextFunctions, this);
+      }
+    }
+
+    @Override
+    public synchronized void onSuccess(Executor executor, Object result)
+    {
+      running = false;
+    }
+
+    @Override
+    public synchronized void onError(Executor executor, Exception ex)
+    {
+      running = false;
+    }
+
+    private synchronized boolean canExecute()
+    {
+      boolean canExecute = overlap || !running;
+      if (!running) running = true;
+      return canExecute;
+    }
+  }
 }

@@ -1,0 +1,15 @@
+(TimerCancel (timer-cancel task_id)
+  cancelled
+  where =>
+  (
+    task_id => ("number" 0 1)
+    cancelled => ("boolean" 1 1)
+  )
+  examples =>
+  (
+    ((timer-cancel 37) true)
+    ((timer-cancel) true)
+  )
+  related => (timer-schedule timer-tasks)
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

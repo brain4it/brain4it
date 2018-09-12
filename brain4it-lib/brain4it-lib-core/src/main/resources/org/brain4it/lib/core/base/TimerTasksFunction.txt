@@ -1,0 +1,19 @@
+(TimerTasks (timer-tasks)
+  (task)
+  where =>
+  (
+    task => ("function" 0 N)
+  )
+  examples =>
+  (
+    (
+      (timer-tasks)
+      (
+        "12" => (function () (++ a))
+        "18" => (function () (check_system))
+      )
+    )
+  )
+  related => (timer-schedule timer-cancel)
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

@@ -1,0 +1,19 @@
+(TimerSchedule (timer-schedule func delay period overlap)
+  task_id
+  where =>
+  (
+    func => ("function" 1 1)
+    delay => ("number" 1 1)
+    period => ("number" 0 1)
+    overlap => ("boolean" 0 1)
+    task_id => ("number" 1 1)
+  )
+  examples =>
+  (
+    ((timer-schedule process_later 5000) 27)
+    ((timer-schedule eval_rules 0 60000) 29)
+    ((timer-schedule (function () (++ a)) 1000 5000 true) 30)
+  )
+  related => (timer-cancel timer-tasks)
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

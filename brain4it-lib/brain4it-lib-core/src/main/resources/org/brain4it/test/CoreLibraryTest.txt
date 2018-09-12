@@ -627,4 +627,18 @@
   (### upcase)
   (assert (= (upcase "ABCde8") "ABCDE8"))
 
+  (### timer-schedule)
+  (set a 0)
+  (set task_id (timer-schedule (function () (++ a)) 0 100))
+  (sleep 1000)
+  (assert (> a 5))
+
+  (### timer-tasks)
+  (assert (has (timer-tasks) (string task_id)))
+  (assert (= (size (timer-tasks)) 1))
+
+  (### timer-cancel)
+  (assert (timer-cancel task_id))
+  (assert (not (timer-cancel)))
+  (assert (empty (timer-tasks)))
 )

@@ -65,7 +65,7 @@ public class CoreLibrary extends Library
   @Override
   public String getName()
   {
-    return "Main";
+    return "Core";
   }
 
   @Override

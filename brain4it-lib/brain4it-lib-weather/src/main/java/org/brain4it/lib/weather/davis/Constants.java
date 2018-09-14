@@ -33,12 +33,12 @@ package org.brain4it.lib.weather.davis;
 import static org.brain4it.lib.weather.WeatherStation.*;
 
 /**
-*
-* @author colladorm
-*/
-
+ *
+ * @author colladorm
+ */
 public class Constants
 {
+
   public static final byte ACK = 0x06;
   public static final byte NAK = 0x21;
 
@@ -63,36 +63,36 @@ public class Constants
   public static final String HEALTH = "Health Enviromonitor";
   public static final String PRO = "Vantage Pro or Vantage Pro 2";
   public static final String VUE = "Vantage Vue";
-  
-  public static final StationModel[] STATION_MODELS = 
+
+  public static final StationModel[] STATION_MODELS =
   {
     new StationModel(PRO, new LoopEntry[]
     {
       new LoopEntry(PRESSURE, PRESSURE_METHOD, 7),
-	    new LoopEntry(TEMPERATURE, TEMPERATURE_METHOD, 12),
+      new LoopEntry(TEMPERATURE, TEMPERATURE_METHOD, 12),
       new LoopEntry(TEMPERATURE_INSIDE, TEMPERATURE_METHOD, 9),
-	    new LoopEntry(HUMIDITY, HUMIDITY_METHOD, 33),
+      new LoopEntry(HUMIDITY, HUMIDITY_METHOD, 33),
       new LoopEntry(HUMIDITY_INSIDE, HUMIDITY_METHOD, 11),
-	    new LoopEntry(WIND_SPEED, WIND_SPEED_METHOD, 14),
-	    new LoopEntry(WIND_DIRECTION, WORD_METHOD, 16),
-	    new LoopEntry(UV_INDEX, UV_INDEX_METHOD, 43),
-	    new LoopEntry(SOLAR_RADIATION, SOLAR_RADIATION_METHOD, 44),
-	    new LoopEntry(RAIN, DAY_RAIN_METHOD, 50)
+      new LoopEntry(WIND_SPEED, WIND_SPEED_METHOD, 14),
+      new LoopEntry(WIND_DIRECTION, WORD_METHOD, 16),
+      new LoopEntry(UV_INDEX, UV_INDEX_METHOD, 43),
+      new LoopEntry(SOLAR_RADIATION, SOLAR_RADIATION_METHOD, 44),
+      new LoopEntry(RAIN, DAY_RAIN_METHOD, 50)
     })
   };
-  
+
   static public class StationModel
   {
     String name;
     LoopEntry[] loopEntries;
-    
+
     public StationModel(String name, LoopEntry[] loopEntries)
     {
       this.name = name;
       this.loopEntries = loopEntries;
     }
   }
-  
+
   static public class LoopEntry
   {
     String magnitude;

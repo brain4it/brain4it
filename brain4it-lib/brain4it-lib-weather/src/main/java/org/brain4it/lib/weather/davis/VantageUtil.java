@@ -17,162 +17,17 @@
 package org.brain4it.lib.weather.davis;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.Calendar;
-import java.util.Date;
+import org.brain4it.lib.weather.davis.Constants.LoopEntry;
+import static org.brain4it.lib.weather.davis.Constants.*;
 
 /**
  * Misc helper functions.
  *
  */
-public class VantageUtil
+public final class VantageUtil
 {
-  private static final int BUF_LENGTH = 256;
-
   private VantageUtil()
   {
-  }
-
-  /**
-   * Read bytes until CR.
-   *
-   * @param is the input stream to read bytes from.
-   * @return return a byte array up to but not including the NL or CR.
-   * @throws java.io.IOException if the read operation fails.
-   */
-  public static byte[] readLine(InputStream is) throws IOException
-  {
-    byte[] inputBuffer = new byte[BUF_LENGTH];
-    int idx = 0;
-    int character;
-    while ((character = is.read()) != -1)
-    {
-      if (character == '\r')
-      {
-        break;
-      }
-      if (idx >= BUF_LENGTH)
-      {
-        // Invalid input, throw away this line.
-        System.err.println("Invalid input");
-        while (is.read() != -1)
-        {
-          // Throw away.
-        }
-        return new byte[0];
-      }
-      inputBuffer[idx++] = (byte) character;
-    }
-
-    /* Remove trailing CR/NL */
-    if (idx > 0)
-    {
-      while (--idx != -1)
-      {
-        if (inputBuffer[idx] != 10 && inputBuffer[idx] != 13)
-        {
-          break;
-        }
-      }
-      ++idx;
-    }
-    byte[] input = new byte[idx];
-    System.arraycopy(inputBuffer, 0, input, 0, idx);
-
-    return input;
-  }
-
-  /**
-   * Return the two least significant bytes of a value. The least signifcant
-   * byte is returned first (at index 0)
-   *
-   * @param value the value to convert to bytes
-   * @return a byte array of size 2 with LSB first.
-   */
-  public static byte[] getBytes(int value)
-  {
-    byte[] rval = new byte[2];
-    // Least significant byte first.
-    rval[0] = (byte) (value & 0xff);
-    rval[1] = (byte) ((value >>> 8) & 0xff);
-    return rval;
-  }
-
-  /**
-   * Compare two byte arrays.
-   *
-   * @param input the bytes to compare.
-   * @param compare the reference byte array.
-   * @return true if <code>input</code> starts with the same bytes as
-   * <code>compare</code>.
-   */
-  public static boolean compareBytes(final byte[] input, final byte[] compare)
-  {
-    if (input.length < compare.length)
-    {
-      return false;
-    }
-    for (int i = 0; i < compare.length; i++)
-    {
-      if (compare[i] != input[i])
-      {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  /**
-   * Return a date in Davis Vantage Pro format (two bytes).
-   *
-   * @param timestamp the date value
-   * @return a byte array of size 2
-   */
-  public static byte[] getDate(Date timestamp)
-  {
-    Calendar cal = Calendar.getInstance();
-    cal.setTime(timestamp);
-    int year = cal.get(Calendar.YEAR);
-    int month = cal.get(Calendar.MONTH) + 1;
-    int day = cal.get(Calendar.DAY_OF_MONTH);
-    int value = day + month * 32 + (year - 2000) * 512;
-    return getBytes(value);
-  }
-
-  /**
-   * Return a time in Davis Vantage Pro format (two bytes).
-   *
-   * @param timestamp the time value
-   * @return a byte array of size 2
-   */
-  public static byte[] getTime(Date timestamp)
-  {
-    Calendar cal = Calendar.getInstance();
-    cal.setTime(timestamp);
-    int hour = cal.get(Calendar.HOUR_OF_DAY);
-    int minute = cal.get(Calendar.MINUTE);
-    int value = hour * 100 + minute;
-    return getBytes(value);
-  }
-
-  /**
-   * Parse Vantage Pro date into <code>java.util.Date</code>.
-   *
-   * @param buf station date format
-   * @param offset byte offset where station time begins
-   * @return the date in Java format.
-   */
-  public static Date getTime(byte[] buf, int offset)
-  {
-    Calendar cal = Calendar.getInstance();
-    cal.clear();
-    cal.set(Calendar.SECOND, (int) buf[offset + 0]);
-    cal.set(Calendar.MINUTE, (int) buf[offset + 1]);
-    cal.set(Calendar.HOUR_OF_DAY, (int) buf[offset + 2]);
-    cal.set(Calendar.DAY_OF_MONTH, (int) buf[offset + 3]);
-    cal.set(Calendar.MONTH, (int) buf[offset + 4] - 1);
-    cal.set(Calendar.YEAR, (int) buf[offset + 5] + 1900);
-    return cal.getTime();
   }
 
   /**
@@ -181,7 +36,7 @@ public class VantageUtil
    * @param celcius the temperature in Celcius.
    * @return the temperature in Fahrenheit.
    */
-  public static double celcius2fahrenheit(double celcius)
+  private static double celcius2fahrenheit(double celcius)
   {
     return celcius * 9 / 5 + 32;
   }
@@ -192,20 +47,9 @@ public class VantageUtil
    * @param f the temperature in Fahrenheit.
    * @return the temperature in Celcius.
    */
-  public static double fahrenheit2celcius(double f)
+  private static double fahrenheit2celcius(double f)
   {
     return (f - 32) * 5 / 9.0;
-  }
-
-  /**
-   * Convert pressure as millibar to inch Hg.
-   *
-   * @param mb the millibar value to convert.
-   * @return the pressure as inch Hg.
-   */
-  public static double millibar2inchHg(int mb)
-  {
-    return Math.round(mb * 0.02953007 * 100) / 100.0;
   }
 
   /**
@@ -214,9 +58,9 @@ public class VantageUtil
    * @param inchHg the inch Hg value to convert.
    * @return the pressure as millibar.
    */
-  public static int inchHg2millibar(double inchHg)
+  private static int inchHg2millibar(double inchHg)
   {
-    return (int) Math.round(inchHg / 0.02953007);
+    return (int)Math.round(inchHg / 0.02953007);
   }
 
   /**
@@ -225,20 +69,9 @@ public class VantageUtil
    * @param ms meter per second
    * @return miles per hour
    */
-  public static int ms2mph(double ms)
+  private static int ms2mph(double ms)
   {
-    return (int) Math.round(ms * 2.24);
-  }
-
-  /**
-   * Convert velocity miles/hour to meter/second.
-   *
-   * @param mph miles per hour
-   * @return meter per second
-   */
-  public static double mph2ms(int mph)
-  {
-    return mph * 0.45;
+    return (int)Math.round(ms * 2.24);
   }
 
   /**
@@ -249,7 +82,7 @@ public class VantageUtil
    * @param windSpeed wind speed in meters per second (m/s).
    * @return chilled air temperature
    */
-  public static double calculateWindChill(final double tempC, 
+  private static double calculateWindChill(final double tempC,
     final double windSpeed)
   {
     double tempF = celcius2fahrenheit(tempC);
@@ -259,55 +92,134 @@ public class VantageUtil
       // Wind chill is only defined for temperatures below 50F and
       // wind speed above 3 MPH.
       double chillF = 35.74 + (0.6215 * tempF) - (35.75 * Math.pow(mph, 0.16)) +
-        (0.4275 * tempF * Math.pow(mph, 0.16));
+         (0.4275 * tempF * Math.pow(mph, 0.16));
       double chillC = (Math.round(fahrenheit2celcius(chillF) * 10)) / 10.0;
       return chillC;
     }
     return tempC;
   }
 
-  /**
-   * Convert millimeter to inch.
-   *
-   * @param mm millimeter value
-   * @return the value in inch
-   */
-  public static double mm2inch(int mm)
+  private static int parseWord(byte[] buf, int offset)
   {
-    return mm / 25.4;
+    int firstByte = (0x000000ff & ((int)buf[offset + 1]));
+    int secondByte = (0x000000ff & ((int)buf[offset]));
+    return (firstByte << 8 | secondByte);
   }
 
-  /**
-   * Convert inch to millimeter.
-   *
-   * @param inch inch value
-   * @return the value in millimeter
-   */
-  public static double inch2mm(double inch)
+  private static double parseTemperature(byte[] buf, int offset)
   {
-    return inch * 25.4;
+    int f = ((int)buf[offset + 1] << 8) | (buf[offset] & 0xff) & 0xffff;
+    if (f == 32767)
+    {
+      return 0.0;
+    }
+
+    double c = VantageUtil.fahrenheit2celcius(f / 10.0);
+
+    return (double)Math.round(c * 100d) / 100d;
   }
 
-  /**
-   * return a Vantage Pro two-byte representation of temperature.
-   *
-   * @param temp the temperature in degrees Celcius.
-   * @return a byte array with size=2
-   */
-  public static byte[] getTemperature(double temp)
+  private static double parseExtraTemperature(byte[] buf, int offset)
   {
-    double f = celcius2fahrenheit(temp);
-    return getBytes((int) (f * 10));
+    int f = (int)(buf[offset] & 0xff);
+    if (f == 255)
+    {
+      return 0.0;
+    }
+    return VantageUtil.fahrenheit2celcius(f - 90.0);
   }
 
-  /**
-   * Return a Vantage Pro two-byte representation of rain fall.
-   *
-   * @param mm millimeter rain.
-   * @return a byte array with size=2
-   */
-  public static byte[] getRain(double mm)
+  private static double parseRain(byte[] buf, int offset)
   {
-    return getBytes((int) (mm * 5.0));
+    // This value is sent as number of rain clicks (0.2mm or 0.01in).
+    // For example, 256 can represent 2.56 inches/hour.
+    // So in mm: value*0,2
+    int word = parseWord(buf, offset);
+    double value = (word / 5.0) * 0.2;
+    return (double)Math.round(value * 100d) / 100d;
+  }
+
+  private static int parseBarometer(byte[] buf, int offset)
+  {
+    int word = parseWord(buf, offset);
+    double inchHg = word / 1000.0;
+
+    return VantageUtil.inchHg2millibar(inchHg);
+  }
+
+  private static double parseWindSpeed(byte[] buf, int offset)
+  {
+    int mph = buf[offset];
+    int kh = (int)((mph != -1 ? mph * 0.45 : 0) * 1.60934);
+    return kh;
+  }
+
+  private static int parseUV(byte[] buf, int offset)
+  {
+    int uv = buf[offset];
+    return (int)(uv == -1 ? 0 : uv / 10.0);
+  }
+
+  private static int parseHumidity(byte[] buf, int offset)
+  {
+    int hum = buf[offset];
+    return hum == -1 ? 0 : hum;
+  }
+
+  public static Object parse(int method, byte[] buf, int offset)
+    throws IOException
+  {
+    switch (method)
+    {
+      case WORD_METHOD:
+        return parseWord(buf, offset);
+
+      case SOLAR_RADIATION_METHOD:
+        int solar = parseWord(buf, offset);
+        if (solar == 32767)
+        {
+          solar = 0;
+        }
+        return solar;
+
+      case TEMPERATURE_METHOD:
+        return parseTemperature(buf, offset);
+
+      case EXTRA_TEMPERATURE_METHOD:
+        return parseExtraTemperature(buf, offset);
+
+      case PRESSURE_METHOD:
+        return parseBarometer(buf, offset);
+
+      case HUMIDITY_METHOD:
+        return parseHumidity(buf, offset);
+
+      case DAY_RAIN_METHOD:
+        return parseRain(buf, offset);
+
+      case WIND_SPEED_METHOD:
+        return parseWindSpeed(buf, offset);
+
+      case UV_INDEX_METHOD:
+        return parseUV(buf, offset);
+
+      default:
+        throw new IOException("VantageUtil.select: Invalid method");
+    }
+  }
+
+  public static LoopEntry[] getStationLoopEntries(String station)
+    throws IOException
+  {
+    int i = 0;
+    while (i < STATION_MODELS.length)
+    {
+      if (STATION_MODELS[i].name.equals(station))
+      {
+        return STATION_MODELS[i].loopEntries;
+      }
+      i++;
+    }
+    throw new IOException("Station model not supported: " + station);
   }
 }

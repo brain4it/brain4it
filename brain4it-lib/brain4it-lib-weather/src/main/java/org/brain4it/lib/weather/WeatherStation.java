@@ -49,10 +49,9 @@ public interface WeatherStation
   public static final String TEMPERATURE_INSIDE = "temperature-inside";
   public static final String RAIN = "rain";
   public static final String SOLAR_RADIATION = "solar-radiation";
-  public static final String UV_RADIATION = "uv-radiation";
+  public static final String UV_INDEX = "uv-index";
   public static final String WIND_SPEED = "wind-speed";
-  public static final String WIND_SPEED_AVG = "wind-speed-avg";
   public static final String WIND_DIRECTION = "wind-direction";
-
+  
   public BList readData(String address, BList options) throws IOException;
 }

@@ -1,31 +1,31 @@
 /*
  * Brain4it
- * 
+ *
  * Copyright (C) 2018, Ajuntament de Sant Feliu de Llobregat
- * 
- * This program is licensed and may be used, modified and redistributed under 
- * the terms of the European Public License (EUPL), either version 1.1 or (at 
- * your option) any later version as soon as they are approved by the European 
+ *
+ * This program is licensed and may be used, modified and redistributed under
+ * the terms of the European Public License (EUPL), either version 1.1 or (at
+ * your option) any later version as soon as they are approved by the European
  * Commission.
- * 
- * Alternatively, you may redistribute and/or modify this program under the 
- * terms of the GNU Lesser General Public License as published by the Free 
- * Software Foundation; either  version 3 of the License, or (at your option) 
- * any later version. 
- *   
- * Unless required by applicable law or agreed to in writing, software 
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT 
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- *   
- * See the licenses for the specific language governing permissions, limitations 
+ *
+ * Alternatively, you may redistribute and/or modify this program under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either  version 3 of the License, or (at your option)
+ * any later version.
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *
+ * See the licenses for the specific language governing permissions, limitations
  * and more details.
- *   
- * You should have received a copy of the EUPL1.1 and the LGPLv3 licenses along 
- * with this program; if not, you may find them at: 
- *   
+ *
+ * You should have received a copy of the EUPL1.1 and the LGPLv3 licenses along
+ * with this program; if not, you may find them at:
+ *
  *   https://joinup.ec.europa.eu/software/page/eupl/licence-eupl
- *   http://www.gnu.org/licenses/ 
- *   and 
+ *   http://www.gnu.org/licenses/
+ *   and
  *   https://www.gnu.org/licenses/lgpl.txt
  */
 package org.brain4it.manager.swing.widgets;
@@ -65,11 +65,11 @@ public class IndicatorWidget extends JPanel implements DashboardWidget
   protected JLabel unitsLabel;
   protected int maxValueLength = 0;
   protected IndicatorWidgetType type;
-  
+
   protected final Monitor.Listener monitorListener = new Monitor.Listener()
   {
     @Override
-    public void onChange(String reference, final Object value, 
+    public void onChange(String reference, final Object value,
       long serverTime)
     {
       SwingUtilities.invokeLater(new Runnable()
@@ -82,32 +82,32 @@ public class IndicatorWidget extends JPanel implements DashboardWidget
       });
     }
   };
-  
+
   public IndicatorWidget()
   {
     initComponents();
   }
-  
+
   @Override
-  public void init(DashboardPanel dashboard, String name, BList properties) 
+  public void init(DashboardPanel dashboard, String name, BList properties)
     throws Exception
   {
     this.dashboard = dashboard;
-    
+
     type = (IndicatorWidgetType)WidgetType.getType(WidgetType.INDICATOR);
 
     type.validate(properties);
-    
+
     titleLabel.setText(type.getLabel(properties));
-    
+
     String fontFamily = type.getFontFamily(properties);
     if (fontFamily != null)
     {
       valueLabel.setFont(FontCache.getFont(fontFamily));
     }
-    
+
     maxValueLength = type.getMaxValueLength(properties);
-    
+
     unitsLabel.setText(type.getUnits(properties));
 
     BSoftReference func = type.getGetValueFunction(properties);
@@ -129,7 +129,7 @@ public class IndicatorWidget extends JPanel implements DashboardWidget
       setValue("");
     }
   }
-  
+
   protected void setValue(Object value)
   {
     String text = value == null ? "" : Utils.toString(value);
@@ -139,62 +139,62 @@ public class IndicatorWidget extends JPanel implements DashboardWidget
     }
     valueLabel.setText(text);
   }
-    
+
   private void initComponents()
   {
     setOpaque(false);
-    setBorder(new RoundedBorder(10, 2));
+    setBorder(new RoundedBorder(10, 3));
     setLayout(new BorderLayout());
     titleLabel = new JLabel();
     titleLabel.setOpaque(false);
     add(titleLabel, BorderLayout.NORTH);
-    
+
     valueLabel = new ValueLabel();
     valueLabel.setOpaque(false);
     add(valueLabel, BorderLayout.CENTER);
-    
+
     unitsLabel = new JLabel();
     unitsLabel.setHorizontalAlignment(JLabel.CENTER);
     unitsLabel.setBorder(new EmptyBorder(0, 6, 0, 0));
     add(unitsLabel, BorderLayout.EAST);
   }
-  
+
   public class ValueLabel extends JLabel
   {
     @Override
     public void paintComponent(Graphics g)
-    {      
-      int length = maxValueLength > 0 ? 
+    {
+      int length = maxValueLength > 0 ?
         maxValueLength : valueLabel.getText().length();
-      
+
       if (length == 0) return;
-     
+
       Graphics2D g2d = (Graphics2D)g;
-      g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, 
+      g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
         RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
-      g2d.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, 
+      g2d.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS,
         RenderingHints.VALUE_FRACTIONALMETRICS_ON);
-      
+
       int height = valueLabel.getHeight();
       int width = valueLabel.getWidth();
-            
-      Font font = valueLabel.getFont();        
+
+      Font font = valueLabel.getFont();
       float fontSize = type.getFontSize(width, height, length);
 
       // change font size
       g.setFont(font.deriveFont((float)fontSize));
-      
+
       // get text bounds
       FontMetrics fontMetrics = g.getFontMetrics();
       Rectangle2D bounds = fontMetrics.getStringBounds(getText(), g);
       double boxWidth = bounds.getWidth();
       double boxHeight = bounds.getHeight();
 
-      // align right horizontally and center vertically 
+      // align right horizontally and center vertically
       int x = (int)Math.round(width - boxWidth);
       int y = (int)Math.round((height + boxHeight) / 2);
-      g.drawString(getText(), x, y - fontMetrics.getDescent());      
+      g.drawString(getText(), x, y - fontMetrics.getDescent());
     }
   }
 }

@@ -1,31 +1,31 @@
 /*
  * Brain4it
- * 
+ *
  * Copyright (C) 2018, Ajuntament de Sant Feliu de Llobregat
- * 
- * This program is licensed and may be used, modified and redistributed under 
- * the terms of the European Public License (EUPL), either version 1.1 or (at 
- * your option) any later version as soon as they are approved by the European 
+ *
+ * This program is licensed and may be used, modified and redistributed under
+ * the terms of the European Public License (EUPL), either version 1.1 or (at
+ * your option) any later version as soon as they are approved by the European
  * Commission.
- * 
- * Alternatively, you may redistribute and/or modify this program under the 
- * terms of the GNU Lesser General Public License as published by the Free 
- * Software Foundation; either  version 3 of the License, or (at your option) 
- * any later version. 
- *   
- * Unless required by applicable law or agreed to in writing, software 
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT 
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- *   
- * See the licenses for the specific language governing permissions, limitations 
+ *
+ * Alternatively, you may redistribute and/or modify this program under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either  version 3 of the License, or (at your option)
+ * any later version.
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *
+ * See the licenses for the specific language governing permissions, limitations
  * and more details.
- *   
- * You should have received a copy of the EUPL1.1 and the LGPLv3 licenses along 
- * with this program; if not, you may find them at: 
- *   
+ *
+ * You should have received a copy of the EUPL1.1 and the LGPLv3 licenses along
+ * with this program; if not, you may find them at:
+ *
  *   https://joinup.ec.europa.eu/software/page/eupl/licence-eupl
- *   http://www.gnu.org/licenses/ 
- *   and 
+ *   http://www.gnu.org/licenses/
+ *   and
  *   https://www.gnu.org/licenses/lgpl.txt
  */
 
@@ -52,15 +52,15 @@ public class PreferencesActivity extends Activity
   private EditText textSizeEditText;
   private EditText indentSizeEditText;
   private EditText formatColumnsEditText;
-  
+
   private Button okButton;
-  
-  private static final String LANGUAGES[] = 
+
+  private static final String LANGUAGES[] =
   {"en", "es", "ca"};
 
-  private static final String LANGUAGE_NAMES[] = 
+  private static final String LANGUAGE_NAMES[] =
   {"English", "Español", "Català"};
-  
+
   /**
    * Called when the activity is first created.
    * @param icicle
@@ -72,21 +72,21 @@ public class PreferencesActivity extends Activity
     getActionBar().setDisplayHomeAsUpEnabled(true);
 
     setTitle(R.string.preferences);
-    
+
     setContentView(R.layout.preferences);
 
     languageSpinner = (Spinner)findViewById(R.id.languageSpinner);
     textSizeEditText = (EditText)findViewById(R.id.textSizeEditText);
     indentSizeEditText = (EditText)findViewById(R.id.indentSizeEditText);
-    formatColumnsEditText = (EditText)findViewById(R.id.formatColumnsEditText);    
+    formatColumnsEditText = (EditText)findViewById(R.id.formatColumnsEditText);
     okButton = (Button)findViewById(R.id.setupOkButton);
 
-    ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, 
+    ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
       android.R.layout.simple_spinner_item, LANGUAGE_NAMES);
     adapter.setDropDownViewResource(
-      android.R.layout.simple_spinner_dropdown_item);    
+      android.R.layout.simple_spinner_dropdown_item);
     languageSpinner.setAdapter(adapter);
-    
+
     okButton.setOnClickListener(new Button.OnClickListener()
     {
       @Override
@@ -97,7 +97,7 @@ public class PreferencesActivity extends Activity
       }
     });
 
-    loadPreferences();    
+    loadPreferences();
   }
 
   @Override
@@ -111,42 +111,44 @@ public class PreferencesActivity extends Activity
     }
     return true;
   }
-  
+
   private void loadPreferences()
   {
-    SharedPreferences preferences = 
+    SharedPreferences preferences =
       getSharedPreferences(ManagerApplication.PREFERENCES, MODE_PRIVATE);
-    
-    String language = preferences.getString("language", "en");
+
+    ManagerApplication app = (ManagerApplication)getApplicationContext();
+
+    String language = preferences.getString("language", app.getLanguage());
     int textSize = preferences.getInt("textSize", 15);
     int indentSize = preferences.getInt("indentSize", 2);
     int formatColumns = preferences.getInt("formatColumns", 40);
 
     int index = findLanguageIndex(language);
-    languageSpinner.setSelection(index);    
+    languageSpinner.setSelection(index);
     textSizeEditText.setText(String.valueOf(textSize));
     indentSizeEditText.setText(String.valueOf(indentSize));
-    formatColumnsEditText.setText(String.valueOf(formatColumns));        
+    formatColumnsEditText.setText(String.valueOf(formatColumns));
   }
 
   private void savePreferences()
   {
-    SharedPreferences preferences = 
+    SharedPreferences preferences =
       getSharedPreferences(ManagerApplication.PREFERENCES, MODE_PRIVATE);
-    
+
     SharedPreferences.Editor editor = preferences.edit();
 
     int index = languageSpinner.getSelectedItemPosition();
     String language = LANGUAGES[index];
-    
+
     editor.putString("language", language);
-    editor.putInt("textSize", 
+    editor.putInt("textSize",
       Integer.parseInt(textSizeEditText.getText().toString()));
-    editor.putInt("indentSize", 
+    editor.putInt("indentSize",
       Integer.parseInt(indentSizeEditText.getText().toString()));
-    editor.putInt("formatColumns", 
+    editor.putInt("formatColumns",
       Integer.parseInt(formatColumnsEditText.getText().toString()));
-    
+
     editor.commit();
 
     ManagerApplication app = (ManagerApplication)getApplicationContext();
@@ -155,16 +157,16 @@ public class PreferencesActivity extends Activity
     if (!previousLanguage.equals(language))
     {
       app.setLanguage(language);
-    
+
       // relaunch server list activity
-      Intent intent = new Intent(PreferencesActivity.this, 
+      Intent intent = new Intent(PreferencesActivity.this,
         ServerListActivity.class);
-      intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | 
-        Intent.FLAG_ACTIVITY_NEW_TASK); 
-      startActivity(intent);    
+      intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK |
+        Intent.FLAG_ACTIVITY_NEW_TASK);
+      startActivity(intent);
     }
   }
-  
+
   private int findLanguageIndex(String language)
   {
     int index = -1;

@@ -73,6 +73,10 @@ public class ServerActivity extends Activity
   public void onCreate(Bundle savedInstanceState)
   {
     super.onCreate(savedInstanceState);
+
+    ServerApplication app = (ServerApplication)getApplicationContext();
+    app.setupActivity(this, false);
+
     setContentView(R.layout.main);
     
     outputText = (TextView)findViewById(R.id.output);
@@ -126,6 +130,9 @@ public class ServerActivity extends Activity
       case R.id.threadDump:
         createThreadDump();
         break;
+      case R.id.about:
+        about();
+        break;
     }
     return true;
   }
@@ -170,10 +177,15 @@ public class ServerActivity extends Activity
   private void setupServer()
   {
     Intent intent = new Intent(ServerActivity.this, ServerSetupActivity.class);
-    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
     startActivity(intent);    
   }
-    
+
+  private void about()
+  {
+    Intent intent = new Intent(ServerActivity.this, AboutActivity.class);
+    startActivity(intent);    
+  }
+  
   private void updateViews()
   {
     AndroidService service = AndroidService.getInstance();

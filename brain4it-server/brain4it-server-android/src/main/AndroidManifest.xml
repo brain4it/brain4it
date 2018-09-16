@@ -28,6 +28,10 @@
     <activity android:name=".ServerSetupActivity"
               android:launchMode="standard">
     </activity>
+    <activity android:name=".AboutActivity"
+              android:launchMode="standard"
+              android:screenOrientation="portrait">
+    </activity>
     <service android:name=".AndroidService"
              android:enabled="true" android:stopWithTask="false" />
   </application>

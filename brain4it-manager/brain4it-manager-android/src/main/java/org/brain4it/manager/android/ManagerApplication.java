@@ -31,12 +31,16 @@
 
 package org.brain4it.manager.android;
 
+import android.app.Activity;
 import android.app.Application;
+import static android.content.Context.MODE_PRIVATE;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Environment;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.widget.ImageView;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
@@ -119,6 +123,40 @@ public class ManagerApplication extends Application
     Configuration conf = res.getConfiguration(); 
     conf.locale = locale; 
     res.updateConfiguration(conf, dm); 
+  }
+  
+  public SharedPreferences getPreferences()
+  {
+    SharedPreferences preferences = 
+      getSharedPreferences(ManagerApplication.PREFERENCES, MODE_PRIVATE);
+    return preferences;
+  }
+    
+  public void setupActivity(Activity activity, boolean upEnabled)
+  {
+    SharedPreferences preferences = getPreferences();
+    String currentLanguage = getLanguage();
+    String language = preferences.getString("language", currentLanguage);
+    
+    if (!currentLanguage.equals(language))
+    {
+      setLanguage(language);
+    }
+
+    if (upEnabled)
+    {
+      activity.getActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+    else
+    {
+      // hide up button in action bar
+      int upId = Resources.getSystem().getIdentifier("up", "id", "android");
+      if (upId > 0)
+      {
+        ImageView up = (ImageView)activity.findViewById(upId);
+        up.setImageResource(R.drawable.no_home);
+      }
+    }
   }
   
   private File getWorkspaceFile()

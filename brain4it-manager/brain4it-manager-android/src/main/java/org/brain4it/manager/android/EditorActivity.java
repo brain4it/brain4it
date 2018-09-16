@@ -48,7 +48,6 @@ import android.widget.EditText;
 import org.brain4it.client.RestClient;
 import org.brain4it.client.RestClient.Callback;
 import org.brain4it.io.Formatter;
-import org.brain4it.manager.Workspace;
 import org.brain4it.manager.android.view.EditCode;
 
 /**
@@ -76,6 +75,9 @@ public class EditorActivity extends ModuleActivity
   {
     super.onCreate(savedInstanceState);
 
+    ManagerApplication app = (ManagerApplication)getApplicationContext();
+    app.setupActivity(this, true);
+    
     setContentView(R.layout.editor);
 
     pathInputText = (EditText)findViewById(R.id.path);

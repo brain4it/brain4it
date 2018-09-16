@@ -55,7 +55,10 @@ public class ServerSetupActivity extends Activity
   public void onCreate(Bundle savedInstanceState)
   {
     super.onCreate(savedInstanceState);
-    getActionBar().setDisplayHomeAsUpEnabled(true);
+
+    ServerApplication app = (ServerApplication)getApplicationContext();
+    app.setupActivity(this, true);
+    
     getActionBar().setTitle(R.string.setup);
     
     setContentView(R.layout.setup);

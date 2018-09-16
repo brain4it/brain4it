@@ -34,9 +34,7 @@ package org.brain4it.manager.android;
 import android.app.ListActivity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
-import static android.content.Context.MODE_PRIVATE;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -77,21 +75,14 @@ public class ServerListActivity extends ListActivity
   public void onCreate(Bundle icicle)
   {
     super.onCreate(icicle);
-
-    ManagerApplication app = (ManagerApplication)getApplicationContext();    
-    SharedPreferences preferences = 
-      getSharedPreferences(ManagerApplication.PREFERENCES, MODE_PRIVATE);
-    String language = preferences.getString("language", app.getLanguage());
     
-    if (!app.getLanguage().equals(language))
-    {
-      app.setLanguage(language);
-    }
+    ManagerApplication app = (ManagerApplication)getApplicationContext();
+    app.setupActivity(this, false);
     
     setTitle(R.string.servers);
 
     updateServerList();
-
+        
 		ListView listView = getListView();
 		listView.setTextFilterEnabled(true);
     registerForContextMenu(listView);
@@ -175,6 +166,9 @@ public class ServerListActivity extends ListActivity
       case R.id.threadDump:
         createThreadDump();
         break;
+      case R.id.about:
+        about();
+        break;
       case R.id.exit:
         finish();
         System.exit(0);
@@ -213,6 +207,13 @@ public class ServerListActivity extends ListActivity
   {
     Intent intent = new Intent(ServerListActivity.this, 
       PreferencesActivity.class);
+    startActivity(intent);    
+  }
+
+  private void about()
+  {
+    Intent intent = new Intent(ServerListActivity.this, 
+      AboutActivity.class);
     startActivity(intent);    
   }
   

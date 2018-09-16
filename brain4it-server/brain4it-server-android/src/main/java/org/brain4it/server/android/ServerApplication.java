@@ -30,8 +30,11 @@
  */
 package org.brain4it.server.android;
 
+import android.app.Activity;
 import android.app.Application;
+import android.content.res.Resources;
 import android.os.Environment;
+import android.widget.ImageView;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
@@ -60,6 +63,24 @@ public class ServerApplication extends Application
     });
   }
 
+  public void setupActivity(Activity activity, boolean upEnabled)
+  {
+    if (upEnabled)
+    {
+      activity.getActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+    else
+    {
+      // hide up button in action bar
+      int upId = Resources.getSystem().getIdentifier("up", "id", "android");
+      if (upId > 0)
+      {
+        ImageView up = (ImageView)activity.findViewById(upId);
+        up.setImageResource(R.drawable.no_home);
+      }
+    }
+  }  
+  
   private void handleUncaughtException(Thread t, Throwable e)
   {
     try

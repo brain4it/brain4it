@@ -69,10 +69,12 @@ public class PreferencesActivity extends Activity
   public void onCreate(Bundle icicle)
   {
     super.onCreate(icicle);
-    getActionBar().setDisplayHomeAsUpEnabled(true);
+
+    ManagerApplication app = (ManagerApplication)getApplicationContext();
+    app.setupActivity(this, true);
 
     setTitle(R.string.preferences);
-
+    
     setContentView(R.layout.preferences);
 
     languageSpinner = (Spinner)findViewById(R.id.languageSpinner);
@@ -114,10 +116,8 @@ public class PreferencesActivity extends Activity
 
   private void loadPreferences()
   {
-    SharedPreferences preferences =
-      getSharedPreferences(ManagerApplication.PREFERENCES, MODE_PRIVATE);
-
     ManagerApplication app = (ManagerApplication)getApplicationContext();
+    SharedPreferences preferences = app.getPreferences();
 
     String language = preferences.getString("language", app.getLanguage());
     int textSize = preferences.getInt("textSize", 15);
@@ -133,8 +133,8 @@ public class PreferencesActivity extends Activity
 
   private void savePreferences()
   {
-    SharedPreferences preferences =
-      getSharedPreferences(ManagerApplication.PREFERENCES, MODE_PRIVATE);
+    ManagerApplication app = (ManagerApplication)getApplicationContext();
+    SharedPreferences preferences = app.getPreferences();
 
     SharedPreferences.Editor editor = preferences.edit();
 
@@ -151,10 +151,9 @@ public class PreferencesActivity extends Activity
 
     editor.commit();
 
-    ManagerApplication app = (ManagerApplication)getApplicationContext();
-    String previousLanguage = app.getLanguage();
+    String currentLanguage = app.getLanguage();
 
-    if (!previousLanguage.equals(language))
+    if (!currentLanguage.equals(language))
     {
       app.setLanguage(language);
 

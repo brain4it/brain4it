@@ -54,7 +54,9 @@ public abstract class ModuleActivity extends Activity
   public void onCreate(Bundle savedInstanceState)
   {
     super.onCreate(savedInstanceState);
-    getActionBar().setDisplayHomeAsUpEnabled(true);
+
+    ManagerApplication app = (ManagerApplication)getApplicationContext();
+    app.setupActivity(this, true);
     
     Intent intent = getIntent();
     if (intent != null)

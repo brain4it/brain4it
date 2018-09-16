@@ -82,8 +82,10 @@ public class ModuleListActivity extends ListActivity
   public void onCreate(Bundle icicle)
   {
     super.onCreate(icicle);
-    getActionBar().setDisplayHomeAsUpEnabled(true);
 
+    ManagerApplication app = (ManagerApplication)getApplicationContext();
+    app.setupActivity(this, true);
+    
     Intent intent = getIntent();
     if (intent != null)
     {

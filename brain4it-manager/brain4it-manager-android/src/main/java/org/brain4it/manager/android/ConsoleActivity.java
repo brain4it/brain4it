@@ -82,6 +82,9 @@ public class ConsoleActivity extends ModuleActivity
   {
     super.onCreate(savedInstanceState);
 
+    ManagerApplication app = (ManagerApplication)getApplicationContext();
+    app.setupActivity(this, true);
+    
     setContentView(R.layout.console);
   
     outputList = (CodeListView)findViewById(R.id.output);

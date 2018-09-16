@@ -86,6 +86,9 @@ public class DashboardActivity extends ModuleActivity
   {
     super.onCreate(savedInstanceState);
 
+    ManagerApplication app = (ManagerApplication)getApplicationContext();
+    app.setupActivity(this, true);
+    
     widgets = new HashMap<String, View>();
     setContentView(R.layout.dashboard);
 
@@ -234,6 +237,12 @@ public class DashboardActivity extends ModuleActivity
                   if (dashboardName == null) dashboardName = "dashboard-" + i;
                   dashboardNames.add(dashboardName);
                 }
+              }
+              else
+              {
+                String message = getResources().getString(
+                  R.string.noDashboards);
+                ToastUtils.showLong(DashboardActivity.this, message);
               }
               ArrayAdapter<String> adapter =
                 new ArrayAdapter<String>(DashboardActivity.this,

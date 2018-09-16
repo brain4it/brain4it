@@ -48,7 +48,9 @@
 
   <string name="loadSuccessfull">Carregat correctament.</string>
   <string name="saveSuccessfull">Desat correctament.</string>
+  <string name="noDashboards">Aquest mòdul no té panells!</string>
 
   <string name="threadDump">Bolcat de threads</string>
-  <string name="exit">Sortir</string>
+  <string name="about">Quant a</string>
+  <string name="exit">Surt</string>
 </resources>

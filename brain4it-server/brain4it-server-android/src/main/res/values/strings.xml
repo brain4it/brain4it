@@ -11,5 +11,6 @@
     <string name="setup">Setup</string>
     <string name="clear">Clear log</string>
     <string name="threadDump">Thread dump</string>
+    <string name="about">About</string>
     <string name="restartNotice">Restart server to take effect.</string>
 </resources>

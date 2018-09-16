@@ -2,6 +2,7 @@
 <resources>
   <style name="Brain4itTheme" parent="@android:style/Theme.Holo.Light">
     <item name="android:actionBarStyle">@style/Brain4itTheme.ActionBar</item>
+    <item name="android:windowAnimationStyle">@null</item>
     <item name="android:homeAsUpIndicator">@drawable/home</item>
     <item name="android:actionOverflowButtonStyle">@style/Brain4itTheme.OverFlow</item>
   </style>

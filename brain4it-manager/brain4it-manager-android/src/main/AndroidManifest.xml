@@ -46,5 +46,9 @@
               android:launchMode="standard"
               android:screenOrientation="portrait">
     </activity>
+    <activity android:name=".AboutActivity"
+              android:launchMode="standard"
+              android:screenOrientation="portrait">
+    </activity>
   </application>
 </manifest> 

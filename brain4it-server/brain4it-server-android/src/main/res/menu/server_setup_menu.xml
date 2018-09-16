@@ -6,4 +6,6 @@
         android:title="@string/clear" />
   <item android:id="@+id/threadDump"
         android:title="@string/threadDump" />
+  <item android:id="@+id/about"
+        android:title="@string/about" />
 </menu>

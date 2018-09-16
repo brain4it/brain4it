@@ -61,8 +61,10 @@ public class ServerSetupActivity extends Activity
   public void onCreate(Bundle icicle)
   {
     super.onCreate(icicle);
-    getActionBar().setDisplayHomeAsUpEnabled(true);
 
+    ManagerApplication app = (ManagerApplication)getApplicationContext();
+    app.setupActivity(this, true);
+    
     setContentView(R.layout.server_setup);
 
     serverNameInput = (EditText)findViewById(R.id.serverNameInput);

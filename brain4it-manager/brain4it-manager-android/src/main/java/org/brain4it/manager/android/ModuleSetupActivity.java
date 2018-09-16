@@ -65,8 +65,10 @@ public class ModuleSetupActivity extends Activity
   public void onCreate(Bundle icicle)
   {
     super.onCreate(icicle);
-    getActionBar().setDisplayHomeAsUpEnabled(true);
 
+    ManagerApplication app = (ManagerApplication)getApplicationContext();
+    app.setupActivity(this, true);
+    
     setContentView(R.layout.module_setup);
     
     moduleNameInput = (EditText)findViewById(R.id.moduleNameInput);

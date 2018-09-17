@@ -42,7 +42,14 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
- *
+ * Executes BPL code in a dedicated thread.
+ * 
+ * This class allow to run code synchronouslly (with the execute method) or 
+ * asynchronouslly (with the spawn method).
+ * 
+ * In both cases a running executor can always be interrupted with the 
+ * kill method.
+ * 
  * @author realor
  */
 public class Executor implements Callable
@@ -216,18 +223,18 @@ public class Executor implements Callable
     if (threadPool != null)
     {
       threadPool.shutdown();
-			while (!threadPool.isTerminated())
+      while (!threadPool.isTerminated())
       {
-				try
+        try
         {
-					threadPool.awaitTermination(100, TimeUnit.MILLISECONDS);
-				}
+          threadPool.awaitTermination(100, TimeUnit.MILLISECONDS);
+        }
         catch (InterruptedException e)
         {
-					return;
-				}
-				threadPool.shutdownNow();
-			}
+          return;
+        }
+        threadPool.shutdownNow();
+      }
       threadPool = null;
     }
   }

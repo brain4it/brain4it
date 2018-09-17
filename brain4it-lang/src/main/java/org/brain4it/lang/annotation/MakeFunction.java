@@ -37,7 +37,21 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- *
+ * An annotation for creating a built-in function from a Java class method.
+ * 
+ * Example:
+ * 
+ * class GeoLibrary extends Library
+ * {
+ *   @MakeFunction(
+ *     pathName="org.brain4it.lib.geo.ElevationFunction", 
+ *     functionName="geo-elevation")
+ *   public static double elevation(double lon, double lat) { ... }
+ *   ...
+ * }
+ * 
+ * Utils.createFunctions(GeoLibrary.class, functions);
+ * 
  * @author realor
  */
 @Target(ElementType.METHOD)

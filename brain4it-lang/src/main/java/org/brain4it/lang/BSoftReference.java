@@ -38,7 +38,25 @@ import org.brain4it.io.Token;
 import org.brain4it.io.Tokenizer;
 
 /**
- *
+ * A soft reference.
+ * 
+ * A soft reference is a reference that points to data or a user defined
+ * function.
+ * 
+ * The value they reference can be modified, so they are like variables.
+ * 
+ * There are two types of soft references:
+ * <ul>
+ * <li>Single references ({@link org.brain4it.lang.BSingleReference}) that 
+ * reference a value inside the local or global scope lists.</li>
+ * <li>Path references ({@link org.brain4it.lang.BPathReference}) that contains 
+ * a list of names that represent a path to access a value inside a structure 
+ * of nested lists.
+ * </li>
+ * </ul>
+ * 
+ * All soft references evaluate to the value they reference.
+ * 
  * @author realor
  */
 public abstract class BSoftReference extends BReference

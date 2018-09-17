@@ -32,7 +32,18 @@
 package org.brain4it.lang;
 
 /**
+ * A BPL exception. 
+ * 
+ * Exceptions in BPL are represented as a {@link org.brain4it.lang.BList} with 
+ * 2 elements, the type and the message of the exception.
+ * 
+ * Example: ("InvalidHostException" "www.delta245w.com")
  *
+ * A BException is a convenient exception class that contains a BList like that.
+ * 
+ * The BPL throw and try functions generate BExceptions that can
+ * be handled by the catch clauses.
+ * 
  * @author realor
  */
 public class BException extends RuntimeException

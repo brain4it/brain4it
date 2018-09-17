@@ -32,7 +32,26 @@
 package org.brain4it.lang;
 
 /**
- *
+ * BPL base object. 
+ * 
+ * BPL only supports these data types:
+ * <ul>
+ * <li>null</li>
+ * <li>java.lang.Boolean</li>
+ * <li>java.lang.Integer</li>
+ * <li>java.lang.Long</li>
+ * <li>java.lang.Double</li>
+ * <li>java.lang.String</li>
+ * <li>org.brain4it.lang.BReference</li>
+ * <li>org.brain4it.lang.BList</li>
+ * </ul>
+ * 
+ * BObject is the base class for {@link org.brain4it.lang.BReference} and 
+ * {@link org.brain4it.lang.BList} data types.
+ * 
+ * All BObjects have a method to evaluate themselves in the given 
+ * {@link org.brain4it.lang.Context}.
+ * 
  * @author realor
  */
 public abstract class BObject

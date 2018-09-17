@@ -31,7 +31,11 @@
 package org.brain4it.lang;
 
 /**
- *
+ * A path reference.
+ * 
+ * A path reference contains a list of names that represent a path to access 
+ * a value inside a structure of nested lists.
+ * 
  * @author realor
  */
 public class BPathReference extends BSoftReference

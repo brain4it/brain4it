@@ -36,7 +36,27 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- *
+ * A BPL list.
+ * 
+ * Lists are the only mutable data type in BPL.
+ * 
+ * They contain a list of elements, where each of them can be of any of the
+ * supported BPL types.
+ * 
+ * Elements in a list can be labeled with a name that identifies 
+ * univocally that element within the list.
+ * 
+ * When a list has elements labeled with names, it holds a 
+ * {@link org.brain4it.lang.Structure} that maps these names to 
+ * indices and viceversa.
+ * 
+ * Elements in a BList can be acceded by index of by name.
+ * 
+ * All lists evaluate to themselves except if the first element references a 
+ * function. In that case, the result of the evaluation is the value obtained 
+ * by invoking that function passing the rest of elements of the list as 
+ * arguments.
+ * 
  * @author realor
  */
 public class BList extends BObject implements Cloneable

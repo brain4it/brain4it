@@ -32,7 +32,15 @@
 package org.brain4it.lang;
 
 /**
- *
+ * A hard reference.
+ * 
+ * A hard reference is a reference that points to a built-in function.
+ * 
+ * It contains a pointer to the {@link org.brain4it.lang.Function} 
+ * implementation of the built-in function it references.
+ * 
+ * Hard references always evaluate themselves.
+ * 
  * @author realor
  */
 public class BHardReference extends BReference

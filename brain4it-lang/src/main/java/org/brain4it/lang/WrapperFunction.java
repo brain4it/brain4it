@@ -34,7 +34,9 @@ package org.brain4it.lang;
 import java.lang.reflect.Method;
 
 /**
- *
+ * An implementation of a BPL built-in function that is a wrapper of a
+ * Java class method.
+ * 
  * @author realor
  */
 public class WrapperFunction implements Function

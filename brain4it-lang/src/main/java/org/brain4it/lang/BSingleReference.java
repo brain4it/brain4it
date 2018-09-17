@@ -31,7 +31,11 @@
 package org.brain4it.lang;
 
 /**
- *
+ * A single reference.
+ * 
+ * A reference that contains a single name that points to a value inside
+ * the local or global scope lists.
+ * 
  * @author realor
  */
 public class BSingleReference extends BSoftReference

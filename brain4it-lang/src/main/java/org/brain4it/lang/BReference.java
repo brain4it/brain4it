@@ -32,7 +32,24 @@
 package org.brain4it.lang;
 
 /**
- *
+ * A BPL reference.
+ * 
+ * A reference is an immutable name or symbol that points to data or 
+ * a function.
+ * 
+ * There are two types of reference:
+ * <ul>
+ * <li>Hard references ({@link org.brain4it.lang.BHardReference}), that point to 
+ * built-in functions.</li>
+ * <li>Soft references ({@link org.brain4it.lang.BSoftReference}), that point to
+ * data or user defined functions. The value they reference can be modified, so 
+ * these references are like variables.
+ * </ul>
+ * 
+ * All references contains a property named 
+ * <code>value</code> that holds the reference name or symbol.
+ * This name can not be changed, so references are immutable.
+ * 
  * @author realor
  */
 public abstract class BReference extends BObject

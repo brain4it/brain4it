@@ -35,7 +35,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- *
+ * A helper class of {@link org.brain4it.lang.BList} that maps names to 
+ * indices and viceversa.
+ * 
+ * Different list instances can share the same Structure.
+ * 
  * @author realor
  */
 public class Structure implements Cloneable

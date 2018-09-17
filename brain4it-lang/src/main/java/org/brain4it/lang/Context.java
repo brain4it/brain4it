@@ -35,6 +35,33 @@ import java.util.Map;
 import java.util.Stack;
 import static org.brain4it.io.IOConstants.FUNCTION_FUNCTION_NAME;
 
+/**
+ * The BPL evaluation context.
+ * 
+ * All code in BPL run inside a Context.
+ * 
+ * A context contains:
+ * <ul>
+ * <li>A global scope list ({@link org.brain4it.lang.BList}) where global 
+ * variables are stored.</li>
+ * <li>A stack of local scopes lists ({@link org.brain4it.lang.BList})</li> 
+ * that contains the local variables.
+ * </li>
+ * <li>A {@link java.util.Map} that contains the implementation of the built-in 
+ * functions available in this context.</li>
+ * </ul>
+ * 
+ * This class has methods to evaluate expressions and resolve variables
+ * (soft references).
+ * 
+ * The variable resolution follows these rules:
+ * If the variable is found in local scope, its value is returned,
+ * else if the variable is found in global scope, its value is returned,
+ * otherwise, null is returned.
+ * 
+ * @author realor
+ */
+
 public class Context
 {
   public static final Function IDENTITY_FUNCTION = new IdentityFunction();

@@ -37,13 +37,14 @@ import java.text.ParseException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import static org.brain4it.io.IOConstants.CALL_FUNCTION_NAME;
-import static org.brain4it.io.IOConstants.FUNCTION_FUNCTION_NAME;
 import org.brain4it.io.Printer;
 import org.brain4it.lang.annotation.MakeFunction;
+import static org.brain4it.io.IOConstants.CALL_FUNCTION_NAME;
+import static org.brain4it.io.IOConstants.FUNCTION_FUNCTION_NAME;
 
 /**
- *
+ * A utility class with data conversion methods and other basic operations.
+ * 
  * @author realor
  */
 public class Utils

@@ -32,10 +32,28 @@
 package org.brain4it.lang;
 
 /**
- *
+ * The interface for the implementation of built-in functions.
+ * 
+ * Built-in functions are evaluated in some {@link org.brain4it.lang.Context}
+ * and receive the arguments in a {@link org.brain4it.lang.BList}.
+ * 
  * @author realor
  */
+
+
 public interface Function
 {
+  /**
+   * Invokes the built-in function.
+   * 
+   * @param context, the context where this function will be evaluated.
+   * @param args, the arguments passed to the function starting at index 1.
+   * The element at index 0 is the function reference to this built-in function.
+   * @return the result of evaluating this function in the given 
+   * {@code context} with the specified arguments, that is a value of a 
+   * supported BPL object type.
+   * @throws Exception 
+   */  
+  
   public Object invoke(Context context, BList args) throws Exception;    
 }

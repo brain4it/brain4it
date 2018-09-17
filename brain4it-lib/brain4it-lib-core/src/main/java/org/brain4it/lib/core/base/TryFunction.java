@@ -71,6 +71,9 @@ public class TryFunction implements Function
     }
     catch (InterruptedException ex)
     {
+      /* InterruptedExceptions can not be catched with the try function to
+      ensure that the Executor.kill method always interrupts the execution.
+      */
       interrupted = true;
       throw ex;
     }

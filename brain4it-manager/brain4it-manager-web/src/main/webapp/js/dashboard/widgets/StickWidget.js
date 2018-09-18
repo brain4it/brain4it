@@ -38,7 +38,7 @@ Brain4it.StickWidget.prototype.init = function(name, setup)
   var func = setup.getByName("set-value");
   if (func instanceof Brain4it.Reference)
   {
-    this.setValueFunction = func.value;
+    this.setValueFunction = func.name;
     this.invoker = new Brain4it.FunctionInvoker(this.dashboard.invoker, 
       this.setValueFunction, this.invokeInterval);
   }

@@ -47,9 +47,9 @@ public class BHardReference extends BReference
 {
   Function function;
   
-  public BHardReference(String value, Function function)
+  public BHardReference(String name, Function function)
   {
-    super(value);
+    super(name);
     this.function = function;
   }
   
@@ -63,7 +63,7 @@ public class BHardReference extends BReference
   {
     if (other instanceof BHardReference)
     {
-      return value.equals(((BHardReference)other).getValue());
+      return name.equals(((BHardReference)other).getName());
     }
     return false;
   }

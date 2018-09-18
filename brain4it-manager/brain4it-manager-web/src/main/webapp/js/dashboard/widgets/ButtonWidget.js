@@ -18,12 +18,12 @@ Brain4it.ButtonWidget.prototype.init = function(name, setup)
   var func = setup.getByName("on-pressed");
   if (func instanceof Brain4it.Reference)
   {
-    this.onPressedFunction = func.value;
+    this.onPressedFunction = func.name;
   }
   func = setup.getByName("on-released");
   if (func instanceof Brain4it.Reference)
   {
-    this.onReleasedFunction = func.value;
+    this.onReleasedFunction = func.name;
   }
 
   if (this.onPressedFunction || this.onReleasedFunction)

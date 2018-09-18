@@ -187,7 +187,7 @@ public class IndicatorWidget extends LinearLayout implements DashboardWidget
     BSoftReference func = type.getGetValueFunction(properties);
     if (func != null)
     {
-      getValueFunction = func.getValue();
+      getValueFunction = func.getName();
       if (dashboard != null)
       {
         Monitor monitor = dashboard.getMonitor();

@@ -61,9 +61,9 @@ import org.brain4it.io.Tokenizer;
  */
 public abstract class BSoftReference extends BReference
 {
-  protected BSoftReference(String value)
+  protected BSoftReference(String name)
   {
-    super(value);
+    super(name);
   }
 
   @Override
@@ -71,7 +71,7 @@ public abstract class BSoftReference extends BReference
   {
     if (other instanceof BSoftReference)
     {
-      return value.equals(((BSoftReference)other).getValue());
+      return name.equals(((BSoftReference)other).getName());
     }
     return false;
   }

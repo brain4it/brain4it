@@ -49,11 +49,11 @@ public class LanguageTest
     BSoftReference reference;
     reference = BSoftReference.getInstance("alfa");
     assertTrue(reference instanceof BSingleReference);
-    assertEquals("alfa", reference.getValue(), "alfa");
+    assertEquals("alfa", reference.getName(), "alfa");
 
     reference = BSoftReference.getInstance("alfa9_34");
     assertTrue(reference instanceof BSingleReference);
-    assertEquals("alfa9_34", reference.getValue());
+    assertEquals("alfa9_34", reference.getName());
 
     reference = BSoftReference.getInstance("/");
     assertTrue(reference instanceof BSingleReference);
@@ -101,7 +101,7 @@ public class LanguageTest
     reference = BSoftReference.getInstance("/\"alfa(5)/\"");
     assertEquals(1, reference.getPath().size());
     assertEquals("alfa(5)/", reference.getPath().get(0));    
-    assertEquals("/\"alfa(5)/\"", reference.getValue());    
+    assertEquals("/\"alfa(5)/\"", reference.getName());    
 
     BList path = new BList();
     path.add(" Hello world!");
@@ -110,7 +110,7 @@ public class LanguageTest
     assertEquals(reference.getPath().size(), 2);
     assertEquals(reference.getPath().get(0), " Hello world!");
     assertEquals(reference.getPath().get(1), 9);
-    assertEquals(reference.getValue(), "/\" Hello world!\"/9");
+    assertEquals(reference.getName(), "/\" Hello world!\"/9");
     
     try
     {

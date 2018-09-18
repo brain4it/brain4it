@@ -57,13 +57,13 @@ Brain4it.RangeWidget.prototype.init = function(name, setup)
   var func = setup.getByName("get-value");
   if (func instanceof Brain4it.Reference)
   {
-    this.getValueFunction = func.value;
+    this.getValueFunction = func.name;
     this.dashboard.monitor.watch(this.getValueFunction, this._onRemoteChange);    
   }
   func = setup.getByName("set-value");
   if (func instanceof Brain4it.Reference)
   {
-    this.setValueFunction = func.value;
+    this.setValueFunction = func.name;
     this.invoker = new Brain4it.FunctionInvoker(this.dashboard.invoker, 
       this.setValueFunction, 0);
   }

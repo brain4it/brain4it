@@ -9,9 +9,9 @@ Brain4it.idSequence = 0;
 
 /* Reference class */
 
-Brain4it.Reference = function(value)
+Brain4it.Reference = function(name)
 {
-  this.value = value;
+  this.name = name;
 };
 
 /* Structure class */
@@ -1028,7 +1028,7 @@ Brain4it.Parser.prototype =
         var nameObject = currentList.removeByIndex(currentList.size() - 1);
         if (nameObject instanceof Brain4it.Reference)
         {
-          this.name = nameObject.value;
+          this.name = nameObject.name;
         }
         else
         {
@@ -1245,7 +1245,7 @@ Brain4it.Printer.prototype =
   {
     if (object instanceof Brain4it.Reference)
     {
-      this.output.push(object.value);
+      this.output.push(object.name);
     }
     else if (typeof object === "string")
     {
@@ -2046,7 +2046,7 @@ Brain4it.Helper.prototype =
           for (var i = 0; i < object.size(); i++)
           {
             var functionReference = object.getByIndex(i);
-            var functionName = functionReference.value;
+            var functionName = functionReference.name;
             scope.functions.push(functionName);
             scope.functionsMap[functionName] = true;
           }

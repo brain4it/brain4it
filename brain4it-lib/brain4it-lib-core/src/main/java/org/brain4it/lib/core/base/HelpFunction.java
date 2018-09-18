@@ -56,7 +56,7 @@ public class HelpFunction implements Function
     Object help = null;
     
     BReference reference = Utils.getBReference(context, args, 1);
-    String functionName = reference.getValue();
+    String functionName = reference.getName();
     String language = (String)context.evaluate(args.get(LANGUAGE));
     Locale locale = language == null ? 
       Locale.getDefault() : new Locale(language);

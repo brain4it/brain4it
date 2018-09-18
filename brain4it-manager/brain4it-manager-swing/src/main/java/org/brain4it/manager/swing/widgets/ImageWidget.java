@@ -103,7 +103,7 @@ public class ImageWidget extends JComponent implements DashboardWidget
     BSoftReference func = type.getUrlFunction(properties);
     if (func != null)
     {
-      urlFunction = func.getValue();
+      urlFunction = func.getName();
     }
 
     if (dashboard != null)

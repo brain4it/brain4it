@@ -81,8 +81,8 @@ public class FunctionsFunction implements Function
       @Override
       public int compare(Object o1, Object o2)
       {
-        String name1 = ((BHardReference)o1).getValue();
-        String name2 = ((BHardReference)o2).getValue();
+        String name1 = ((BHardReference)o1).getName();
+        String name2 = ((BHardReference)o2).getName();
         return name1.compareTo(name2);
       }
     });

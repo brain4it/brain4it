@@ -104,7 +104,7 @@ public class DisplayWidget extends JTextArea implements DashboardWidget
     func = type.getGetValueFunction(properties);
     if (func != null)
     {
-      getValueFunction = func.getValue();
+      getValueFunction = func.getName();
       if (dashboard != null)
       {
         Monitor monitor = dashboard.getMonitor();

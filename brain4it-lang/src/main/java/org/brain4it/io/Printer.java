@@ -181,7 +181,7 @@ public class Printer
     if (object instanceof BReference)
     {
       BReference reference = (BReference)object;
-      writer.write(reference.getValue());
+      writer.write(reference.getName());
     }
     else if (object instanceof String)
     {

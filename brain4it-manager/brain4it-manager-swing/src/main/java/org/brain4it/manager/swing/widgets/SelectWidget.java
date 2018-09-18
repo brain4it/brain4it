@@ -144,7 +144,7 @@ public class SelectWidget extends JComponent implements DashboardWidget
     func = type.getOptionsFunction(properties);
     if (func != null)
     {
-      getOptionsFunction = func.getValue();
+      getOptionsFunction = func.getName();
       if (dashboard != null)
       {
         Monitor monitor = dashboard.getMonitor();
@@ -155,7 +155,7 @@ public class SelectWidget extends JComponent implements DashboardWidget
     func = type.getGetValueFunction(properties);
     if (func != null)
     {
-      getValueFunction = func.getValue();
+      getValueFunction = func.getName();
       if (dashboard != null)
       {
         Monitor monitor = dashboard.getMonitor();
@@ -171,7 +171,7 @@ public class SelectWidget extends JComponent implements DashboardWidget
     else
     {
       comboBox.setEnabled(true);      
-      setValueFunction = func.getValue();
+      setValueFunction = func.getName();
       if (dashboard != null)
       {
         invoker = new FunctionInvoker(dashboard.getInvoker(), setValueFunction);

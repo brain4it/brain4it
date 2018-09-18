@@ -170,7 +170,7 @@ public class MatchFunction implements Function
                isSingleVariable(patternObject))
       {
         BSoftReference variable = (BSoftReference)patternObject;
-        String variableName = variable.getValue();
+        String variableName = variable.getName();
         if (map.has(variableName))
         {
           match = Utils.equals(listObject, map.get(variableName));
@@ -187,7 +187,7 @@ public class MatchFunction implements Function
       else if (isListVariable(patternObject))
       {
         BSoftReference variable = (BSoftReference)patternObject;
-        String variableName = variable.getValue();
+        String variableName = variable.getName();
         if (map.has(variableName))
         {
           match = false; // Compare values
@@ -227,7 +227,7 @@ public class MatchFunction implements Function
     if (value instanceof BSoftReference)
     {
       BSoftReference reference = (BSoftReference)value;
-      return reference.getValue().endsWith(SINGLE_VARIABLE_SUFFIX);
+      return reference.getName().endsWith(SINGLE_VARIABLE_SUFFIX);
     }
     return false;
   }
@@ -237,7 +237,7 @@ public class MatchFunction implements Function
     if (value instanceof BSoftReference)
     {
       BSoftReference reference = (BSoftReference)value;
-      return reference.getValue().endsWith(LIST_VARIABLE_SUFFIX);
+      return reference.getName().endsWith(LIST_VARIABLE_SUFFIX);
     }
     return false;
   }

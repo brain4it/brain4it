@@ -159,7 +159,7 @@ public class Context
   {
     if (reference instanceof BSingleReference)
     {
-      setLocal(reference.getValue(), value);
+      setLocal(reference.getName(), value);
     }
     else throw new RuntimeException("Invalid local reference: " + reference);
   }
@@ -250,7 +250,7 @@ public class Context
         if (argDef instanceof BReference)
         {
           BReference reference = (BReference)argDef;
-          String argName = reference.getValue();
+          String argName = reference.getName();
           String callArgName = argDefs.getName(i);
           if (callArgName == null)
           {
@@ -274,7 +274,7 @@ public class Context
     else if (second instanceof BSingleReference)
     {
       BSingleReference reference = (BSingleReference)second;
-      localScope.put(reference.getValue(), argExprs.sublist(fromIndex));
+      localScope.put(reference.getName(), argExprs.sublist(fromIndex));
     }
 
     // execution
@@ -292,7 +292,7 @@ public class Context
 
   private boolean isFunction(BReference reference)
   {
-    return reference.getValue().equals(FUNCTION_FUNCTION_NAME);
+    return reference.getName().equals(FUNCTION_FUNCTION_NAME);
   }
 
   static class IdentityFunction implements Function

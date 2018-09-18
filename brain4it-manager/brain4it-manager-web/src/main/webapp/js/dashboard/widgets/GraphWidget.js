@@ -269,14 +269,14 @@ Brain4it.GraphWidget.prototype.init = function(name, setup)
   func = setup.getByName("get-history");
   if (func instanceof Brain4it.Reference)
   {
-    this.getHistoryFunction = func.value;
+    this.getHistoryFunction = func.name;
     this.loadHistory();
   }
 
   func = setup.getByName("get-value");
   if (func instanceof Brain4it.Reference)
   {
-    this.getValueFunction = func.value;
+    this.getValueFunction = func.name;
     if (this.getHistoryFunction === null)
     {
       this.dashboard.monitor.watch(this.getValueFunction, this._onRemoteChange);

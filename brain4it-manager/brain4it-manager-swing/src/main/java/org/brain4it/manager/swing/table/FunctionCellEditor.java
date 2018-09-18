@@ -105,7 +105,7 @@ public class FunctionCellEditor extends AbstractCellEditor
     if (value instanceof BSoftReference)
     {
       BSoftReference reference = (BSoftReference)value;
-      textField.setText(reference.getValue());
+      textField.setText(reference.getName());
     }
     else
     {

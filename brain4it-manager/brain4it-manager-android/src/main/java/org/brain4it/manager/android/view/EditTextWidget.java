@@ -146,7 +146,7 @@ public class EditTextWidget extends LinearLayout implements DashboardWidget
     func = type.getGetValueFunction(properties);
     if (func != null)
     {
-      getValueFunction = func.getValue();
+      getValueFunction = func.getName();
       if (dashboard != null)
       {
         Monitor monitor = dashboard.getMonitor();
@@ -163,7 +163,7 @@ public class EditTextWidget extends LinearLayout implements DashboardWidget
     }
     else
     {
-      setValueFunction = func.getValue();
+      setValueFunction = func.getName();
       if (dashboard != null)
       {
         if (invokeInterval == 0)

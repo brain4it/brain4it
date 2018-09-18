@@ -93,7 +93,7 @@ public class StickWidget extends JComponent implements DashboardWidget
     BSoftReference func = type.getSetValueFunction(properties);
     if (func != null)
     {
-      setValueFunction = func.getValue();
+      setValueFunction = func.getName();
       if (dashboard != null)
       {
         if (invokeInterval == 0)

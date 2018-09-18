@@ -43,7 +43,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.brain4it.client.Monitor;
-import org.brain4it.client.Invoker;
 import org.brain4it.lang.BSoftReference;
 import org.brain4it.lang.BList;
 import org.brain4it.manager.swing.DashboardPanel;
@@ -161,7 +160,7 @@ public class RangeWidget extends JComponent implements DashboardWidget
     func = type.getGetValueFunction(properties);
     if (func != null)
     {
-      getValueFunction = func.getValue();
+      getValueFunction = func.getName();
       if (dashboard != null)
       {
         Monitor monitor = dashboard.getMonitor();
@@ -177,7 +176,7 @@ public class RangeWidget extends JComponent implements DashboardWidget
     else
     {
       slider.setEnabled(true);
-      setValueFunction = func.getValue();
+      setValueFunction = func.getName();
       if (dashboard != null)
       {
         invoker = new FunctionInvoker(dashboard.getInvoker(), setValueFunction);

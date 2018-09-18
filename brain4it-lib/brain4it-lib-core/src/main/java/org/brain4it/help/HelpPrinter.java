@@ -395,7 +395,7 @@ public abstract class HelpPrinter
           transformed.add(elem);
           if (where != null)
           {
-            String argument = ((BSoftReference)elem).getValue();
+            String argument = ((BSoftReference)elem).getName();
             BList definition = (BList)where.get(argument);
             if (definition != null)
             {

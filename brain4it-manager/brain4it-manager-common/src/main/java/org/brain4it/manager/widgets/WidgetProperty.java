@@ -90,7 +90,7 @@ public class WidgetProperty
     else if (value instanceof BSoftReference)
     {
       BSoftReference reference = (BSoftReference)value;
-      if (reference.getValue().startsWith("@"))      
+      if (reference.getName().startsWith("@"))      
       {
         return (BSoftReference)value;
       }

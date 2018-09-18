@@ -60,7 +60,7 @@ public class MergeFunction implements Function
     else if (data instanceof BSoftReference)
     {
       BSoftReference reference = (BSoftReference)data;
-      String variableName = reference.getValue();
+      String variableName = reference.getName();
       BList map = (BList)context.evaluate(args.get(2));
       if (map.has(variableName))
       {
@@ -88,7 +88,7 @@ public class MergeFunction implements Function
       if (value instanceof BSoftReference)
       {
         BSoftReference reference = (BSoftReference)value;
-        variableName = reference.getValue();
+        variableName = reference.getName();
         if (map.has(variableName))
         {
           value = map.get(variableName);

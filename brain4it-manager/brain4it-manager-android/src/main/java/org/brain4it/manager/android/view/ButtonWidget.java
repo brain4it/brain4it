@@ -120,12 +120,12 @@ public class ButtonWidget extends Button implements DashboardWidget
     func = type.getOnPressedFunction(properties);
     if (func != null)
     {
-      onPressedFunction = func.getValue();
+      onPressedFunction = func.getName();
     }
     func = type.getOnReleasedFunction(properties);
     if (func != null)
     {
-      onReleasedFunction = func.getValue();
+      onReleasedFunction = func.getName();
     }
     if (onPressedFunction != null || onReleasedFunction != null)
     {

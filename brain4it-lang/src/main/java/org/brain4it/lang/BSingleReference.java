@@ -40,46 +40,46 @@ package org.brain4it.lang;
  */
 public class BSingleReference extends BSoftReference
 { 
-  public BSingleReference(String value)
+  public BSingleReference(String name)
   {
-    super(value);
+    super(name);
   }
 
   @Override
   public BList getPath()
   {
     BList path = new BList(1);
-    path.add(value);
+    path.add(name);
     return path;
   }
   
   @Override
   public Object evaluate(Context context)
   {
-    return context.get(value);
+    return context.get(name);
   }
 
   @Override
   public Object getReferencedData(Context context)
   {
-    return context.get(value);
+    return context.get(name);
   }
 
   @Override
   public void setReferencedData(Context context, Object data)
   {
-    context.set(value, data);
+    context.set(name, data);
   }
 
   @Override
   public boolean deleteReferencedData(Context context)
   {
-    return context.delete(value);
+    return context.delete(name);
   }
 
   @Override
   public boolean existsReferencedData(Context context)
   {
-    return context.exists(value);
+    return context.exists(name);
   }  
 }

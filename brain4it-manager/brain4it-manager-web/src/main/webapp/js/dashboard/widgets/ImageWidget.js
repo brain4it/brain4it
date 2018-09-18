@@ -22,7 +22,7 @@ Brain4it.ImageWidget.prototype.init = function(name, setup)
   var func = setup.getByName("url");
   if (func instanceof Brain4it.Reference)
   {
-    this.urlFunction = func.value;
+    this.urlFunction = func.name;
     this.dashboard.monitor.watch(this.urlFunction, this._onRemoteChange);
   }
 };

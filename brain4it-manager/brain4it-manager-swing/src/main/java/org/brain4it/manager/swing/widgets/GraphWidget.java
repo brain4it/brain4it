@@ -154,7 +154,7 @@ public class GraphWidget extends JComponent implements DashboardWidget
     func = type.getGetHistoryFunction(properties);
     if (func != null)
     {
-      getHistoryFunction = func.getValue();
+      getHistoryFunction = func.getName();
       if (dashboard != null)
       {
         loadHistory();
@@ -164,7 +164,7 @@ public class GraphWidget extends JComponent implements DashboardWidget
     func = type.getGetValueFunction(properties);
     if (func != null)
     {
-      getValueFunction = func.getValue();
+      getValueFunction = func.getName();
       if (dashboard != null && getHistoryFunction == null)
       {
         Monitor monitor = dashboard.getMonitor();

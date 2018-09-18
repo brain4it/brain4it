@@ -113,7 +113,7 @@ public class Utils
     }
     else if (value instanceof BReference)
     {
-      return ((BReference)value).getValue();
+      return ((BReference)value).getName();
     }
     else if (value instanceof BList)
     {
@@ -235,9 +235,9 @@ public class Utils
     }
     else if (value1 instanceof BReference && value2 instanceof BReference)
     {
-      String refValue1 = ((BReference)value1).getValue();
-      String refValue2 = ((BReference)value2).getValue();
-      return refValue1.compareTo(refValue2);
+      String refName1 = ((BReference)value1).getName();
+      String refName2 = ((BReference)value2).getName();
+      return refName1.compareTo(refName2);
     }
     return 0;
   }
@@ -348,7 +348,7 @@ public class Utils
         if (first instanceof BHardReference)
         {
           BHardReference reference = (BHardReference)first;
-          if (reference.getValue().equals(FUNCTION_FUNCTION_NAME))
+          if (reference.getName().equals(FUNCTION_FUNCTION_NAME))
           {
             return FUNCTION_LIST_SUBTYPE;
           }

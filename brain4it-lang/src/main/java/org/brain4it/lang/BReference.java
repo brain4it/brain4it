@@ -46,30 +46,28 @@ package org.brain4it.lang;
  * these references are like variables.
  * </ul>
  * 
- * All references contains a property named 
- * <code>value</code> that holds the reference name or symbol.
- * This name can not be changed, so references are immutable.
+ * The reference name can not be changed, so references are immutable.
  * 
  * @author realor
  */
 public abstract class BReference extends BObject
 {
-  protected final String value;
+  protected final String name;
 
-  protected BReference(String value)
+  protected BReference(String name)
   {
-    this.value = value;
+    this.name = name;
   }
 
-  public String getValue()
+  public String getName()
   {
-    return value;
+    return name;
   }
 
   @Override
   public String toString()
   {
-    return value;
+    return name;
   }
 
   @Override

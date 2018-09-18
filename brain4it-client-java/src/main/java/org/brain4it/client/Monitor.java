@@ -289,7 +289,8 @@ public class Monitor
             conn.setDoInput(true);
             conn.setDoOutput(true);
             conn.setRequestMethod("POST");
-            conn.setRequestProperty(MONITOR_HEADER, "0");
+            conn.setRequestProperty(MONITOR_HEADER, 
+              String.valueOf(pollingInterval));
             conn.setRequestProperty("Content-Type", BPL_MIMETYPE +
                "; charset=" + BPL_CHARSET);
             if (accessKey != null)

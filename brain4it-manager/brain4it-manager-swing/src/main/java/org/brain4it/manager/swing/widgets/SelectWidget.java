@@ -40,6 +40,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import org.brain4it.client.Monitor;
 import org.brain4it.lang.BList;
@@ -55,7 +56,7 @@ import org.brain4it.manager.widgets.WidgetType;
  *
  * @author realor
  */
-public class SelectWidget extends JComponent implements DashboardWidget
+public class SelectWidget extends JPanel implements DashboardWidget
 {
   protected DashboardPanel dashboard;
   protected String getOptionsFunction;

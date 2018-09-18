@@ -45,6 +45,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import org.brain4it.client.Monitor;
@@ -62,7 +63,7 @@ import org.brain4it.manager.widgets.WidgetType;
  *
  * @author realor
  */
-public class SwitchWidget extends JComponent implements DashboardWidget
+public class SwitchWidget extends JPanel implements DashboardWidget
 {
   protected DashboardPanel dashboard;
   protected String getValueFunction;

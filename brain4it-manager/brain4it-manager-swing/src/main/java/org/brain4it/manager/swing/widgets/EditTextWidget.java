@@ -33,6 +33,7 @@ package org.brain4it.manager.swing.widgets;
 import java.awt.BorderLayout;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 import javax.swing.SwingUtilities;
@@ -52,7 +53,7 @@ import org.brain4it.manager.widgets.WidgetType;
  *
  * @author realor
  */
-public class EditTextWidget extends JComponent implements DashboardWidget,
+public class EditTextWidget extends JPanel implements DashboardWidget,
   DocumentListener
 {
   protected DashboardPanel dashboard;

@@ -38,6 +38,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
@@ -55,7 +56,7 @@ import org.brain4it.manager.widgets.WidgetType;
  *
  * @author realor
  */
-public class RangeWidget extends JComponent implements DashboardWidget
+public class RangeWidget extends JPanel implements DashboardWidget
 {
   protected DashboardPanel dashboard;
   protected String getValueFunction;

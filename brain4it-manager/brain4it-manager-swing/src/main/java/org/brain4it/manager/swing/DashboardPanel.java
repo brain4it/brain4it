@@ -287,7 +287,7 @@ public class DashboardPanel extends ModulePanel
       }
     }
     widgetsPanel.doLayout();
-    repaint();
+    widgetsPanel.revalidate();
   }
     
   protected void unwatchAll()

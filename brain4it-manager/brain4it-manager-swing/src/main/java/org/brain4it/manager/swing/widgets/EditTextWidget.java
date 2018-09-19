@@ -31,7 +31,6 @@
 package org.brain4it.manager.swing.widgets;
 
 import java.awt.BorderLayout;
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;

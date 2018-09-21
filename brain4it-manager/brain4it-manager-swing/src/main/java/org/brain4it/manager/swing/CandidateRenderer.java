@@ -46,6 +46,10 @@ import org.brain4it.manager.TextCompleter.Candidate;
  */
 public class CandidateRenderer extends JLabel implements ListCellRenderer
 {
+  private ImageIcon stringIcon;
+  private ImageIcon numberIcon;
+  private ImageIcon booleanIcon;
+  private ImageIcon referenceIcon;
   private ImageIcon atomIcon;
   private ImageIcon listIcon;
   private ImageIcon functionListIcon;
@@ -90,9 +94,27 @@ public class CandidateRenderer extends JLabel implements ListCellRenderer
       {
         setIcon(listIcon);
       }
+      else if (type.endsWith(Utils.INTEGER_SUBTYPE) || 
+        type.endsWith(Utils.LONG_SUBTYPE) ||
+        type.endsWith(Utils.DOUBLE_SUBTYPE))
+      {
+        setIcon(numberIcon);
+      }
+      else if (type.equals(Utils.STRING_TYPE))
+      {
+        setIcon(stringIcon);
+      }
+      else if (type.equals(Utils.BOOLEAN_TYPE))
+      {
+        setIcon(booleanIcon);
+      }
+      else if (type.equals(Utils.SOFT_REFERENCE_SUBTYPE))
+      {
+        setIcon(referenceIcon);
+      }
       else
       {
-        setIcon(atomIcon);        
+        setIcon(atomIcon);
       }
     }
     return this;
@@ -102,15 +124,20 @@ public class CandidateRenderer extends JLabel implements ListCellRenderer
   {
     try
     {
-      atomIcon = IconCache.getIcon(("atom"));
-      listIcon = IconCache.getIcon(("list"));
-      functionListIcon = IconCache.getIcon(("function_list"));
+      atomIcon = IconCache.getIcon("types/atom");
+      booleanIcon = IconCache.getIcon("types/boolean");
+      stringIcon = IconCache.getIcon("types/string");
+      numberIcon = IconCache.getIcon("types/number");
+      referenceIcon = IconCache.getIcon("types/reference");
+      listIcon = IconCache.getIcon("types/list");
+      functionListIcon = IconCache.getIcon("types/function_list");
       setBorder(new EmptyBorder(1, 0, 1, 1));
       setIconTextGap(5);
       setOpaque(true);
     }
     catch (Exception ex)
     {
+      // ignore
     }
   }
 }

@@ -54,6 +54,10 @@ public class NodeRenderer extends JLabel implements TreeCellRenderer
 {
   private ImageIcon workspaceIcon;
   private ImageIcon serverIcon;
+  private ImageIcon stringIcon;
+  private ImageIcon numberIcon;
+  private ImageIcon booleanIcon;
+  private ImageIcon referenceIcon;
   private ImageIcon atomIcon;
   private ImageIcon listIcon;
   private ImageIcon functionListIcon;
@@ -116,9 +120,28 @@ public class NodeRenderer extends JLabel implements TreeCellRenderer
       {
         setIcon(listIcon);
       }
+      else if (type.endsWith(Utils.INTEGER_SUBTYPE) || 
+        type.endsWith(Utils.LONG_SUBTYPE) ||
+        type.endsWith(Utils.DOUBLE_SUBTYPE))
+      {
+        setIcon(numberIcon);        
+      }
+      else if (type.equals(Utils.STRING_TYPE))
+      {
+        setIcon(stringIcon);        
+      }
+      else if (type.equals(Utils.BOOLEAN_TYPE))
+      {
+        setIcon(booleanIcon);        
+      }
+      else if (type.equals(Utils.HARD_REFERENCE_SUBTYPE) || 
+        type.equals(Utils.SOFT_REFERENCE_SUBTYPE))
+      {
+        setIcon(referenceIcon);        
+      }
       else
       {
-        setIcon(atomIcon);        
+        setIcon(atomIcon);
       }
       setText(String.valueOf(userObject) + " (" + type + ")");
     }
@@ -165,11 +188,15 @@ public class NodeRenderer extends JLabel implements TreeCellRenderer
   {
     try
     {
-      workspaceIcon = IconCache.getIcon(("workspace"));
-      serverIcon = IconCache.getIcon(("server"));
-      atomIcon = IconCache.getIcon(("atom"));
-      listIcon = IconCache.getIcon(("list"));
-      functionListIcon = IconCache.getIcon(("function_list"));
+      workspaceIcon = IconCache.getIcon("workspace");
+      serverIcon = IconCache.getIcon("server");
+      atomIcon = IconCache.getIcon("types/atom");
+      booleanIcon = IconCache.getIcon("types/boolean");
+      stringIcon = IconCache.getIcon("types/string");
+      numberIcon = IconCache.getIcon("types/number");
+      referenceIcon = IconCache.getIcon("types/reference");
+      listIcon = IconCache.getIcon("types/list");
+      functionListIcon = IconCache.getIcon("types/function_list");
       setBorder(new EmptyBorder(1, 0, 1, 1));
       setIconTextGap(5);
       setOpaque(false);

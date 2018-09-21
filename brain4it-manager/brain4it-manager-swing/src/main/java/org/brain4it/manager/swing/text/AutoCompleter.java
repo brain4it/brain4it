@@ -178,61 +178,6 @@ public class AutoCompleter implements OnCompleteListener
   {
     this.textCompleter = textCompleter;
   }
-
-  private String findHead()
-  {
-    try
-    {
-      int pos = textComponent.getCaretPosition();
-      String text = textComponent.getText(0, pos);
-      int k = text.length() - 1;
-      int type = 0;
-      boolean inString = false;
-      while (k >= 0 && type == 0)
-      {
-        char ch = text.charAt(k);
-        if (inString)
-        {
-          if (ch == '"')
-          {
-            if (k > 0 && text.charAt(k - 1) != '\\') inString = false;
-          }
-          k--;
-        }
-        else
-        {
-          if (ch == ' ' || ch == '\n')
-          {
-            type = 1;
-            k++;
-          }
-          else if (ch == IOConstants.OPEN_LIST_TOKEN.charAt(0))
-          {
-            type = 2;
-            k++;
-          }
-          else if (ch == '"')
-          {
-            inString = true;
-            k--;
-          }
-          else
-          {
-            k--;
-          }
-        }
-      }
-      if (k == -1)
-      {
-        k = 0;
-      }
-      return text.substring(k);
-    }
-    catch (BadLocationException ex)
-    {      
-    }
-    return null;
-  }
   
   private void completeCursor()
   {
@@ -251,8 +196,22 @@ public class AutoCompleter implements OnCompleteListener
     }
     catch (BException ex)
     {
-      // ignore
+      // ignore, head is not reference
     }
+  }
+
+  private String findHead()
+  {
+    try
+    {
+      int pos = textComponent.getCaretPosition();
+      String text = textComponent.getText(0, pos);
+      return textCompleter.findHead(text);
+    }
+    catch (BadLocationException ex)
+    {      
+    }
+    return null;
   }
   
   @Override
@@ -276,8 +235,8 @@ public class AutoCompleter implements OnCompleteListener
                 {
                   String name = candidates.get(0).getName();
                   String currentHead = findHead();
-                  int index = 
-                    currentHead.lastIndexOf(IOConstants.PATH_REFERENCE_SEPARATOR);
+                  int index = currentHead.lastIndexOf(
+                    IOConstants.PATH_REFERENCE_SEPARATOR);
                   if (index != -1)
                   {
                     currentHead = currentHead.substring(index + 1);

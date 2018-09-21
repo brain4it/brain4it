@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout 
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="horizontal" 
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:padding="10dp">
+  <ImageView android:id="@+id/candidateIcon"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:gravity="center_vertical"
+    android:layout_alignParentTop="true"
+    android:layout_alignParentBottom="true"
+    android:layout_marginRight="10dp" />
+  <TextView
+    android:id="@+id/candidateName"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="1dp"
+    android:textSize="20sp"
+    android:gravity="center_vertical"
+    android:layout_alignParentTop="true"
+    android:layout_alignParentBottom="true"
+    android:textStyle="normal"
+    android:singleLine="true"
+    android:ellipsize="end"
+    android:layout_marginTop="1dp"
+    android:layout_marginBottom="1dp">
+  </TextView>
+</LinearLayout>

@@ -72,7 +72,63 @@ public class TextCompleter
   {
     return module;
   }
+  
+  /**
+   * finds the head of the editing text
+   * @param text the editing text to cursor position
+   * @return the text to complete (head)
+   */
+  public String findHead(String text)
+  {
+    int k = text.length() - 1;
+    int type = 0;
+    boolean inString = false;
+    while (k >= 0 && type == 0)
+    {
+      char ch = text.charAt(k);
+      if (inString)
+      {
+        if (ch == '"')
+        {
+          if (k > 0 && text.charAt(k - 1) != '\\') inString = false;
+        }
+        k--;
+      }
+      else
+      {
+        if (ch == ' ' || ch == '\n')
+        {
+          type = 1;
+          k++;
+        }
+        else if (ch == IOConstants.OPEN_LIST_TOKEN.charAt(0))
+        {
+          type = 2;
+          k++;
+        }
+        else if (ch == '"')
+        {
+          inString = true;
+          k--;
+        }
+        else
+        {
+          k--;
+        }
+      }
+    }
+    if (k == -1)
+    {
+      k = 0;
+    }
+    return text.substring(k);    
+  }
 
+  /**
+   * Finds the reference candidates starting with the given head
+   * @param head the head to find candidates
+   * @param listener the listener that will handle the candidates found
+   */
   public void complete(final String head, final OnCompleteListener listener)
   {
     final List<Candidate> candidates = new ArrayList<Candidate>();
@@ -160,21 +216,26 @@ public class TextCompleter
     });
   }
   
+  /**
+   * Finds the common head to all the given candidates 
+   * @param candidates the candidates to find a common head
+   * @return the common head found (may be empty string)
+   */
   public String findCommonHead(List<Candidate> candidates)
   {
     // candidates.size() > 1
-    int min = Integer.MAX_VALUE;
+    int maxLength = Integer.MAX_VALUE;
     for (Candidate candidate : candidates)
     {
-      if (candidate.getName().length() < min)
+      if (candidate.getName().length() < maxLength)
       {
-        min = candidate.getName().length();
+        maxLength = candidate.getName().length();
       }
     }
     Candidate firstCandidate = candidates.get(0);
     boolean common = true;
     int i = 0;
-    while (i < min && common)
+    while (i < maxLength && common)
     {
       char ch = firstCandidate.getName().charAt(i);
       int j = 1;

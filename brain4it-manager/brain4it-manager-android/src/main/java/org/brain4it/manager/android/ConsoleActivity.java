@@ -63,7 +63,7 @@ public class ConsoleActivity extends ModuleActivity
   private CodeListView outputList;
   private EditCode inputText;
   private Button parenthesisButton;
-  private Button arrowButton;
+  private Button completeButton;
   private Button functionsButton;
   private Button clearButton;
   private Button historyNextButton;
@@ -90,7 +90,7 @@ public class ConsoleActivity extends ModuleActivity
     outputList = (CodeListView)findViewById(R.id.output);
     inputText = (EditCode)findViewById(R.id.input);
     parenthesisButton = (Button)findViewById(R.id.parenthesis_button);
-    arrowButton = (Button)findViewById(R.id.arrow_button);
+    completeButton = (Button)findViewById(R.id.complete_button);
     functionsButton = (Button)findViewById(R.id.functions_button);
     clearButton = (Button)findViewById(R.id.clear_button);
     historyNextButton = (Button)findViewById(R.id.history_next_button);
@@ -199,14 +199,14 @@ public class ConsoleActivity extends ModuleActivity
       }
     });
 
-    arrowButton.setOnClickListener(new OnClickListener()
+    completeButton.setOnClickListener(new OnClickListener()
     {
       @Override
       public void onClick(View view)
       {
-        int selection = inputText.getSelectionStart();
-        inputText.getText().insert(selection, "=>");
-        inputText.setSelection(selection + 2);
+        CompleteDialog dialog = 
+          new CompleteDialog(ConsoleActivity.this, module, inputText);
+        dialog.showCandidates();
       }
     });
     

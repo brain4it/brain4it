@@ -16,13 +16,13 @@
       android:textSize="13sp"
       android:text="()" />
     <Button
-      android:id="@+id/arrow_button"
+      android:id="@+id/complete_button"
       android:layout_width="0dp"
       android:layout_height="match_parent"
       android:layout_weight="0.125"
       android:fontFamily="monospace"
       android:textSize="13sp"
-      android:text="=>" />
+      android:text="->" />
     <Button
       android:id="@+id/functions_button"
       android:layout_width="0dp"

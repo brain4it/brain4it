@@ -49,6 +49,7 @@
   <string name="loadSuccessfull">Carregat correctament.</string>
   <string name="saveSuccessfull">Desat correctament.</string>
   <string name="noDashboards">Aquest mòdul no té panells!</string>
+  <string name="noMatches">No hi ha coincidències</string>
 
   <string name="threadDump">Bolcat de threads</string>
   <string name="about">Quant a</string>

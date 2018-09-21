@@ -49,6 +49,7 @@
   <string name="loadSuccessfull">Cargado correctamente.</string>
   <string name="saveSuccessfull">Guardado correctamente.</string>
   <string name="noDashboards">Este módulo no tiene paneles!</string>
+  <string name="noMatches">No hay coincidencias</string>
 
   <string name="threadDump">Volcado de threads</string>
   <string name="about">Acerca de</string>

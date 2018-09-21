@@ -49,6 +49,7 @@
   <string name="loadSuccessfull">Load successfull.</string>
   <string name="saveSuccessfull">Save successfull.</string>
   <string name="noDashboards">This module has no dashboards!</string>
+  <string name="noMatches">No matches</string>
 
   <string name="threadDump">Thread dump</string>
   <string name="about">About</string>

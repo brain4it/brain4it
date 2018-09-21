@@ -135,7 +135,9 @@ public class CompleteDialog extends Dialog
         {
           if (candidates.isEmpty())
           {
-            ToastUtils.showShort(activity, "No candidates");
+            String message = activity.getResources().getString(
+              R.string.noMatches);
+            ToastUtils.showShort(activity, message);
           }
           else
           {

@@ -507,12 +507,6 @@ public class BList extends BObject implements Cloneable
   {
     return elements.toArray();
   }
-
-  @Override
-  public Object evaluate(Context context) throws Exception
-  {
-    return function.invoke(context, this);
-  }
   
   @Override
   public String toString()

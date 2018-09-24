@@ -297,22 +297,16 @@ public class Utils
     return list;
   }
   
-  public static BList toBList(Exception ex)
+  public static BList toBList(Throwable t)
   {
     BList list;
-    if (ex instanceof BException)
+    if (t instanceof BException)
     {
-      list = ((BException)ex).toList();
+      list = ((BException)t).getBList();
     }
     else
     {
-      list = new BList(2);
-      list.add(ex.getClass().getSimpleName());
-      String message = ex.getMessage();
-      if (message != null)
-      {
-        list.add(message);
-      }
+      list = BException.toBList(t);
     }
     return list;
   }

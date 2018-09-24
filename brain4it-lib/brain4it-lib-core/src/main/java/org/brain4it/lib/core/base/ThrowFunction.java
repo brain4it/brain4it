@@ -46,33 +46,19 @@ public class ThrowFunction implements Function
   @Override
   public Object invoke(Context context, BList args) throws Exception
   {
-    Utils.checkArguments(args, 1);    
+    Utils.checkArguments(args, 1); 
     Object value = context.evaluate(args.get(1));
 
-    if (isExceptionList(value))
+    if (value instanceof BList)
     {
       throw new BException((BList)value);
     }
     else
     {
-      BList list = new BList();
-      list.add(Utils.toString(value)); // type
-      int size = args.size();
-      for (int i = 2; i < size; i++)
-      {
-        list.add(context.evaluate(args.get(i)));
-      }
-      throw new BException(list);  
+      String type = value == null ? "Exception" : String.valueOf(value);
+      String message = args.size() > 2 ?
+        Utils.toString(context.evaluate(args.get(2))) : null;
+      throw new BException(type, message);
     }
-  }
-  
-  private boolean isExceptionList(Object value)
-  {
-    if (!(value instanceof BList)) return false;
-    
-    BList list = (BList)value;
-    if (list.size() == 0) return false;
-    
-    return list.get(0) instanceof String;
-  }
+  }  
 }

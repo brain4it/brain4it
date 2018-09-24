@@ -34,65 +34,196 @@ package org.brain4it.lang;
 /**
  * A BPL exception. 
  * 
- * Exceptions in BPL are represented as a {@link org.brain4it.lang.BList} with 
- * 2 elements, the type and the message of the exception.
+ * Exceptions in BPL are represented as a {@link org.brain4it.lang.BList} 
+ * where the first element is a string that indicates the exception type. 
+ * More elements may be present to describe the exception message, the code
+ * that thrown the exception or the stack of user function calls when the 
+ * exception was thrown:
  * 
- * Example: ("InvalidHostException" "www.delta245w.com")
+ * Example: 
+ * (
+ *   "InvalidHostException" 
+ *   "message" => "www.delta245w.com"
+ *   "code" => (http "GET" url)
+ *   "stack" => (process_data send_data) 
+ * )
  *
- * A BException is a convenient exception class that contains a BList like that.
+ * A BException is a convenient Java Exception class that contains such a list.
  * 
- * The BPL throw and try functions generate BExceptions that can
- * be handled by the catch clauses.
+ * The BPL {@link org.brain4it.lang.Context} and the throw function generate 
+ * BExceptions so they can be handled by the catch clauses of the try function.
  * 
  * @author realor
  */
 public class BException extends RuntimeException
 {
+  /* optional exception properties */
+  public static final String MESSAGE = "message";
+  public static final String CODE = "code";
+  public static final String STACK = "stack";
+  
   private final BList list;
 
-  public BException(BList list)
-  {
-    this(list, null);
-  }
-
-  public BException(BList list, Throwable cause)
-  {
-    super(getMessage(list), cause);
-    this.list = list;
-  }
-
+  /**
+   * Creates a BException with the given type
+   * @param type the exception type
+   */  
   public BException(String type)
   {
-    super(type, null);
-    this.list = new BList(1);
-    list.add(type);
+    this(type, null);
   }
   
+  /**
+   * Creates a BException with the given type and message
+   * @param type the exception type
+   * @param message the exception message
+   */
   public BException(String type, String message)
   {
-    super(type + ": " + message, null);
     this.list = new BList(2);
     list.add(type);
-    list.add(message);
+    if (message != null)
+    {
+      list.put(MESSAGE, message);
+    }
   }
-
+  
+  /**
+   * Creates a BException from a BList, typically used when rethrowing an
+   * exception with the throw function.
+   * 
+   * @param list the BList that contains exception information
+   */
+  public BException(BList list)
+  {
+    this.list = new BList();
+    Object value = list.size() > 0 ? list.get(0) : null;
+    if (value == null)
+    {
+      this.list.add("Exception");
+    }
+    else
+    {
+      this.list.add(String.valueOf(value));
+    }
+    value = list.get(MESSAGE);
+    if (value != null)
+    {
+      this.list.put(MESSAGE, String.valueOf(value));
+    }
+    value = list.get(CODE);
+    if (value != null)
+    {
+      this.list.put(CODE, value);
+    }
+    value = list.get(STACK);
+    if (value != null)
+    {
+      this.list.put(STACK, value);
+    }
+  }
+  
+  /**
+   * Creates a BException from a Java Throwable
+   * @param t the Java Throwable
+   */
+  public BException(Throwable t)
+  {
+    super(t);
+    list = toBList(t);
+  }
+  
+  /**
+   * Adds source information to this exception if it is not present
+   * @param code the code that thrown this exception
+   * @param callStack the call stack when this exception was thrown
+   * @return this exception
+   */
+  public BException addSourceInfo(Object code, BList callStack)
+  {
+    if (code != null && !list.has(CODE))
+    {
+      list.put(CODE, code);
+    }
+    if (callStack != null && callStack.size() > 0 && !list.has(STACK))
+    {
+      list.put(STACK, callStack);
+    }
+    return this;
+  }
+  
+  /**
+   * Remove source information from this exception
+   * @return this exception 
+   */
+  public BException removeSourceInfo()
+  {
+    list.remove(CODE);
+    list.remove(STACK);
+    return this;
+  }
+  
+  /**
+   * Gets the exception type
+   * @return the first element of the exception list that represents the 
+   * exception type.
+   */
   public String getType()
   {
     return (String)list.get(0);
   }
 
-  public BList toList()
+  /**
+   * Gets the message associated to this exception
+   * @return the exception message if present or null otherwise.
+   */
+  @Override
+  public String getMessage()
+  {
+    return (String)list.get(MESSAGE);
+  }
+  
+  /**
+   * Gets the code that thrown this exception
+   * @return the code that thrown this exception if present or null otherwise.
+   */
+  public Object getCode()
+  {
+    return list.get(CODE);
+  }
+
+  /**
+   * Gets the call stack of this exception
+   * @return the call stack of this exception if present or null otherwise.
+   */
+  public Object getStack()
+  {
+    return list.get(STACK);
+  }
+  
+  /**
+   * Gets the BList associated with this exception
+   * @return the BList associated with this exception
+   */
+  public BList getBList()
   {
     return list;
   }
-
-  private static String getMessage(BList list)
+  
+  /**
+   * Creates a BList from a Java Throwable
+   * @param t the Throwable from which to obtain the list
+   * @return a BList that contains information of the given Throwable
+   */
+  public static BList toBList(Throwable t)
   {
-    String message = (String)list.get(0);
-    if (list.size() > 1)
+    BList list = new BList();
+    list.add(t.getClass().getSimpleName());
+    String message = t.getMessage();
+    if (message != null)
     {
-      message += ": " + list.get(1);
+      list.put(MESSAGE, message);
     }
-    return message;
+    return list;
   }
 }

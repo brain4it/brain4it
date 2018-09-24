@@ -30,8 +30,6 @@
  */
 package org.brain4it.lib.weather;
 
-
-import org.brain4it.lang.BException;
 import org.brain4it.lang.BList;
 import org.brain4it.lang.Context;
 import org.brain4it.lang.Function;
@@ -68,8 +66,9 @@ public class WeatherStationFunction implements Function
     switch (stationType.toLowerCase())
     {
       case "davis" : station = new DavisStation(); break;
-      default:
-        throw new BException("Unsupported weather station: " + stationType);
+      default: 
+        throw new RuntimeException(
+          "Unsupported weather station: " + stationType);
     }
     return station;
   }

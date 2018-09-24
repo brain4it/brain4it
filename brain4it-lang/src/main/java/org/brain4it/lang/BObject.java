@@ -49,12 +49,8 @@ package org.brain4it.lang;
  * BObject is the base class for {@link org.brain4it.lang.BReference} and 
  * {@link org.brain4it.lang.BList} data types.
  * 
- * All BObjects have a method to evaluate themselves in the given 
- * {@link org.brain4it.lang.Context}.
- * 
  * @author realor
  */
 public abstract class BObject
 {
-  public abstract Object evaluate(Context context) throws Exception;
 }

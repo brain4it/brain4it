@@ -64,10 +64,7 @@ public class AssertFunction implements Function
       {
         message = expressionString;
       }
-      BList list = new BList(2);
-      list.add("AssertFailed");
-      list.add(message);
-      throw new BException(list);
+      throw new BException("AssertFailed", message);
     }
     return result;
   }

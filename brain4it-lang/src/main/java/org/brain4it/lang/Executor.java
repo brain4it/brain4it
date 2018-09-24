@@ -300,7 +300,7 @@ public class Executor implements Callable
       // throw original exception
       Throwable t = ex.getCause();
       if (t instanceof Exception) throw (Exception)t;
-      throw new Exception(ex.getMessage());
+      throw new BException(t);
     }
   }
 

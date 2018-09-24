@@ -39,8 +39,6 @@ package org.brain4it.lang;
  * It contains a pointer to the {@link org.brain4it.lang.Function} 
  * implementation of the built-in function it references.
  * 
- * Hard references always evaluate themselves.
- * 
  * @author realor
  */
 public class BHardReference extends BReference
@@ -66,11 +64,5 @@ public class BHardReference extends BReference
       return name.equals(((BHardReference)other).getName());
     }
     return false;
-  }
-
-  @Override
-  public Object evaluate(Context context)
-  {
-    return this;
   }
 }

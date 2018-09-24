@@ -69,7 +69,4 @@ public abstract class BReference extends BObject
   {
     return name;
   }
-
-  @Override
-  public abstract Object evaluate(Context context);  
 }

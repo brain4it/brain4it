@@ -52,12 +52,6 @@ public class BSingleReference extends BSoftReference
     path.add(name);
     return path;
   }
-  
-  @Override
-  public Object evaluate(Context context)
-  {
-    return context.get(name);
-  }
 
   @Override
   public Object getReferencedData(Context context)

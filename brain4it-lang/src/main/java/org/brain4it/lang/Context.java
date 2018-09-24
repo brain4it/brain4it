@@ -44,11 +44,12 @@ import static org.brain4it.io.IOConstants.FUNCTION_FUNCTION_NAME;
  * <ul>
  * <li>A global scope list ({@link org.brain4it.lang.BList}) where global 
  * variables are stored.</li>
- * <li>A stack of local scopes lists ({@link org.brain4it.lang.BList})</li> 
- * that contains the local variables.
- * </li>
+ * <li>A stack of local scopes lists ({@link org.brain4it.lang.BList}) 
+ * that contains the local variables.</li>
  * <li>A {@link java.util.Map} that contains the implementation of the built-in 
  * functions available in this context.</li>
+ * <li>A {@link org.brain4it.lang.BList} that contains the stack of user 
+ * functions calls.</li>
  * </ul>
  * 
  * This class has methods to evaluate expressions and resolve variables
@@ -70,8 +71,9 @@ public class Context
 
   private final BList globalScope;
   private final Stack<BList> localScopes = new Stack<BList>();
+  private final BList callStack = new BList();
   private final Map<String, Function> functions;
-
+  
   public Context(BList globalScope, Map<String, Function> functions)
   {
     this.globalScope = globalScope;
@@ -201,13 +203,48 @@ public class Context
     }
   }
 
-  public final Object evaluate(Object code) throws Exception
+  /**
+   * Evaluates BPL code.
+   * 
+   * Code evaluation is always performed with this method.
+   * All BPL data but BLists and BSoftReferences evaluate themselves.
+   * If the given code throws a Java Exception it is converted to BException
+   * unless it be an InterruptedException.
+   * 
+   * @param code the BPL code to evaluate
+   * @return the result of evaluating the given code
+   * @throws BException when the execution throws an Exception
+   * @throws InterruptedException when the execution was interrupted (via kill)
+   */
+  public final Object evaluate(Object code) 
+    throws BException, InterruptedException
   {
-    if (code instanceof BObject)
+    try
     {
-      return ((BObject)code).evaluate(this);
+      if (code instanceof BList)
+      {
+        BList list = (BList)code;
+        return list.function.invoke(this, list);
+      }
+      else if (code instanceof BSoftReference)
+      {
+        BSoftReference reference = (BSoftReference)code;
+        return reference.getReferencedData(this);
+      }
+      return code;
     }
-    return code;
+    catch (InterruptedException ex)
+    {
+      throw ex;
+    }
+    catch (BException ex)
+    {
+      throw ex.addSourceInfo(code, callStack);
+    }
+    catch (Exception ex)
+    {
+      throw new BException(ex).addSourceInfo(code, callStack);
+    }
   }
 
   public boolean isUserFunction(BList function)
@@ -310,8 +347,8 @@ public class Context
     public Object invoke(Context context, BList args) throws Exception
     {
       Object result;
-      BReference reference = (BReference)args.get(0);
-      Object value = reference.evaluate(context);
+      BSoftReference reference = (BSoftReference)args.get(0);
+      Object value = reference.getReferencedData(context);
       if (value instanceof BHardReference)
       {
         BHardReference fnReference = (BHardReference)value;
@@ -322,7 +359,9 @@ public class Context
         BList list = (BList)value;
         if (context.isUserFunction(list))
         {
+          context.callStack.add(reference);
           result = context.invokeUserFunction(list, args, 1);
+          context.callStack.remove(context.callStack.size() - 1);
         }
         else
         {
@@ -352,7 +391,7 @@ public class Context
           args.function = fnReference.function;
           result = args.function.invoke(context, args);
         }
-        else if (first instanceof BReference)
+        else if (first instanceof BSoftReference)
         {
           args.function = REFERENCE_FUNCTION;
           result = args.function.invoke(context, args);

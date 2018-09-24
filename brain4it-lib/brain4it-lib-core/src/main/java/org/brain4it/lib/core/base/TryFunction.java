@@ -77,9 +77,9 @@ public class TryFunction implements Function
       interrupted = true;
       throw ex;
     }
-    catch (Exception ex)
+    catch (BException ex)
     {
-      BList exList = Utils.toBList(ex);
+      BList exList = ex.getBList();
       String exType = (String)exList.get(0);
       boolean catched = false;
       Object catchCode = null;
@@ -105,15 +105,8 @@ public class TryFunction implements Function
         context.setLocal(reference, exList);
         return context.evaluate(catchCode);
       }
-      // rethrow unhandled exception
-      if (ex instanceof BException)
-      {
-        throw (BException)ex;
-      }
-      else
-      {
-        throw new BException(exList, ex);
-      }
+      // rethrow unhandled BException
+      throw ex;
     }
     finally
     {

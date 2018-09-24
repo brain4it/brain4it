@@ -34,6 +34,7 @@ package org.brain4it.server;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.brain4it.lang.BException;
 import org.brain4it.lang.Executor;
 import org.brain4it.lang.BList;
 import org.brain4it.lang.Function;
@@ -187,10 +188,10 @@ public class RestService
     return result;
   }
 
-  public Object execute(String path, Object data, String accessKey,
+  public Object execute(String path, Object code, String accessKey,
     BList requestContext) throws Exception
   {
-    LOGGER.log(Level.FINE, "path: {0} data: {1}", new Object[]{path, data});
+    LOGGER.log(Level.FINE, "path: {0} code: {1}", new Object[]{path, code});
     Object result;
     PathParser parser = new PathParser(moduleManager, path);
     String moduleName = parser.getModuleName();
@@ -201,7 +202,6 @@ public class RestService
     }
     else
     {
-      Object code = null;
       Module module = parser.getModule();
       String functionName = parser.getModulePath();
       Map<String, Function> functions = moduleManager.getFunctions();
@@ -209,16 +209,25 @@ public class RestService
       {
         // execute any code
         checkSecurity(parser, accessKey);
-        code = data;
+        result = Executor.execute(code, module, functions, maxWaitTime);
       }
       else if (isExteriorFunction(functionName))
       {
-        // call exterior function passing header and data as arguments
-        code = Utils.createFunctionCall(functions, functionName,
-          requestContext, data);
+        try
+        {
+          // call exterior function passing header and data as arguments
+          Object call = Utils.createFunctionCall(functions, functionName,
+            requestContext, code);
+          result = Executor.execute(call, module, functions, maxWaitTime);
+        }
+        catch (BException ex)
+        {
+          // an exterior function call is not always trusted so
+          // we remove the source information (no code or stack)
+          throw ex.removeSourceInfo();
+        }
       }
-      if (code == null) result = null;
-      else result = Executor.execute(code, module, functions, maxWaitTime);
+      else result = null;
     }
     return result;
   }

@@ -48,7 +48,7 @@ public class IncrementFunction implements Function
   {
     BSoftReference reference = 
       (BSoftReference)Utils.getBReference(context, args, 1);
-    Number number = (Number)reference.evaluate(context);
+    Number number = (Number)reference.getReferencedData(context);
     if (number == null) number = 0;
     Number incr = args.size() < 3 ? 1 : (Number)context.evaluate(args.get(2));
     double value = number.doubleValue() + incr.doubleValue();

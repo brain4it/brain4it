@@ -60,9 +60,9 @@ public class BPathReference extends BSoftReference
   {
     return path;
   }
-  
+    
   @Override
-  public Object evaluate(Context context)
+  public Object getReferencedData(Context context)
   {
     if (path.size() == 1)
     {
@@ -77,12 +77,6 @@ public class BPathReference extends BSoftReference
   }
   
   @Override
-  public Object getReferencedData(Context context)
-  {
-    return evaluate(context);
-  }
-  
-  @Override
   public void setReferencedData(Context context, Object data)
   {
     if (path.size() == 1)
@@ -91,8 +85,8 @@ public class BPathReference extends BSoftReference
     }
     else
     {
-      String name = (String)path.get(0);
-      BList list = (BList)context.get(name);
+      String firstName = (String)path.get(0);
+      BList list = (BList)context.get(firstName);
       BList lastList = (BList)list.get(path, 1, path.size() - 1);
       Object spec = path.get(path.size() - 1);
       lastList.put(spec, data);
@@ -108,8 +102,8 @@ public class BPathReference extends BSoftReference
     }
     else
     {
-      String name = (String)path.get(0);
-      BList list = (BList)context.get(name);
+      String firstName = (String)path.get(0);
+      BList list = (BList)context.get(firstName);
       BList lastList = (BList)list.get(path, 1, path.size() - 1);
       Object spec = path.get(path.size() - 1);
       synchronized (lastList)
@@ -133,8 +127,8 @@ public class BPathReference extends BSoftReference
     }
     else
     {
-      String name = (String)path.get(0);
-      Object object = context.get(name);
+      String firstName = (String)path.get(0);
+      Object object = context.get(firstName);
       if (!(object instanceof BList)) return false;
       
       BList list = (BList)object;

@@ -30,7 +30,6 @@
  */
 package org.brain4it.lib.core.base;
 
-import org.brain4it.lang.BException;
 import org.brain4it.lang.BList;
 import org.brain4it.lang.Context;
 import org.brain4it.lang.Function;
@@ -58,7 +57,7 @@ public class TimerScheduleFunction implements Function
 
     BList userFunction = (BList)context.evaluate(args.get(1));
     if (!context.isUserFunction(userFunction))
-      throw new BException("Invalid user function");
+      throw new RuntimeException("Invalid user function");
 
     long delay = ((Number)context.evaluate(args.get(2))).longValue();
 

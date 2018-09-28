@@ -41,17 +41,19 @@
         android:background="@null"
         android:textSize="15sp" />      
     </LinearLayout>
-    <Button
+    <ImageButton
       android:id="@+id/load_button"
       android:layout_width="0dp"
-      android:layout_height="match_parent" 
-      android:textSize="15sp"
+      android:layout_height="match_parent"
+      android:src="@drawable/load"
+      android:contentDescription="@string/load"
       android:layout_weight="0.125" />
-    <Button
+    <ImageButton
       android:id="@+id/save_button"
       android:layout_width="0dp"
       android:layout_height="match_parent"
-      android:textSize="15sp"
+      android:src="@drawable/save"
+      android:contentDescription="@string/save"
       android:layout_weight="0.125" />
   </LinearLayout>
   <org.brain4it.manager.android.view.EditCode

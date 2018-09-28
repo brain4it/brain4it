@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   height="20"
+   version="1.1"
+   viewBox="0 0 20 20"
+   width="20"
+   id="svg9"
+   sodipodi:docname="arrow.svg"
+   inkscape:version="0.92.2 (5c3e80d, 2017-08-06)"
+   inkscape:export-filename="C:\Users\realor\Desktop\arrow.png"
+   inkscape:export-xdpi="345"
+   inkscape:export-ydpi="345">
+  <metadata
+     id="metadata13">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1366"
+     inkscape:window-height="705"
+     id="namedview11"
+     showgrid="true"
+     inkscape:zoom="20.85965"
+     inkscape:cx="6.1162288"
+     inkscape:cy="8.8581864"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="text2561"
+     inkscape:snap-bbox="false"
+     inkscape:snap-global="false">
+    <inkscape:grid
+       type="xygrid"
+       id="grid815" />
+  </sodipodi:namedview>
+  <defs
+     id="defs4" />
+  <g
+     id="Icons with numbers"
+     style="fill:#666666;fill-rule:evenodd;stroke:none;stroke-width:1"
+     transform="translate(0,4)">
+    <g
+       id="Group"
+       transform="translate(-720,-432)"
+       style="fill:#666666">
+      <g
+         transform="matrix(3.7795276,0,0,3.7795276,720.02716,-674.5326)"
+         aria-label="(...)"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.82222223px;line-height:1.25;font-family:Gidole;-inkscape-font-specification:Gidole;letter-spacing:0px;word-spacing:0px;fill:#666666;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         id="text825">
+        <g
+           aria-label="=&gt;"
+           transform="scale(1.0003066,0.99969347)"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:1.58494508px;line-height:1.25;font-family:Gidole;-inkscape-font-specification:Gidole;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.05241875"
+           id="text2561">
+          <path
+             d="M 0.5311824,294.20357 V 293.8579 H 2.387667 v 0.34567 z m 0,0.8255 v -0.34568 H 2.387667 v 0.34568 z"
+             style="font-size:5.2831502px;stroke-width:0;stroke:#666666;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none;fill:#666666;fill-opacity:1"
+             id="path2563"
+             inkscape:connector-curvature="0" />
+          <path
+             d="m 4.7695689,294.29902 v 0.28892 l -1.5684352,0.9132 -0.1779968,-0.30955 1.3156283,-0.74811 -1.3156283,-0.7481 0.1779968,-0.30956 z"
+             style="font-size:5.2831502px;stroke-width:0;stroke:#666666;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none;fill:#666666;fill-opacity:1"
+             id="path2565" />
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>

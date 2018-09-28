@@ -4,7 +4,6 @@
   <string name="servers">Servidores</string>
   <string name="actions">Acciones</string>
   <string name="console">Consola</string>
-  <string name="execute">Ejecutar</string>
   <string name="serverName">Nombre del servidor</string>
   <string name="serverUrl">URL del servidor</string>
   <string name="module">Módulo</string>
@@ -43,6 +42,18 @@
   <string name="no">No</string>
   <string name="cancel">Cancelar</string>
   <string name="imp">Importar</string>
+
+  <string name="update">Actualizar</string>
+  <string name="parenthesis">Paréntesis</string>
+  <string name="arrow">Flecha</string>
+  <string name="complete">Completar</string>
+  <string name="functions">Funciones</string>
+  <string name="clear">Limpiar</string>
+  <string name="historyNext">Siguiente</string>
+  <string name="historyPrevious">Anterior</string>
+  <string name="execute">Executar</string>
+  <string name="load">Cargar</string>
+  <string name="save">Guardar</string>
 
   <string name="enterUrl">Introduce URL:</string>
 

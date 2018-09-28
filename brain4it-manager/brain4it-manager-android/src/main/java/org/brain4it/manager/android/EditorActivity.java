@@ -43,8 +43,8 @@ import android.text.TextWatcher;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import org.brain4it.client.RestClient;
 import org.brain4it.client.RestClient.Callback;
 import org.brain4it.io.Formatter;
@@ -57,8 +57,8 @@ import org.brain4it.manager.android.view.EditCode;
 public class EditorActivity extends ModuleActivity
 {
   private EditText pathInputText;
-  private Button loadButton;
-  private Button saveButton;
+  private ImageButton loadButton;
+  private ImageButton saveButton;
   private EditCode inputText;
   private final Formatter formatter = new Formatter();
   private Handler handler = new Handler();
@@ -81,12 +81,9 @@ public class EditorActivity extends ModuleActivity
     setContentView(R.layout.editor);
 
     pathInputText = (EditText)findViewById(R.id.path);
-    loadButton = (Button)findViewById(R.id.load_button);
-    saveButton = (Button)findViewById(R.id.save_button);
+    loadButton = (ImageButton)findViewById(R.id.load_button);
+    saveButton = (ImageButton)findViewById(R.id.save_button);
     inputText = (EditCode)findViewById(R.id.input);
-
-    loadButton.setText("\u2193");
-    saveButton.setText("\u2191");
         
     inputText.setFunctionNames(module.getFunctionNames());
     if (module.getFunctionNames().isEmpty())

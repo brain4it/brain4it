@@ -38,7 +38,7 @@ import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -67,7 +67,7 @@ public class DashboardActivity extends ModuleActivity
   private Monitor monitor;
   private Invoker invoker;
   private Timer timer;
-  private Button updateButton;
+  private ImageButton updateButton;
   private BoxGridLayout grid;
   private Spinner dashboardSpinner;
   private HashMap<String, View> widgets;
@@ -93,8 +93,7 @@ public class DashboardActivity extends ModuleActivity
     setContentView(R.layout.dashboard);
 
     grid = (BoxGridLayout)findViewById(R.id.grid);
-    updateButton = (Button)findViewById(R.id.update_button);
-    updateButton.setText("\u21ba");
+    updateButton = (ImageButton)findViewById(R.id.update_button);
     dashboardSpinner = (Spinner)findViewById(R.id.dashboard_spinner);
 
     sessionId = UUID.randomUUID().toString();

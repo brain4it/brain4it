@@ -44,7 +44,7 @@ import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.Button;
+import android.widget.ImageButton;
 import org.brain4it.client.RestClient;
 import org.brain4it.client.RestClient.Callback;
 import org.brain4it.io.Formatter;
@@ -62,13 +62,14 @@ public class ConsoleActivity extends ModuleActivity
   
   private CodeListView outputList;
   private EditCode inputText;
-  private Button parenthesisButton;
-  private Button completeButton;
-  private Button functionsButton;
-  private Button clearButton;
-  private Button historyNextButton;
-  private Button historyPreviousButton;
-  private Button executeButton;
+  private ImageButton parenthesisButton;
+  private ImageButton arrowButton;
+  private ImageButton completeButton;
+  private ImageButton functionsButton;
+  private ImageButton clearButton;
+  private ImageButton historyNextButton;
+  private ImageButton historyPreviousButton;
+  private ImageButton executeButton;
   private final CommandHistory history = new CommandHistory();
   private final Formatter formatter = new Formatter();
   private final Handler handler = new Handler();
@@ -89,18 +90,15 @@ public class ConsoleActivity extends ModuleActivity
   
     outputList = (CodeListView)findViewById(R.id.output);
     inputText = (EditCode)findViewById(R.id.input);
-    parenthesisButton = (Button)findViewById(R.id.parenthesis_button);
-    completeButton = (Button)findViewById(R.id.complete_button);
-    functionsButton = (Button)findViewById(R.id.functions_button);
-    clearButton = (Button)findViewById(R.id.clear_button);
-    historyNextButton = (Button)findViewById(R.id.history_next_button);
-    historyPreviousButton = (Button)findViewById(R.id.history_previous_button);
-    executeButton = (Button)findViewById(R.id.execute_button);
-
-    functionsButton.setText("\u0192");
-    clearButton.setText("\u2573");
-    historyNextButton.setText("\u2193");
-    historyPreviousButton.setText("\u2191");
+    parenthesisButton = (ImageButton)findViewById(R.id.parenthesis_button);
+    arrowButton = (ImageButton)findViewById(R.id.arrow_button);
+    completeButton = (ImageButton)findViewById(R.id.complete_button);
+    functionsButton = (ImageButton)findViewById(R.id.functions_button);
+    clearButton = (ImageButton)findViewById(R.id.clear_button);
+    historyNextButton = (ImageButton)findViewById(R.id.history_next_button);
+    historyPreviousButton = 
+      (ImageButton)findViewById(R.id.history_previous_button);
+    executeButton = (ImageButton)findViewById(R.id.execute_button);
     
     SharedPreferences preferences = 
       getSharedPreferences(ManagerApplication.PREFERENCES, MODE_PRIVATE);
@@ -199,6 +197,16 @@ public class ConsoleActivity extends ModuleActivity
       }
     });
 
+    arrowButton.setOnClickListener(new OnClickListener()
+    {
+      @Override
+      public void onClick(View view)
+      {
+        int selection = inputText.getSelectionStart();
+        inputText.getText().insert(selection, "=>");
+      }
+    });
+    
     completeButton.setOnClickListener(new OnClickListener()
     {
       @Override

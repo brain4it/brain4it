@@ -6,13 +6,15 @@
   <LinearLayout android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:gravity="top">
+    android:background="#ffc1e3f3"
+    android:gravity="center_vertical">
     <ImageButton
       android:id="@+id/parenthesis_button"
       android:layout_width="0dp"
       android:layout_height="match_parent"
-     android:src="@drawable/parenthesis"
-      android:contentDescription="@string/parenthesis" 
+      android:src="@drawable/parenthesis"
+      android:contentDescription="@string/parenthesis"
+      android:background="@drawable/flat_button"
       android:layout_weight="0.125"/>
     <ImageButton
       android:id="@+id/arrow_button"
@@ -20,6 +22,7 @@
       android:layout_height="match_parent"
       android:src="@drawable/arrow"
       android:contentDescription="@string/arrow"
+      android:background="@drawable/flat_button"
       android:layout_weight="0.125" />
     <ImageButton
       android:id="@+id/complete_button"
@@ -27,6 +30,7 @@
       android:layout_height="match_parent"
       android:src="@drawable/complete"
       android:contentDescription="@string/complete"
+      android:background="@drawable/flat_button"
       android:layout_weight="0.125" />
     <ImageButton
       android:id="@+id/functions_button"
@@ -34,6 +38,7 @@
       android:layout_height="match_parent"
       android:src="@drawable/functions"
       android:contentDescription="@string/functions"
+      android:background="@drawable/flat_button"
       android:layout_weight="0.125" />
     <ImageButton
       android:id="@+id/clear_button"
@@ -41,6 +46,7 @@
       android:layout_height="match_parent"
       android:src="@drawable/clear"
       android:contentDescription="@string/clear"
+      android:background="@drawable/flat_button"
       android:layout_weight="0.125" />
     <ImageButton
       android:id="@+id/history_next_button"
@@ -48,6 +54,7 @@
       android:layout_height="match_parent"
       android:src="@drawable/down"
       android:contentDescription="@string/historyNext"
+      android:background="@drawable/flat_button"
       android:layout_weight="0.125"/>
     <ImageButton
       android:id="@+id/history_previous_button"
@@ -55,6 +62,7 @@
       android:layout_height="match_parent"
       android:src="@drawable/up"
       android:contentDescription="@string/historyPrevious"
+      android:background="@drawable/flat_button"
       android:layout_weight="0.125"/>
     <ImageButton
       android:id="@+id/execute_button"
@@ -62,6 +70,7 @@
       android:layout_height="match_parent"
       android:src="@drawable/execute"
       android:contentDescription="@string/execute"
+      android:background="@drawable/flat_button"
       android:layout_weight="0.125"/>
   </LinearLayout>
   <org.brain4it.manager.android.view.CodeListView

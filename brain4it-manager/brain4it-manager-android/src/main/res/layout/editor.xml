@@ -6,7 +6,8 @@
   <LinearLayout android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:gravity="top">
+    android:background="#ffc1e3f3"
+    android:gravity="center_vertical">
     <LinearLayout android:orientation="horizontal"
       android:layout_width="0dp"
       android:layout_height="match_parent" 
@@ -47,6 +48,7 @@
       android:layout_height="match_parent"
       android:src="@drawable/load"
       android:contentDescription="@string/load"
+      android:background="@drawable/flat_button"
       android:layout_weight="0.125" />
     <ImageButton
       android:id="@+id/save_button"
@@ -54,6 +56,7 @@
       android:layout_height="match_parent"
       android:src="@drawable/save"
       android:contentDescription="@string/save"
+      android:background="@drawable/flat_button"
       android:layout_weight="0.125" />
   </LinearLayout>
   <org.brain4it.manager.android.view.EditCode

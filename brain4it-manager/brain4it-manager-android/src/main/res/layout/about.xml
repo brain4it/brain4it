@@ -16,8 +16,13 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="1dp"
-    android:textSize="20sp"
-    android:gravity="center"
-    android:text="Version 1.0"
-  />    
+    android:textSize="14sp"
+    android:gravity="center"/>
+  <TextView
+    android:id="@+id/credits"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="1dp"
+    android:textSize="14sp"
+    android:gravity="center"/>    
 </LinearLayout>

@@ -120,8 +120,6 @@ import static javax.swing.tree.TreeSelectionModel.SINGLE_TREE_SELECTION;
 public class ManagerApp extends javax.swing.JFrame
 {
   public static final String TITLE = "Brain4it Manager";
-  public static final String CREDITS =
-    "Copyright (C) 2018, Ajuntament de Sant Feliu de Llobregat";
   public static final String WORKSPACE_EXTENSION = ".bws";
 
   public static final Color BASE_COLOR = new Color(89, 180, 224);

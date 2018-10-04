@@ -28,51 +28,44 @@
  *   and 
  *   https://www.gnu.org/licenses/lgpl.txt
  */
-package org.brain4it.server.android;
+package org.brain4it.version;
 
-import android.app.Activity;
-import android.os.Bundle;
-import android.view.MenuItem;
-import android.widget.TextView;
-import org.brain4it.version.VersionInfo;
+import java.io.InputStream;
+import java.util.Properties;
 
 /**
  *
  * @author realor
  */
-public class AboutActivity extends Activity
+public class VersionInfo
 {
-  @Override
-  public void onCreate(Bundle icicle)
-  {
-    super.onCreate(icicle);
+  public static final String CREDITS =
+    "Copyright (C) 2018, Ajuntament de Sant Feliu de Llobregat";
+  public static final String VERSION_INFO_PATH = "/git.properties";
     
-    ServerApplication app = (ServerApplication)getApplicationContext();
-    app.setupActivity(this, true);
-    
-    setTitle(R.string.about);
-        
-    setContentView(R.layout.about);
-
-    String commitDate = VersionInfo.getLastCommitDate();
-    if (commitDate != null)
-    {
-      TextView versionTextView = (TextView)findViewById(R.id.version);
-      versionTextView.setText("Build " + commitDate);
-    }
-    TextView creditsTextView = (TextView)findViewById(R.id.credits);
-    creditsTextView.setText(VersionInfo.CREDITS);
-  }
-
-  @Override
-  public boolean onOptionsItemSelected(MenuItem item)
+  public static String getLastCommitDate()
   {
-    switch (item.getItemId())
+    try
     {
-      case android.R.id.home:
-        finish();
-        break;
+      InputStream is = VersionInfo.class.getResourceAsStream(VERSION_INFO_PATH);
+      if (is != null)
+      {
+        try
+        {
+          Properties properties = new Properties();
+          properties.load(is);
+          return properties.getProperty("git.commit.time");
+        }
+        finally
+        {
+          is.close();
+        }
+      }
     }
-    return true;
-  }
+    catch (Exception ex)
+    {
+      // ignore: git.properties not present
+    }
+    return null;
+  }  
 }

@@ -36,6 +36,7 @@ import java.util.Collections;
 import java.util.Properties;
 import java.util.ResourceBundle;
 import javax.swing.table.DefaultTableModel;
+import org.brain4it.version.VersionInfo;
 
 /**
  *
@@ -53,7 +54,7 @@ public class AboutDialog extends javax.swing.JDialog
   
   private void initDialog()
   {
-    creditsLabel.setText(ManagerApp.CREDITS);
+    creditsLabel.setText(VersionInfo.CREDITS);
     int scalingFactor = ManagerApp.getPreferences().getScalingFactor();
     propertiesTable.setRowHeight(20 * scalingFactor);
     
@@ -67,7 +68,13 @@ public class AboutDialog extends javax.swing.JDialog
     propertiesTable.getColumnModel().getColumn(0).
       setHeaderValue(bundle.getString("About.property"));
     propertiesTable.getColumnModel().getColumn(1).
-      setHeaderValue(bundle.getString("About.value"));    
+      setHeaderValue(bundle.getString("About.value"));
+    
+    String commitDate = VersionInfo.getLastCommitDate();
+    if (commitDate != null)
+    {
+      versionLabel.setText("Build " + commitDate);
+    }
   }
 
   private void loadProperties()
@@ -95,6 +102,8 @@ public class AboutDialog extends javax.swing.JDialog
 
     logoPanel = new javax.swing.JPanel();
     logoLabel = new javax.swing.JLabel();
+    infoPanel = new javax.swing.JPanel();
+    versionLabel = new javax.swing.JLabel();
     creditsLabel = new javax.swing.JLabel();
     propertiesScrollPane = new javax.swing.JScrollPane();
     propertiesTable = new javax.swing.JTable();
@@ -113,10 +122,20 @@ public class AboutDialog extends javax.swing.JDialog
     logoLabel.setIcon(IconCache.getIcon("brain4it"));
     logoPanel.add(logoLabel, java.awt.BorderLayout.CENTER);
 
+    infoPanel.setOpaque(false);
+    infoPanel.setLayout(new java.awt.BorderLayout());
+
+    versionLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+    versionLabel.setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 1, 4, 1));
+    infoPanel.add(versionLabel, java.awt.BorderLayout.CENTER);
+    versionLabel.getAccessibleContext().setAccessibleName("version");
+
     creditsLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
     creditsLabel.setText("Credits");
-    logoPanel.add(creditsLabel, java.awt.BorderLayout.SOUTH);
+    infoPanel.add(creditsLabel, java.awt.BorderLayout.SOUTH);
     creditsLabel.getAccessibleContext().setAccessibleName("creditsLabel");
+
+    logoPanel.add(infoPanel, java.awt.BorderLayout.SOUTH);
 
     getContentPane().add(logoPanel, java.awt.BorderLayout.NORTH);
 
@@ -158,12 +177,14 @@ public class AboutDialog extends javax.swing.JDialog
 
   // Variables declaration - do not modify//GEN-BEGIN:variables
   private javax.swing.JLabel creditsLabel;
+  private javax.swing.JPanel infoPanel;
   private javax.swing.JLabel logoLabel;
   private javax.swing.JPanel logoPanel;
   private javax.swing.JButton okButton;
   private javax.swing.JScrollPane propertiesScrollPane;
   private javax.swing.JTable propertiesTable;
   private javax.swing.JPanel southPanel;
+  private javax.swing.JLabel versionLabel;
   // End of variables declaration//GEN-END:variables
 
 }

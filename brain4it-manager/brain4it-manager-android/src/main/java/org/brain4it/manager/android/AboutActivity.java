@@ -33,6 +33,8 @@ package org.brain4it.manager.android;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.TextView;
+import org.brain4it.version.VersionInfo;
 
 /**
  *
@@ -51,6 +53,15 @@ public class AboutActivity extends Activity
     setTitle(R.string.about);
         
     setContentView(R.layout.about);
+
+    String commitDate = VersionInfo.getLastCommitDate();
+    if (commitDate != null)
+    {
+      TextView versionTextView = (TextView)findViewById(R.id.version);
+      versionTextView.setText("Build " + commitDate);
+    }
+    TextView creditsTextView = (TextView)findViewById(R.id.credits);
+    creditsTextView.setText(VersionInfo.CREDITS);
   }
 
   @Override

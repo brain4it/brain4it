@@ -135,9 +135,8 @@ Brain4it.Tree =
     else
     {
       // create button & list for parentItemElem
-      var buttonElem = document.createElement('button');
-      buttonElem.className = "expand";
-      buttonElem.addEventListener("click", this._buttonListener);
+      var buttonElem = createButton(null, null, 
+        "expand", this._buttonListener, null);
       parentItemElem.insertBefore(buttonElem, parentItemElem.childNodes[0]);
       parentItemElem._buttonElem = buttonElem;
 

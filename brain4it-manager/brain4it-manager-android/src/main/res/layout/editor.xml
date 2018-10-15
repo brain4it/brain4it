@@ -30,7 +30,7 @@
         android:id="@+id/path"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:inputType="textNoSuggestions"
+        android:inputType="textUri|textNoSuggestions"
         android:maxLines="1"
         android:singleLine="true"
         android:scrollHorizontally="true"

@@ -1,0 +1,16 @@
+(NeuralCalculate (nn-calculate net_id input)
+  output
+  where =>
+  (
+    net_id => ("string" 1 1)
+    input => ("list" 1 1)
+    output => ("list" 1 1)
+  )
+  examples =>
+  (
+    ((nn-calculate net (0 0 1)) (-0.0482173242 -0.98624499854))
+  )
+  related => (nn-learn)
+  bundle => "org.brain4it.lib.NeuralLibrary"
+)
+

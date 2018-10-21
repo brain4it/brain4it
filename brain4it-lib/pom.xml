@@ -30,6 +30,7 @@
     <module>brain4it-lib-mail</module>
     <module>brain4it-lib-management</module>
     <module>brain4it-lib-mqtt</module>
+    <module>brain4it-lib-neural</module>
     <module>brain4it-lib-nlp</module>
     <module>brain4it-lib-serial</module>
     <module>brain4it-lib-tts</module>

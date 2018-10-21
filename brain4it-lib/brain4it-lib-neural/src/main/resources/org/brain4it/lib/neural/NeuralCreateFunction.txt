@@ -1,0 +1,17 @@
+(NeuralCreate (nn-create "type" => type "neurons" => neurons)
+  net_id
+  where =>
+  (
+    type => ("string" 0 1)
+    neurons => ("list" 0 1)
+    net_id => ("string" 1 1)
+  )
+  examples =>
+  (
+    ((nn-create "neurons" => (3 4 1)) "dbe6f37e369b4bdab1871f0aa7fef96c") 
+    ((nn-create "type" => "Perceptron" "neurons" => (3 3)) "e8e3ddf8efb44d5a824d00142624bdb1") 
+  )
+  related => (nn-destroy)
+  bundle => "org.brain4it.lib.NeuralLibrary"
+)
+

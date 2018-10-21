@@ -1,0 +1,31 @@
+(NeuralLearn (nn-learn net_id dataset 
+  "max-error" => max_error 
+  "max-iterations" => max_iterations)
+  num_iterations
+  where =>
+  (
+    net_id => ("string" 1 1)
+    dataset => ("list" 1 1)
+    max_error => ("number" 0 1)
+    max_iterations => ("number" 0 1)
+    num_iterations => ("number" 1 1)
+  )
+  examples =>
+  (
+    (
+      (nn-learn net 
+        (
+          ((0 0) (0 1))
+          ((0 1) (1 0))
+          ((1 0) (1 0))
+          ((1 1) (0 1))
+        )
+        max-iterations => 1000
+      ) 
+      524
+    )
+  )
+  related => (nn-calculate)
+  bundle => "org.brain4it.lib.NeuralLibrary"
+)
+

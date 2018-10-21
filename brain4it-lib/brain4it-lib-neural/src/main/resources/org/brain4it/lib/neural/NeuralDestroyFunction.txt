@@ -1,0 +1,15 @@
+(NeuralDestroy (nn-destroy net_id)
+  destroyed
+  where =>
+  (
+    net_id => ("string" 1 1)
+    destroyed => ("boolean" 1 1)
+  )
+  examples =>
+  (
+    ((nn-destroy net) true)
+  )
+  related => (nn-create)
+  bundle => "org.brain4it.lib.NeuralLibrary"
+)
+

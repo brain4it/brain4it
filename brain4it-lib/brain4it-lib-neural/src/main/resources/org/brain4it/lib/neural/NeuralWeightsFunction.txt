@@ -1,0 +1,17 @@
+(NeuralWeights (nn-weights net_id new_weights)
+  weights
+  where =>
+  (
+    net_id => ("string" 1 1)
+    new_weights => ("list" 0 1)
+    weights => ("list" 1 1)
+  )
+  examples =>
+  (
+    ((nn-weights net) (-0.04821725955574818 -0.01302105397189146)) 
+    ((nn-weights net (-0.0463 -0.014)) (-0.0463 -0.014))
+  )
+  related => (nn-create)
+  bundle => "org.brain4it.lib.NeuralLibrary"
+)
+

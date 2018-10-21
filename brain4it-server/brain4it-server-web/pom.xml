@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" 
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
@@ -12,10 +12,10 @@
 
   <artifactId>brain4it-server-web</artifactId>
   <packaging>war</packaging>
-  
+
   <name>brain4it-server-web</name>
   <description>brain4it server for J2EE web containers</description>
-  
+
   <properties>
     <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
   </properties>
@@ -55,6 +55,16 @@
     <dependency>
       <groupId>org.brain4it</groupId>
       <artifactId>brain4it-lib-mqtt</artifactId>
+      <version>${brain4it-version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.brain4it</groupId>
+      <artifactId>brain4it-lib-neural</artifactId>
+      <version>${brain4it-version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.brain4it</groupId>
+      <artifactId>brain4it-lib-nlp</artifactId>
       <version>${brain4it-version}</version>
     </dependency>
     <dependency>

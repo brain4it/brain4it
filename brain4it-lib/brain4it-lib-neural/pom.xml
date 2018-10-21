@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.brain4it</groupId>
+        <artifactId>brain4it-lib</artifactId>
+        <version>1.0</version>
+    </parent>
+
+    <artifactId>brain4it-lib-neural</artifactId>
+    <packaging>jar</packaging>
+
+  <name>brain4it-lib-neural</name>
+  <description>brain4it neural networks library</description>
+
+  <repositories>
+    <repository>
+      <id>neuroph.sourceforge.net</id>
+      <url>http://neuroph.sourceforge.net/maven2/</url>
+    </repository>        
+  </repositories>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.brain4it</groupId>
+      <artifactId>brain4it-lib-core</artifactId>
+      <version>${brain4it-version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.neuroph</groupId>
+      <artifactId>neuroph-core</artifactId>
+      <version>2.94</version>
+    </dependency>
+<!--
+    <dependency>
+      <groupId>org.neuroph</groupId>
+      <artifactId>neuroph-contrib</artifactId>
+      <version>2.94</version>
+    </dependency>
+-->
+   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.2.1</version>
+        <configuration>
+          <mainClass>org.brain4it.local.Console</mainClass>
+          <arguments>
+            <argument>Neural</argument>
+          </arguments>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>

@@ -28,12 +28,37 @@
       <dependencies>
         <dependency>
           <groupId>org.brain4it</groupId>
+          <artifactId>brain4it-lib-core</artifactId>
+          <version>${brain4it-version}</version>
+        </dependency>
+        <dependency>
+          <groupId>org.brain4it</groupId>
           <artifactId>brain4it-lib-database</artifactId>
           <version>${brain4it-version}</version>
         </dependency>
         <dependency>
           <groupId>org.brain4it</groupId>
           <artifactId>brain4it-lib-mail</artifactId>
+          <version>${brain4it-version}</version>
+        </dependency>
+        <dependency>
+          <groupId>org.brain4it</groupId>
+          <artifactId>brain4it-lib-management</artifactId>
+          <version>${brain4it-version}</version>
+        </dependency>
+        <dependency>
+          <groupId>org.brain4it</groupId>
+          <artifactId>brain4it-lib-mqtt</artifactId>
+          <version>${brain4it-version}</version>
+        </dependency>
+        <dependency>
+          <groupId>org.brain4it</groupId>
+          <artifactId>brain4it-lib-neural</artifactId>
+          <version>${brain4it-version}</version>
+        </dependency>
+        <dependency>
+          <groupId>org.brain4it</groupId>
+          <artifactId>brain4it-lib-nlp</artifactId>
           <version>${brain4it-version}</version>
         </dependency>
         <dependency>
@@ -48,12 +73,12 @@
         </dependency>
         <dependency>
           <groupId>org.brain4it</groupId>
-          <artifactId>brain4it-lib-management</artifactId>
+          <artifactId>brain4it-lib-vision</artifactId>
           <version>${brain4it-version}</version>
         </dependency>
         <dependency>
           <groupId>org.brain4it</groupId>
-          <artifactId>brain4it-lib-mqtt</artifactId>
+          <artifactId>brain4it-lib-weather</artifactId>
           <version>${brain4it-version}</version>
         </dependency>
         <dependency>
@@ -89,7 +114,7 @@
               <goal>single</goal>
             </goals>
           </execution>
-        </executions>      
+        </executions>
       </plugin>
     </plugins>
   </build>

@@ -14,10 +14,6 @@
   <name>brain4it-lib-database</name>
   <description>brain4it JDBC library</description>
 
-  <properties>
-    <brain4it-version>1.0</brain4it-version>
-  </properties>
-
   <dependencies>
     <dependency>
       <groupId>org.brain4it</groupId>

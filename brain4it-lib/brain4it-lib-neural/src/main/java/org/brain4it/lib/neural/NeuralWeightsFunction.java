@@ -58,9 +58,17 @@ public class NeuralWeightsFunction extends NeuralFunction
     if (args.size() > 2)
     {
       BList weights = (BList)context.evaluate(args.get(2));
-      double[] weightsArray = library.toDoubleArray(weights);
-      neuralNetwork.setWeights(weightsArray);
-      return weights;
+      if (weights == null)
+      {
+        neuralNetwork.randomizeWeights();
+        return Utils.toBList(neuralNetwork.getWeights());
+      }
+      else
+      {
+        double[] weightsArray = library.toDoubleArray(weights);
+        neuralNetwork.setWeights(weightsArray);
+        return weights;
+      }
     }
     else
     {

@@ -13,7 +13,10 @@
    width="20"
    id="svg9"
    sodipodi:docname="redo.svg"
-   inkscape:version="0.92.2 5c3e80d, 2017-08-06">
+   inkscape:version="0.92.2 5c3e80d, 2017-08-06"
+   inkscape:export-filename="/Users/realor/Desktop/redo.png"
+   inkscape:export-xdpi="344.70001"
+   inkscape:export-ydpi="344.70001">
   <metadata
      id="metadata13">
     <rdf:RDF>
@@ -22,7 +25,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -41,7 +44,7 @@
      showgrid="true"
      inkscape:snap-global="false"
      inkscape:zoom="21.610951"
-     inkscape:cx="5.1433047"
+     inkscape:cx="11.852866"
      inkscape:cy="10.719829"
      inkscape:current-layer="Group">
     <inkscape:grid

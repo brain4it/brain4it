@@ -10,7 +10,7 @@
     android:gravity="center_vertical">
     <LinearLayout android:orientation="horizontal"
       android:layout_width="0dp"
-      android:layout_height="match_parent" 
+      android:layout_height="match_parent"
       android:layout_weight="0.75">
       <TextView
         android:id="@+id/path_label"
@@ -40,7 +40,7 @@
         android:paddingBottom="6dp"
         android:fontFamily="monospace"
         android:background="@null"
-        android:textSize="15sp" />      
+        android:textSize="15sp" />
     </LinearLayout>
     <ImageButton
       android:id="@+id/load_button"
@@ -77,5 +77,75 @@
     android:paddingBottom="1dp"
     android:gravity="top|left"
     android:layout_weight="1" />
+  <LinearLayout android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#ffc1e3f3"
+    android:gravity="center_vertical">
+    <ImageButton
+      android:id="@+id/parenthesis_button"
+      android:layout_width="0dp"
+      android:layout_height="match_parent"
+      android:src="@drawable/parenthesis"
+      android:contentDescription="@string/parenthesis"
+      android:background="@drawable/flat_button"
+      android:layout_weight="0.125"/>
+    <ImageButton
+      android:id="@+id/quotes_button"
+      android:layout_width="0dp"
+      android:layout_height="match_parent"
+      android:src="@drawable/quotes"
+      android:contentDescription="@string/quotes"
+      android:background="@drawable/flat_button"
+      android:layout_weight="0.125"/>
+    <ImageButton
+      android:id="@+id/arrow_button"
+      android:layout_width="0dp"
+      android:layout_height="match_parent"
+      android:src="@drawable/arrow"
+      android:contentDescription="@string/arrow"
+      android:background="@drawable/flat_button"
+      android:layout_weight="0.125" />
+    <ImageButton
+      android:id="@+id/clear_button"
+      android:layout_width="0dp"
+      android:layout_height="match_parent"
+      android:src="@drawable/clear"
+      android:contentDescription="@string/clear"
+      android:background="@drawable/flat_button"
+      android:layout_weight="0.125" />
+    <ImageButton
+      android:id="@+id/complete_button"
+      android:layout_width="0dp"
+      android:layout_height="match_parent"
+      android:src="@drawable/complete"
+      android:contentDescription="@string/complete"
+      android:background="@drawable/flat_button"
+      android:layout_weight="0.125" />
+    <ImageButton
+      android:id="@+id/undo_button"
+      android:layout_width="0dp"
+      android:layout_height="match_parent"
+      android:src="@drawable/undo"
+      android:contentDescription="@string/undo"
+      android:background="@drawable/flat_button"
+      android:layout_weight="0.125"/>
+    <ImageButton
+      android:id="@+id/redo_button"
+      android:layout_width="0dp"
+      android:layout_height="match_parent"
+      android:src="@drawable/redo"
+      android:contentDescription="@string/redo"
+      android:background="@drawable/flat_button"
+      android:layout_weight="0.125"/>
+    <ImageButton
+      android:id="@+id/format_button"
+      android:layout_width="0dp"
+      android:layout_height="match_parent"
+      android:src="@drawable/format"
+      android:contentDescription="@string/format"
+      android:background="@drawable/flat_button"
+      android:layout_weight="0.125"/>
+  </LinearLayout>
 </LinearLayout>
 

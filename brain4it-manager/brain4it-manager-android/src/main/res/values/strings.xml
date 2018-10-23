@@ -45,6 +45,7 @@
 
   <string name="update">Update</string>
   <string name="parenthesis">Parenthesis</string>
+  <string name="quotes">Quotes</string>
   <string name="arrow">Arrow</string>
   <string name="complete">Complete</string>
   <string name="functions">Functions</string>
@@ -54,6 +55,9 @@
   <string name="execute">Execute</string>
   <string name="load">Load</string>
   <string name="save">Save</string>
+  <string name="undo">Undo</string>
+  <string name="redo">Redo</string>
+  <string name="format">Format</string>
 
   <string name="enterUrl">Enter URL:</string>
 

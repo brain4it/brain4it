@@ -1,31 +1,31 @@
 /*
  * Brain4it
- * 
+ *
  * Copyright (C) 2018, Ajuntament de Sant Feliu de Llobregat
- * 
- * This program is licensed and may be used, modified and redistributed under 
- * the terms of the European Public License (EUPL), either version 1.1 or (at 
- * your option) any later version as soon as they are approved by the European 
+ *
+ * This program is licensed and may be used, modified and redistributed under
+ * the terms of the European Public License (EUPL), either version 1.1 or (at
+ * your option) any later version as soon as they are approved by the European
  * Commission.
- * 
- * Alternatively, you may redistribute and/or modify this program under the 
- * terms of the GNU Lesser General Public License as published by the Free 
- * Software Foundation; either  version 3 of the License, or (at your option) 
- * any later version. 
- *   
- * Unless required by applicable law or agreed to in writing, software 
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT 
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- *   
- * See the licenses for the specific language governing permissions, limitations 
+ *
+ * Alternatively, you may redistribute and/or modify this program under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either  version 3 of the License, or (at your option)
+ * any later version.
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *
+ * See the licenses for the specific language governing permissions, limitations
  * and more details.
- *   
- * You should have received a copy of the EUPL1.1 and the LGPLv3 licenses along 
- * with this program; if not, you may find them at: 
- *   
+ *
+ * You should have received a copy of the EUPL1.1 and the LGPLv3 licenses along
+ * with this program; if not, you may find them at:
+ *
  *   https://joinup.ec.europa.eu/software/page/eupl/licence-eupl
- *   http://www.gnu.org/licenses/ 
- *   and 
+ *   http://www.gnu.org/licenses/
+ *   and
  *   https://www.gnu.org/licenses/lgpl.txt
  */
 package org.brain4it.manager.android;
@@ -66,7 +66,7 @@ public class CompleteDialog extends Dialog
   private ListView listView;
   private List<Candidate> candidates;
   private String head;
-  
+
   public CompleteDialog(Activity activity, Module module, EditText editText)
   {
     super(activity, R.style.fullScreenDialog);
@@ -77,17 +77,17 @@ public class CompleteDialog extends Dialog
   }
 
  @Override
-  protected void onCreate(Bundle savedInstanceState) 
+  protected void onCreate(Bundle savedInstanceState)
   {
     super.onCreate(savedInstanceState);
     requestWindowFeature(Window.FEATURE_NO_TITLE);
     setContentView(R.layout.complete_dialog);
 
     getWindow().addFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
-    
+
     listView = (ListView)findViewById(R.id.completeList);
     listView.setAdapter(new CandidateAdapter());
-    
+
     listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
     {
       @Override
@@ -95,32 +95,18 @@ public class CompleteDialog extends Dialog
 				int position, long id)
       {
         Candidate candidate = (Candidate)listView.getItemAtPosition(position);
-        String candidateName = candidate.getName();
-        int index = head.lastIndexOf(IOConstants.PATH_REFERENCE_SEPARATOR);
-        String tail;
-        if (index == -1)
-        {
-          tail = candidateName.substring(head.length());
-        }
-        else
-        {
-          String lastHead = head.substring(index + 1);
-          tail = candidateName.substring(lastHead.length());
-        }
-        int pos = Math.max(editText.getSelectionEnd(), 0);
-        editText.getText().insert(pos, tail);
-
+        putCandidate(candidate);
         dismiss();
 			}
-		});    
+		});
   }
-  
+
   public void showCandidates()
   {
     String text = editText.getText().toString();
     text = text.substring(0, editText.getSelectionEnd());
     head = textCompleter.findHead(text);
-    
+
     try
     {
       if (head.length() > 0)
@@ -139,6 +125,17 @@ public class CompleteDialog extends Dialog
               R.string.noMatches);
             ToastUtils.showShort(activity, message);
           }
+          else if (candidates.size() == 1)
+          {
+            activity.runOnUiThread(new Runnable()
+            {
+              @Override
+              public void run()
+              {
+                putCandidate(candidates.get(0));
+              }
+            });
+          }
           else
           {
             activity.runOnUiThread(new Runnable()
@@ -147,7 +144,7 @@ public class CompleteDialog extends Dialog
               public void run()
               {
                 CompleteDialog.this.candidates = candidates;
-                CompleteDialog.this.show();         
+                CompleteDialog.this.show();
               }
             });
           }
@@ -159,8 +156,26 @@ public class CompleteDialog extends Dialog
       // ignore, head is not reference
     }
   }
-  
-  public class CandidateAdapter extends BaseAdapter 
+
+  protected void putCandidate(Candidate candidate)
+  {
+    String candidateName = candidate.getName();
+    int index = head.lastIndexOf(IOConstants.PATH_REFERENCE_SEPARATOR);
+    String tail;
+    if (index == -1)
+    {
+      tail = candidateName.substring(head.length());
+    }
+    else
+    {
+      String lastHead = head.substring(index + 1);
+      tail = candidateName.substring(lastHead.length());
+    }
+    int pos = Math.max(editText.getSelectionEnd(), 0);
+    editText.getText().insert(pos, tail);
+  }
+
+  public class CandidateAdapter extends BaseAdapter
   {
     public CandidateAdapter()
     {
@@ -190,7 +205,7 @@ public class CompleteDialog extends Dialog
       Candidate candidate = candidates.get(position);
       LayoutInflater inflater = getLayoutInflater();
       View itemView = inflater.inflate(R.layout.candidate_item, parent, false);
-      
+
       ImageView imageView =
         (ImageView)itemView.findViewById(R.id.candidateIcon);
       String type = candidate.getType();
@@ -204,7 +219,7 @@ public class CompleteDialog extends Dialog
       {
         resourceId = R.drawable.type_list;
       }
-      else if (type.endsWith(Utils.INTEGER_SUBTYPE) || 
+      else if (type.endsWith(Utils.INTEGER_SUBTYPE) ||
         type.endsWith(Utils.LONG_SUBTYPE) ||
         type.endsWith(Utils.DOUBLE_SUBTYPE))
       {
@@ -228,7 +243,7 @@ public class CompleteDialog extends Dialog
       }
       imageView.setImageResource(resourceId);
 
-      TextView textView = 
+      TextView textView =
         (TextView)itemView.findViewById(R.id.candidateName);
       textView.setText(candidate.getName());
       if (candidate.getType().equals(Utils.HARD_REFERENCE_SUBTYPE))
@@ -237,7 +252,7 @@ public class CompleteDialog extends Dialog
       }
       else
       {
-        textView.setTypeface(null, Typeface.NORMAL);        
+        textView.setTypeface(null, Typeface.NORMAL);
       }
       return itemView;
     }

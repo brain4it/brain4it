@@ -45,6 +45,7 @@
 
   <string name="update">Actualizar</string>
   <string name="parenthesis">Paréntesis</string>
+  <string name="quotes">Comillas</string>
   <string name="arrow">Flecha</string>
   <string name="complete">Completar</string>
   <string name="functions">Funciones</string>
@@ -54,6 +55,9 @@
   <string name="execute">Executar</string>
   <string name="load">Cargar</string>
   <string name="save">Guardar</string>
+  <string name="undo">Deshacer</string>
+  <string name="redo">Rehacer</string>
+  <string name="format">Formatear</string>
 
   <string name="enterUrl">Introduce URL:</string>
 

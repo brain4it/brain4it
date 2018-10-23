@@ -1,31 +1,31 @@
 /*
  * Brain4it
- * 
+ *
  * Copyright (C) 2018, Ajuntament de Sant Feliu de Llobregat
- * 
- * This program is licensed and may be used, modified and redistributed under 
- * the terms of the European Public License (EUPL), either version 1.1 or (at 
- * your option) any later version as soon as they are approved by the European 
+ *
+ * This program is licensed and may be used, modified and redistributed under
+ * the terms of the European Public License (EUPL), either version 1.1 or (at
+ * your option) any later version as soon as they are approved by the European
  * Commission.
- * 
- * Alternatively, you may redistribute and/or modify this program under the 
- * terms of the GNU Lesser General Public License as published by the Free 
- * Software Foundation; either  version 3 of the License, or (at your option) 
- * any later version. 
- *   
- * Unless required by applicable law or agreed to in writing, software 
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT 
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- *   
- * See the licenses for the specific language governing permissions, limitations 
+ *
+ * Alternatively, you may redistribute and/or modify this program under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either  version 3 of the License, or (at your option)
+ * any later version.
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *
+ * See the licenses for the specific language governing permissions, limitations
  * and more details.
- *   
- * You should have received a copy of the EUPL1.1 and the LGPLv3 licenses along 
- * with this program; if not, you may find them at: 
- *   
+ *
+ * You should have received a copy of the EUPL1.1 and the LGPLv3 licenses along
+ * with this program; if not, you may find them at:
+ *
  *   https://joinup.ec.europa.eu/software/page/eupl/licence-eupl
- *   http://www.gnu.org/licenses/ 
- *   and 
+ *   http://www.gnu.org/licenses/
+ *   and
  *   https://www.gnu.org/licenses/lgpl.txt
  */
 
@@ -45,28 +45,27 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageButton;
+import java.text.ParseException;
 import org.brain4it.client.RestClient;
 import org.brain4it.client.RestClient.Callback;
 import org.brain4it.io.Formatter;
 import org.brain4it.io.Parser;
-import org.brain4it.io.Printer;
 import org.brain4it.lang.Utils;
 import org.brain4it.manager.CommandHistory;
-import org.brain4it.manager.Module;
 import org.brain4it.manager.android.view.CodeListView;
 import org.brain4it.manager.android.view.EditCode;
 
 public class ConsoleActivity extends ModuleActivity
 {
   static final String PROMPT = "> ";
-  
+
   private CodeListView outputList;
   private EditCode inputText;
   private ImageButton parenthesisButton;
+  private ImageButton quotesButton;
   private ImageButton arrowButton;
-  private ImageButton completeButton;
-  private ImageButton functionsButton;
   private ImageButton clearButton;
+  private ImageButton completeButton;
   private ImageButton historyNextButton;
   private ImageButton historyPreviousButton;
   private ImageButton executeButton;
@@ -85,33 +84,33 @@ public class ConsoleActivity extends ModuleActivity
 
     ManagerApplication app = (ManagerApplication)getApplicationContext();
     app.setupActivity(this, true);
-    
+
     setContentView(R.layout.console);
-  
+
     outputList = (CodeListView)findViewById(R.id.output);
     inputText = (EditCode)findViewById(R.id.input);
     parenthesisButton = (ImageButton)findViewById(R.id.parenthesis_button);
+    quotesButton = (ImageButton)findViewById(R.id.quotes_button);
     arrowButton = (ImageButton)findViewById(R.id.arrow_button);
     completeButton = (ImageButton)findViewById(R.id.complete_button);
-    functionsButton = (ImageButton)findViewById(R.id.functions_button);
     clearButton = (ImageButton)findViewById(R.id.clear_button);
     historyNextButton = (ImageButton)findViewById(R.id.history_next_button);
-    historyPreviousButton = 
+    historyPreviousButton =
       (ImageButton)findViewById(R.id.history_previous_button);
     executeButton = (ImageButton)findViewById(R.id.execute_button);
-    
-    SharedPreferences preferences = 
+
+    SharedPreferences preferences =
       getSharedPreferences(ManagerApplication.PREFERENCES, MODE_PRIVATE);
 
     int textSize = preferences.getInt("textSize", 15);
     int indentSize = preferences.getInt("indentSize", 2);
     int formatColumns = preferences.getInt("formatColumns", 40);
-    
+
     outputList.setTextSize(textSize);
     inputText.setTextSize(TypedValue.COMPLEX_UNIT_SP, textSize);
     formatter.setMaxColumns(formatColumns);
     formatter.setIndentSize(indentSize);
-    
+
     inputText.addTextChangedListener(new TextWatcher()
     {
       @Override
@@ -138,7 +137,7 @@ public class ConsoleActivity extends ModuleActivity
           if (isValidCommand(command))
           {
             execute(command);
-          }  
+          }
         }
       }
 
@@ -150,17 +149,17 @@ public class ConsoleActivity extends ModuleActivity
 
       @Override
       public void afterTextChanged(Editable editable)
-      {        
+      {
       }
     });
-    
+
     outputList.setOnItemClickListener(new OnItemClickListener()
     {
       @Override
-      public void onItemClick(AdapterView<?> adapter, View view, 
+      public void onItemClick(AdapterView<?> adapter, View view,
         int position, long id)
       {
-        CodeListView.Item item = 
+        CodeListView.Item item =
          (CodeListView.Item)adapter.getItemAtPosition(position);
         int selection = inputText.getSelectionStart();
         if (item.getType() == CodeListView.COMMAND)
@@ -180,7 +179,7 @@ public class ConsoleActivity extends ModuleActivity
             inputText.getText().insert(selection, result);
           }
           catch (Exception ex)
-          {            
+          {
           }
         }
       }
@@ -197,58 +196,57 @@ public class ConsoleActivity extends ModuleActivity
       }
     });
 
+    quotesButton.setOnClickListener(new OnClickListener()
+    {
+      @Override
+      public void onClick(View view)
+      {
+        int selection = inputText.getSelectionStart();
+        inputText.getText().insert(selection, "\"\"");
+        inputText.setSelection(selection + 1);
+      }
+    });
+
     arrowButton.setOnClickListener(new OnClickListener()
     {
       @Override
       public void onClick(View view)
       {
         int selection = inputText.getSelectionStart();
-        inputText.getText().insert(selection, "=>");
-      }
-    });
-    
-    completeButton.setOnClickListener(new OnClickListener()
-    {
-      @Override
-      public void onClick(View view)
-      {
-        CompleteDialog dialog = 
-          new CompleteDialog(ConsoleActivity.this, module, inputText);
-        dialog.showCandidates();
-      }
-    });
-    
-    functionsButton.setOnClickListener(new OnClickListener()
-    {
-      @Override
-      public void onClick(View view)
-      {
-        module.findFunctions(new Module.Callback()
+        String arrow = "=>";
+        if (selection > 0)
         {
-          @Override
-          public void actionCompleted(Module module, String action)
+          String previous = inputText.getText().subSequence(
+            selection - 1, selection).toString();
+          if (!previous.equals(" "))
           {
-            showResult(Printer.toString(module.getFunctions()));
+            arrow = " " + arrow;
           }
-          
-          @Override
-          public void actionFailed(Module module, String action, Exception ex)
-          {
-            showError(ex);
-          }
-        });
+        }
+        inputText.getText().insert(selection, arrow);
       }
     });
-    
+
     clearButton.setOnClickListener(new OnClickListener()
     {
       @Override
       public void onClick(View view)
       {
         clearConsole();
-      }      
+      }
     });
-    
+
+    completeButton.setOnClickListener(new OnClickListener()
+    {
+      @Override
+      public void onClick(View view)
+      {
+        CompleteDialog dialog =
+          new CompleteDialog(ConsoleActivity.this, module, inputText);
+        dialog.showCandidates();
+      }
+    });
+
     historyNextButton.setOnClickListener(new OnClickListener()
     {
       @Override
@@ -276,7 +274,7 @@ public class ConsoleActivity extends ModuleActivity
         }
       }
     });
-    
+
     executeButton.setOnClickListener(new OnClickListener()
     {
       @Override
@@ -294,7 +292,7 @@ public class ConsoleActivity extends ModuleActivity
       module.findFunctions(null);
     }
   }
-  
+
   @Override
   public void onResume()
   {
@@ -315,14 +313,14 @@ public class ConsoleActivity extends ModuleActivity
   @Override
   public void onPause()
   {
-    super.onPause();    
+    super.onPause();
   }
-  
+
   protected void showResult(String resultString)
   {
     showResult(resultString, false);
   }
-  
+
   protected void showResult(String resultString, boolean formatted)
   {
     try
@@ -334,16 +332,17 @@ public class ConsoleActivity extends ModuleActivity
       }
       else
       {
-        String text = formatted ? 
+        String text = formatted ?
           formatter.format(resultString) : resultString;
         appendText(CodeListView.RESULT, text);
-      }    
+      }
     }
-    catch (Exception ex)
+    catch (ParseException ex)
     {
+      // ignore
     }
   }
-  
+
   protected void showError(Exception ex)
   {
     String text;
@@ -355,7 +354,7 @@ public class ConsoleActivity extends ModuleActivity
     {
       text = ex.toString();
     }
-    appendText(CodeListView.ERROR, text);                  
+    appendText(CodeListView.ERROR, text);
   }
 
   protected void appendText(final int type, final String text)
@@ -369,7 +368,7 @@ public class ConsoleActivity extends ModuleActivity
       }
     });
   }
-  
+
   protected void clearConsole()
   {
     outputList.clear();
@@ -401,7 +400,7 @@ public class ConsoleActivity extends ModuleActivity
       }
     });
   }
-  
+
   protected boolean isValidCommand(String command)
   {
     try
@@ -409,7 +408,7 @@ public class ConsoleActivity extends ModuleActivity
       Parser.fromString(command);
       return true;
     }
-    catch (Exception ex)
+    catch (ParseException ex)
     {
       return false;
     }
@@ -428,5 +427,5 @@ public class ConsoleActivity extends ModuleActivity
     }
     buffer.setLength(i + 1);
     return buffer.toString();
-  }  
+  }
 }

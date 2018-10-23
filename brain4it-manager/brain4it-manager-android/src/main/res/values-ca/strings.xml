@@ -45,6 +45,7 @@
 
   <string name="update">Actualitza</string>
   <string name="parenthesis">Parèntesis</string>
+  <string name="quotes">Cometes</string>
   <string name="arrow">Fletxa</string>
   <string name="complete">Completa</string>
   <string name="functions">Funcions</string>
@@ -54,6 +55,9 @@
   <string name="execute">Executa</string>
   <string name="load">Càrrega</string>
   <string name="save">Desa</string>
+  <string name="undo">Desfer</string>
+  <string name="redo">Refer</string>
+  <string name="format">Formateja</string>
 
   <string name="enterUrl">Introdueix URL:</string>
 

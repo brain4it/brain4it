@@ -1,31 +1,31 @@
 /*
  * Brain4it
- * 
+ *
  * Copyright (C) 2018, Ajuntament de Sant Feliu de Llobregat
- * 
- * This program is licensed and may be used, modified and redistributed under 
- * the terms of the European Public License (EUPL), either version 1.1 or (at 
- * your option) any later version as soon as they are approved by the European 
+ *
+ * This program is licensed and may be used, modified and redistributed under
+ * the terms of the European Public License (EUPL), either version 1.1 or (at
+ * your option) any later version as soon as they are approved by the European
  * Commission.
- * 
- * Alternatively, you may redistribute and/or modify this program under the 
- * terms of the GNU Lesser General Public License as published by the Free 
- * Software Foundation; either  version 3 of the License, or (at your option) 
- * any later version. 
- *   
- * Unless required by applicable law or agreed to in writing, software 
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT 
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- *   
- * See the licenses for the specific language governing permissions, limitations 
+ *
+ * Alternatively, you may redistribute and/or modify this program under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either  version 3 of the License, or (at your option)
+ * any later version.
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *
+ * See the licenses for the specific language governing permissions, limitations
  * and more details.
- *   
- * You should have received a copy of the EUPL1.1 and the LGPLv3 licenses along 
- * with this program; if not, you may find them at: 
- *   
+ *
+ * You should have received a copy of the EUPL1.1 and the LGPLv3 licenses along
+ * with this program; if not, you may find them at:
+ *
  *   https://joinup.ec.europa.eu/software/page/eupl/licence-eupl
- *   http://www.gnu.org/licenses/ 
- *   and 
+ *   http://www.gnu.org/licenses/
+ *   and
  *   https://www.gnu.org/licenses/lgpl.txt
  */
 
@@ -45,6 +45,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import java.text.ParseException;
 import org.brain4it.client.RestClient;
 import org.brain4it.client.RestClient.Callback;
 import org.brain4it.io.Formatter;
@@ -60,8 +61,17 @@ public class EditorActivity extends ModuleActivity
   private ImageButton loadButton;
   private ImageButton saveButton;
   private EditCode inputText;
+  private ImageButton parenthesisButton;
+  private ImageButton quotesButton;
+  private ImageButton arrowButton;
+  private ImageButton clearButton;
+  private ImageButton completeButton;
+  private ImageButton undoButton;
+  private ImageButton redoButton;
+  private ImageButton formatButton;
   private final Formatter formatter = new Formatter();
-  private Handler handler = new Handler();
+  private final Handler handler = new Handler();
+  private UndoManager undoManager;
   private boolean modified = false;
 
   /**
@@ -77,21 +87,29 @@ public class EditorActivity extends ModuleActivity
 
     ManagerApplication app = (ManagerApplication)getApplicationContext();
     app.setupActivity(this, true);
-    
+
     setContentView(R.layout.editor);
 
     pathInputText = (EditText)findViewById(R.id.path);
     loadButton = (ImageButton)findViewById(R.id.load_button);
     saveButton = (ImageButton)findViewById(R.id.save_button);
     inputText = (EditCode)findViewById(R.id.input);
-        
+
     inputText.setFunctionNames(module.getFunctionNames());
     if (module.getFunctionNames().isEmpty())
     {
       module.findFunctions(null);
     }
+    parenthesisButton = (ImageButton)findViewById(R.id.parenthesis_button);
+    quotesButton = (ImageButton)findViewById(R.id.quotes_button);
+    arrowButton = (ImageButton)findViewById(R.id.arrow_button);
+    completeButton = (ImageButton)findViewById(R.id.complete_button);
+    clearButton = (ImageButton)findViewById(R.id.clear_button);
+    undoButton = (ImageButton)findViewById(R.id.undo_button);
+    redoButton = (ImageButton)findViewById(R.id.redo_button);
+    formatButton = (ImageButton)findViewById(R.id.format_button);
 
-    SharedPreferences preferences = 
+    SharedPreferences preferences =
       getSharedPreferences(ManagerApplication.PREFERENCES, MODE_PRIVATE);
 
     int textSize = preferences.getInt("textSize", 15);
@@ -102,7 +120,12 @@ public class EditorActivity extends ModuleActivity
     inputText.getAutoIndenter().setIndentSize(indentSize);
     formatter.setMaxColumns(formatColumns);
     formatter.setIndentSize(indentSize);
-    
+
+    undoManager = new UndoManager(inputText);
+    undoButton.setEnabled(false);
+    redoButton.setEnabled(false);
+    updateUndoRedoButtons();
+
     inputText.addTextChangedListener(new TextWatcher()
     {
       @Override
@@ -120,6 +143,8 @@ public class EditorActivity extends ModuleActivity
       public void afterTextChanged(Editable edtbl)
       {
         modified = true;
+
+        updateUndoRedoButtons();
       }
     });
 
@@ -140,6 +165,128 @@ public class EditorActivity extends ModuleActivity
         if (inputText.length() > 0)
         {
           saveData();
+        }
+      }
+    });
+
+    parenthesisButton.setOnClickListener(new View.OnClickListener()
+    {
+      @Override
+      public void onClick(View view)
+      {
+        if (inputText.isFocused())
+        {
+          int selection = inputText.getSelectionStart();
+          inputText.getText().insert(selection, "()");
+          inputText.setSelection(selection + 1);
+        }
+      }
+    });
+
+    quotesButton.setOnClickListener(new View.OnClickListener()
+    {
+      @Override
+      public void onClick(View view)
+      {
+        if (inputText.isFocused())
+        {
+          int selection = inputText.getSelectionStart();
+          inputText.getText().insert(selection, "\"\"");
+          inputText.setSelection(selection + 1);
+        }
+      }
+    });
+
+    arrowButton.setOnClickListener(new View.OnClickListener()
+    {
+      @Override
+      public void onClick(View view)
+      {
+        if (inputText.isFocused())
+        {
+          int selection = inputText.getSelectionStart();
+          String arrow = "=>";
+          if (selection > 0)
+          {
+            String previous = inputText.getText().subSequence(
+              selection - 1, selection).toString();
+            if (!previous.equals(" "))
+            {
+              arrow = " " + arrow;
+            }
+          }
+          inputText.getText().insert(selection, arrow);
+        }
+      }
+    });
+
+    clearButton.setOnClickListener(new View.OnClickListener()
+    {
+      @Override
+      public void onClick(View view)
+      {
+        if (inputText.isFocused())
+        {
+          inputText.setText("");
+        }
+      }
+    });
+
+    completeButton.setOnClickListener(new View.OnClickListener()
+    {
+      @Override
+      public void onClick(View view)
+      {
+        if (inputText.isFocused())
+        {
+          CompleteDialog dialog =
+            new CompleteDialog(EditorActivity.this, module, inputText);
+          dialog.showCandidates();
+        }
+      }
+    });
+
+    undoButton.setOnClickListener(new View.OnClickListener()
+    {
+      @Override
+      public void onClick(View view)
+      {
+        if (inputText.isFocused())
+        {
+          undoManager.undo();
+        }
+      }
+    });
+
+    redoButton.setOnClickListener(new View.OnClickListener()
+    {
+      @Override
+      public void onClick(View view)
+      {
+        if (inputText.isFocused())
+        {
+          undoManager.redo();
+        }
+      }
+    });
+
+    formatButton.setOnClickListener(new View.OnClickListener()
+    {
+      @Override
+      public void onClick(View view)
+      {
+        if (inputText.isFocused())
+        {
+          try
+          {
+            String formattedText =
+              formatter.format(inputText.getText().toString());
+            inputText.setText(formattedText);
+          }
+          catch (ParseException ex)
+          {
+            // ignore
+          }
         }
       }
     });
@@ -177,7 +324,7 @@ public class EditorActivity extends ModuleActivity
   {
     super.onPause();
   }
-  
+
   protected void loadData()
   {
     final String path = pathInputText.getText().toString();
@@ -187,7 +334,7 @@ public class EditorActivity extends ModuleActivity
     {
       AlertDialog.Builder dialog = new AlertDialog.Builder(this);
       String message = String.format(
-        getResources().getString(R.string.confirmDiscardChanges), 
+        getResources().getString(R.string.confirmDiscardChanges),
         module.getName());
       dialog.setMessage(message);
       dialog.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener()
@@ -225,7 +372,7 @@ public class EditorActivity extends ModuleActivity
       }
     });
   }
-  
+
   protected void onReadSuccess(String resultString)
   {
     try
@@ -246,9 +393,9 @@ public class EditorActivity extends ModuleActivity
     catch (Exception ex)
     {
       ToastUtils.showLong(EditorActivity.this, ex.toString());
-    }    
+    }
   }
-  
+
   protected void saveData()
   {
     final String path = pathInputText.getText().toString();
@@ -273,5 +420,16 @@ public class EditorActivity extends ModuleActivity
         ToastUtils.showLong(EditorActivity.this, ex.toString());
       }
     });
+  }
+
+  protected void updateUndoRedoButtons()
+  {
+    undoButton.setEnabled(undoManager.isUndoEnabled());
+    undoButton.setImageResource(undoManager.isUndoEnabled() ?
+      R.drawable.undo : R.drawable.undo_disabled);
+
+    redoButton.setEnabled(undoManager.isRedoEnabled());
+    redoButton.setImageResource(undoManager.isRedoEnabled() ?
+      R.drawable.redo : R.drawable.redo_disabled);
   }
 }

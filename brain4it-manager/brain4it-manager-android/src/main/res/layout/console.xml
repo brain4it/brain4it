@@ -3,6 +3,37 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent">
+  <org.brain4it.manager.android.view.CodeListView
+    android:id="@+id/output"
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_weight="0.75"
+    android:background="#ffffffff"
+    android:textColor="#ff000000"
+    android:focusable="true"
+    android:scrollbars="vertical"
+    android:scrollbarThumbVertical="@drawable/scrollbar"
+    android:stackFromBottom="true"
+    android:gravity="bottom" />
+  <org.brain4it.manager.android.view.EditCode
+    android:id="@+id/input"
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_weight="0.25"
+    android:scrollbars="vertical"
+    android:scrollbarThumbVertical="@drawable/scrollbar"
+    android:textCursorDrawable="@drawable/cursor"
+    android:inputType="textMultiLine|textNoSuggestions"
+    android:background="@drawable/console"
+    android:textColor="#ff000000"
+    android:fontFamily="monospace"
+    android:textSize="15sp"
+    android:paddingLeft="2dp"
+    android:paddingRight="2dp"
+    android:paddingTop="2dp"
+    android:paddingBottom="2dp"
+    android:gravity="top|left"
+    android:maxHeight="100dp" />
   <LinearLayout android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -17,6 +48,14 @@
       android:background="@drawable/flat_button"
       android:layout_weight="0.125"/>
     <ImageButton
+      android:id="@+id/quotes_button"
+      android:layout_width="0dp"
+      android:layout_height="match_parent"
+      android:src="@drawable/quotes"
+      android:contentDescription="@string/quotes"
+      android:background="@drawable/flat_button"
+      android:layout_weight="0.125"/>
+    <ImageButton
       android:id="@+id/arrow_button"
       android:layout_width="0dp"
       android:layout_height="match_parent"
@@ -25,27 +64,19 @@
       android:background="@drawable/flat_button"
       android:layout_weight="0.125" />
     <ImageButton
-      android:id="@+id/complete_button"
-      android:layout_width="0dp"
-      android:layout_height="match_parent"
-      android:src="@drawable/complete"
-      android:contentDescription="@string/complete"
-      android:background="@drawable/flat_button"
-      android:layout_weight="0.125" />
-    <ImageButton
-      android:id="@+id/functions_button"
-      android:layout_width="0dp"
-      android:layout_height="match_parent"
-      android:src="@drawable/functions"
-      android:contentDescription="@string/functions"
-      android:background="@drawable/flat_button"
-      android:layout_weight="0.125" />
-    <ImageButton
       android:id="@+id/clear_button"
       android:layout_width="0dp"
       android:layout_height="match_parent"
       android:src="@drawable/clear"
       android:contentDescription="@string/clear"
+      android:background="@drawable/flat_button"
+      android:layout_weight="0.125" />
+    <ImageButton
+      android:id="@+id/complete_button"
+      android:layout_width="0dp"
+      android:layout_height="match_parent"
+      android:src="@drawable/complete"
+      android:contentDescription="@string/complete"
       android:background="@drawable/flat_button"
       android:layout_weight="0.125" />
     <ImageButton
@@ -73,35 +104,5 @@
       android:background="@drawable/flat_button"
       android:layout_weight="0.125"/>
   </LinearLayout>
-  <org.brain4it.manager.android.view.CodeListView
-    android:id="@+id/output"
-    android:layout_width="match_parent" 
-    android:layout_height="0dp"
-    android:layout_weight="1"
-    android:background="#ffffffff"
-    android:textColor="#ff000000"
-    android:focusable="true"
-    android:scrollbars="vertical"
-    android:scrollbarThumbVertical="@drawable/scrollbar"
-    android:stackFromBottom="true"
-    android:gravity="bottom" />
-  <org.brain4it.manager.android.view.EditCode
-    android:id="@+id/input"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:scrollbars="vertical"
-    android:scrollbarThumbVertical="@drawable/scrollbar"
-    android:textCursorDrawable="@drawable/cursor"
-    android:inputType="textMultiLine|textNoSuggestions"
-    android:background="@drawable/console"
-    android:textColor="#ff000000"
-    android:fontFamily="monospace"
-    android:textSize="15sp"
-    android:paddingLeft="2dp"
-    android:paddingRight="2dp"
-    android:paddingTop="2dp"
-    android:paddingBottom="2dp"
-    android:gravity="top|left"
-    android:maxHeight="100dp" />
 </LinearLayout>
 

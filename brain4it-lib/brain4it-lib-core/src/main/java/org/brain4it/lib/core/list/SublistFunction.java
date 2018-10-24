@@ -44,9 +44,9 @@ public class SublistFunction implements Function
     Utils.checkArguments(args, 2);
     BList list = (BList)context.evaluate(args.get(1));
 
-    int fromIndex = ((Number)args.get(2)).intValue();
+    int fromIndex = ((Number)context.evaluate(args.get(2))).intValue();
     int toIndex = args.size() > 3 ?
-      ((Number)args.get(3)).intValue() : list.size();
+      ((Number)context.evaluate(args.get(3))).intValue() : list.size();
 
     return list.sublist(fromIndex, toIndex);
   }

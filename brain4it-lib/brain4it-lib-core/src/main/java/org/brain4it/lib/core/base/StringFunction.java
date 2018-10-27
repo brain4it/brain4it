@@ -90,7 +90,7 @@ public class StringFunction implements Function
     }
     else if (value instanceof String)
     {
-      if (Utils.toBoolean(args.get("escape")))
+      if (Utils.toBoolean(context.evaluate(args.get("escape"))))
       {
         return "\"" + Utils.escapeString((String)value) + "\"";
       }

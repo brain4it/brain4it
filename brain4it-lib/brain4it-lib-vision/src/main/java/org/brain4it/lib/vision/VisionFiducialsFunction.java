@@ -101,7 +101,7 @@ public class VisionFiducialsFunction extends VisionFunction
     parameters.width = width;
     parameters.height = height;
 
-    BList pinhole = (BList)args.get("camera-parameters");
+    BList pinhole = (BList)context.evaluate(args.get("camera-parameters"));
     if (pinhole == null)
     {
       parameters.cx = 316.67722865086887;

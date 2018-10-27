@@ -51,7 +51,8 @@ public class ParseFunction implements Function
     Utils.checkArguments(args, 1);    
     Object object;
     String text = (String)context.evaluate(args.get(1));
-    String format = args.size() > 2 ? (String)args.get(2) : null;
+    String format = args.size() > 2 ? 
+      (String)context.evaluate(args.get(2)) : null;
     
     if ("json".equals(format))
     {

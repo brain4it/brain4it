@@ -121,6 +121,9 @@ public class Parser
         if (currentList.size() == 0)
           throw new ParseException("Missing name", token.getStartPosition());
 
+        if (currentList.getName(currentList.size() - 1) != null)
+          throw new ParseException("Missing name", token.getStartPosition());
+
         Object nameObject = currentList.remove(currentList.size() - 1);
         name = nameObject.toString();
       }

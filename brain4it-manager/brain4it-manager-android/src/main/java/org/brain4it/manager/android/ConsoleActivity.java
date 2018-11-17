@@ -108,8 +108,8 @@ public class ConsoleActivity extends ModuleActivity
 
     outputList.setTextSize(textSize);
     inputText.setTextSize(TypedValue.COMPLEX_UNIT_SP, textSize);
-    formatter.setMaxColumns(formatColumns);
-    formatter.setIndentSize(indentSize);
+    formatter.getConfiguration().setMaxColumns(formatColumns);
+    formatter.getConfiguration().setIndentSize(indentSize);
 
     inputText.addTextChangedListener(new TextWatcher()
     {

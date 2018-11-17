@@ -1,31 +1,31 @@
 /*
  * Brain4it
- * 
+ *
  * Copyright (C) 2018, Ajuntament de Sant Feliu de Llobregat
- * 
- * This program is licensed and may be used, modified and redistributed under 
- * the terms of the European Public License (EUPL), either version 1.1 or (at 
- * your option) any later version as soon as they are approved by the European 
+ *
+ * This program is licensed and may be used, modified and redistributed under
+ * the terms of the European Public License (EUPL), either version 1.1 or (at
+ * your option) any later version as soon as they are approved by the European
  * Commission.
- * 
- * Alternatively, you may redistribute and/or modify this program under the 
- * terms of the GNU Lesser General Public License as published by the Free 
- * Software Foundation; either  version 3 of the License, or (at your option) 
- * any later version. 
- *   
- * Unless required by applicable law or agreed to in writing, software 
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT 
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- *   
- * See the licenses for the specific language governing permissions, limitations 
+ *
+ * Alternatively, you may redistribute and/or modify this program under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either  version 3 of the License, or (at your option)
+ * any later version.
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *
+ * See the licenses for the specific language governing permissions, limitations
  * and more details.
- *   
- * You should have received a copy of the EUPL1.1 and the LGPLv3 licenses along 
- * with this program; if not, you may find them at: 
- *   
+ *
+ * You should have received a copy of the EUPL1.1 and the LGPLv3 licenses along
+ * with this program; if not, you may find them at:
+ *
  *   https://joinup.ec.europa.eu/software/page/eupl/licence-eupl
- *   http://www.gnu.org/licenses/ 
- *   and 
+ *   http://www.gnu.org/licenses/
+ *   and
  *   https://www.gnu.org/licenses/lgpl.txt
  */
 
@@ -77,7 +77,7 @@ public class ConsolePanel extends ModulePanel
   private boolean formatString = true;
   private AttributeSet errorAttrSet;
   private AttributeSet stringAttrSet;
-  private Formatter formatter;
+  private Formatter formatter = new Formatter();
   private boolean firstShow = true;
 
   /**
@@ -89,12 +89,12 @@ public class ConsolePanel extends ModulePanel
     initComponents();
     initConsole();
   }
-  
+
   @Override
   public String getPanelType()
   {
     return managerApp.getLocalizedMessage("Console");
-  }  
+  }
 
   public String getPrompt()
   {
@@ -115,7 +115,7 @@ public class ConsolePanel extends ModulePanel
   {
     this.formatString = formatString;
   }
-  
+
   /**
    * This method is called from within the constructor to initialize the form.
    * WARNING: Do NOT modify this code. The content of this method is always
@@ -311,7 +311,7 @@ public class ConsolePanel extends ModulePanel
   private org.brain4it.manager.swing.JSplitPaneZero splitPane;
   private javax.swing.JToolBar toolBar;
   // End of variables declaration//GEN-END:variables
-  
+
   private void initConsole()
   {
     editorKit = new ColoredEditorKit();
@@ -320,7 +320,7 @@ public class ConsolePanel extends ModulePanel
     Font font = new Font("Monospaced", Font.PLAIN, fontSize * scalingFactor);
     inputTextPane.setFont(font);
     outputTextPane.setFont(font);
-    
+
     inputTextPane.setEditorKit(editorKit);
     inputTextPane.putClientProperty("caretWidth", 2);
     inputTextPane.setCaretColor(Color.BLACK);
@@ -354,15 +354,15 @@ public class ConsolePanel extends ModulePanel
                 @Override
                 public void run()
                 {
-                  inputTextPane.setText("");                  
+                  inputTextPane.setText("");
                 }
               });
-              execute(command);        
-            }        
+              execute(command);
+            }
           }
         }
         catch (BadLocationException ex)
-        {          
+        {
         }
       }
 
@@ -376,7 +376,7 @@ public class ConsolePanel extends ModulePanel
       {
       }
     });
-    
+
     matcher = new SymbolMatcher(inputTextPane,
       IOConstants.OPEN_LIST_TOKEN, IOConstants.CLOSE_LIST_TOKEN);
     matcher.setEnabled(true);
@@ -386,17 +386,16 @@ public class ConsolePanel extends ModulePanel
     indenter.setIndentSize(indentSize);
     indenter.setEnabled(true);
 
-    textCompleter = new TextCompleter(module);    
+    textCompleter = new TextCompleter(module);
     completer = new AutoCompleter(inputTextPane);
     completer.setTextCompleter(textCompleter);
     completer.setEnabled(true);
 
     history = new CommandHistory();
 
-    formatter = new Formatter();
-    formatter.setIndentSize(indentSize);
+    formatter.getConfiguration().setIndentSize(indentSize);
     int columns = ManagerApp.getPreferences().getFormatColumns();
-    formatter.setMaxColumns(columns);
+    formatter.getConfiguration().setMaxColumns(columns);
 
     StyleContext sc = StyleContext.getDefaultStyleContext();
     errorAttrSet = sc.addAttribute(SimpleAttributeSet.EMPTY,
@@ -415,11 +414,11 @@ public class ConsolePanel extends ModulePanel
          splitPane.setDividerLocation(0.6);
          firstShow = false;
         }
-        inputTextPane.requestFocus();    
+        inputTextPane.requestFocus();
       }
     });
   }
-  
+
   protected void execute(final String command)
   {
     RestClient restClient = getRestClient();
@@ -453,7 +452,7 @@ public class ConsolePanel extends ModulePanel
       @Override
       public void actionCompleted(Module module, String action)
       {
-        showResult(Printer.toString(module.getFunctions()));        
+        showResult(Printer.toString(module.getFunctions()));
       }
 
       @Override
@@ -497,7 +496,7 @@ public class ConsolePanel extends ModulePanel
           {
             String text = formatted ?
               formatter.format(resultString) : resultString;
-            if (text.endsWith("\n")) 
+            if (text.endsWith("\n"))
               text = text.substring(0, text.length() - 1);
             appendText("\n" + text);
           }
@@ -595,5 +594,5 @@ public class ConsolePanel extends ModulePanel
   {
     int caretPosition = inputTextPane.getCaretPosition();
     return caretPosition >= position;
-  }  
+  }
 }

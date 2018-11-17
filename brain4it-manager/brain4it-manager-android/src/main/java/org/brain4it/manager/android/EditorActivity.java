@@ -118,8 +118,8 @@ public class EditorActivity extends ModuleActivity
 
     inputText.setTextSize(TypedValue.COMPLEX_UNIT_SP, textSize);
     inputText.getAutoIndenter().setIndentSize(indentSize);
-    formatter.setMaxColumns(formatColumns);
-    formatter.setIndentSize(indentSize);
+    formatter.getConfiguration().setMaxColumns(formatColumns);
+    formatter.getConfiguration().setIndentSize(indentSize);
 
     undoManager = new UndoManager(inputText);
     undoButton.setEnabled(false);

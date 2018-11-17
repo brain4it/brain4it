@@ -1,31 +1,31 @@
 /*
  * Brain4it
- * 
+ *
  * Copyright (C) 2018, Ajuntament de Sant Feliu de Llobregat
- * 
- * This program is licensed and may be used, modified and redistributed under 
- * the terms of the European Public License (EUPL), either version 1.1 or (at 
- * your option) any later version as soon as they are approved by the European 
+ *
+ * This program is licensed and may be used, modified and redistributed under
+ * the terms of the European Public License (EUPL), either version 1.1 or (at
+ * your option) any later version as soon as they are approved by the European
  * Commission.
- * 
- * Alternatively, you may redistribute and/or modify this program under the 
- * terms of the GNU Lesser General Public License as published by the Free 
- * Software Foundation; either  version 3 of the License, or (at your option) 
- * any later version. 
- *   
- * Unless required by applicable law or agreed to in writing, software 
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT 
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- *   
- * See the licenses for the specific language governing permissions, limitations 
+ *
+ * Alternatively, you may redistribute and/or modify this program under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either  version 3 of the License, or (at your option)
+ * any later version.
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *
+ * See the licenses for the specific language governing permissions, limitations
  * and more details.
- *   
- * You should have received a copy of the EUPL1.1 and the LGPLv3 licenses along 
- * with this program; if not, you may find them at: 
- *   
+ *
+ * You should have received a copy of the EUPL1.1 and the LGPLv3 licenses along
+ * with this program; if not, you may find them at:
+ *
  *   https://joinup.ec.europa.eu/software/page/eupl/licence-eupl
- *   http://www.gnu.org/licenses/ 
- *   and 
+ *   http://www.gnu.org/licenses/
+ *   and
  *   https://www.gnu.org/licenses/lgpl.txt
  */
 
@@ -87,7 +87,8 @@ public class EditorPanel extends ModulePanel
   private boolean updateFunctions = true;
   private ColoredEditorKit editorKit;
   private CompoundEdit compoundEdit;
-  
+  private Formatter formatter = new Formatter();
+
   /**
    * Creates new form Editor
    */
@@ -97,7 +98,7 @@ public class EditorPanel extends ModulePanel
     initComponents();
     initEditor();
   }
-  
+
   @Override
   public String getPanelType()
   {
@@ -116,12 +117,12 @@ public class EditorPanel extends ModulePanel
     }
     return panelName;
   }
-  
+
   public JTextPane getInputTextPane()
   {
     return inputTextPane;
   }
-  
+
   @SuppressWarnings("unchecked")
   // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
   private void initComponents()
@@ -282,7 +283,7 @@ public class EditorPanel extends ModulePanel
     pathComboBox.getEditor().setItem(path);
     loadData();
   }
-  
+
   public String getCurrentPath()
   {
     String path = (String)pathComboBox.getEditor().getItem();
@@ -291,7 +292,7 @@ public class EditorPanel extends ModulePanel
     if (path.length() == 0) return null;
     return path;
   }
-  
+
   @Override
   public void setModified(boolean modified)
   {
@@ -303,16 +304,16 @@ public class EditorPanel extends ModulePanel
   {
     final String path = getCurrentPath();
     if (path == null) return;
-   
+
     if (isModified())
     {
       int result = JOptionPane.showConfirmDialog(managerApp,
-        managerApp.getLocalizedMessage("Editor.discardChanges"), null, 
+        managerApp.getLocalizedMessage("Editor.discardChanges"), null,
         JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
       if (result == JOptionPane.NO_OPTION) return;
     }
 
-    RestClient restClient = getRestClient();    
+    RestClient restClient = getRestClient();
     restClient.get(module.getName(), path, new Callback()
     {
       @Override
@@ -328,11 +329,11 @@ public class EditorPanel extends ModulePanel
       @Override
       public void onError(RestClient client, Exception ex)
       {
-        managerApp.showError("Editor", ex);          
+        managerApp.showError("Editor", ex);
       }
     });
   }
-  
+
   protected void onReadSuccess(final String path, final String data)
   {
     SwingUtilities.invokeLater(new Runnable()
@@ -342,11 +343,6 @@ public class EditorPanel extends ModulePanel
       {
         try
         {
-          Formatter formatter = new Formatter();
-          int indentSize = ManagerApp.getPreferences().getIndentSize();
-          formatter.setIndentSize(indentSize);
-          int columns = ManagerApp.getPreferences().getFormatColumns();
-          formatter.setMaxColumns(columns);
           replaceText(formatter.format(data));
           addPathToComboBox(path);
           undoManager.discardAllEdits();
@@ -356,18 +352,18 @@ public class EditorPanel extends ModulePanel
           managerApp.updateTab(EditorPanel.this);
         }
         catch (Exception ex)
-        {              
-          managerApp.showError("Editor", ex);                 
+        {
+          managerApp.showError("Editor", ex);
         }
       }
-    });    
+    });
   }
-  
+
   protected void saveData()
   {
     final String path = getCurrentPath();
     if (path == null)
-    { 
+    {
       getManagerApp().showError("Editor", "Enter path before saving.");
       return;
     }
@@ -390,7 +386,7 @@ public class EditorPanel extends ModulePanel
       }
     });
   }
-  
+
   protected void onWriteSuccess(final String path)
   {
     SwingUtilities.invokeLater(new Runnable()
@@ -402,9 +398,9 @@ public class EditorPanel extends ModulePanel
         managerApp.updateTab(EditorPanel.this);
         setModified(false);
       }
-    });    
+    });
   }
-        
+
   private void clearButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_clearButtonActionPerformed
   {//GEN-HEADEREND:event_clearButtonActionPerformed
     inputTextPane.setText("");
@@ -412,7 +408,7 @@ public class EditorPanel extends ModulePanel
 
   private void undoButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_undoButtonActionPerformed
   {//GEN-HEADEREND:event_undoButtonActionPerformed
-    if (undoManager.canUndo()) 
+    if (undoManager.canUndo())
     {
       undoManager.undo();
       updateUndoRedoButtons();
@@ -421,7 +417,7 @@ public class EditorPanel extends ModulePanel
 
   private void redoButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_redoButtonActionPerformed
   {//GEN-HEADEREND:event_redoButtonActionPerformed
-    if (undoManager.canRedo()) 
+    if (undoManager.canRedo())
     {
       undoManager.redo();
       updateUndoRedoButtons();
@@ -431,17 +427,12 @@ public class EditorPanel extends ModulePanel
   private void formatButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_formatButtonActionPerformed
   {//GEN-HEADEREND:event_formatButtonActionPerformed
     String code = inputTextPane.getText();
-    Formatter formatter = new Formatter();
-    int indentSize = ManagerApp.getPreferences().getIndentSize();
-    formatter.setIndentSize(indentSize);
-    int columns = ManagerApp.getPreferences().getFormatColumns();
-    formatter.setMaxColumns(columns);
     try
     {
       replaceText(formatter.format(code));
     }
     catch (Exception ex)
-    {      
+    {
     }
   }//GEN-LAST:event_formatButtonActionPerformed
 
@@ -449,20 +440,20 @@ public class EditorPanel extends ModulePanel
   {//GEN-HEADEREND:event_findButtonActionPerformed
     findText();
   }//GEN-LAST:event_findButtonActionPerformed
-  
+
   protected void findText()
   {
     FindDialog findDialog = managerApp.getFindDialog();
     findDialog.pack();
     findDialog.setLocationRelativeTo(this);
-    findDialog.setVisible(true);    
+    findDialog.setVisible(true);
   }
-  
+
   protected void findFunctions()
   {
     module.findFunctions(null);
   }
-  
+
   @Override
   public void functionsUpdated(ModuleEvent event)
   {
@@ -470,10 +461,10 @@ public class EditorPanel extends ModulePanel
     editorKit.setFunctionNames(functionNames);
     inputTextPane.repaint();
   }
-  
+
   protected void addPathToComboBox(String path)
   {
-    DefaultComboBoxModel model = 
+    DefaultComboBoxModel model =
      (DefaultComboBoxModel<String>)pathComboBox.getModel();
     if (model.getIndexOf(path) == -1)
     {
@@ -482,13 +473,13 @@ public class EditorPanel extends ModulePanel
     pathComboBox.getEditor().setItem(path);
     model.setSelectedItem(path);
   }
- 
+
   private void updateUndoRedoButtons()
   {
     undoButton.setEnabled(undoManager.canUndo());
     redoButton.setEnabled(undoManager.canRedo());
   }
-  
+
   private void replaceText(String text)
   {
     compoundEdit = new CompoundEdit();
@@ -498,7 +489,7 @@ public class EditorPanel extends ModulePanel
     compoundEdit = null;
     setModified(true);
   }
-    
+
   private void initEditor()
   {
     int scalingFactor = ManagerApp.getPreferences().getScalingFactor();
@@ -528,20 +519,24 @@ public class EditorPanel extends ModulePanel
       DefaultEditorKit.EndOfLineStringProperty, "\n");
     lineTracker = new LineTracker(inputTextPane);
     lineTracker.setEnabled(true);
-    matcher = new SymbolMatcher(inputTextPane, 
+    matcher = new SymbolMatcher(inputTextPane,
       IOConstants.OPEN_LIST_TOKEN, IOConstants.CLOSE_LIST_TOKEN);
     matcher.setEnabled(true);
     indenter = new AutoIndenter(inputTextPane);
     int indentSize = ManagerApp.getPreferences().getIndentSize();
     indenter.setIndentSize(indentSize);
     indenter.setEnabled(true);
-    
-    textCompleter = new TextCompleter(module);    
+
+    formatter.getConfiguration().setIndentSize(indentSize);
+    int columns = ManagerApp.getPreferences().getFormatColumns();
+    formatter.getConfiguration().setMaxColumns(columns);
+
+    textCompleter = new TextCompleter(module);
     completer = new AutoCompleter(inputTextPane);
     completer.setTextCompleter(textCompleter);
-    completer.setEnabled(true);    
-    
-    JTextField textField = 
+    completer.setEnabled(true);
+
+    JTextField textField =
       (JTextField)pathComboBox.getEditor().getEditorComponent();
     textField.getDocument().addDocumentListener(new DocumentListener()
     {
@@ -563,8 +558,8 @@ public class EditorPanel extends ModulePanel
         saveButton.setEnabled(true);
       }
     });
-    
-    DefaultComboBoxModel model = 
+
+    DefaultComboBoxModel model =
      (DefaultComboBoxModel<String>)pathComboBox.getModel();
     model.addElement("");
     model.addElement(MODULE_START_VAR);
@@ -572,7 +567,7 @@ public class EditorPanel extends ModulePanel
     model.addElement(MODULE_ACCESS_KEY_VAR);
     model.addElement(MODULE_METADATA_VAR);
     model.addElement(DASHBOARDS_FUNCTION_NAME);
-    
+
     addComponentListener(new ComponentAdapter()
     {
       @Override
@@ -582,7 +577,7 @@ public class EditorPanel extends ModulePanel
         inputTextPane.requestFocus();
       }
     });
-    
+
     undoManager = new UndoManager();
     Document document = inputTextPane.getDocument();
     document.addUndoableEditListener(new UndoableEditListener()
@@ -601,12 +596,12 @@ public class EditorPanel extends ModulePanel
           compoundEdit.addEdit(edit);
         }
         SwingUtilities.invokeLater(new Runnable()
-        { 
+        {
           @Override
           public void run()
           {
             updateUndoRedoButtons();
-          }          
+          }
         });
       }
     });

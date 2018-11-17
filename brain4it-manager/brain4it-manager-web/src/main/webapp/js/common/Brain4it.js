@@ -1406,202 +1406,359 @@ Brain4it.Printer.Cursor.prototype =
 
 /* Formatter class */
 
-Brain4it.Formatter = function(indentSize, maxColumns, notInlineFunctions)
+Brain4it.Formatter = function(configuration)
 {
-  this.indentSize = indentSize || 2;
-  this.maxColumns = maxColumns || 60;
-  this.notInlineFunctions = notInlineFunctions || ["cond", "do", "while", "for"];
+  this.configuration = configuration || new Brain4it.Formatter.Configuration();
+  this.output = null;
+  this.tokenizer = null;
+  this.baseList = null;
+  this.currentList = null;
+  this.indentLevel = 0;
+  this.written = false;
 };
 
 Brain4it.Formatter.prototype =
 {
   format : function(code)
   {
-    var output = [];
-    var tokenizer = new Brain4it.Tokenizer(code);
-    var inlineTokens = [];
-    var inlineLevel = 0;
+    this.output = [];
+    this.tokenizer = new Brain4it.Tokenizer(code);
+    this.baseList = null;
+    this.currentList = null;
+    this.indentLevel = 0;
+    this.written = false;
     var inline = false;
-    var indent = 0;
+    var nameOperator = false;
     var token;
 
     var end = false;
     while (!end)
     {
-      token = tokenizer.readToken();
+      token = this.tokenizer.readToken();
       if (token.type === Brain4it.Token.EOF)
       {
+        if (this.baseList !== null)
+        {
+          this.baseList.print();
+        }
         end = true;
-      }
-      else if (token.type === Brain4it.Token.OPEN_LIST)
-      {
-        inlineTokens.push(token);
-        if (inline)
-        {
-          inlineLevel++;
-        }
-        else
-        {
-          inlineLevel = 1;
-          inline = true;
-        }
-      }
-      else if (token.type === Brain4it.Token.CLOSE_LIST)
-      {
-        if (inline)
-        {
-          inlineTokens.push(token);
-          inlineLevel--;
-          if (inlineLevel === 0)
-          {
-            this.printInline(output, indent, inlineTokens);
-            inlineTokens = [];
-            inline = false;
-          }
-        }
-        else // !inline
-        {
-          indent--;
-          this.print(output, indent, token.text);
-        }
       }
       else if (inline)
       {
-        inlineTokens.push(token);
-        if (this.isIndentRequired(inlineTokens, indent))
+        this.addToken(token);
+        if (this.currentList === null) // closed list
         {
-          for (var i = inlineTokens.length - 1; i >= 0; i--)
+          if (nameOperator)
           {
-            tokenizer.unreadToken(inlineTokens.pop());
-          }
-          this.indent(output, indent);
-          token = tokenizer.readToken();
-          if (token.type === Brain4it.Token.OPEN_LIST)
-          {
-            output.push(token.text);
-            token = tokenizer.readToken();
-            if (token.type === Brain4it.Token.REFERENCE ||
-                token.type === Brain4it.Token.TAG)
-            {
-              output.push(token.text);
-            }
-            else
-            {
-              tokenizer.unreadToken(token);
-            }
-            indent++;
+            this.printSpace();
           }
           else
           {
-            output.push(token.text); // name
-            output.push(' ');
-            token = tokenizer.readToken();
-            output.push(token.text); // arrow operator
+            this.nextLine();
           }
-          output.push('\n');
+          this.baseList.print();
+          this.baseList = null;
           inline = false;
+          nameOperator = false;
+        }
+        else if (this.baseList.isTooLarge() || this.baseList.isBreakRequired())
+        {
+          this.baseList.releaseExcedent();
+          this.nextLine();
+          this.baseList.print();
+          this.baseList = null;
+          this.currentList = null;
+          this.indentLevel++;
+          inline = false;
+          nameOperator = false;
         }
       }
       else // !inline
       {
-        var nextToken = tokenizer.readToken();
-        if (nextToken.type === Brain4it.Token.NAME_OPERATOR)
+        if (token.type === Brain4it.Token.OPEN_LIST)
         {
-          var nextNextToken = tokenizer.readToken();
-          if (nextNextToken.type !== Brain4it.Token.OPEN_LIST)
-          {
-            // nextNextToken is a literal or reference
-            this.print(output, indent, token.text + " " +
-              nextToken.text + " " + nextNextToken.text);
-          }
-          else
-          {
-            // nextNextToken is a list
-            inline = true;
-            inlineLevel = 1;
-            inlineTokens.push(token);
-            inlineTokens.push(nextToken);
-            inlineTokens.push(nextNextToken);
-          }
+          this.baseList = new Brain4it.Formatter.TokenList(this, token);
+          this.currentList = this.baseList;
+          inline = true;
+        }
+        else if (token.type === Brain4it.Token.CLOSE_LIST)
+        {
+          this.indentLevel--;
+          this.nextLine();
+          this.printToken(token);
+        }
+        else if (token.type === Brain4it.Token.NAME_OPERATOR)
+        {
+          this.printSpace();
+          this.printToken(token);
+          nameOperator = true;
         }
         else
         {
-          this.print(output, indent, token.text);
-          tokenizer.unreadToken(nextToken);
+          if (nameOperator)
+          {
+            this.printSpace();
+            nameOperator = false;
+          }
+          else
+          {
+            this.nextLine();
+          }
+          this.printToken(token);
         }
       }
     }
-    if (inlineTokens.length > 0)
-    {
-      this.printInline(output, indent, inlineTokens);
-    }
-    return output.join("");
+    return this.output.join("");
   },
 
-  printInline : function(output, indent, tokens)
+  addToken : function(token)
   {
-    this.indent(output, indent);
-    for (var i = 0; i < tokens.length; i++)
+    if (token.type === Brain4it.Token.OPEN_LIST)
     {
-      if (i > 0 && tokens[i - 1].type !== Brain4it.Token.OPEN_LIST &&
-          tokens[i].type !== Brain4it.Token.CLOSE_LIST)
+      var tokenList =
+        new Brain4it.Formatter.TokenList(this, token, this.currentList);
+      this.currentList.add(tokenList);
+      this.currentList = tokenList;
+    }
+    else if (token.type === Brain4it.Token.CLOSE_LIST)
+    {
+      this.currentList.add(token);
+      this.currentList = this.currentList.parent;
+    }
+    else
+    {
+      this.currentList.add(token);
+    }
+  },
+
+  nextLine : function()
+  {
+    if (this.written)
+    {
+      this.printCR();
+      for (var i = 0; i < this.indentLevel; i++)
       {
-        output.push(' ');
+        this.printIndent(this.configuration.indentSize);
       }
-      output.push(tokens[i].text);
     }
-    output.push('\n');
   },
 
-  print : function(output, indent, text)
+  printToken : function(token)
   {
-    this.indent(output, indent);
-    output.push(text);
-    output.push('\n');
+    this.output.push(token.text);
+    this.written = true;
   },
 
-  indent : function(output, indent)
+  printCR : function()
   {
-    var k = indent * this.indentSize;
-    for (var i = 0; i < k; i++)
+    this.output.push('\n');
+  },
+
+  printIndent : function(indentSize)
+  {
+    for (var i = 0; i < indentSize; i++)
     {
-      output.push(' ');
+      this.output.push(' ');
     }
   },
 
-  isIndentRequired : function(inlineTokens, indent)
+  printSpace : function()
   {
-    if (this.containsNotInlineFunction(inlineTokens)) return true;
-
-    var column = indent * this.indentSize;
-    for (var i = 0; i < inlineTokens.length; i++)
-    {
-      if (i > 0 &&
-          inlineTokens[i - 1].type !== Brain4it.Token.OPEN_LIST &&
-          inlineTokens[i].type !== Brain4it.Token.CLOSE_LIST)
-      {
-        column++;
-      }
-      column += inlineTokens[i].length();
-    }
-    return column > this.maxColumns;
-  },
-
-  containsNotInlineFunction : function(inlineTokens)
-  {
-    var inline = true;
-    var i = inlineTokens.length - 1;
-    while (i >= 0 && inline)
-    {
-      var token = inlineTokens[i];
-      if (token.type === Brain4it.Token.REFERENCE)
-      {
-        inline = this.notInlineFunctions.indexOf(token.text) === -1;
-      }
-      i--;
-    }
-    return !inline;
+    this.output.push(' ');
   }
+};
+
+Brain4it.Formatter.TokenList = function(formatter, openToken, parent)
+{
+  this.formatter = formatter;
+  this.elements = [openToken];
+  this.parent = parent || null;
+};
+
+Brain4it.Formatter.TokenList.prototype =
+{
+  isBreakRequired : function()
+  {
+    var configuration = this.formatter.configuration;
+    var functionName = this.getFunctionName();
+    if (functionName === null) return false;
+    if (configuration.notInlineFunctions.indexOf(functionName) === -1)
+      return false;
+
+    var arguments = configuration.inlineArguments[functionName];
+    if (arguments === undefined) return true;
+
+    return this.getCompletedArguments() >= arguments;
+  },
+
+  isTooLarge : function()
+  {
+    var configuration = this.formatter.configuration;
+    return this.getLength() > configuration.maxColumns;
+  },
+
+  releaseExcedent : function()
+  {
+    var configuration = this.formatter.configuration;
+    var functionName = this.getFunctionName();
+    if (functionName === null)
+    {
+      this.unreadTokens(1);
+    }
+    else
+    {
+      var arguments = configuration.inlineArguments[functionName];
+      if (arguments === undefined)
+      {
+        this.unreadTokens(2);
+      }
+      else
+      {
+        var count = arguments + 2;
+        if (this.formatter.baseList.getLength(count) < configuration.maxColumns)
+        {
+          this.unreadTokens(count);
+        }
+        else
+        {
+          this.unreadTokens(2);
+        }
+      }
+    }
+  },
+
+  add : function(elem)
+  {
+    this.elements.push(elem);
+  },
+
+  unreadTokens : function(tokensLeft)
+  {
+    for (var i = this.elements.length - 1; i >= tokensLeft; i--)
+    {
+      var elem = this.elements[i];
+      if (elem instanceof Brain4it.Token)
+      {
+        var token = elem;
+        this.formatter.tokenizer.unreadToken(token);
+      }
+      else // TokenList
+      {
+        var tokenList = elem;
+        tokenList.unreadTokens(0);
+      }
+      this.elements.pop();
+    }
+  },
+
+  isClosed : function()
+  {
+    var size = this.elements.length;
+    var last = this.elements[size - 1];
+    if (last instanceof Brain4it.Token)
+    {
+      var token = last;
+      return token.type === Brain4it.Token.CLOSE_LIST;
+    }
+    return false;
+  },
+
+  getCompletedArguments : function()
+  {
+    var size = this.elements.length;
+    var last = this.elements[size - 1];
+    if (last instanceof Brain4it.Token)
+    {
+      var token = last;
+      return token.type === Brain4it.Token.CLOSE_LIST ? size - 3 : size - 2;
+    }
+    else // TokenList
+    {
+      var tokenList = last;
+      return tokenList.isClosed() ? size - 2 : size - 3;
+    }
+  },
+
+  getLength : function(count)
+  {
+    count = count || this.elements.length;
+
+    var length = 0;
+    for (var i = 0; i < count; i++)
+    {
+      var elem = this.elements[i];
+      if (i > 1 &&
+        !(elem instanceof Brain4it.Token &&
+          elem.type === Brain4it.Token.CLOSE_LIST))
+      {
+        length++; // space
+      }
+      if (elem instanceof Brain4it.Token)
+      {
+        var token = elem;
+        length += token.length();
+      }
+      else // TokenList
+      {
+        var tokenList = elem;
+        length += tokenList.getLength();
+      }
+    }
+    return length;
+  },
+
+  print : function()
+  {
+    for (var i = 0; i < this.elements.length; i++)
+    {
+      var elem = this.elements[i];
+      if (i > 1 &&
+        !(elem instanceof Brain4it.Token &&
+          elem.type === Brain4it.Token.CLOSE_LIST))
+      {
+        this.formatter.printSpace();
+      }
+      if (elem instanceof Brain4it.Token)
+      {
+        var token = elem;
+        this.formatter.printToken(token);
+      }
+      else // TokenList
+      {
+        var tokenList = elem;
+        tokenList.print();
+      }
+    }
+  },
+
+  getFunctionName : function()
+  {
+    if (this.elements.length < 2) return null;
+    var elem = this.elements[1];
+    if (!(elem instanceof Brain4it.Token)) return null;
+    var token = elem;
+    if (token.type !== Brain4it.Token.REFERENCE) return null;
+    return token.text;
+  }
+};
+
+Brain4it.Formatter.Configuration = function(indentSize, maxColumns,
+  notInlineFunctions, inlineArguments)
+{
+  this.indentSize = indentSize || 2;
+  this.maxColumns = maxColumns || 60;
+  this.notInlineFunctions = notInlineFunctions ||
+    ["do", "cond", "for", "while"];
+  this.inlineArguments = inlineArguments ||
+  {
+    "function" : 1,
+    "if" : 1,
+    "set" : 1,
+    "while" : 1,
+    "for" : 3,
+    "for-each" : 2,
+    "apply" : 2
+  };
 };
 
 
@@ -1730,7 +1887,7 @@ Brain4it.Monitor.prototype =
   {
     this.listeners = {};
     var watchRequest = this.watchRequest;
-    if (watchRequest.readyState > 0) 
+    if (watchRequest.readyState > 0)
     {
       watchRequest.abort();
       this.sendUnwatchRequest();
@@ -1742,7 +1899,7 @@ Brain4it.Monitor.prototype =
     var scope = this;
     var watchRequest = this.watchRequest;
 
-    if (watchRequest.readyState > 0) 
+    if (watchRequest.readyState > 0)
     {
       // cancel previous request
       watchRequest.abort();
@@ -1767,7 +1924,7 @@ Brain4it.Monitor.prototype =
         pollingInterval = this.pollingInterval;
       }
     }
-    watchRequest.setRequestHeader(Brain4it.MONITOR_HEADER, 
+    watchRequest.setRequestHeader(Brain4it.MONITOR_HEADER,
       String(pollingInterval));
     if (this.accessKey)
     {
@@ -1803,7 +1960,7 @@ Brain4it.Monitor.prototype =
     console.info(functionNames);
     watchRequest.send(functionNames);
   },
-  
+
   sendUnwatchRequest : function()
   {
     if (this.monitorSessionId)
@@ -1859,7 +2016,7 @@ Brain4it.Invoker = function(client, moduleName)
   this.client = client;
   this.moduleName = moduleName;
   this.queue = [];
-  this.sending = false;  
+  this.sending = false;
 };
 
 Brain4it.Invoker.prototype =
@@ -1890,14 +2047,14 @@ Brain4it.Invoker.prototype =
       // add new call to queue
       var call =
       {
-        functionName: functionName, 
-        value: value, 
+        functionName: functionName,
+        value: value,
         callback : callback
       };
       this.queue.push(call);
     }
     this.internalInvoke();
-    return !found;    
+    return !found;
   },
 
   internalInvoke : function()
@@ -1931,7 +2088,7 @@ Brain4it.Invoker.prototype =
         scope.sending = false;
         scope.internalInvoke();
       };
-      scope.sending = true; 
+      scope.sending = true;
       client.send(valueString);
     }
   }
@@ -1972,12 +2129,12 @@ Brain4it.FunctionInvoker.prototype =
       this.internalInvoke();
     }
   },
-  
+
   isSending : function()
   {
     return this.sending > 0 || this.nextValue !== null;
   },
-    
+
   updateInvokeTime : function(serverTime)
   {
     if (serverTime > this.invokeTime)
@@ -1987,26 +2144,26 @@ Brain4it.FunctionInvoker.prototype =
     }
     return false;
   },
-  
+
   internalInvoke : function()
   {
     if (this.timerId) return; // internalInvoke will be called soon by timer
-    
+
     if (this.nextValue === null) return;
-    
+
     var value = this.nextValue;
     this.nextValue = null;
-    
+
     if (this.invoker.invoke(this.functionName, value, true, this.callback))
     {
       this.sending++;
     }
 
     var scope = this;
-    this.timerId = setTimeout(function() 
+    this.timerId = setTimeout(function()
     {
-      scope.timerId = null; 
-      scope.internalInvoke(); 
+      scope.timerId = null;
+      scope.internalInvoke();
     }, this.invokeInterval);
   }
 };

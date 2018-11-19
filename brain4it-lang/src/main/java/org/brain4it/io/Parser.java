@@ -125,7 +125,7 @@ public class Parser
           throw new ParseException("Missing name", token.getStartPosition());
 
         Object nameObject = currentList.remove(currentList.size() - 1);
-        name = nameObject.toString();
+        name = String.valueOf(nameObject);
       }
       else if (token.isType(Token.TAG))
       {

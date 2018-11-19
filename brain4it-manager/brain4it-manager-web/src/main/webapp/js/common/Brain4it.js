@@ -1415,6 +1415,7 @@ Brain4it.Formatter = function(configuration)
   this.currentList = null;
   this.indentLevel = 0;
   this.written = false;
+  this.name = null;
 };
 
 Brain4it.Formatter.prototype =
@@ -1427,8 +1428,8 @@ Brain4it.Formatter.prototype =
     this.currentList = null;
     this.indentLevel = 0;
     this.written = false;
+    this.name = null;
     var inline = false;
-    var nameOperator = false;
     var token;
 
     var end = false;
@@ -1448,32 +1449,38 @@ Brain4it.Formatter.prototype =
         this.addToken(token);
         if (this.currentList === null) // closed list
         {
-          if (nameOperator)
-          {
-            this.printSpace();
-          }
-          else
+          if (this.name === null)
           {
             this.nextLine();
           }
+          else
+          {
+            this.printSpace();
+          }
           this.baseList.print();
           this.baseList = null;
+          this.name = null;
           inline = false;
-          nameOperator = false;
         }
-        else if (this.baseList.isTooLarge() || this.baseList.isBreakRequired())
+        else if (this.isBreakRequired())
         {
-          this.baseList.releaseExcedent();
-          this.nextLine();
-          this.baseList.print();
-          this.baseList = null;
-          this.currentList = null;
-          this.indentLevel++;
-          inline = false;
-          nameOperator = false;
+          if (this.name === null)
+          {
+            this.baseList.releaseExcedent();
+            this.nextLine();
+            this.baseList.print();
+            this.baseList = null;
+            this.currentList = null;
+            this.indentLevel++;
+            inline = false;
+          }
+          else
+          {
+            this.name = null; // try to put list in next line
+          }
         }
       }
-      else // !inline
+      else // !inline: tokens in vertical
       {
         if (token.type === Brain4it.Token.OPEN_LIST)
         {
@@ -1487,24 +1494,35 @@ Brain4it.Formatter.prototype =
           this.nextLine();
           this.printToken(token);
         }
-        else if (token.type === Brain4it.Token.NAME_OPERATOR)
-        {
-          this.printSpace();
-          this.printToken(token);
-          nameOperator = true;
-        }
         else
         {
-          if (nameOperator)
-          {
-            this.printSpace();
-            nameOperator = false;
-          }
-          else
-          {
-            this.nextLine();
-          }
+          this.nextLine();
           this.printToken(token);
+          var nextToken = this.tokenizer.readToken();
+          if (nextToken.type === Brain4it.Token.NAME_OPERATOR)
+          {
+            this.name = String(token.text);
+            this.printSpace();
+            this.printToken(nextToken); // name operator
+            var nextNextToken = this.tokenizer.readToken();
+            if (nextNextToken.type !== Brain4it.Token.OPEN_LIST && 
+                nextNextToken.type !== Brain4it.Token.EOF)
+            {
+              if (this.getCurrentColumn() + 1 + nextNextToken.length() > 
+                  this.configuration.maxColumns)
+              {
+                this.nextLine();
+              }
+              else
+              {
+                this.printSpace();
+              }
+              this.printToken(nextNextToken);
+              this.name = null;
+            }
+            else this.tokenizer.unreadToken(nextNextToken);
+          }
+          else this.tokenizer.unreadToken(nextToken);          
         }
       }
     }
@@ -1529,6 +1547,35 @@ Brain4it.Formatter.prototype =
     {
       this.currentList.add(token);
     }
+  },
+
+  getCurrentColumn : function()
+  {
+    var column = this.indentLevel * this.configuration.indentSize;
+    if (this.name !== null)
+      column += this.name.length + Brain4it.NAME_OPERATOR_TOKEN.length + 2;
+    return column;
+  },
+  
+  isBreakRequired : function()
+  {
+    var configuration = this.configuration;
+
+    // check is maxColumn is exceeded
+    if (this.getCurrentColumn() + this.baseList.getLength() > 
+       configuration.maxColumns)
+       return true;
+    
+    // check if function is not inline
+    var functionName = this.baseList.getFunctionName();
+    if (functionName === null) return false;
+    if (configuration.notInlineFunctions.indexOf(functionName) === -1)
+      return false;
+
+    var arguments = configuration.inlineArguments[functionName];
+    if (arguments === undefined) return true;
+
+    return this.baseList.getCompletedArguments() >= arguments;
   },
 
   nextLine : function()
@@ -1577,26 +1624,6 @@ Brain4it.Formatter.TokenList = function(formatter, openToken, parent)
 
 Brain4it.Formatter.TokenList.prototype =
 {
-  isBreakRequired : function()
-  {
-    var configuration = this.formatter.configuration;
-    var functionName = this.getFunctionName();
-    if (functionName === null) return false;
-    if (configuration.notInlineFunctions.indexOf(functionName) === -1)
-      return false;
-
-    var arguments = configuration.inlineArguments[functionName];
-    if (arguments === undefined) return true;
-
-    return this.getCompletedArguments() >= arguments;
-  },
-
-  isTooLarge : function()
-  {
-    var configuration = this.formatter.configuration;
-    return this.getLength() > configuration.maxColumns;
-  },
-
   releaseExcedent : function()
   {
     var configuration = this.formatter.configuration;
@@ -1614,14 +1641,21 @@ Brain4it.Formatter.TokenList.prototype =
       }
       else
       {
-        var count = arguments + 2;
-        if (this.formatter.baseList.getLength(count) < configuration.maxColumns)
-        {
-          this.unreadTokens(count);
+        if (this.getCompletedArguments() >= arguments)
+        {        
+          var count = arguments + 2;
+          if (this.getLength(count) < configuration.maxColumns)
+          {
+            this.unreadTokens(count);
+          }
+          else
+          {
+            this.unreadTokens(2);
+          }
         }
         else
         {
-          this.unreadTokens(2);
+          this.unreadTokens(2);          
         }
       }
     }

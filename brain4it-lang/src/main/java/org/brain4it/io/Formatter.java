@@ -55,6 +55,7 @@ public class Formatter
   protected TokenList currentList;
   protected int indentLevel;
   protected boolean written;
+  protected String name;
 
   public Formatter()
   {
@@ -95,8 +96,8 @@ public class Formatter
     this.currentList = null;
     this.indentLevel = 0;
     this.written = false;
+    this.name = null;
     boolean inline = false;
-    boolean nameOperator = false;
     Token token;
 
     boolean end = false;
@@ -116,32 +117,38 @@ public class Formatter
         addToken(token);
         if (currentList == null) // closed list
         {
-          if (nameOperator)
-          {
-            printSpace();
-          }
-          else
+          if (name == null)
           {
             nextLine();
           }
+          else
+          {
+            printSpace();
+          }
           baseList.print();
           baseList = null;
+          name = null;
           inline = false;
-          nameOperator = false;
         }
-        else if (baseList.isTooLarge() || baseList.isBreakRequired())
+        else if (isBreakRequired())
         {
-          baseList.releaseExcedent();
-          nextLine();
-          baseList.print();
-          baseList = null;
-          currentList = null;
-          indentLevel++;
-          inline = false;
-          nameOperator = false;
+          if (name == null)
+          {
+            baseList.releaseExcedent();
+            nextLine();
+            baseList.print();
+            baseList = null;
+            currentList = null;
+            indentLevel++;
+            inline = false;
+          }
+          else
+          {
+            name = null; // try to put list in next line
+          }
         }
       }
-      else // !inline
+      else // !inline: tokens in vertical
       {
         if (token.isType(Token.OPEN_LIST))
         {
@@ -155,24 +162,35 @@ public class Formatter
           nextLine();
           printToken(token);
         }
-        else if (token.isType(Token.NAME_OPERATOR))
-        {
-          printSpace();
-          printToken(token);
-          nameOperator = true;
-        }
         else
         {
-          if (nameOperator)
-          {
-            printSpace();
-            nameOperator = false;
-          }
-          else
-          {
-            nextLine();
-          }
+          nextLine();
           printToken(token);
+          Token nextToken = tokenizer.readToken();
+          if (nextToken.isType(Token.NAME_OPERATOR))
+          {
+            name = String.valueOf(token.getText());
+            printSpace();
+            printToken(nextToken); // name operator
+            Token nextNextToken = tokenizer.readToken();
+            if (!nextNextToken.isType(Token.OPEN_LIST) &&
+                !nextNextToken.isType(Token.EOF))
+            {
+              if (getCurrentColumn() + 1 + nextNextToken.getLength() >
+                  configuration.maxColumns)
+              {
+                nextLine();
+              }
+              else
+              {
+                printSpace();
+              }
+              printToken(nextNextToken);
+              name = null;
+            }
+            else tokenizer.unreadToken(nextNextToken);
+          }
+          else tokenizer.unreadToken(nextToken);
         }
       }
     }
@@ -195,6 +213,31 @@ public class Formatter
     {
       currentList.add(token);
     }
+  }
+
+  int getCurrentColumn()
+  {
+    int column = indentLevel * configuration.indentSize;
+    if (name != null)
+      column += name.length() + IOConstants.NAME_OPERATOR_TOKEN.length() + 2;
+    return column;
+  }
+
+  boolean isBreakRequired()
+  {
+    // check is maxColumn is exceeded
+    if (getCurrentColumn() + baseList.getLength() > configuration.maxColumns)
+      return true;
+
+    // check if function is not inline
+    String functionName = baseList.getFunctionName();
+    if (!configuration.notInlineFunctions.contains(functionName))
+      return false;
+
+    Integer arguments = configuration.inlineArguments.get(functionName);
+    if (arguments == null) return true;
+
+    return baseList.getCompletedArguments() >= arguments;
   }
 
   void nextLine() throws IOException
@@ -254,23 +297,6 @@ public class Formatter
       elements.add(openToken);
     }
 
-    protected boolean isBreakRequired()
-    {
-      String functionName = getFunctionName();
-      if (!configuration.notInlineFunctions.contains(functionName))
-        return false;
-
-      Integer arguments = configuration.inlineArguments.get(functionName);
-      if (arguments == null) return true;
-
-      return getCompletedArguments() >= arguments;
-    }
-
-    protected boolean isTooLarge()
-    {
-      return getLength() > configuration.maxColumns;
-    }
-
     protected void releaseExcedent()
     {
       String functionName = getFunctionName();
@@ -287,10 +313,18 @@ public class Formatter
         }
         else
         {
-          int count = arguments + 2;
-          if (baseList.getLength(count) < configuration.maxColumns)
+          if (getCompletedArguments() >= arguments)
           {
-            unreadTokens(count);
+            int count = arguments + 2;
+            if (getCurrentColumn() + 1 + getLength(count) <
+                configuration.maxColumns)
+            {
+              unreadTokens(count);
+            }
+            else
+            {
+              unreadTokens(2);
+            }
           }
           else
           {
@@ -446,11 +480,27 @@ public class Formatter
       inlineArguments.put("apply", 2);
     }
 
+    /**
+     * Gets the set of functions that can not be showed inline (a single line).
+     *
+     * When formatting these functions, the open and close parenthesis are
+     * always located in the same column.
+     *
+     * @return the set of inline functions
+     */
     public Set<String> getNotInlineFunctions()
     {
       return notInlineFunctions;
     }
 
+    /**
+     * Gets the map that indicates the number of arguments that can
+     * be showed inline for each function.
+     *
+     * These arguments are showed in the first line of the function.
+     *
+     * @return the map of (function, arguments)
+     */
     public HashMap<String, Integer> getInlineArguments()
     {
       return inlineArguments;
@@ -482,7 +532,17 @@ public class Formatter
     try
     {
       Formatter formatter = new Formatter();
-      System.out.println(formatter.format("8 (do 5 6) (* 5 6)"));
+      formatter.getConfiguration().setMaxColumns(40);
+      System.out.println(formatter.format("(\n" +
+"  \"Multiply numbers\"\n" +
+"  (if\n" +
+"    (and\n" +
+"      (= (type-of y?) \"number\")\n" +
+"      (= (type-of y?) \"number\")\n" +
+"    )\n" +
+"    false\n" +
+"  )\n" +
+")"));
     }
     catch (Exception ex)
     {

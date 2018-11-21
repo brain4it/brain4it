@@ -40,6 +40,8 @@ public class HTMLFormatter extends Formatter
 {
   public static final String HARD_REFERENCE_CLASS = "hard_reference";
   public static final String COMMENT_CLASS = "comment";
+  // prefix to consider reference as soft. This prefix is never shown.
+  public static final String SOFT_REFERENCE_PREFIX = "%soft_";
   protected boolean highlightFunctions = true;
   protected boolean lastOpenList;
 
@@ -84,6 +86,10 @@ public class HTMLFormatter extends Formatter
     else
     {
       className = type.toLowerCase();
+    }
+    if (value.startsWith(SOFT_REFERENCE_PREFIX))
+    {
+      value = value.substring(SOFT_REFERENCE_PREFIX.length());
     }
     writer.write("<span class=\"");
     writer.write(className);

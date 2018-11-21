@@ -526,26 +526,4 @@ public class Formatter
       this.maxColumns = maxColumns;
     }
   }
-
-  public static void main(String[] args)
-  {
-    try
-    {
-      Formatter formatter = new Formatter();
-      formatter.getConfiguration().setMaxColumns(40);
-      System.out.println(formatter.format("(\n" +
-"  \"Multiply numbers\"\n" +
-"  (if\n" +
-"    (and\n" +
-"      (= (type-of y?) \"number\")\n" +
-"      (= (type-of y?) \"number\")\n" +
-"    )\n" +
-"    false\n" +
-"  )\n" +
-")"));
-    }
-    catch (Exception ex)
-    {
-    }
-  }
 }

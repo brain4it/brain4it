@@ -1,31 +1,31 @@
 /*
  * Brain4it
- * 
+ *
  * Copyright (C) 2018, Ajuntament de Sant Feliu de Llobregat
- * 
- * This program is licensed and may be used, modified and redistributed under 
- * the terms of the European Public License (EUPL), either version 1.1 or (at 
- * your option) any later version as soon as they are approved by the European 
+ *
+ * This program is licensed and may be used, modified and redistributed under
+ * the terms of the European Public License (EUPL), either version 1.1 or (at
+ * your option) any later version as soon as they are approved by the European
  * Commission.
- * 
- * Alternatively, you may redistribute and/or modify this program under the 
- * terms of the GNU Lesser General Public License as published by the Free 
- * Software Foundation; either  version 3 of the License, or (at your option) 
- * any later version. 
- *   
- * Unless required by applicable law or agreed to in writing, software 
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT 
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- *   
- * See the licenses for the specific language governing permissions, limitations 
+ *
+ * Alternatively, you may redistribute and/or modify this program under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either  version 3 of the License, or (at your option)
+ * any later version.
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *
+ * See the licenses for the specific language governing permissions, limitations
  * and more details.
- *   
- * You should have received a copy of the EUPL1.1 and the LGPLv3 licenses along 
- * with this program; if not, you may find them at: 
- *   
+ *
+ * You should have received a copy of the EUPL1.1 and the LGPLv3 licenses along
+ * with this program; if not, you may find them at:
+ *
  *   https://joinup.ec.europa.eu/software/page/eupl/licence-eupl
- *   http://www.gnu.org/licenses/ 
- *   and 
+ *   http://www.gnu.org/licenses/
+ *   and
  *   https://www.gnu.org/licenses/lgpl.txt
  */
 
@@ -119,7 +119,7 @@ public abstract class HelpPrinter
   public void printLibrary(Class<? extends Library> libraryClass)
     throws IOException, ParseException
   {
-    List<BList> helpList = HelpBuilder.buildHelp(libraryClass, locale);
+    List<BList> helpList = LibraryHelpBuilder.buildHelp(libraryClass, locale);
     sortLibraryFunctions(helpList);
 
     beginBlock(0, LIBRARY, getLocalizedText(LIBRARY),
@@ -128,7 +128,7 @@ public abstract class HelpPrinter
     printLibraryfunctions(helpList);
     endBlock(0, LIBRARY);
   }
-  
+
   protected void sortLibraryFunctions(List<BList> helpList)
   {
     Collections.sort(helpList, new Comparator<BList>()
@@ -194,7 +194,7 @@ public abstract class HelpPrinter
     {
       printDescription(description);
     }
-    
+
     BList exceptions = (BList)help.get(HelpBuilder.EXCEPTIONS);
     if (exceptions != null)
     {
@@ -206,7 +206,7 @@ public abstract class HelpPrinter
     {
       printExamples(examples);
     }
-    
+
     BList related = (BList)help.get(HelpBuilder.RELATED);
     if (related != null)
     {
@@ -232,7 +232,7 @@ public abstract class HelpPrinter
     endBlock(3, USAGE);
   }
 
-  protected void printReturns(String functionName, BList help) 
+  protected void printReturns(String functionName, BList help)
     throws IOException
   {
     beginBlock(3, RETURNS, getLocalizedText(RETURNS), help);
@@ -274,7 +274,7 @@ public abstract class HelpPrinter
     }
     else
     {
-      argumentType = transformDefinitionCode(argumentType, where);      
+      argumentType = transformDefinitionCode(argumentType, where);
       printCode(argumentType);
     }
     String minOcurrs = Utils.toString(argument.get(1));
@@ -301,7 +301,7 @@ public abstract class HelpPrinter
     }
     endBlock(3, EXCEPTIONS);
   }
-  
+
   protected void printException(BList exception)
   {
     beginBlock(4, EXCEPTION, getLocalizedText(EXCEPTION), exception);
@@ -314,7 +314,7 @@ public abstract class HelpPrinter
     }
     endBlock(4, EXCEPTION);
   }
-  
+
   protected void printDescription(String description)
     throws IOException
   {
@@ -337,7 +337,7 @@ public abstract class HelpPrinter
   {
     beginBlock(4, EXAMPLE, getLocalizedText(EXAMPLE), example);
 
-    Object code = example.get(0);    
+    Object code = example.get(0);
     beginBlock(5, EXAMPLE_INPUT, getLocalizedText(EXAMPLE_INPUT), code);
     printCode(code, true);
     endBlock(5, EXAMPLE_INPUT);
@@ -351,7 +351,7 @@ public abstract class HelpPrinter
     }
     endBlock(4, EXAMPLE);
   }
-  
+
   protected void printRelated(BList related) throws IOException
   {
     beginBlock(3, RELATED, getLocalizedText(RELATED), related);
@@ -362,14 +362,14 @@ public abstract class HelpPrinter
     }
     endBlock(3, RELATED);
   }
-  
-  protected void printRelatedFunction(int index, String functionName) 
+
+  protected void printRelatedFunction(int index, String functionName)
     throws IOException
   {
     if (index > 0) printText(", ");
     printCodeText(functionName);
   }
-  
+
   protected String getLocalizedText(String text)
   {
     return helpBundle.getString(text);
@@ -380,7 +380,7 @@ public abstract class HelpPrinter
     BList parameters = (BList)help.get(1);
     return Utils.toString(parameters.get(0));
   }
-  
+
   protected Object transformDefinitionCode(Object code, BList where)
   {
     if (code instanceof BList)
@@ -417,7 +417,7 @@ public abstract class HelpPrinter
         }
         else
         {
-          transformed.add(elem);          
+          transformed.add(elem);
         }
         String name = list.getName(i);
         transformed.putName(i, name);
@@ -426,17 +426,17 @@ public abstract class HelpPrinter
     }
     return code;
   }
-  
+
   protected void printCode(Object code)
   {
     printCode(code, false);
   }
-  
+
   protected void printCode(Object code, boolean hilighFunctions)
   {
     printCodeText(Printer.toString(code));
   }
-  
+
   protected void printCodeText(String code)
   {
     printText(code);

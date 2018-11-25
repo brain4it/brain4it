@@ -1447,7 +1447,7 @@ Brain4it.Formatter.prototype =
       else if (inline)
       {
         this.addToken(token);
-        if (this.currentList === null) // closed list
+        if (this.currentList === null) // baseList closed
         {
           if (this.name === null)
           {
@@ -1464,7 +1464,9 @@ Brain4it.Formatter.prototype =
         }
         else if (this.isBreakRequired())
         {
-          if (this.name === null)
+          if (this.name === null ||
+              this.indentLevel * this.configuration.indentSize + 
+              this.baseList.getLength() > this.configuration.maxColumns)
           {
             this.baseList.releaseExcedent();
             this.nextLine();
@@ -1474,10 +1476,8 @@ Brain4it.Formatter.prototype =
             this.indentLevel++;
             inline = false;
           }
-          else
-          {
-            this.name = null; // try to put list in next line
-          }
+          // else try to print baseList inline in the next line          
+          this.name = null;
         }
       }
       else // !inline: tokens in vertical
@@ -1772,6 +1772,15 @@ Brain4it.Formatter.TokenList.prototype =
     if (!(elem instanceof Brain4it.Token)) return null;
     var token = elem;
     if (token.type !== Brain4it.Token.REFERENCE) return null;
+    if (this.elements.length >= 3) // test reference is not a name
+    {
+      elem = this.elements[2];
+      if (elem instanceof Brain4it.Token)
+      {
+        var token2 = elem;
+        if (token2.type === Brain4it.Token.NAME_OPERATOR) return null;
+      }
+    }
     return token.text;
   }
 };
@@ -1782,16 +1791,19 @@ Brain4it.Formatter.Configuration = function(indentSize, maxColumns,
   this.indentSize = indentSize || 2;
   this.maxColumns = maxColumns || 60;
   this.notInlineFunctions = notInlineFunctions ||
-    ["do", "cond", "for", "while"];
+    ["do", "cond", "for", "when", "while"];
   this.inlineArguments = inlineArguments ||
   {
     "function" : 1,
     "if" : 1,
     "set" : 1,
+    "when" : 1,
     "while" : 1,
     "for" : 3,
     "for-each" : 2,
-    "apply" : 2
+    "apply" : 2,
+    "find" : 2,
+    "sync" : 1
   };
 };
 

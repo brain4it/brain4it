@@ -115,7 +115,7 @@ public class Formatter
       else if (inline)
       {
         addToken(token);
-        if (currentList == null) // closed list
+        if (currentList == null) // baseList closed
         {
           if (name == null)
           {
@@ -132,7 +132,9 @@ public class Formatter
         }
         else if (isBreakRequired())
         {
-          if (name == null)
+          if (name == null ||
+              indentLevel * configuration.indentSize +
+              baseList.getLength() > configuration.getMaxColumns())
           {
             baseList.releaseExcedent();
             nextLine();
@@ -142,10 +144,8 @@ public class Formatter
             indentLevel++;
             inline = false;
           }
-          else
-          {
-            name = null; // try to put list in next line
-          }
+          // else try to print baseList inline in the next line
+          name = null;
         }
       }
       else // !inline: tokens in vertical
@@ -446,6 +446,15 @@ public class Formatter
       if (!(elem instanceof Token)) return null;
       Token token = (Token)elem;
       if (!token.isType(Token.REFERENCE)) return null;
+      if (elements.size() >= 3) // test reference is not a name
+      {
+        elem = elements.get(2);
+        if (elem instanceof Token)
+        {
+          Token token2 = (Token)elem;
+          if (token2.isType(Token.NAME_OPERATOR)) return null;
+        }
+      }
       return token.getText();
     }
   }
@@ -469,15 +478,19 @@ public class Formatter
       notInlineFunctions.add("do");
       notInlineFunctions.add("cond");
       notInlineFunctions.add("for");
+      notInlineFunctions.add("when");
       notInlineFunctions.add("while");
 
       inlineArguments.put("function", 1);
       inlineArguments.put("if", 1);
       inlineArguments.put("set", 1);
+      inlineArguments.put("when", 1);
       inlineArguments.put("while", 1);
       inlineArguments.put("for", 3);
       inlineArguments.put("for-each", 2);
       inlineArguments.put("apply", 2);
+      inlineArguments.put("find", 2);
+      inlineArguments.put("sync", 1);
     }
 
     /**

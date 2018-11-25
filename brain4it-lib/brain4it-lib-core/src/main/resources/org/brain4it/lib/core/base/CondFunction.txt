@@ -1,10 +1,7 @@
-(Cond (cond condition_actions) result
+(Cond (cond when_clause) null
   where =>
   (
-    condition_actions => ((condition action) 0 N)
-    condition => ("boolean" 1 1)
-    action => ("object" 0 N)
-    result => ("object" 1 1)
+    when_clause => ("object" 0 N)
   )
   examples =>
   (
@@ -13,15 +10,15 @@
         (set a 1)
         (set b 0)
         (cond
-          ((= a 1) (-- b))
-          ((= a 2) (++ b))
-          (true (set b 0))
+          (when (= a 1) (-- b))
+          (when (= a 2) (++ b))
+          (when true (set b 0))
         )
         b
       )
       -1
     )
   )
-  related => (if)
+  related => (when if)
   bundle => "org.brain4it.lib.CoreLibrary"
 )

@@ -35,18 +35,14 @@
 
   (### cond)
   (set a 3)
-  (assert
-    (=
-      (cond
-        ((= a 1) "A")
-        ((= a 2) "B")
-        ((= a 3) "C")
-        ((= a 4) "D")
-        (true "E")
-      )
-      "C"
-    )
+  (cond
+    (when (= a 1) (set b "A"))
+    (when (= a 2) (set b "B"))
+    (when (= a 3) (set b "C"))
+    (when (= a 4) (set b "D"))
+    (when true (set b "E"))
   )
+  (assert (= b "C"))
 
   (### delete)
   (do (set a 89) (delete a) (assert (not (exists a))))
@@ -262,17 +258,27 @@
     (assert (= b 99))
   )
  
-  (### while)
-  (do
-    (set a 0)
-    (set b 0)
-    (while 
-      (< a 5)
-      (++ a)
-      (set b a)
-    )
-    (assert (= b 5))
+  (### when)
+  (set a 0)
+  (when (= a 0)
+    (++ a)
+    (set a (* a 2))
   )
+  (assert (= a 2))
+  (when (= a 1)
+    (set a 5)
+    (set a 0)
+  )
+  (assert (= a 2))
+
+  (### while)
+  (set a 0)
+  (set b 0)
+  (while (< a 5)
+    (++ a)
+    (set b a)
+  )
+  (assert (= b 5))
 
 
   (### "****** Bitwise functions ******")

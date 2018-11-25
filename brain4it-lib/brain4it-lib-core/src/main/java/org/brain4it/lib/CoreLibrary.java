@@ -82,6 +82,7 @@ public class CoreLibrary extends Library
     functions.put("do", new DoFunction());
     functions.put("quote", new QuoteFunction());
     functions.put("eval", new EvalFunction());
+    functions.put("when", new WhenFunction());
     functions.put("while", new WhileFunction());
     functions.put("kill", new KillFunction());
     functions.put("sleep", new SleepFunction());
@@ -243,7 +244,7 @@ public class CoreLibrary extends Library
         taskIdSequence++;
         if (taskIdSequence > Short.MAX_VALUE) taskIdSequence = 0;
       } while (tasks.containsKey(taskIdSequence));
-      
+
       int taskId = taskIdSequence;
       Task task = new Task(taskId, context, userFunction, overlap);
       tasks.put(taskId, task);
@@ -255,7 +256,7 @@ public class CoreLibrary extends Library
   {
     return tasks.get(taskId);
   }
-  
+
   public Task removeTask(int taskId)
   {
     return tasks.remove(taskId);

@@ -39,18 +39,20 @@ import org.brain4it.lang.Utils;
  *
  * @author realor
  */
-public class CondFunction implements Function
+public class WhenFunction implements Function
 {
   @Override
   public Object invoke(Context context, BList args) throws Exception
   {
-    int i = 1;
-    while (i < args.size())
+    Utils.checkArguments(args, 1);
+    if (Utils.toBoolean(context.evaluate(args.get(1))))
     {
-      Object whenClause = args.get(i);
-      if (Utils.toBoolean(context.evaluate(whenClause))) break;
-      i++;
+      for (int i = 2; i < args.size(); i++)
+      {
+        context.evaluate(args.get(i));
+      }
+      return true;
     }
-    return null;
+    return false;
   }
 }

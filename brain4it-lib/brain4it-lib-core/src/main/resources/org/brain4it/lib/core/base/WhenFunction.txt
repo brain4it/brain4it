@@ -1,0 +1,21 @@
+(When (when condition action) result
+  where =>
+  (
+    condition => ("boolean" 1 1)
+    action => ("object" 0 N)
+    result => ("boolean" 1 1)
+  )
+  examples =>
+  (
+    (
+      (when (= element/type "Computer") 
+        (process_elem element) 
+        (save_elem element)
+        (push processed element)
+      )
+      true
+    )
+  )
+  related => (cond if while)
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

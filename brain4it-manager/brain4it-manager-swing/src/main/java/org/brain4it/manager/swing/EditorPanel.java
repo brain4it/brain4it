@@ -87,7 +87,7 @@ public class EditorPanel extends ModulePanel
   private boolean updateFunctions = true;
   private ColoredEditorKit editorKit;
   private CompoundEdit compoundEdit;
-  private Formatter formatter = new Formatter();
+  private final Formatter formatter = new Formatter();
 
   /**
    * Creates new form Editor
@@ -513,7 +513,9 @@ public class EditorPanel extends ModulePanel
         findText();
       }
     });
-    editorKit = new ColoredEditorKit();
+    int indentSize = ManagerApp.getPreferences().getIndentSize();
+
+    editorKit = new ColoredEditorKit(indentSize);
     inputTextPane.setEditorKit(editorKit);
     inputTextPane.getDocument().putProperty(
       DefaultEditorKit.EndOfLineStringProperty, "\n");
@@ -523,7 +525,6 @@ public class EditorPanel extends ModulePanel
       IOConstants.OPEN_LIST_TOKEN, IOConstants.CLOSE_LIST_TOKEN);
     matcher.setEnabled(true);
     indenter = new AutoIndenter(inputTextPane);
-    int indentSize = ManagerApp.getPreferences().getIndentSize();
     indenter.setIndentSize(indentSize);
     indenter.setEnabled(true);
 

@@ -39,14 +39,17 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.ParseException;
 import java.net.ConnectException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.brain4it.io.IOUtils;
 import org.brain4it.io.Parser;
 import org.brain4it.io.Printer;
 import org.brain4it.lang.BList;
+import org.brain4it.lang.Function;
 import org.brain4it.net.SSLUtils;
 import static org.brain4it.server.ServerConstants.*;
 
@@ -65,6 +68,7 @@ public class Monitor
   private String sessionId;
   private int connectionDelay;
   private int pollingInterval;
+  private Map<String, Function> functions = Collections.EMPTY_MAP;
   private final HashMap<String, HashSet<Listener>> listeners;
   private Worker worker;
   private static final Logger LOGGER = Logger.getLogger("Monitor");
@@ -127,6 +131,26 @@ public class Monitor
   public void setPollingInterval(int pollingInterval)
   {
     this.pollingInterval = pollingInterval < 0 ? 0 : pollingInterval;
+  }
+
+  public Map<String, Function> getFunctions()
+  {
+    return functions;
+  }
+
+  public void setFunctions(Map<String, Function> functions)
+  {
+    this.functions = functions;
+  }
+
+  public Worker getWorker()
+  {
+    return worker;
+  }
+
+  public void setWorker(Worker worker)
+  {
+    this.worker = worker;
   }
 
   public synchronized void watch(String functionName, Listener listener)
@@ -289,7 +313,7 @@ public class Monitor
             conn.setDoInput(true);
             conn.setDoOutput(true);
             conn.setRequestMethod("POST");
-            conn.setRequestProperty(MONITOR_HEADER, 
+            conn.setRequestProperty(MONITOR_HEADER,
               String.valueOf(pollingInterval));
             conn.setRequestProperty("Content-Type", BPL_MIMETYPE +
                "; charset=" + BPL_CHARSET);
@@ -348,7 +372,7 @@ public class Monitor
 
       try
       {
-        Object data = Parser.fromString(chunk);
+        Object data = Parser.fromString(chunk, functions);
 
         if (data instanceof BList)
         {

@@ -54,7 +54,7 @@ import static org.brain4it.server.ServerConstants.*;
  * @author realor
  */
 public final class Module extends BList
-{  
+{
   public static final String DEFAULT_SNAPSHOT = "head";
   public static final String SNAPSHOT_EXTENSION = ".snp";
   public static final String SNAPSHOT_VERSION_SEPARATOR = "_";
@@ -243,7 +243,7 @@ public final class Module extends BList
     try
     {
       removeMonitors();
-      
+
       Object code = get(MODULE_STOP_VAR);
       if (code != null)
       {
@@ -260,7 +260,7 @@ public final class Module extends BList
       Executor.killAll(this);
     }
   }
-  
+
   public synchronized void addListener(String functionName, Listener listener)
   {
     HashSet<Listener> functionListeners = listeners.get(functionName);
@@ -276,7 +276,7 @@ public final class Module extends BList
     }
   }
 
-  public synchronized void removeListener(String functionName, 
+  public synchronized void removeListener(String functionName,
     Listener listener)
   {
     HashSet<Listener> functionListeners = listeners.get(functionName);
@@ -302,8 +302,8 @@ public final class Module extends BList
     }
     return functionListeners.length;
   }
-  
-  public synchronized Monitor getMonitor(String serverUrl, String moduleName, 
+
+  public synchronized Monitor getMonitor(String serverUrl, String moduleName,
     boolean create)
   {
     String target = serverUrl + "/" + moduleName;
@@ -311,11 +311,12 @@ public final class Module extends BList
     if (monitor == null && create)
     {
       monitor = new Monitor(serverUrl, moduleName);
+      monitor.setFunctions(moduleManager.getFunctions());
       monitors.put(target, monitor);
     }
     return monitor;
   }
-  
+
   public synchronized void removeMonitor(String serverUrl, String moduleName)
   {
     String target = serverUrl + "/" + moduleName;
@@ -326,7 +327,7 @@ public final class Module extends BList
       monitors.remove(target);
     }
   }
-  
+
   public synchronized void removeMonitors()
   {
     // stop all monitors
@@ -336,7 +337,7 @@ public final class Module extends BList
     }
     monitors.clear();
   }
-  
+
   @Override
   public String toString()
   {

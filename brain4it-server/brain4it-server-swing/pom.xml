@@ -28,11 +28,6 @@
       <dependencies>
         <dependency>
           <groupId>org.brain4it</groupId>
-          <artifactId>brain4it-lib-core</artifactId>
-          <version>${brain4it-version}</version>
-        </dependency>
-        <dependency>
-          <groupId>org.brain4it</groupId>
           <artifactId>brain4it-lib-database</artifactId>
           <version>${brain4it-version}</version>
         </dependency>
@@ -87,6 +82,26 @@
           <version>${brain4it-version}</version>
         </dependency>
       </dependencies>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <configuration>
+              <descriptor>assembly.xml</descriptor>
+              <finalName>brain4it-server-swing-full-${project.version}</finalName>
+            </configuration>
+            <executions>
+              <execution>
+                <phase>package</phase>
+                <goals>
+                  <goal>single</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
     </profile>
   </profiles>
 

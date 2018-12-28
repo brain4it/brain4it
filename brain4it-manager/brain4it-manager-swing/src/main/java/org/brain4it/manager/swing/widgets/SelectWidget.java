@@ -1,31 +1,31 @@
 /*
  * Brain4it
- * 
+ *
  * Copyright (C) 2018, Ajuntament de Sant Feliu de Llobregat
- * 
- * This program is licensed and may be used, modified and redistributed under 
- * the terms of the European Public License (EUPL), either version 1.1 or (at 
- * your option) any later version as soon as they are approved by the European 
+ *
+ * This program is licensed and may be used, modified and redistributed under
+ * the terms of the European Public License (EUPL), either version 1.1 or (at
+ * your option) any later version as soon as they are approved by the European
  * Commission.
- * 
- * Alternatively, you may redistribute and/or modify this program under the 
- * terms of the GNU Lesser General Public License as published by the Free 
- * Software Foundation; either  version 3 of the License, or (at your option) 
- * any later version. 
- *   
- * Unless required by applicable law or agreed to in writing, software 
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT 
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- *   
- * See the licenses for the specific language governing permissions, limitations 
+ *
+ * Alternatively, you may redistribute and/or modify this program under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either  version 3 of the License, or (at your option)
+ * any later version.
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *
+ * See the licenses for the specific language governing permissions, limitations
  * and more details.
- *   
- * You should have received a copy of the EUPL1.1 and the LGPLv3 licenses along 
- * with this program; if not, you may find them at: 
- *   
+ *
+ * You should have received a copy of the EUPL1.1 and the LGPLv3 licenses along
+ * with this program; if not, you may find them at:
+ *
  *   https://joinup.ec.europa.eu/software/page/eupl/licence-eupl
- *   http://www.gnu.org/licenses/ 
- *   and 
+ *   http://www.gnu.org/licenses/
+ *   and
  *   https://www.gnu.org/licenses/lgpl.txt
  */
 package org.brain4it.manager.swing.widgets;
@@ -68,11 +68,11 @@ public class SelectWidget extends JPanel implements DashboardWidget
   protected Object currentOptions;
   protected FunctionInvoker invoker;
 
-  protected final Monitor.Listener monitorListener = 
+  protected final Monitor.Listener monitorListener =
     new Monitor.Listener()
   {
     @Override
-    public void onChange(final String reference, final Object data, 
+    public void onChange(final String reference, final Object data,
       final long serverTime)
     {
       SwingUtilities.invokeLater(new Runnable()
@@ -82,7 +82,7 @@ public class SelectWidget extends JPanel implements DashboardWidget
         {
           if (reference.equals(getValueFunction))
           {
-            if (invoker == null || 
+            if (invoker == null ||
                (!invoker.isSending() &&
                 invoker.updateInvokeTime(serverTime)))
             {
@@ -99,12 +99,12 @@ public class SelectWidget extends JPanel implements DashboardWidget
             {
               loadOptions(data);
             }
-          }          
+          }
         }
       });
     }
   };
-    
+
   protected final ActionListener actionListener = new ActionListener()
   {
     @Override
@@ -120,23 +120,23 @@ public class SelectWidget extends JPanel implements DashboardWidget
       }
     }
   };
-  
+
   public SelectWidget()
   {
     initComponents();
   }
-  
+
   @Override
-  public void init(DashboardPanel dashboard, String name, BList properties) 
+  public void init(DashboardPanel dashboard, String name, BList properties)
     throws Exception
   {
     this.dashboard = dashboard;
 
-    SelectWidgetType type = 
-      (SelectWidgetType)WidgetType.getType(WidgetType.SELECT);    
-    
+    SelectWidgetType type =
+      (SelectWidgetType)WidgetType.getType(WidgetType.SELECT);
+
     type.validate(properties);
-    
+
     labelText = type.getLabel(properties);
     label.setText(labelText);
 
@@ -162,7 +162,7 @@ public class SelectWidget extends JPanel implements DashboardWidget
         monitor.watch(getValueFunction, monitorListener);
       }
     }
-    
+
     func = type.getSetValueFunction(properties);
     if (func == null)
     {
@@ -170,7 +170,7 @@ public class SelectWidget extends JPanel implements DashboardWidget
     }
     else
     {
-      comboBox.setEnabled(true);      
+      comboBox.setEnabled(true);
       setValueFunction = func.getName();
       if (dashboard != null)
       {
@@ -186,24 +186,24 @@ public class SelectWidget extends JPanel implements DashboardWidget
     label = new JLabel();
     label.setHorizontalAlignment(JLabel.CENTER);
     label.setHorizontalTextPosition(JLabel.CENTER);
-    add(label, new GridBagConstraints(0, 0, 1, 1, 1, 0.5, 
-      GridBagConstraints.SOUTH, GridBagConstraints.HORIZONTAL, 
+    add(label, new GridBagConstraints(0, 0, 1, 1, 1, 0.5,
+      GridBagConstraints.SOUTH, GridBagConstraints.HORIZONTAL,
       new Insets(2, 2, 2, 2), 0, 0));
     comboBox = new JComboBox<Option>();
     comboBox.setModel(new DefaultComboBoxModel());
     comboBox.addActionListener(actionListener);
-    add(comboBox, new GridBagConstraints(0, 1, 1, 1, 1, 0.5, 
-      GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL, 
+    add(comboBox, new GridBagConstraints(0, 1, 1, 1, 1, 0.5,
+      GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL,
       new Insets(2, 2, 2, 2), 0, 0));
   }
-  
+
   protected void setSelectedValue(String value)
   {
     currentValue = value;
 
     if (value == null) return;
 
-    comboBox.removeActionListener(actionListener);    
+    comboBox.removeActionListener(actionListener);
     ComboBoxModel<Option> model = comboBox.getModel();
     int size = model.getSize();
     boolean found = false;
@@ -212,7 +212,7 @@ public class SelectWidget extends JPanel implements DashboardWidget
     {
       if (model.getElementAt(index).value.equals(value))
       {
-        comboBox.setSelectedIndex(index); 
+        comboBox.setSelectedIndex(index);
         found = true;
       }
       else index++;
@@ -221,26 +221,33 @@ public class SelectWidget extends JPanel implements DashboardWidget
     {
       comboBox.setSelectedIndex(0);
     }
-    comboBox.addActionListener(actionListener);    
+    comboBox.addActionListener(actionListener);
   }
-  
+
   protected void loadOptions(Object data)
   {
     comboBox.removeActionListener(actionListener);
-    BList options = (BList)data;
-    currentOptions = options;
     DefaultComboBoxModel model = new DefaultComboBoxModel();
-    for (int i = 0; i < options.size(); i++)
+    try
     {
-      BList option = (BList)options.get(i);
-      model.addElement(new Option(String.valueOf(option.get(0)), 
-        String.valueOf(option.get(1))));
+      BList options = (BList)data;
+      for (int i = 0; i < options.size(); i++)
+      {
+        BList option = (BList)options.get(i);
+        model.addElement(new Option(String.valueOf(option.get(0)),
+          String.valueOf(option.get(1))));
+      }
+      currentOptions = options;
+    }
+    catch (Exception ex)
+    {
+      // bad data
     }
     comboBox.setModel(model);
-    
+
     setSelectedValue(currentValue);
   }
-    
+
   protected class Option
   {
     String value;
@@ -251,15 +258,15 @@ public class SelectWidget extends JPanel implements DashboardWidget
       this.value = value;
       this.label = label;
     }
-    
+
     @Override
     public boolean equals(Object o)
     {
       if (!(o instanceof Option)) return false;
-      Option item = (Option)o;      
+      Option item = (Option)o;
       return value.equals(item.value);
     }
-    
+
     @Override
     public String toString()
     {

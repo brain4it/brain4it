@@ -1,6 +1,6 @@
 /**
  * CreateModuleAction.js
- * 
+ *
  * @author realor
  */
 
@@ -22,10 +22,10 @@ Brain4it.CreateModuleAction.prototype.invoke = function()
     var moduleDialog = new ModuleDialog("Create module", module);
     moduleDialog.onAccept = function()
     {
-      var client = new Brain4it.Client(server.url, module.name, 
+      var client = new Brain4it.Client(server.url, module.name,
         server.accessKey);
       client.method = "PUT";
-      client.callback = function(status, response)
+      client.callback = function(status)
       {
         if (status === 200)
         {
@@ -34,13 +34,27 @@ Brain4it.CreateModuleAction.prototype.invoke = function()
           Brain4it.Tree.setItemObject(Brain4it.Tree.selectedItemElem, server);
           Brain4it.Tree.setExpanded(Brain4it.Tree.selectedItemElem, true);
           Brain4it.Manager.saveWorkspace();
-          var messageDialog = new MessageDialog("Create module", 
-            "Module " + module.name + " created.", "message");
-          messageDialog.show();
+
+          module.saveAccessKey(server.accessKey, function(status)
+          {
+            if (status === 200)
+            {
+              var messageDialog = new MessageDialog("Create module",
+                "Module " + module.name + " created.", "message");
+              messageDialog.show();
+            }
+            else
+            {
+              var messageDialog = new MessageDialog("Error",
+                "Module " + module.name +
+                " created, but could not set the access key.", "error");
+              messageDialog.show();
+            }
+          });
         }
-        else 
+        else
         {
-          var messageDialog = new MessageDialog("Error", 
+          var messageDialog = new MessageDialog("Error",
             "Can't create module: " + status, "error");
           messageDialog.show();
         }

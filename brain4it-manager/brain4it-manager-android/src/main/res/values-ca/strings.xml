@@ -9,6 +9,7 @@
   <string name="module">Mòdul</string>
   <string name="moduleName">Nom del mòdul</string>
   <string name="accessKey">Clau d\'accés</string>
+  <string name="moduleAccessKey">Clau d\'accés (deixa en blanc per accedir amb la clau de servidor)</string>
 
   <string name="preferences">Preferències</string>
   <string name="language">Idioma</string>
@@ -65,6 +66,10 @@
   <string name="saveSuccessfull">Desat correctament.</string>
   <string name="noDashboards">Aquest mòdul no té panells!</string>
   <string name="noMatches">No hi ha coincidències</string>
+  <string name="serverNameMandatory">El nom del servidor és obligatori</string>
+  <string name="moduleNameMandatory">El nom del mòdul és obligatori</string>
+  <string name="serverURLMandatory">La URL és obligatòria</string>
+  <string name="invalidURL">URL invàlida</string>
 
   <string name="threadDump">Bolcat de threads</string>
   <string name="about">Quant a</string>

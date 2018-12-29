@@ -37,6 +37,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 /**
  *
@@ -161,6 +163,39 @@ public class IOUtils
     finally
     {
       is.close();
+    }
+  }
+
+  public static boolean isValidURL(String urlString)
+  {
+    return isValidURL(urlString, false);
+  }
+
+  public static boolean isValidURL(String urlString, boolean onlyHttp)
+  {
+    try
+    {
+      URL url = new URL(urlString);
+      String protocol = url.getProtocol();
+      if (onlyHttp)
+      {
+        if (!protocol.equals("http") && !protocol.equals("https"))
+          return false;
+      }
+      if (protocol.equals("file"))
+      {
+        String file = url.getFile();
+        return file != null && file.length() > 1;
+      }
+      else
+      {
+        String host = url.getHost();
+        return host != null && host.length() > 0;
+      }
+    }
+    catch (MalformedURLException ex)
+    {
+      return false;
     }
   }
 }

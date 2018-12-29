@@ -1,31 +1,31 @@
 /*
  * Brain4it
- * 
+ *
  * Copyright (C) 2018, Ajuntament de Sant Feliu de Llobregat
- * 
- * This program is licensed and may be used, modified and redistributed under 
- * the terms of the European Public License (EUPL), either version 1.1 or (at 
- * your option) any later version as soon as they are approved by the European 
+ *
+ * This program is licensed and may be used, modified and redistributed under
+ * the terms of the European Public License (EUPL), either version 1.1 or (at
+ * your option) any later version as soon as they are approved by the European
  * Commission.
- * 
- * Alternatively, you may redistribute and/or modify this program under the 
- * terms of the GNU Lesser General Public License as published by the Free 
- * Software Foundation; either  version 3 of the License, or (at your option) 
- * any later version. 
- *   
- * Unless required by applicable law or agreed to in writing, software 
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT 
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- *   
- * See the licenses for the specific language governing permissions, limitations 
+ *
+ * Alternatively, you may redistribute and/or modify this program under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either  version 3 of the License, or (at your option)
+ * any later version.
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *
+ * See the licenses for the specific language governing permissions, limitations
  * and more details.
- *   
- * You should have received a copy of the EUPL1.1 and the LGPLv3 licenses along 
- * with this program; if not, you may find them at: 
- *   
+ *
+ * You should have received a copy of the EUPL1.1 and the LGPLv3 licenses along
+ * with this program; if not, you may find them at:
+ *
  *   https://joinup.ec.europa.eu/software/page/eupl/licence-eupl
- *   http://www.gnu.org/licenses/ 
- *   and 
+ *   http://www.gnu.org/licenses/
+ *   and
  *   https://www.gnu.org/licenses/lgpl.txt
  */
 
@@ -38,6 +38,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import org.brain4it.io.IOUtils;
 import org.brain4it.manager.Server;
 import org.brain4it.manager.Workspace;
 
@@ -52,7 +53,7 @@ public class ServerSetupActivity extends Activity
   private EditText serverUrlInput;
   private EditText accessKeyInput;
   private Button okButton;
-  
+
   /**
    * Called when the activity is first created.
    * @param icicle
@@ -64,7 +65,7 @@ public class ServerSetupActivity extends Activity
 
     ManagerApplication app = (ManagerApplication)getApplicationContext();
     app.setupActivity(this, true);
-    
+
     setContentView(R.layout.server_setup);
 
     serverNameInput = (EditText)findViewById(R.id.serverNameInput);
@@ -80,7 +81,7 @@ public class ServerSetupActivity extends Activity
       int serverIndex = intent.getIntExtra("serverIndex", -1);
       if (serverIndex != -1)
       {
-        server = getWorkspace().getServers().get(serverIndex);      
+        server = getWorkspace().getServers().get(serverIndex);
         serverNameInput.setText(server.getName());
         serverUrlInput.setText(server.getUrl());
         accessKeyInput.setText(server.getAccessKey());
@@ -91,17 +92,38 @@ public class ServerSetupActivity extends Activity
         @Override
         public void onClick(View view)
         {
+          String serverName = serverNameInput.getText().toString().trim();
+          if (serverName.length() == 0)
+          {
+            ToastUtils.showLong(ServerSetupActivity.this,
+              getResources().getString(R.string.serverNameMandatory));
+            return;
+          }
+          String serverUrl = serverUrlInput.getText().toString().trim();
+          if (serverUrl.length() == 0)
+          {
+            ToastUtils.showLong(ServerSetupActivity.this,
+              getResources().getString(R.string.serverURLMandatory));
+            return;
+          }
+          if (!IOUtils.isValidURL(serverUrl, true))
+          {
+            ToastUtils.showLong(ServerSetupActivity.this,
+              getResources().getString(R.string.invalidURL));
+            return;
+          }
           if (server == null)
           {
             server = new Server(getWorkspace());
             getWorkspace().getServers().add(server);
           }
-          server.setName(serverNameInput.getText().toString());
-          server.setUrl(serverUrlInput.getText().toString());
-          server.setAccessKey(accessKeyInput.getText().toString());
+          String accessKey = accessKeyInput.getText().toString();
+          server.setName(serverName);
+          server.setUrl(serverUrl);
+          server.setAccessKey(accessKey);
           finish();
         }
-      });    
+      });
     }
   }
 

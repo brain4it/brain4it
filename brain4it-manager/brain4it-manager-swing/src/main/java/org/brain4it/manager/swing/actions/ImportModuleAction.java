@@ -64,8 +64,7 @@ public class ImportModuleAction extends ManagerAction
   public void actionPerformed(ActionEvent e)
   {
     final DataNode moduleNode = (DataNode)managerApp.getSelectedNode();
-    managerApp.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-    
+
     ImportModuleDialog dialog = new ImportModuleDialog(managerApp, true);
     dialog.pack();
     dialog.setLocationRelativeTo(managerApp);
@@ -88,6 +87,7 @@ public class ImportModuleAction extends ManagerAction
           managerApp.showError("ImportModule", ex);
         }
       };
+      managerApp.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
       importer.importData();
     }
   }
@@ -115,9 +115,10 @@ public class ImportModuleAction extends ManagerAction
           public void run()
           {
             moduleNode.explore();
-            JOptionPane.showMessageDialog(managerApp, "Import completed.",
-              (String)getValue(NAME), JOptionPane.INFORMATION_MESSAGE);
             managerApp.setCursor(Cursor.getDefaultCursor());
+            JOptionPane.showMessageDialog(managerApp, 
+              managerApp.getLocalizedMessage("ImportCompleted"),
+              (String)getValue(NAME), JOptionPane.INFORMATION_MESSAGE);
           }
         });
       }
@@ -125,8 +126,8 @@ public class ImportModuleAction extends ManagerAction
       @Override
       public void onError(RestClient client, Exception ex)
       {
-        managerApp.showError("ImportModule", ex);
         managerApp.setCursor(Cursor.getDefaultCursor());
+        managerApp.showError("ImportModule", ex);
       }
     });
   }

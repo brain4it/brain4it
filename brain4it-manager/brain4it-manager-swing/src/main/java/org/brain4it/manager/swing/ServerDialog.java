@@ -32,6 +32,8 @@
 package org.brain4it.manager.swing;
 
 import javax.swing.JOptionPane;
+import org.brain4it.io.IOUtils;
+import org.brain4it.manager.Server;
 import org.brain4it.manager.swing.text.TextUtils;
 
 /**
@@ -40,8 +42,9 @@ import org.brain4it.manager.swing.text.TextUtils;
  */
 public class ServerDialog extends javax.swing.JDialog
 {
+  private final ManagerApp managerApp;
   private boolean accepted;
-  private ManagerApp managerApp;
+  private Server server;
   
   /**
    * Creates new form ServerDialog
@@ -56,34 +59,18 @@ public class ServerDialog extends javax.swing.JDialog
     TextUtils.updateInputMap(keyTextField);
   }
 
-  public void setServerName(String name)
+  public Server getServer()
   {
-    nameTextField.setText(name);
+    return server;
   }
-  
-  public String getServerName()
+
+  public void setServer(Server server)
   {
-    return nameTextField.getText();
-  }
-  
-  public void setServerUrl(String url)
-  {
-    urlTextField.setText(url);
-  }
-  
-  public String getServerUrl()
-  {
-    return urlTextField.getText();
-  }
-  
-  public void setIndentityKey(String key)
-  {
-    keyTextField.setText(key);
-  }
-  
-  public String getAccessKey()
-  {
-    return keyTextField.getText();
+    this.server = server;
+    nameTextField.setText(server.getName());
+    urlTextField.setText(server.getUrl());
+    urlTextField.setCaretPosition(0);
+    keyTextField.setText(server.getAccessKey());
   }
   
   public boolean isAccepted()
@@ -189,20 +176,32 @@ public class ServerDialog extends javax.swing.JDialog
 
   private void okButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_okButtonActionPerformed
   {//GEN-HEADEREND:event_okButtonActionPerformed
-    String serverName = getServerName();
-    if (serverName == null || serverName.trim().length() == 0)
+    String serverName = nameTextField.getText().trim();
+    if (serverName.length() == 0)
     {
-      JOptionPane.showMessageDialog(null, "Server name is mandatoty", 
+      JOptionPane.showMessageDialog(null, 
+        managerApp.getLocalizedMessage("ServerNameMandatory"), 
         "Warning", JOptionPane.WARNING_MESSAGE);
       return;
     }
-    String serverUrl = getServerUrl();
-    if (serverUrl == null || serverUrl.trim().length() == 0)
+    String serverUrl = urlTextField.getText().trim();
+    if (serverUrl.length() == 0)
     {
-      JOptionPane.showMessageDialog(null, "Server url is mandatoty", 
+      JOptionPane.showMessageDialog(null, 
+        managerApp.getLocalizedMessage("ServerURLMandatory"), 
         "Warning", JOptionPane.WARNING_MESSAGE);
       return;
     }
+    if (!IOUtils.isValidURL(serverUrl, true))
+    {
+      JOptionPane.showMessageDialog(null, 
+        managerApp.getLocalizedMessage("InvalidURL"), 
+        "Warning", JOptionPane.WARNING_MESSAGE);
+      return;      
+    }
+    server.setName(serverName);
+    server.setUrl(serverUrl);
+    server.setAccessKey(keyTextField.getText());    
     accepted = true;
     this.setVisible(false);
     this.dispose();

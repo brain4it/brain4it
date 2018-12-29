@@ -192,7 +192,11 @@ Brain4it.Tree =
           itemElem.className = "module " + icon;
         }
       }
-    }  
+    }
+    if (this.selectedItemElem === itemElem)
+    {
+      this.selectItem(itemElem);
+    }
   },
   
   getParentItemElem : function(itemElem)

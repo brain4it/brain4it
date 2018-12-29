@@ -1,6 +1,6 @@
 /**
  * EditAction.js
- * 
+ *
  * @author realor
  */
 
@@ -30,11 +30,13 @@ Brain4it.EditAction.prototype.invoke = function()
   else if (object instanceof Brain4it.Module)
   {
     var module = object;
+    var currentAccessKey = module.accessKey;
     var moduleDialog = new ModuleDialog("Edit module", module);
     moduleDialog.onAccept = function()
     {
       Brain4it.Tree.setItemObject(Brain4it.Tree.selectedItemElem, module);
       Brain4it.Manager.saveWorkspace();
+      module.saveAccessKey(currentAccessKey, null);
     };
     moduleDialog.show();
   }

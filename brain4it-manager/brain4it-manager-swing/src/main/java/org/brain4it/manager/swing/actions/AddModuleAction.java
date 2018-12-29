@@ -63,25 +63,25 @@ public class AddModuleAction extends ManagerAction
   @Override
   public void actionPerformed(ActionEvent e)
   {
+    Explorer explorer = managerApp.getExplorer();
+    DefaultTreeModel model = (DefaultTreeModel)explorer.getModel();
+    DefaultMutableTreeNode serverNode = managerApp.getSelectedNode();
+    Server server = (Server)serverNode.getUserObject();
+    Module module = new Module(server);
+    
     ModuleDialog dialog = new ModuleDialog(managerApp, true);
     dialog.setTitle((String)getValue(AbstractAction.NAME));
     dialog.setLocationRelativeTo(managerApp);
+    dialog.setModule(module);
     dialog.setVisible(true);
 
     if (dialog.isAccepted())
     {
-      Explorer explorer = managerApp.getExplorer();
-      DefaultTreeModel model = (DefaultTreeModel)explorer.getModel();
-      DefaultMutableTreeNode serverNode = managerApp.getSelectedNode();
-      Server server = (Server)serverNode.getUserObject();
-      int moduleIndex = server.getModuleIndex(dialog.getModuleName());
+      int moduleIndex = server.getModuleIndex(module.getName());
       DefaultMutableTreeNode moduleNode = (moduleIndex == -1) ?
         null : (DefaultMutableTreeNode)serverNode.getChildAt(moduleIndex);
-      if (moduleNode == null)
+      if (moduleNode == null) // not found in workspace
       {
-        Module module = new Module(server,
-          dialog.getModuleName(), dialog.getAccessKey());
-        module.setMetadata(dialog.getMetadata());
         server.getModules().add(module);
         moduleNode = new DataNode(explorer, module);
         serverNode.add(moduleNode);

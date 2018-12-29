@@ -342,6 +342,8 @@ Brain4it.MONITOR_HEADER = "monitor";
 Brain4it.SESSION_ID_HEADER = "session-id";
 Brain4it.SERVER_TIME_HEADER = "server-time";
 
+Brain4it.MODULE_ACCESS_KEY_VAR = "access-key";
+Brain4it.MODULE_METADATA_VAR = "module-metadata";
 Brain4it.DASHBOARDS_FUNCTION_NAME = "@dashboards";
 
 Brain4it.unescapeString = function(text)
@@ -1465,7 +1467,7 @@ Brain4it.Formatter.prototype =
         else if (this.isBreakRequired())
         {
           if (this.name === null ||
-              this.indentLevel * this.configuration.indentSize + 
+              this.indentLevel * this.configuration.indentSize +
               this.baseList.getLength() > this.configuration.maxColumns)
           {
             this.baseList.releaseExcedent();
@@ -1476,7 +1478,7 @@ Brain4it.Formatter.prototype =
             this.indentLevel++;
             inline = false;
           }
-          // else try to print baseList inline in the next line          
+          // else try to print baseList inline in the next line
           this.name = null;
         }
       }
@@ -1505,10 +1507,10 @@ Brain4it.Formatter.prototype =
             this.printSpace();
             this.printToken(nextToken); // name operator
             var nextNextToken = this.tokenizer.readToken();
-            if (nextNextToken.type !== Brain4it.Token.OPEN_LIST && 
+            if (nextNextToken.type !== Brain4it.Token.OPEN_LIST &&
                 nextNextToken.type !== Brain4it.Token.EOF)
             {
-              if (this.getCurrentColumn() + 1 + nextNextToken.length() > 
+              if (this.getCurrentColumn() + 1 + nextNextToken.length() >
                   this.configuration.maxColumns)
               {
                 this.nextLine();
@@ -1522,7 +1524,7 @@ Brain4it.Formatter.prototype =
             }
             else this.tokenizer.unreadToken(nextNextToken);
           }
-          else this.tokenizer.unreadToken(nextToken);          
+          else this.tokenizer.unreadToken(nextToken);
         }
       }
     }
@@ -1556,16 +1558,16 @@ Brain4it.Formatter.prototype =
       column += this.name.length + Brain4it.NAME_OPERATOR_TOKEN.length + 2;
     return column;
   },
-  
+
   isBreakRequired : function()
   {
     var configuration = this.configuration;
 
     // check is maxColumn is exceeded
-    if (this.getCurrentColumn() + this.baseList.getLength() > 
+    if (this.getCurrentColumn() + this.baseList.getLength() >
        configuration.maxColumns)
        return true;
-    
+
     // check if function is not inline
     var functionName = this.baseList.getFunctionName();
     if (functionName === null) return false;
@@ -1642,7 +1644,7 @@ Brain4it.Formatter.TokenList.prototype =
       else
       {
         if (this.getCompletedArguments() >= arguments)
-        {        
+        {
           var count = arguments + 2;
           if (this.getLength(count) < configuration.maxColumns)
           {
@@ -1655,7 +1657,7 @@ Brain4it.Formatter.TokenList.prototype =
         }
         else
         {
-          this.unreadTokens(2);          
+          this.unreadTokens(2);
         }
       }
     }

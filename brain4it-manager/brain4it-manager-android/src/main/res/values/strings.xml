@@ -9,6 +9,7 @@
   <string name="module">Module</string>
   <string name="moduleName">Module name</string>
   <string name="accessKey">Access key</string>
+  <string name="moduleAccessKey">Access key (leave blank to access with server key)</string>
 
   <string name="preferences">Preferences</string>
   <string name="language">Language</string>
@@ -65,6 +66,10 @@
   <string name="saveSuccessfull">Save successfull.</string>
   <string name="noDashboards">This module has no dashboards!</string>
   <string name="noMatches">No matches</string>
+  <string name="serverNameMandatory">Server name is mandatory</string>
+  <string name="moduleNameMandatory">Module name is mandatory</string>
+  <string name="serverURLMandatory">URL is mandatory</string>
+  <string name="invalidURL">Invalid URL</string>
 
   <string name="threadDump">Thread dump</string>
   <string name="about">About</string>

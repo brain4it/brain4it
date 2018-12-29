@@ -6,6 +6,8 @@
 
 WebDialog = function(title, width, height)
 {
+  if (width > window.innerWidth) width = window.innerWidth - 10;
+  
   this.curtainElem = document.createElement("div");
   this.curtainElem.className = "web_dialog_curtain";
   this.curtainElem.style.position = "absolute";
@@ -110,7 +112,7 @@ WebDialog.prototype =
         optionElem.innerHTML = option;
       }
       selectElem.appendChild(optionElem);
-      if (optionElem.value == value) found = true;
+      if (optionElem.value === value) found = true;
     }
     if (value)
     {
@@ -183,10 +185,15 @@ WebDialog.prototype =
       parentNode.appendChild(this.curtainElem);
       parentNode.appendChild(this.dialogElem);
       var inputElems = this.dialogElem.getElementsByTagName("input");
-      if (inputElems.length > 0)
+      for (var i = 0; i < inputElems.length; i++)
       {
-        inputElems[0].focus();
-      }      
+        var elem = inputElems[i];
+        if (!elem.readOnly && !elem.disabled)
+        {
+          elem.focus();
+          break;
+        }
+      }
       this.onShow();
     }
   },

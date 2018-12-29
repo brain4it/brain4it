@@ -37,7 +37,7 @@ Brain4it.Manager =
   init: function()
   {
     this.workspace = new Brain4it.Workspace();
-    
+
     document.getElementById("main").style.display = "block";
     this.tabbedPanel = new Brain4it.TabbedPanel("content");
 
@@ -54,7 +54,7 @@ Brain4it.Manager =
     this.toolBar.addAction(new Brain4it.DestroyModuleAction());
     this.toolBar.addAction(new Brain4it.ListModulesAction());
     this.toolBar.addAction(new Brain4it.RemoveAction());
-    var editAction = 
+    var editAction =
       this.toolBar.addAction(new Brain4it.EditAction());
     var consoleAction =
       this.toolBar.addAction(new Brain4it.OpenConsoleAction());
@@ -62,26 +62,26 @@ Brain4it.Manager =
     this.toolBar.addAction(new Brain4it.OpenDashboardAction());
 
     this.toolBar.update();
-    
+
     var sliderElem = document.getElementById("slider");
-    
-    this.leftPanelButton = createButton("lp_button", null, "ball_button", 
+
+    this.leftPanelButton = createButton("lp_button", null, "ball_button",
       function() { Brain4it.Manager.updateLayout('left'); });
     sliderElem.appendChild(this.leftPanelButton);
 
-    this.rightPanelButton = createButton("rp_button", null, "ball_button", 
+    this.rightPanelButton = createButton("rp_button", null, "ball_button",
       function() { Brain4it.Manager.updateLayout('right'); });
     sliderElem.appendChild(this.rightPanelButton);
-    
+
     var menuElem = document.getElementById("menu");
-    this.newWorkspaceButton = createButton("new", "New", "new_ws", 
+    this.newWorkspaceButton = createButton("new", "New", "new_ws",
       function(e)
       {
         Brain4it.Manager.newWorkspace();
       });
     menuElem.appendChild(this.newWorkspaceButton);
-    
-    this.openWorkspaceButton = createFileChooserButton("open_ws", "Open", 
+
+    this.openWorkspaceButton = createFileChooserButton("open_ws", "Open",
       "open_ws", function(e)
       {
         var file = e.target.files[0];
@@ -89,19 +89,19 @@ Brain4it.Manager =
         Brain4it.Manager.openWorkspaceFile(file);
       });
     menuElem.appendChild(this.openWorkspaceButton);
-    
+
     this.saveWorkspaceButton = createButton("save_ws", "Save", "save_ws",
       function(e)
       {
-        Brain4it.Manager.saveWorkspaceFile();         
+        Brain4it.Manager.saveWorkspaceFile();
       });
     menuElem.appendChild(this.saveWorkspaceButton);
-    
+
     Brain4it.Tree.init();
     Brain4it.Tree.serverAction = editAction;
     Brain4it.Tree.moduleAction = consoleAction;
-    
-    this.updateWorkspaceLabel();    
+
+    this.updateWorkspaceLabel();
     this.loadWorkspace();
     this.updateLayout();
   },
@@ -117,7 +117,7 @@ Brain4it.Manager =
     {
       this.visiblePanel = panel;
     }
-    
+
     var sliderElem = document.getElementById("slider");
     var configElem = document.getElementById("config");
     var contentElem = document.getElementById("content");
@@ -146,7 +146,7 @@ Brain4it.Manager =
     }
     else
     {
-      sliderElem.style.display = "none";      
+      sliderElem.style.display = "none";
       configElem.style.width = this.treeWidth + "px";
       configElem.style.display = null;
       contentElem.style.left = this.treeWidth + "px";
@@ -157,7 +157,7 @@ Brain4it.Manager =
 
   renameWorkspace : function()
   {
-    var inputDialog = new InputDialog("Rename workspace", "Name:", 
+    var inputDialog = new InputDialog("Rename workspace", "Name:",
       this.workspace.name);
     inputDialog.onAccept = function(value)
     {
@@ -170,7 +170,7 @@ Brain4it.Manager =
 
   newWorkspace : function()
   {
-    var inputDialog = new InputDialog("New workspace", "Name:", 
+    var inputDialog = new InputDialog("New workspace", "Name:",
       "workspace");
     inputDialog.onAccept = function(value)
     {
@@ -202,14 +202,14 @@ Brain4it.Manager =
       }
       catch (ex)
       {
-        var messageDialog = new MessageDialog("Error", 
+        var messageDialog = new MessageDialog("Error",
           "Can't read file.", "error");
-        messageDialog.show();        
+        messageDialog.show();
       }
     };
     reader.readAsText(file);
   },
-  
+
   saveWorkspaceFile : function()
   {
     var workspaceText = this.writeWorkspace(this.workspace);
@@ -220,7 +220,7 @@ Brain4it.Manager =
     {
       window.navigator.msSaveOrOpenBlob(file, filename);
     }
-    else 
+    else
     {
       var linkElem = document.createElement("a");
       var url = window.URL.createObjectURL(file);
@@ -228,11 +228,11 @@ Brain4it.Manager =
       linkElem.download = filename;
       document.body.appendChild(linkElem);
       linkElem.click();
-      setTimeout(function() 
+      setTimeout(function()
       {
         document.body.removeChild(linkElem);
-        window.URL.revokeObjectURL(url);  
-      }, 0); 
+        window.URL.revokeObjectURL(url);
+      }, 0);
     }
   },
 
@@ -247,7 +247,7 @@ Brain4it.Manager =
         Brain4it.Tree.update();
         Brain4it.Manager.updateWorkspaceLabel();
       }
-    }    
+    }
   },
 
   saveWorkspace: function()
@@ -271,7 +271,7 @@ Brain4it.Manager =
       var server = new Brain4it.Server();
       server.name = serverList.getByIndex(1);
       server.url = serverList.getByIndex(2);
-      server.accessKey = serverList.getByIndex(3);
+      server.setAccessKey(serverList.getByIndex(3));
       workspace.addServer(server);
 
       for (var j = 4; j < serverList.size(); j++)
@@ -279,7 +279,7 @@ Brain4it.Manager =
         var moduleList = serverList.getByIndex(j);
         var module = new Brain4it.Module();
         module.name = moduleList.getByIndex(1);
-        module.accessKey = moduleList.getByIndex(2);
+        module.setAccessKey(moduleList.getByIndex(2));
         if (moduleList.size() > 3)
         {
           module.metadata = moduleList.getByIndex(3);
@@ -289,7 +289,7 @@ Brain4it.Manager =
     }
     return workspace;
   },
-  
+
   writeWorkspace : function(workspace)
   {
     var workspaceList = new Brain4it.List();
@@ -341,14 +341,14 @@ Brain4it.Workspace.prototype =
       this.servers.push(server);
     }
   },
-  
+
   removeServer : function(server)
   {
     var index = this.servers.indexOf(server);
     if (index !== -1)
     {
       this.servers.splice(index, 1);
-    }    
+    }
   }
 };
 
@@ -365,6 +365,16 @@ Brain4it.Server = function(name, url, accessKey)
 
 Brain4it.Server.prototype =
 {
+  setAccessKey : function(accessKey)
+  {
+    if (accessKey !== null)
+    {
+      accessKey = accessKey.trim();
+      if (accessKey.length === 0) accessKey = null;      
+    }
+    this.accessKey = accessKey;
+  },
+  
   addModule : function(module)
   {
     if (module.server === null)
@@ -396,6 +406,16 @@ Brain4it.Module = function(name, accessKey)
 
 Brain4it.Module.prototype =
 {
+  setAccessKey : function(accessKey)
+  {
+    if (accessKey !== null)
+    {
+      accessKey = accessKey.trim();
+      if (accessKey.length === 0) accessKey = null;      
+    }
+    this.accessKey = accessKey;
+  },
+  
   getAccessKey : function()
   {
     if (this.accessKey === null || this.accessKey.length === 0)
@@ -403,7 +423,40 @@ Brain4it.Module.prototype =
       return this.server.accessKey;
     }
     return this.accessKey;
-  }        
+  },
+
+  saveAccessKey : function(currentAccessKey, callback)
+  {
+    if (currentAccessKey === null)
+    {
+      currentAccessKey = this.server.accessKey;
+    }
+    if (this.accessKey === null || currentAccessKey === null)
+    {
+      // not necessary to update key in the server module
+      if (callback !== null)
+      {
+        callback(200);
+      }
+    }
+    else if (currentAccessKey === this.accessKey)
+    {
+      // accessKey not changed
+      if (callback !== null)
+      {
+        callback(200);
+      }
+    }
+    else
+    {
+      // accessKey changed
+      var client = new Brain4it.Client(this.server.url,
+        this.name + "/" + Brain4it.MODULE_ACCESS_KEY_VAR, currentAccessKey);
+      client.method = "PUT";
+      client.callback = callback;
+      client.send(Brain4it.escapeString(this.accessKey));
+    }
+  }
 };
 
 window.addEventListener('load', function() {Brain4it.Manager.init();}, false);

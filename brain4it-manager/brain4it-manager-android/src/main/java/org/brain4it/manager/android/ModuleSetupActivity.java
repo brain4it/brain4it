@@ -1,31 +1,31 @@
 /*
  * Brain4it
- * 
+ *
  * Copyright (C) 2018, Ajuntament de Sant Feliu de Llobregat
- * 
- * This program is licensed and may be used, modified and redistributed under 
- * the terms of the European Public License (EUPL), either version 1.1 or (at 
- * your option) any later version as soon as they are approved by the European 
+ *
+ * This program is licensed and may be used, modified and redistributed under
+ * the terms of the European Public License (EUPL), either version 1.1 or (at
+ * your option) any later version as soon as they are approved by the European
  * Commission.
- * 
- * Alternatively, you may redistribute and/or modify this program under the 
- * terms of the GNU Lesser General Public License as published by the Free 
- * Software Foundation; either  version 3 of the License, or (at your option) 
- * any later version. 
- *   
- * Unless required by applicable law or agreed to in writing, software 
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT 
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- *   
- * See the licenses for the specific language governing permissions, limitations 
+ *
+ * Alternatively, you may redistribute and/or modify this program under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either  version 3 of the License, or (at your option)
+ * any later version.
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *
+ * See the licenses for the specific language governing permissions, limitations
  * and more details.
- *   
- * You should have received a copy of the EUPL1.1 and the LGPLv3 licenses along 
- * with this program; if not, you may find them at: 
- *   
+ *
+ * You should have received a copy of the EUPL1.1 and the LGPLv3 licenses along
+ * with this program; if not, you may find them at:
+ *
  *   https://joinup.ec.europa.eu/software/page/eupl/licence-eupl
- *   http://www.gnu.org/licenses/ 
- *   and 
+ *   http://www.gnu.org/licenses/
+ *   and
  *   https://www.gnu.org/licenses/lgpl.txt
  */
 
@@ -56,7 +56,7 @@ public class ModuleSetupActivity extends Activity
   private EditText accessKeyInput;
   private Button okButton;
   private boolean createModule;
-  
+
   /**
    * Called when the activity is first created.
    * @param icicle
@@ -68,9 +68,9 @@ public class ModuleSetupActivity extends Activity
 
     ManagerApplication app = (ManagerApplication)getApplicationContext();
     app.setupActivity(this, true);
-    
+
     setContentView(R.layout.module_setup);
-    
+
     moduleNameInput = (EditText)findViewById(R.id.moduleNameInput);
     accessKeyInput = (EditText)findViewById(R.id.accessKeyInput);
     okButton = (Button)findViewById(R.id.moduleOkButton);
@@ -92,7 +92,13 @@ public class ModuleSetupActivity extends Activity
           moduleNameInput.setText(module.getName());
           accessKeyInput.setText(module.getAccessKey());
         }
-    
+
+        moduleNameInput.setEnabled(module == null);
+        if (module != null)
+        {
+          accessKeyInput.requestFocus();
+        }
+
         okButton.setOnClickListener(new Button.OnClickListener()
         {
           @Override
@@ -102,19 +108,31 @@ public class ModuleSetupActivity extends Activity
             {
               createModule();
             }
+            else if (module == null)
+            {
+              addModule();
+            }
             else
             {
-              addOrEditModule();
+              editModule();
             }
           }
         });
       }
     }
   }
-  
+
   private void createModule()
   {
-    final String moduleName = moduleNameInput.getText().toString();
+    final String moduleName = moduleNameInput.getText().toString().trim();
+    if (moduleName.length() == 0)
+    {
+      ToastUtils.showLong(this, 
+        getResources().getString(R.string.moduleNameMandatory));
+      return;
+    }
+    
+    final String accessKey = accessKeyInput.getText().toString();
     RestClient restClient = server.getRestClient();
     restClient.createModule(moduleName, new Callback()
     {
@@ -122,12 +140,9 @@ public class ModuleSetupActivity extends Activity
       public void onSuccess(RestClient client, String resultString)
       {
         ToastUtils.showLong(ModuleSetupActivity.this, resultString);
-        Module module = new Module(server);
-        module.setName(moduleName);
-        String accessKey = accessKeyInput.getText().toString().trim();
-        if (accessKey.length() == 0) accessKey = null;
-        module.setAccessKey(accessKey);
+        Module module = new Module(server, moduleName, accessKey);
         server.getModules().add(module);
+        module.saveAccessKey(server.getAccessKey(), null);
         finish();
       }
 
@@ -139,20 +154,30 @@ public class ModuleSetupActivity extends Activity
     });
   }
 
-  private void addOrEditModule()
+  private void addModule()
   {
-    if (module == null) // add
+    String moduleName = moduleNameInput.getText().toString().trim();
+    if (moduleName.length() == 0)
     {
-      module = new Module(server);
-      server.getModules().add(module);
-    } // else edit
-    module.setName(moduleNameInput.getText().toString());
-    String accessKey = accessKeyInput.getText().toString().trim();
-    if (accessKey.length() == 0) accessKey = null;
+      ToastUtils.showLong(this, 
+        getResources().getString(R.string.moduleNameMandatory));
+      return;
+    }
+    String accessKey = accessKeyInput.getText().toString();
+    
+    module = new Module(server, moduleName, accessKey);
+    server.getModules().add(module);
+  }
+
+  private void editModule()
+  {
+    String currentAccessKey = module.getAccessKey();
+    String accessKey = accessKeyInput.getText().toString();
     module.setAccessKey(accessKey);
+    module.saveAccessKey(currentAccessKey, null);
     finish();
   }
-  
+
   @Override
   public boolean onOptionsItemSelected(MenuItem item)
   {
@@ -164,7 +189,7 @@ public class ModuleSetupActivity extends Activity
     }
     return true;
   }
-  
+
   private Workspace getWorkspace()
   {
     return ((ManagerApplication)getApplicationContext()).getWorkspace();

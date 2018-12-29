@@ -1,31 +1,31 @@
 /*
  * Brain4it
- * 
+ *
  * Copyright (C) 2018, Ajuntament de Sant Feliu de Llobregat
- * 
- * This program is licensed and may be used, modified and redistributed under 
- * the terms of the European Public License (EUPL), either version 1.1 or (at 
- * your option) any later version as soon as they are approved by the European 
+ *
+ * This program is licensed and may be used, modified and redistributed under
+ * the terms of the European Public License (EUPL), either version 1.1 or (at
+ * your option) any later version as soon as they are approved by the European
  * Commission.
- * 
- * Alternatively, you may redistribute and/or modify this program under the 
- * terms of the GNU Lesser General Public License as published by the Free 
- * Software Foundation; either  version 3 of the License, or (at your option) 
- * any later version. 
- *   
- * Unless required by applicable law or agreed to in writing, software 
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT 
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- *   
- * See the licenses for the specific language governing permissions, limitations 
+ *
+ * Alternatively, you may redistribute and/or modify this program under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either  version 3 of the License, or (at your option)
+ * any later version.
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *
+ * See the licenses for the specific language governing permissions, limitations
  * and more details.
- *   
- * You should have received a copy of the EUPL1.1 and the LGPLv3 licenses along 
- * with this program; if not, you may find them at: 
- *   
+ *
+ * You should have received a copy of the EUPL1.1 and the LGPLv3 licenses along
+ * with this program; if not, you may find them at:
+ *
  *   https://joinup.ec.europa.eu/software/page/eupl/licence-eupl
- *   http://www.gnu.org/licenses/ 
- *   and 
+ *   http://www.gnu.org/licenses/
+ *   and
  *   https://www.gnu.org/licenses/lgpl.txt
  */
 
@@ -55,6 +55,7 @@ import javax.swing.JOptionPane;
 import javax.swing.ListCellRenderer;
 import javax.swing.border.EmptyBorder;
 import org.brain4it.lang.BList;
+import org.brain4it.manager.Module;
 import org.brain4it.manager.swing.text.TextUtils;
 
 /**
@@ -63,8 +64,9 @@ import org.brain4it.manager.swing.text.TextUtils;
  */
 public class ModuleDialog extends javax.swing.JDialog
 {
-  private ManagerApp managerApp;
+  private final ManagerApp managerApp;
   private boolean accepted;
+  private Module module;
 
   /**
    * Creates new form ServerDialog
@@ -85,28 +87,19 @@ public class ModuleDialog extends javax.swing.JDialog
     pack();
   }
 
-  public void setModuleName(String name)
+  public Module getModule()
   {
-    nameTextField.setText(name);
+    return module;
   }
-  
-  public String getModuleName()
+
+  public void setModule(Module module)
   {
-    return nameTextField.getText();
-  }
-    
-  public void setIndentityKey(String key)
-  {
-    keyTextField.setText(key);
-  }
-  
-  public String getAccessKey()
-  {
-    return keyTextField.getText();
-  }
-  
-  public void setMetadata(BList metadata)
-  {
+    this.module = module;
+    String moduleName = module.getName();
+    nameTextField.setText(moduleName);
+    nameTextField.setEnabled(moduleName == null);
+    keyTextField.setText(module.getAccessKey());
+    BList metadata = module.getMetadata();
     if (metadata != null)
     {
       Object value;
@@ -122,38 +115,12 @@ public class ModuleDialog extends javax.swing.JDialog
       }
     }
   }
-  
-  public BList getMetadata()
-  {
-    BList metadata = new BList();
-    String iconName = (String)iconComboBox.getSelectedItem();
-    if (iconName != null && iconName.length() > 0)
-    {
-      metadata.put("icon", iconName);
-    }
-    String description = (String)descriptionTextPane.getText();
-    if (description != null && description.length() > 0)
-    {
-      metadata.put("description", description);
-    }
-    return metadata;
-  }
-    
-  public void setNameEditable(boolean enabled)
-  {
-    nameTextField.setEnabled(enabled);
-  }
 
-  public boolean isNameEditable()
-  {
-    return nameTextField.isEnabled();
-  }
-  
   public boolean isAccepted()
   {
     return accepted;
   }
-  
+
   private void initIcons()
   {
     URI uri;
@@ -172,7 +139,7 @@ public class ModuleDialog extends javax.swing.JDialog
         }
         catch (FileSystemNotFoundException ex)
         {
-          fileSystem = FileSystems.newFileSystem(uri, 
+          fileSystem = FileSystems.newFileSystem(uri,
           Collections.<String, Object>emptyMap());
         }
         path = fileSystem.getPath(iconsFolder);
@@ -206,7 +173,7 @@ public class ModuleDialog extends javax.swing.JDialog
       // ignore
     }
   }
-  
+
   public class IconRenderer extends JLabel implements ListCellRenderer
   {
     private static final int BORDER = 2;
@@ -214,9 +181,9 @@ public class ModuleDialog extends javax.swing.JDialog
     {
       setBorder(new EmptyBorder(BORDER, BORDER, BORDER, BORDER));
     }
-    
+
     @Override
-    public Component getListCellRendererComponent(JList list, 
+    public Component getListCellRendererComponent(JList list,
        Object value, int index, boolean selected, boolean hasFocus)
     {
       String iconName = (String)value;
@@ -234,17 +201,17 @@ public class ModuleDialog extends javax.swing.JDialog
       this.setText(iconName.length() == 0 ? "module" : iconName);
       return this;
     }
-    
+
     @Override
     public Dimension getPreferredSize()
     {
       ImageIcon icon = IconCache.getIcon("modules/weather");
       Dimension size = super.getPreferredSize();
-      return new Dimension(size.width + 2* BORDER, 
+      return new Dimension(size.width + 2* BORDER,
         icon.getIconHeight() + 2 * BORDER);
     }
   }
-  
+
   /**
    * This method is called from within the constructor to initialize the form.
    * WARNING: Do NOT modify this code. The content of this method is always
@@ -266,6 +233,7 @@ public class ModuleDialog extends javax.swing.JDialog
     iconComboBox = new javax.swing.JComboBox<>();
     scrollPane = new javax.swing.JScrollPane();
     descriptionTextPane = new javax.swing.JTextPane();
+    leaveBlankLabel = new javax.swing.JLabel();
 
     setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
     setTitle(managerApp.getLocalizedMessage("Module.title"));
@@ -299,6 +267,9 @@ public class ModuleDialog extends javax.swing.JDialog
 
     scrollPane.setViewportView(descriptionTextPane);
 
+    leaveBlankLabel.setText(bundle.getString("LeaveBlankServerKey")); // NOI18N
+    leaveBlankLabel.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 1, 8, 1));
+
     javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
     getContentPane().setLayout(layout);
     layout.setHorizontalGroup(
@@ -307,7 +278,7 @@ public class ModuleDialog extends javax.swing.JDialog
         .addContainerGap()
         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
           .addGroup(layout.createSequentialGroup()
-            .addGap(0, 286, Short.MAX_VALUE)
+            .addGap(0, 293, Short.MAX_VALUE)
             .addComponent(okButton)
             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
             .addComponent(cancelButton))
@@ -320,12 +291,13 @@ public class ModuleDialog extends javax.swing.JDialog
               .addComponent(iconLabel))
             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-              .addComponent(keyTextField)
               .addComponent(nameTextField)
+              .addComponent(keyTextField, javax.swing.GroupLayout.Alignment.TRAILING)
+              .addComponent(leaveBlankLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+              .addComponent(scrollPane, javax.swing.GroupLayout.Alignment.TRAILING)
               .addGroup(layout.createSequentialGroup()
-                .addComponent(iconComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
-              .addComponent(scrollPane, javax.swing.GroupLayout.Alignment.TRAILING))))
+                .addComponent(iconComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE)))))
         .addContainerGap())
     );
     layout.setVerticalGroup(
@@ -340,6 +312,8 @@ public class ModuleDialog extends javax.swing.JDialog
           .addComponent(keyLabel)
           .addComponent(keyTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+        .addComponent(leaveBlankLabel)
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
           .addComponent(iconLabel)
           .addComponent(iconComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -349,7 +323,7 @@ public class ModuleDialog extends javax.swing.JDialog
             .addComponent(descriptionLabel)
             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
           .addGroup(layout.createSequentialGroup()
-            .addComponent(scrollPane)
+            .addComponent(scrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 58, Short.MAX_VALUE)
             .addGap(7, 7, 7)))
         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
           .addComponent(okButton)
@@ -362,12 +336,31 @@ public class ModuleDialog extends javax.swing.JDialog
 
   private void okButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_okButtonActionPerformed
   {//GEN-HEADEREND:event_okButtonActionPerformed
-    String moduleName = getModuleName();
-    if (moduleName == null || moduleName.trim().length() == 0)
+    String moduleName = nameTextField.getText().trim();
+    if (moduleName.length() == 0)
     {
-      JOptionPane.showMessageDialog(null, "Module name is mandatoty", 
+      JOptionPane.showMessageDialog(null, 
+        managerApp.getLocalizedMessage("ModuleNameMandatory"),
         "Warning", JOptionPane.WARNING_MESSAGE);
       return;
+    }
+    module.setName(moduleName);
+    module.setAccessKey(keyTextField.getText());
+    BList metadata = module.getMetadata();
+    if (metadata == null)
+    {
+      metadata = new BList();
+      module.setMetadata(metadata);
+    }
+    String iconName = (String)iconComboBox.getSelectedItem();
+    if (iconName != null && iconName.length() > 0)
+    {
+      metadata.put("icon", iconName);
+    }
+    String description = (String)descriptionTextPane.getText().trim();
+    if (description.length() > 0)
+    {
+      metadata.put("description", description);
     }
     accepted = true;
     this.setVisible(false);
@@ -376,6 +369,7 @@ public class ModuleDialog extends javax.swing.JDialog
 
   private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_cancelButtonActionPerformed
   {//GEN-HEADEREND:event_cancelButtonActionPerformed
+    accepted = false;
     this.setVisible(false);
     this.dispose();
   }//GEN-LAST:event_cancelButtonActionPerformed
@@ -388,6 +382,7 @@ public class ModuleDialog extends javax.swing.JDialog
   private javax.swing.JLabel iconLabel;
   private javax.swing.JLabel keyLabel;
   private javax.swing.JTextField keyTextField;
+  private javax.swing.JLabel leaveBlankLabel;
   private javax.swing.JLabel nameLabel;
   private javax.swing.JTextField nameTextField;
   private javax.swing.JButton okButton;

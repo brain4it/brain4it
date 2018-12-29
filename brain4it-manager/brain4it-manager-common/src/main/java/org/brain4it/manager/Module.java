@@ -1,31 +1,31 @@
 /*
  * Brain4it
- * 
+ *
  * Copyright (C) 2018, Ajuntament de Sant Feliu de Llobregat
- * 
- * This program is licensed and may be used, modified and redistributed under 
- * the terms of the European Public License (EUPL), either version 1.1 or (at 
- * your option) any later version as soon as they are approved by the European 
+ *
+ * This program is licensed and may be used, modified and redistributed under
+ * the terms of the European Public License (EUPL), either version 1.1 or (at
+ * your option) any later version as soon as they are approved by the European
  * Commission.
- * 
- * Alternatively, you may redistribute and/or modify this program under the 
- * terms of the GNU Lesser General Public License as published by the Free 
- * Software Foundation; either  version 3 of the License, or (at your option) 
- * any later version. 
- *   
- * Unless required by applicable law or agreed to in writing, software 
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT 
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- *   
- * See the licenses for the specific language governing permissions, limitations 
+ *
+ * Alternatively, you may redistribute and/or modify this program under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either  version 3 of the License, or (at your option)
+ * any later version.
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *
+ * See the licenses for the specific language governing permissions, limitations
  * and more details.
- *   
- * You should have received a copy of the EUPL1.1 and the LGPLv3 licenses along 
- * with this program; if not, you may find them at: 
- *   
+ *
+ * You should have received a copy of the EUPL1.1 and the LGPLv3 licenses along
+ * with this program; if not, you may find them at:
+ *
  *   https://joinup.ec.europa.eu/software/page/eupl/licence-eupl
- *   http://www.gnu.org/licenses/ 
- *   and 
+ *   http://www.gnu.org/licenses/
+ *   and
  *   https://www.gnu.org/licenses/lgpl.txt
  */
 
@@ -40,6 +40,7 @@ import org.brain4it.io.Parser;
 import org.brain4it.io.Printer;
 import org.brain4it.lang.BList;
 import org.brain4it.lang.Utils;
+import org.brain4it.server.ServerConstants;
 
 /**
  *
@@ -48,17 +49,17 @@ import org.brain4it.lang.Utils;
 public class Module
 {
   private static final String LIST_FUNCTIONS = "(functions)";
-  private final ArrayList<ModuleListener> listeners = 
+  private final ArrayList<ModuleListener> listeners =
     new ArrayList<ModuleListener>();
-  
+
   private Server server;
   private String name;
   private String accessKey;
   private BList functions;
-  private final Set<String> functionNames = 
+  private final Set<String> functionNames =
     Collections.synchronizedSet(new HashSet<String>());
   private BList metadata;
-  
+
   public Module(Server server)
   {
     this(server, null, null);
@@ -68,19 +69,19 @@ public class Module
   {
     this(server, name, null);
   }
-  
+
   public Module(Server server, String name, String accessKey)
   {
     this.server = server;
     this.name = name;
     setAccessKey(accessKey);
   }
-  
+
   public Server getServer()
   {
     return server;
   }
-  
+
   public String getName()
   {
     return name;
@@ -103,8 +104,8 @@ public class Module
       accessKey = accessKey.trim();
       if (accessKey.length() == 0) accessKey = null;
     }
-    
-    if ((accessKey != null && !accessKey.equals(this.accessKey)) || 
+
+    if ((accessKey != null && !accessKey.equals(this.accessKey)) ||
         (accessKey == null && this.accessKey != null))
     {
       this.accessKey = accessKey;
@@ -122,18 +123,19 @@ public class Module
   {
     this.metadata = metadata;
   }
-  
+
   public RestClient getRestClient()
   {
     String serverUrl = getServer().getUrl();
-    return new RestClient(serverUrl, 
+    return new RestClient(serverUrl,
       accessKey == null ? getServer().getAccessKey() : accessKey);
   }
-  
+
   public void loadMetadata(final Callback callback)
   {
     RestClient restClient = getRestClient();
-    restClient.get(getName(), "module-metadata", new RestClient.Callback()
+    restClient.get(getName(), ServerConstants.MODULE_METADATA_VAR,
+      new RestClient.Callback()
     {
       @Override
       public void onSuccess(RestClient client, String resultString)
@@ -147,7 +149,7 @@ public class Module
           }
         }
         catch (Exception ex)
-        {          
+        {
           if (callback != null)
           {
             callback.actionFailed(Module.this, "loadMetadata", ex);
@@ -166,28 +168,19 @@ public class Module
     });
   }
 
-  public void saveMetadata(BList metadata, final Callback callback)
+  public void saveMetadata(final Callback callback)
   {
-    RestClient restClient = getRestClient();    
+    RestClient restClient = getRestClient();
     String body = Printer.toString(metadata);
-    restClient.put(getName(), "module-metadata", body, new RestClient.Callback()
+    restClient.put(getName(), ServerConstants.MODULE_METADATA_VAR, body,
+      new RestClient.Callback()
     {
       @Override
       public void onSuccess(RestClient client, String resultString)
       {
-        try
+        if (callback != null)
         {
-          if (callback != null)
-          {
-            callback.actionCompleted(Module.this, "saveMetadata");
-          }
-        }
-        catch (Exception ex)
-        {
-          if (callback != null)
-          {
-            callback.actionFailed(Module.this, "saveMetadata", ex);
-          }
+          callback.actionCompleted(Module.this, "saveMetadata");
         }
       }
 
@@ -201,10 +194,85 @@ public class Module
       }
     });
   }
-  
+
+  public void saveAccessKey(String currentAccessKey, final Callback callback)
+  {
+    if (currentAccessKey == null)
+    {
+      currentAccessKey = server.getAccessKey();
+    }
+
+    if (accessKey == null || currentAccessKey == null)
+    {
+      // it is not necessary to save it in the server module
+      if (callback != null)
+      {
+        callback.actionCompleted(this, "saveAccessKey");
+      }
+    }
+    else if (accessKey.equals(currentAccessKey))
+    {
+      // accessKey was not changed
+      if (callback != null)
+      {
+        callback.actionCompleted(this, "saveAccessKey");
+      }
+    }
+    else
+    {
+      // accessKey was changed
+      RestClient restClient = getRestClient();
+      restClient.setAccessKey(currentAccessKey);
+      String body = Printer.toString(accessKey);
+
+      restClient.put(getName(), ServerConstants.MODULE_ACCESS_KEY_VAR, body,
+        new RestClient.Callback()
+      {
+        @Override
+        public void onSuccess(RestClient client, String resultString)
+        {
+          if (callback != null)
+          {
+            callback.actionCompleted(Module.this, "saveAccessKey");
+          }
+        }
+
+        @Override
+        public void onError(RestClient client, Exception ex)
+        {
+          if (callback != null)
+          {
+            callback.actionFailed(Module.this, "saveAccessKey", ex);
+          }
+        }
+      });
+    }
+  }
+
+  public void saveAccessKeyAndMetadata(String currentAccessKey, 
+     final Callback callback)
+  {
+    saveAccessKey(currentAccessKey, new Callback()
+    {
+      @Override
+      public void actionCompleted(Module module, String action)
+      {
+        // access key change successfull, save metadata
+        saveMetadata(callback);
+      }
+
+      @Override
+      public void actionFailed(Module module, String action, Exception error)
+      {
+        // access key change failed, try to save metadata with new accessKey
+        saveMetadata(callback);
+      }
+    });
+  }
+
   public void saveData(String reference, String data, final Callback callback)
   {
-    String command = "(if (not (exists " + reference + ")) (set " + 
+    String command = "(if (not (exists " + reference + ")) (set " +
       reference + " " + data + "))";
     RestClient restClient = getRestClient();
     restClient.execute(getName(), command, new RestClient.Callback()
@@ -228,7 +296,7 @@ public class Module
       }
     });
   }
-  
+
   public void findFunctions(final Callback callback)
   {
     RestClient restClient = getRestClient();
@@ -245,7 +313,7 @@ public class Module
           {
             functionNames.add(Utils.toString(functions.get(i)));
           }
-          ModuleEvent event = new ModuleEvent(Module.this, 
+          ModuleEvent event = new ModuleEvent(Module.this,
             ModuleEvent.FUNCTIONS_UPDATED);
           notifyFunctionsUpdated(event);
           if (callback != null)
@@ -272,7 +340,7 @@ public class Module
       }
     });
   }
-  
+
   public BList getFunctions()
   {
     return functions;
@@ -287,7 +355,7 @@ public class Module
   {
     listeners.add(listener);
   }
-  
+
   public void removeModuleListener(ModuleListener listener)
   {
     listeners.remove(listener);
@@ -295,30 +363,30 @@ public class Module
 
   private void notifyAccessKeyChanged(ModuleEvent event)
   {
-    ModuleListener[] array = new ModuleListener[listeners.size()];        
+    ModuleListener[] array = new ModuleListener[listeners.size()];
     listeners.toArray(array);
     for (ModuleListener listener : array)
     {
       listener.accessKeyChanged(event);
-    }    
+    }
   }
 
   private void notifyFunctionsUpdated(ModuleEvent event)
   {
-    ModuleListener[] array = new ModuleListener[listeners.size()];        
+    ModuleListener[] array = new ModuleListener[listeners.size()];
     listeners.toArray(array);
     for (ModuleListener listener : array)
     {
       listener.functionsUpdated(event);
-    }    
+    }
   }
-  
+
   @Override
   public String toString()
   {
     return name;
   }
-  
+
   public interface Callback
   {
     public void actionCompleted(Module module, String action);

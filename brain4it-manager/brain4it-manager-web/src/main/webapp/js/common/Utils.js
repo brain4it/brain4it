@@ -113,3 +113,8 @@ function createFileChooserButton(id, label, className, listener)
   return spanElem;
 };
 
+function isValidURL(str)
+{
+  var pattern = /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/;
+  return pattern.test(str);
+};

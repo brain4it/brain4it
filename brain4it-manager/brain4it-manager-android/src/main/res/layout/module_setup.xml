@@ -19,7 +19,7 @@
     android:layout_width="match_parent" 
     android:layout_height="wrap_content"
     android:layout_margin="4dp"
-    android:text="@string/accessKey"  />
+    android:text="@string/moduleAccessKey"  />
   <EditText 
     android:id="@+id/accessKeyInput"
     android:inputType="textVisiblePassword|textNoSuggestions"

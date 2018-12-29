@@ -209,3 +209,11 @@
   background-image: linear-gradient(to bottom, #59B4E0, #7ec5e7);
   text-decoration: none;
 }
+
+.web_dialog .error_message
+{
+  color: red;
+  display: block;
+  text-align: center;
+  margin-top: 4px;
+}

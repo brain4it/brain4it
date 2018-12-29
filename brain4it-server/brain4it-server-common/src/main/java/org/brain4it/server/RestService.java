@@ -31,6 +31,7 @@
 
 package org.brain4it.server;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -126,31 +127,42 @@ public class RestService
       BList pathList = parser.getPathList();
       if (pathList == null)
       {
+        // module creation or update
         BList data = null;
         if (value instanceof BList)
         {
           data = (BList)value;
         }
-        Module module =
-          moduleManager.getModule(parser.getTenant(), moduleName, false);
+        String tenant = parser.getTenant();
+        Module module = moduleManager.getModule(tenant, moduleName, false);
         if (module == null)
         {
-          // module creation
-          moduleManager.createModule(parser.getTenant(), moduleName, data);
+          // create module because it do not exists
+          module = moduleManager.createModule(tenant, moduleName, data);
           result = "Module " + moduleName + " created.";
         }
         else
         {
-          // module update
+          // update module because it already exists
+
+          // data is null when the manager app attempts to create a module
+          // so must throw an Exception since the module already exists
           if (data == null)
             throw new Exception("Module " + moduleName + " already exists.");
 
+          // load data in the module
           module.init(data);
           result = "Module " + moduleName + " modified.";
+        }
+        // set access key variable to secure the module
+        if (accessKey != null)
+        {
+          module.put(MODULE_ACCESS_KEY_VAR, accessKey);
         }
       }
       else
       {
+        // update element referenced by path
         Module module = parser.getModule();
         result = module.put(pathList, value);
       }
@@ -253,7 +265,7 @@ public class RestService
         String moduleAccessKey = String.valueOf(value);
         if (moduleAccessKey.equals(accessKey)) return;
       }
-      catch (Exception ex)
+      catch (IOException ex)
       {
         // module not created yet
       }

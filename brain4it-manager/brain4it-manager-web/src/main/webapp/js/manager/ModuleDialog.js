@@ -1,6 +1,6 @@
 /**
  * ModuleDialog.js
- * 
+ *
  * @author realor
  */
 
@@ -10,12 +10,14 @@ ModuleDialog = function(title, module)
 
   this.module = module;
   this.nameElem = this.addTextField("module_name", "Module name:", module.name);
-  this.keyElem = this.addTextField("module_key", 
+  this.keyElem = this.addTextField("module_key",
     "Access key (leave blank to access with server key):", module.accessKey);
+  this.nameElem.setAttribute("autocomplete", "off");
+  this.keyElem.setAttribute("autocomplete", "off");
   this.messageElem = this.addText("", "error_message");
 
   if (module.name)
-  { 
+  {
     this.nameElem.readOnly = true;
   }
   var scope = this;
@@ -34,10 +36,10 @@ ModuleDialog.prototype.accept = function()
     return;
   }
   var accessKey = this.keyElem.value;
-  
+
   this.module.name = moduleName;
   this.module.setAccessKey(accessKey);
-  
+
   this.onAccept(this.module);
   WebDialog.prototype.hide.call(this);
 };

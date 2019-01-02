@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 import org.brain4it.client.RestClient;
 import org.brain4it.io.Parser;
 import org.brain4it.io.Printer;
@@ -112,6 +113,13 @@ public class Module
       ModuleEvent event = new ModuleEvent(this, ModuleEvent.ACCESS_KEY_CHANGED);
       notifyAccessKeyChanged(event);
     }
+  }
+
+  public void randomAccessKey()
+  {
+    UUID uuid = UUID.randomUUID();
+    this.accessKey = Long.toHexString(uuid.getMostSignificantBits()) +
+      Long.toHexString(uuid.getLeastSignificantBits());
   }
 
   public BList getMetadata()
@@ -249,7 +257,7 @@ public class Module
     }
   }
 
-  public void saveAccessKeyAndMetadata(String currentAccessKey, 
+  public void saveAccessKeyAndMetadata(String currentAccessKey,
      final Callback callback)
   {
     saveAccessKey(currentAccessKey, new Callback()

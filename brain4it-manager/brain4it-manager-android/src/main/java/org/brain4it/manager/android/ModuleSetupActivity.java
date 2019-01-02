@@ -91,12 +91,17 @@ public class ModuleSetupActivity extends Activity
           module = server.getModules().get(moduleIndex);
           moduleNameInput.setText(module.getName());
           accessKeyInput.setText(module.getAccessKey());
-        }
-
-        moduleNameInput.setEnabled(module == null);
-        if (module != null)
-        {
+          moduleNameInput.setEnabled(false);
           accessKeyInput.requestFocus();
+        }
+        else
+        {
+          module = new Module(server);
+          if (createModule)
+          {
+            module.randomAccessKey();
+            accessKeyInput.setText(module.getAccessKey());
+          }
         }
 
         okButton.setOnClickListener(new Button.OnClickListener()
@@ -108,7 +113,7 @@ public class ModuleSetupActivity extends Activity
             {
               createModule();
             }
-            else if (module == null)
+            else if (module.getName() == null)
             {
               addModule();
             }
@@ -127,11 +132,11 @@ public class ModuleSetupActivity extends Activity
     final String moduleName = moduleNameInput.getText().toString().trim();
     if (moduleName.length() == 0)
     {
-      ToastUtils.showLong(this, 
+      ToastUtils.showLong(this,
         getResources().getString(R.string.moduleNameMandatory));
       return;
     }
-    
+
     final String accessKey = accessKeyInput.getText().toString();
     RestClient restClient = server.getRestClient();
     restClient.createModule(moduleName, new Callback()
@@ -140,7 +145,8 @@ public class ModuleSetupActivity extends Activity
       public void onSuccess(RestClient client, String resultString)
       {
         ToastUtils.showLong(ModuleSetupActivity.this, resultString);
-        Module module = new Module(server, moduleName, accessKey);
+        module.setName(moduleName);
+        module.setAccessKey(accessKey);
         server.getModules().add(module);
         module.saveAccessKey(server.getAccessKey(), null);
         finish();
@@ -159,14 +165,15 @@ public class ModuleSetupActivity extends Activity
     String moduleName = moduleNameInput.getText().toString().trim();
     if (moduleName.length() == 0)
     {
-      ToastUtils.showLong(this, 
+      ToastUtils.showLong(this,
         getResources().getString(R.string.moduleNameMandatory));
       return;
     }
     String accessKey = accessKeyInput.getText().toString();
-    
-    module = new Module(server, moduleName, accessKey);
+    module.setName(moduleName);
+    module.setAccessKey(accessKey);
     server.getModules().add(module);
+    finish();
   }
 
   private void editModule()

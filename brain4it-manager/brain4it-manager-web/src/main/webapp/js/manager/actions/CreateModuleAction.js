@@ -19,6 +19,7 @@ Brain4it.CreateModuleAction.prototype.invoke = function()
   if (server instanceof Brain4it.Server)
   {
     var module = new Brain4it.Module();
+    module.randomAccessKey();
     var moduleDialog = new ModuleDialog("Create module", module);
     moduleDialog.onAccept = function()
     {

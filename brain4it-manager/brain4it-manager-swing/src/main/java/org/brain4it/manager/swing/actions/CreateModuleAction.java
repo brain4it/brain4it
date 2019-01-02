@@ -73,7 +73,8 @@ public class CreateModuleAction extends ManagerAction
     DefaultMutableTreeNode serverNode = managerApp.getSelectedNode();
     Server server = (Server)serverNode.getUserObject();
     final Module module = new Module(server);
-    
+    module.randomAccessKey();
+
     ModuleDialog dialog = new ModuleDialog(managerApp, true);
     dialog.setTitle((String)getValue(AbstractAction.NAME));
     dialog.setLocationRelativeTo(managerApp);

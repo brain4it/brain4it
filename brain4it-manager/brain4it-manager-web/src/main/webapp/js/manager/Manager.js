@@ -370,11 +370,11 @@ Brain4it.Server.prototype =
     if (accessKey !== null)
     {
       accessKey = accessKey.trim();
-      if (accessKey.length === 0) accessKey = null;      
+      if (accessKey.length === 0) accessKey = null;
     }
     this.accessKey = accessKey;
   },
-  
+
   addModule : function(module)
   {
     if (module.server === null)
@@ -411,11 +411,11 @@ Brain4it.Module.prototype =
     if (accessKey !== null)
     {
       accessKey = accessKey.trim();
-      if (accessKey.length === 0) accessKey = null;      
+      if (accessKey.length === 0) accessKey = null;
     }
     this.accessKey = accessKey;
   },
-  
+
   getAccessKey : function()
   {
     if (this.accessKey === null || this.accessKey.length === 0)
@@ -454,8 +454,18 @@ Brain4it.Module.prototype =
         this.name + "/" + Brain4it.MODULE_ACCESS_KEY_VAR, currentAccessKey);
       client.method = "PUT";
       client.callback = callback;
-      client.send(Brain4it.escapeString(this.accessKey));
+      client.send('"' + Brain4it.escapeString(this.accessKey) + '"');
     }
+  },
+
+  randomAccessKey : function()
+  {
+    function s4()
+    {
+      return Math.floor((1 + Math.random()) * 0x10000).
+        toString(16).substring(1);
+    }
+    this.accessKey = s4() + s4() + s4() + s4() + s4() + s4() + s4() + s4();
   }
 };
 

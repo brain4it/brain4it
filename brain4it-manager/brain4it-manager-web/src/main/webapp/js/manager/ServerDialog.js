@@ -1,21 +1,22 @@
 /**
  * ServerDialog.js
- * 
+ *
  * @author realor
  */
 
 ServerDialog = function(title, server)
 {
   WebDialog.call(this, title, 400, 250);
-  
+
   this.server = server;
   this.nameElem = this.addTextField("server_name", "Server name:", server.name);
   this.urlElem = this.addTextField("server_url", "Server URL:", server.url);
-  this.keyElem = this.addTextField("server_key", "Access key:", 
+  this.keyElem = this.addTextField("server_key", "Access key:",
     server.accessKey);
+  this.nameElem.setAttribute("autocomplete", "off");
   this.keyElem.setAttribute("autocomplete", "off");
   this.messageElem = this.addText("", "error_message");
-  
+
   var scope = this;
   this.addButton("server_accept", "Accept", function(){ scope.accept();});
   this.addButton("server_cancel", "Cancel", function(){ scope.cancel();});
@@ -26,7 +27,7 @@ ServerDialog.prototype = Object.create(WebDialog.prototype);
 ServerDialog.prototype.accept = function()
 {
   this.messageElem.innerHTML = "";
-  
+
   var serverName = this.nameElem.value.trim();
   if (serverName.length === 0)
   {
@@ -49,7 +50,7 @@ ServerDialog.prototype.accept = function()
   this.server.name = serverName;
   this.server.url = serverUrl;
   this.server.setAccessKey(accessKey);
-  
+
   this.onAccept(this.server);
   WebDialog.prototype.hide.call(this);
 };

@@ -74,6 +74,8 @@ public class CodeListView extends ListView
     super(context, attrs);
     adapter = new CodeAdapter(context, items);
     setAdapter(adapter);
+    setTranscriptMode(ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
+    setStackFromBottom(true);
   }
 
   public int getTextSize()
@@ -92,14 +94,6 @@ public class CodeListView extends ListView
     if (str.endsWith("\n")) str = str.substring(0, str.length() - 1);
     items.add(new Item(type, str));
     adapter.notifyDataSetChanged();
-    post(new Runnable()
-    {
-      @Override
-      public void run()
-      {
-        setSelection(adapter.getCount());
-      }
-    });
   }
 
   public void clear()

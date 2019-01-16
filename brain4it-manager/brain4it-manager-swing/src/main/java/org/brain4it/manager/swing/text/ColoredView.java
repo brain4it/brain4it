@@ -120,6 +120,8 @@ public class ColoredView extends PlainView
 
   protected void drawIndentLines(Segment text, int x, int y, Graphics2D g)
   {
+    if (text.count == 0 || text.charAt(0) != ' ') return;
+    
     Container container = (Container)getContainer();
     if (!(container instanceof JComponent)) return;
 

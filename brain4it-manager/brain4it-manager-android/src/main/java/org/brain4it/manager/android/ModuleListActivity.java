@@ -72,7 +72,7 @@ public class ModuleListActivity extends ListActivity
 {
   private Server server;
   private int serverIndex;
-  
+
   /**
    * Called when the activity is first created.
    *
@@ -85,14 +85,14 @@ public class ModuleListActivity extends ListActivity
 
     ManagerApplication app = (ManagerApplication)getApplicationContext();
     app.setupActivity(this, true);
-    
+
     Intent intent = getIntent();
     if (intent != null)
     {
       serverIndex = intent.getIntExtra("serverIndex", -1);
       if (serverIndex != -1)
       {
-        server = getWorkspace().getServers().get(serverIndex);    
+        server = getWorkspace().getServers().get(serverIndex);
         setTitle(server.getName());
         updateModuleList();
 
@@ -118,7 +118,7 @@ public class ModuleListActivity extends ListActivity
     super.onResume();
     updateModuleList();
   }
-  
+
   public void updateModuleList()
   {
     runOnUiThread(new Runnable()
@@ -144,13 +144,13 @@ public class ModuleListActivity extends ListActivity
   public void onCreateContextMenu(final ContextMenu menu,
     final View view, final ContextMenu.ContextMenuInfo menuInfo)
   {
+    super.onCreateContextMenu(menu, view, menuInfo);
+    MenuInflater inflater = getMenuInflater();
+    inflater.inflate(R.menu.module_list_ctx_menu, menu);
+
     int moduleIndex = ((AdapterView.AdapterContextMenuInfo)menuInfo).position;
     Module module = server.getModules().get(moduleIndex);
     menu.setHeaderTitle(server.getName() + " : " + module.getName());
-    menu.add(0, 1, 0, R.string.editModule);
-    menu.add(0, 2, 0, R.string.importModule);
-    menu.add(0, 3, 0, R.string.removeModule);
-    menu.add(0, 4, 0, R.string.destroyModule);
   }
 
   @Override
@@ -184,20 +184,16 @@ public class ModuleListActivity extends ListActivity
 
     switch (item.getItemId())
     {
-    // editModule
-      case 1:
+      case R.id.editModule:
         editModule(moduleIndex);
         break;
-    // importModule
-      case 2:
+      case R.id.importModule:
         importModule(moduleIndex);
         break;
-    // removeModule
-      case 3:
+      case R.id.removeModule:
         removeModule(moduleIndex);
         break;
-    // destroyModule
-      case 4:
+      case R.id.destroyModule:
         destroyModule(moduleIndex);
         break;
       default:

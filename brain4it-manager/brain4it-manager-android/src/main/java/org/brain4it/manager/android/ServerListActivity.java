@@ -1,31 +1,31 @@
 /*
  * Brain4it
- * 
+ *
  * Copyright (C) 2018, Ajuntament de Sant Feliu de Llobregat
- * 
- * This program is licensed and may be used, modified and redistributed under 
- * the terms of the European Public License (EUPL), either version 1.1 or (at 
- * your option) any later version as soon as they are approved by the European 
+ *
+ * This program is licensed and may be used, modified and redistributed under
+ * the terms of the European Public License (EUPL), either version 1.1 or (at
+ * your option) any later version as soon as they are approved by the European
  * Commission.
- * 
- * Alternatively, you may redistribute and/or modify this program under the 
- * terms of the GNU Lesser General Public License as published by the Free 
- * Software Foundation; either  version 3 of the License, or (at your option) 
- * any later version. 
- *   
- * Unless required by applicable law or agreed to in writing, software 
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT 
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- *   
- * See the licenses for the specific language governing permissions, limitations 
+ *
+ * Alternatively, you may redistribute and/or modify this program under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either  version 3 of the License, or (at your option)
+ * any later version.
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *
+ * See the licenses for the specific language governing permissions, limitations
  * and more details.
- *   
- * You should have received a copy of the EUPL1.1 and the LGPLv3 licenses along 
- * with this program; if not, you may find them at: 
- *   
+ *
+ * You should have received a copy of the EUPL1.1 and the LGPLv3 licenses along
+ * with this program; if not, you may find them at:
+ *
  *   https://joinup.ec.europa.eu/software/page/eupl/licence-eupl
- *   http://www.gnu.org/licenses/ 
- *   and 
+ *   http://www.gnu.org/licenses/
+ *   and
  *   https://www.gnu.org/licenses/lgpl.txt
  */
 
@@ -75,14 +75,14 @@ public class ServerListActivity extends ListActivity
   public void onCreate(Bundle icicle)
   {
     super.onCreate(icicle);
-    
+
     ManagerApplication app = (ManagerApplication)getApplicationContext();
     app.setupActivity(this, false);
-    
+
     setTitle(R.string.servers);
 
     updateServerList();
-        
+
 		ListView listView = getListView();
 		listView.setTextFilterEnabled(true);
     registerForContextMenu(listView);
@@ -92,7 +92,7 @@ public class ServerListActivity extends ListActivity
 			public void onItemClick(AdapterView<?> parent, View view,
 				int position, long id)
       {
-        Intent intent = new Intent(ServerListActivity.this, 
+        Intent intent = new Intent(ServerListActivity.this,
           ModuleListActivity.class);
         intent.putExtra("serverIndex", position);
         startActivity(intent);
@@ -108,15 +108,15 @@ public class ServerListActivity extends ListActivity
     {
       updateServerList();
     }
-  }  
-  
+  }
+
   @Override
   protected void onPause()
   {
     super.onPause();
     ((ManagerApplication)getApplicationContext()).saveWorkspace();
   }
-  
+
   public void updateServerList()
   {
     runOnUiThread(new Runnable()
@@ -124,12 +124,12 @@ public class ServerListActivity extends ListActivity
       @Override
       public void run()
       {
-        setListAdapter(new ServerAdapter(ServerListActivity.this, 
+        setListAdapter(new ServerAdapter(ServerListActivity.this,
           getWorkspace().getServers()));
       }
     });
   }
-  
+
   @Override
   public boolean onCreateOptionsMenu(Menu menu)
   {
@@ -137,18 +137,20 @@ public class ServerListActivity extends ListActivity
     inflater.inflate(R.menu.server_list_menu, menu);
     return true;
   }
-  
+
   @Override
-  public void onCreateContextMenu(final ContextMenu menu, 
+  public void onCreateContextMenu(final ContextMenu menu,
     final View view, final ContextMenuInfo menuInfo)
   {
+    super.onCreateContextMenu(menu, view, menuInfo);
+    MenuInflater inflater = getMenuInflater();
+    inflater.inflate(R.menu.server_list_ctx_menu, menu);
+
     int serverIndex = ((AdapterView.AdapterContextMenuInfo)menuInfo).position;
     Server server = getWorkspace().getServers().get(serverIndex);
     menu.setHeaderTitle(server.getName());
-    menu.add(0, 1, 0, R.string.editServer);
-    menu.add(0, 2, 0, R.string.removeServer);
   }
-  
+
   @Override
   public boolean onOptionsItemSelected(MenuItem item)
   {
@@ -180,58 +182,58 @@ public class ServerListActivity extends ListActivity
   @Override
   public boolean onContextItemSelected(MenuItem item)
   {
-    AdapterView.AdapterContextMenuInfo info = 
+    AdapterView.AdapterContextMenuInfo info =
        (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
 
     int serverIndex = info.position;
-    if (item.getItemId() == 1) // editServer
+    if (item.getItemId() == R.id.editServer)
     {
       editServer(serverIndex);
     }
-    else if(item.getItemId() == 2) // removeServer
+    else if(item.getItemId() == R.id.removeServer)
     {
       removeServer(serverIndex);
     }
     return true;
   }
-    
+
   private void addServer()
   {
-    Intent intent = new Intent(ServerListActivity.this, 
+    Intent intent = new Intent(ServerListActivity.this,
       ServerSetupActivity.class);
     intent.putExtra("title", getResources().getString(R.string.addServer));
-    startActivity(intent);    
+    startActivity(intent);
   }
 
   private void preferences()
   {
-    Intent intent = new Intent(ServerListActivity.this, 
+    Intent intent = new Intent(ServerListActivity.this,
       PreferencesActivity.class);
-    startActivity(intent);    
+    startActivity(intent);
   }
 
   private void about()
   {
-    Intent intent = new Intent(ServerListActivity.this, 
+    Intent intent = new Intent(ServerListActivity.this,
       AboutActivity.class);
-    startActivity(intent);    
+    startActivity(intent);
   }
-  
+
   private void editServer(int serverIndex)
   {
-    Intent intent = new Intent(ServerListActivity.this, 
+    Intent intent = new Intent(ServerListActivity.this,
       ServerSetupActivity.class);
     intent.putExtra("title", getResources().getString(R.string.editServer));
     intent.putExtra("serverIndex", serverIndex);
-    startActivity(intent);    
+    startActivity(intent);
   }
-  
+
   private void removeServer(int serverIndex)
   {
     getWorkspace().getServers().remove(serverIndex);
     updateServerList();
   }
-  
+
   private void sortServers()
   {
     Workspace workspace = getWorkspace();
@@ -243,7 +245,7 @@ public class ServerListActivity extends ListActivity
   {
     try
     {
-      File baseDir = new File(Environment.getExternalStorageDirectory(), 
+      File baseDir = new File(Environment.getExternalStorageDirectory(),
         "brain4it");
       baseDir.mkdirs();
       File file = new File(baseDir + "/threads.txt");
@@ -253,7 +255,7 @@ public class ServerListActivity extends ListActivity
       for (Map.Entry<Thread, StackTraceElement[]> entry : stacks.entrySet())
       {
         Thread thread = entry.getKey();
-        writer.println("Thread: " + thread.getName() + 
+        writer.println("Thread: " + thread.getName() +
           " id:" + thread.getId() + ":");
         StackTraceElement[] stack = entry.getValue();
         for (StackTraceElement elem : stack)
@@ -270,22 +272,22 @@ public class ServerListActivity extends ListActivity
       Intent newIntent = new Intent(Intent.ACTION_VIEW);
       newIntent.setDataAndType(Uri.fromFile(file), mimeType);
       newIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-      try 
+      try
       {
         startActivity(newIntent);
-      } 
-      catch (ActivityNotFoundException e) 
+      }
+      catch (ActivityNotFoundException e)
       {
         ToastUtils.showLong(this, "No handler for this type of file.");
       }
     }
     catch (Exception ex)
-    {      
+    {
       ToastUtils.showLong(this, ex.toString());
     }
   }
-  
-  public class ServerAdapter extends BaseAdapter 
+
+  public class ServerAdapter extends BaseAdapter
   {
     private final Context context;
     private final List<Server> servers;
@@ -319,7 +321,7 @@ public class ServerListActivity extends ListActivity
     {
       LayoutInflater inflater = getLayoutInflater();
       View itemView = inflater.inflate(R.layout.server_item, parent, false);
-      
+
       ImageView imageView = (ImageView)itemView.findViewById(R.id.serverIcon);
       imageView.setImageResource(R.drawable.server);
 

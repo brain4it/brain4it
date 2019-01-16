@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+  <item android:id="@+id/editModule"
+        android:title="@string/editModule" />
+  <item android:id="@+id/importModule"
+        android:title="@string/importModule" />
+  <item android:id="@+id/removeModule"
+        android:title="@string/removeModule" />
+  <item android:id="@+id/destroyModule"
+        android:title="@string/destroyModule" />
+</menu>

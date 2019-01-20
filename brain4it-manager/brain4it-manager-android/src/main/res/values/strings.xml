@@ -65,6 +65,7 @@
   <string name="loadSuccessfull">Load successfull.</string>
   <string name="saveSuccessfull">Save successfull.</string>
   <string name="noDashboards">This module has no dashboards!</string>
+  <string name="importCompleted">Import completed.</string>
   <string name="noMatches">No matches</string>
   <string name="serverNameMandatory">Server name is mandatory</string>
   <string name="moduleNameMandatory">Module name is mandatory</string>

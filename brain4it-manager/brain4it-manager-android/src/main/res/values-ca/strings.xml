@@ -65,6 +65,7 @@
   <string name="loadSuccessfull">Carregat correctament.</string>
   <string name="saveSuccessfull">Desat correctament.</string>
   <string name="noDashboards">Aquest mòdul no té panells!</string>
+  <string name="importCompleted">Importació finalitzada.</string>
   <string name="noMatches">No hi ha coincidències</string>
   <string name="serverNameMandatory">El nom del servidor és obligatori</string>
   <string name="moduleNameMandatory">El nom del mòdul és obligatori</string>

@@ -66,6 +66,9 @@ import org.brain4it.manager.Workspace;
  */
 public class ServerListActivity extends ListActivity
 {
+  private int scrollIndex = -1;
+  private int scrollTop;
+
   /**
    * Called when the activity is first created.
    *
@@ -90,13 +93,11 @@ public class ServerListActivity extends ListActivity
     {
       @Override
 			public void onItemClick(AdapterView<?> parent, View view,
-				int position, long id)
+				int serverIndex, long id)
       {
-        Intent intent = new Intent(ServerListActivity.this,
-          ModuleListActivity.class);
-        intent.putExtra("serverIndex", position);
-        startActivity(intent);
-			}
+        saveScroll();
+        showServerModules(serverIndex);
+      }
 		});
   }
 
@@ -107,6 +108,7 @@ public class ServerListActivity extends ListActivity
     if (getWorkspace() != null)
     {
       updateServerList();
+      restoreScroll();
     }
   }
 
@@ -179,20 +181,32 @@ public class ServerListActivity extends ListActivity
     return true;
   }
 
+  private void showServerModules(int serverIndex)
+  {
+    Intent intent = new Intent(ServerListActivity.this,
+      ModuleListActivity.class);
+    intent.putExtra("serverIndex", serverIndex);
+    startActivity(intent);
+  }
+
   @Override
   public boolean onContextItemSelected(MenuItem item)
   {
+    saveScroll();
+
     AdapterView.AdapterContextMenuInfo info =
        (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
 
     int serverIndex = info.position;
-    if (item.getItemId() == R.id.editServer)
+
+    switch (item.getItemId())
     {
-      editServer(serverIndex);
-    }
-    else if(item.getItemId() == R.id.removeServer)
-    {
-      removeServer(serverIndex);
+      case R.id.editServer:
+        editServer(serverIndex);
+        break;
+      case R.id.removeServer:
+        removeServer(serverIndex);
+        break;
     }
     return true;
   }
@@ -284,6 +298,24 @@ public class ServerListActivity extends ListActivity
     catch (Exception ex)
     {
       ToastUtils.showLong(this, ex.toString());
+    }
+  }
+
+  private void saveScroll()
+  {
+    ListView listView = getListView();
+    scrollIndex = listView.getFirstVisiblePosition();
+    View view = listView.getChildAt(0);
+    scrollTop = (view == null) ?
+      0 : (view.getTop() - listView.getPaddingTop());
+  }
+
+  private void restoreScroll()
+  {
+    if (scrollIndex != -1)
+    {
+      ListView listView = getListView();
+      listView.setSelectionFromTop(scrollIndex, scrollTop);
     }
   }
 

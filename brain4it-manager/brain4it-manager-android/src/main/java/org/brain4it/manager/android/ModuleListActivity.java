@@ -72,6 +72,8 @@ public class ModuleListActivity extends ListActivity
 {
   private Server server;
   private int serverIndex;
+  private int scrollIndex = -1;
+  private int scrollTop;
 
   /**
    * Called when the activity is first created.
@@ -105,6 +107,7 @@ public class ModuleListActivity extends ListActivity
           public void onItemClick(AdapterView<?> parent, View view,
             int moduleIndex, long id)
           {
+            saveScroll();
             openModule(moduleIndex);
           }
         });
@@ -128,6 +131,7 @@ public class ModuleListActivity extends ListActivity
       {
         setListAdapter(new ModuleAdapter(ModuleListActivity.this,
           server.getModules()));
+        restoreScroll();
       }
     });
   }
@@ -177,6 +181,8 @@ public class ModuleListActivity extends ListActivity
   @Override
   public boolean onContextItemSelected(MenuItem item)
   {
+    saveScroll();
+
     AdapterView.AdapterContextMenuInfo info =
        (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
 
@@ -249,6 +255,7 @@ public class ModuleListActivity extends ListActivity
             module.setMetadata(metadata);
             server.getModules().add(module);
           }
+          scrollIndex = -1;
           updateModuleList();
           String message = String.format(
             getResources().getString(R.string.modulesFound),
@@ -390,6 +397,24 @@ public class ModuleListActivity extends ListActivity
     dialog.show();
   }
 
+  private void saveScroll()
+  {
+    ListView listView = getListView();
+    scrollIndex = listView.getFirstVisiblePosition();
+    View view = listView.getChildAt(0);
+    scrollTop = (view == null) ?
+      0 : (view.getTop() - listView.getPaddingTop());
+  }
+
+  private void restoreScroll()
+  {
+    if (scrollIndex != -1)
+    {
+      ListView listView = getListView();
+      listView.setSelectionFromTop(scrollIndex, scrollTop);
+    }
+  }
+
   private void putData(Module module, String dataString)
   {
     RestClient client = module.getRestClient();
@@ -400,7 +425,9 @@ public class ModuleListActivity extends ListActivity
       @Override
       public void onSuccess(RestClient client, String resultString)
       {
-        ToastUtils.showLong(ModuleListActivity.this, "Import completed.");
+        String message = getResources().getString(R.string.importCompleted);
+        
+        ToastUtils.showLong(ModuleListActivity.this, message);
       }
 
       @Override

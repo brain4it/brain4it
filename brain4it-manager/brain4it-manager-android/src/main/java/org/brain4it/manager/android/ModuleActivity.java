@@ -87,6 +87,12 @@ public abstract class ModuleActivity extends Activity
   }
 
   @Override
+  public void onBackPressed()
+  {
+    showActivity(ModuleListActivity.class, true);
+  }
+
+  @Override
   public boolean onOptionsItemSelected(MenuItem item)
   {
     switch (item.getItemId())
@@ -99,30 +105,33 @@ public abstract class ModuleActivity extends Activity
             getSystemService(Context.INPUT_METHOD_SERVICE);
           imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
-        showActivity(DashboardActivity.class);
+        showActivity(DashboardActivity.class, false);
         break;
       case R.id.showConsole:
-        showActivity(ConsoleActivity.class);
+        showActivity(ConsoleActivity.class, false);
         break;
       case R.id.showEditor:
-        showActivity(EditorActivity.class);
+        showActivity(EditorActivity.class, false);
         break;
       case android.R.id.home:
-        Intent intent = new Intent(this, ModuleListActivity.class);
-        intent.putExtra("serverIndex", serverIndex);
-        intent.addFlags(
-          Intent.FLAG_ACTIVITY_REORDER_TO_FRONT |
-          Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
+        showActivity(ModuleListActivity.class, true);
         break;
     }
     return true;
   }
 
-  public void showActivity(Class activityClass)
+  public void showActivity(Class activityClass, boolean clearTop)
   {
     Intent intent = new Intent(this, activityClass);
-    intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+    if (clearTop)
+    {
+      intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
+        Intent.FLAG_ACTIVITY_SINGLE_TOP);
+    }
+    else
+    {
+      intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+    }
     intent.putExtra("serverIndex", serverIndex);
     intent.putExtra("moduleIndex", moduleIndex);
     startActivity(intent);

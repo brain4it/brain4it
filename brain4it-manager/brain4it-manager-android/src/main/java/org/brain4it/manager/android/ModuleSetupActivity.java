@@ -137,6 +137,8 @@ public class ModuleSetupActivity extends Activity
       return;
     }
 
+    okButton.setEnabled(false);
+
     final String accessKey = accessKeyInput.getText().toString();
     RestClient restClient = server.getRestClient();
     restClient.createModule(moduleName, new Callback()
@@ -155,6 +157,7 @@ public class ModuleSetupActivity extends Activity
       @Override
       public void onError(RestClient client, Exception ex)
       {
+        okButton.setEnabled(true);
         ToastUtils.showLong(ModuleSetupActivity.this, ex.toString());
       }
     });

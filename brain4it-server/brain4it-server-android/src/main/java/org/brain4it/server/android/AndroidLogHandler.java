@@ -30,10 +30,18 @@
  */
 package org.brain4it.server.android;
 
-import java.text.SimpleDateFormat;
+
+import android.os.Environment;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.Date;
+import java.text.SimpleDateFormat;
 import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
+import org.brain4it.io.IOUtils;
 
 /**
  *
@@ -41,6 +49,8 @@ import java.util.logging.LogRecord;
  */
 public class AndroidLogHandler extends java.util.logging.Handler
 {
+  private static final String TAG = "brain4it"; 
+  
   private SimpleDateFormat dateFormat = 
     new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
   private final Formatter formatter = new Formatter()
@@ -48,8 +58,16 @@ public class AndroidLogHandler extends java.util.logging.Handler
     @Override
     public synchronized String format(LogRecord record)
     {
+      StringBuilder buffer = new StringBuilder();
+      buffer.append("[").append(dateFormat.format(new Date())).append("] ");
       String message = formatMessage(record);
-      return "[" + dateFormat.format(new Date()) + "] " + message;
+      buffer.append(message);
+      Throwable t = record.getThrown();
+      if (t != null)
+      {
+        buffer.append(": ").append(t.toString());
+      }
+      return buffer.toString();
     }  
   };
   
@@ -57,13 +75,14 @@ public class AndroidLogHandler extends java.util.logging.Handler
   public void publish(LogRecord record)
   {
     String message = formatter.format(record);
+    logMessage(message);
     ServerActivity activity = ServerActivity.getInstance();
     if (activity != null)
     {
-      activity.logMessage(message);
+      activity.logMessage(message, true);
     }
   }
-
+  
   @Override
   public void flush()
   {
@@ -73,4 +92,60 @@ public class AndroidLogHandler extends java.util.logging.Handler
   public void close() throws SecurityException
   {
   }
+  
+  public String getLogMessages()
+  {
+    File logFile = getLogFile();
+    if (logFile.exists())
+    {
+      try
+      {
+        return IOUtils.readString(new FileInputStream(logFile), "UTF-8");
+      }
+      catch (IOException ex)
+      {
+        // ignore
+      }
+    }
+    return null;
+  }
+  
+  public void clearLogMessages()
+  {
+    File file = getLogFile();
+    if (file.exists())
+    {
+      file.delete();
+    }
+  }
+  
+  private void logMessage(String message)
+  {
+    try
+    {
+      OutputStreamWriter writer = new OutputStreamWriter(
+        new FileOutputStream(getLogFile(), true), "UTF-8");
+      try
+      {
+        writer.write(message);
+        writer.write("\n");
+        writer.flush();
+      }
+      finally
+      {
+        writer.close();
+      }
+    }
+    catch (IOException ex)
+    {
+      // ignore
+    }    
+  }
+  
+  private File getLogFile()
+  {
+    File baseDir = new File(Environment.getExternalStorageDirectory(), TAG);
+    baseDir.mkdirs();
+    return new File(baseDir + "/server_log.txt");
+  }  
 }

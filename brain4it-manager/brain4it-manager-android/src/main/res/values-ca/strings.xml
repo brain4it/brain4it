@@ -71,8 +71,8 @@
   <string name="moduleNameMandatory">El nom del mòdul és obligatori</string>
   <string name="serverURLMandatory">La URL és obligatòria</string>
   <string name="invalidURL">URL invàlida</string>
+  <string name="threadDumpGenerated">Bolcat de fils generat:</string>
 
-  <string name="threadDump">Bolcat de threads</string>
+  <string name="threadDump">Bolcat de fils</string>
   <string name="about">Quant a</string>
-  <string name="exit">Surt</string>
 </resources>

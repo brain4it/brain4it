@@ -32,12 +32,9 @@
 package org.brain4it.manager.android;
 
 import android.app.ListActivity;
-import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
@@ -46,13 +43,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.MimeTypeMap;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 import java.io.File;
 import java.io.PrintWriter;
 import java.util.List;
@@ -173,10 +170,6 @@ public class ServerListActivity extends ListActivity
       case R.id.about:
         about();
         break;
-      case R.id.exit:
-        finish();
-        System.exit(0);
-        break;
     }
     return true;
   }
@@ -259,8 +252,7 @@ public class ServerListActivity extends ListActivity
   {
     try
     {
-      File baseDir = new File(Environment.getExternalStorageDirectory(),
-        "brain4it");
+      File baseDir = new File(getExternalFilesDir(null), "brain4it");
       baseDir.mkdirs();
       File file = new File(baseDir + "/threads.txt");
       PrintWriter writer = new PrintWriter(file);
@@ -281,19 +273,10 @@ public class ServerListActivity extends ListActivity
       writer.flush();
       writer.close();
 
-      MimeTypeMap myMime = MimeTypeMap.getSingleton();
-      String mimeType = myMime.getMimeTypeFromExtension("txt");
-      Intent newIntent = new Intent(Intent.ACTION_VIEW);
-      newIntent.setDataAndType(Uri.fromFile(file), mimeType);
-      newIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-      try
-      {
-        startActivity(newIntent);
-      }
-      catch (ActivityNotFoundException e)
-      {
-        ToastUtils.showLong(this, "No handler for this type of file.");
-      }
+      String message = getResources().getString(R.string.threadDumpGenerated) +
+        " " + file.getAbsolutePath();
+      Toast toast = Toast.makeText(this, message, Toast.LENGTH_LONG);
+      toast.show();
     }
     catch (Exception ex)
     {

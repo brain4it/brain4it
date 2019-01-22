@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="appName">Brain4it Server</string>
+  <string name="start">Inicia</string>
+  <string name="stop">Atura</string>
+  <string name="starting">Iniciant...</string>
+  <string name="stopping">Aturant...</string>
+  <string name="serverPort">Port del servidor (1024-65535)</string>
+  <string name="accessKey">Clau d\'accés</string>
+  <string name="ok">Ok</string>
+  <string name="setup">Configura</string>
+  <string name="clear">Esborra registre</string>
+  <string name="threadDump">Bolcat de fils</string>
+  <string name="about">Quant a</string>
+  <string name="restartNotice">Reinicia el servidor per fer efectius els canvis.</string>
+  <string name="listening">Escoltant a</string>
+  <string name="serverStopped">El servidor està aturat.</string>
+  <string name="threadDumpGenerated">Bolcat de fils generat:</string>
+</resources>

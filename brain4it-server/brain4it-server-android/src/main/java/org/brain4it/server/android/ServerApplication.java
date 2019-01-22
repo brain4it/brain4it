@@ -37,6 +37,7 @@ import android.os.Environment;
 import android.widget.ImageView;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Date;
 
@@ -85,7 +86,7 @@ public class ServerApplication extends Application
   {
     try
     {
-      PrintWriter out = new PrintWriter(new FileWriter(getLogFile(), true));
+      PrintWriter out = new PrintWriter(new FileWriter(getErrorFile(), true));
       try
       {
         out.println(new Date() + ":");
@@ -97,8 +98,9 @@ public class ServerApplication extends Application
         out.close();
       }
     }
-    catch (Exception ex)
+    catch (IOException ex)
     {
+      // ignore
     }
     finally
     {
@@ -106,10 +108,10 @@ public class ServerApplication extends Application
     }
   }
   
-  private File getLogFile()
+  private File getErrorFile()
   {
     File baseDir = new File(Environment.getExternalStorageDirectory(), TAG);
     baseDir.mkdirs();
-    return new File(baseDir + "/server_log.txt");
+    return new File(baseDir + "/server_error.txt");
   }  
 }

@@ -31,8 +31,6 @@
 
 package org.brain4it.server.android;
 
-import org.brain4it.server.standalone.HttpServer;
-import static android.content.Context.NOTIFICATION_SERVICE;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -53,6 +51,8 @@ import java.util.logging.Logger;
 import org.brain4it.lib.AndroidLibrary;
 import org.brain4it.server.module.ModuleManager;
 import org.brain4it.server.store.FileSystemStore;
+import org.brain4it.server.standalone.HttpServer;
+import static android.content.Context.NOTIFICATION_SERVICE;
 
 /**
  *
@@ -62,21 +62,28 @@ public class AndroidService extends Service
 {
   public static final int DEFAULT_SERVER_PORT = 9999;
   private static AndroidService instance;
-  private AndroidHttpServer server;
   private static final String TAG = "brain4it";
   private static final int NOTIFICATION_ID = 1;
   private static final Logger LOGGER = Logger.getLogger("HttpServer");
+  private static final AndroidLogHandler LOG_HANDLER = new AndroidLogHandler();
+  private AndroidHttpServer server;
 
   static
   {
-    AndroidLogHandler handler = new AndroidLogHandler();
-    Logger.getLogger("HttpServer").addHandler(handler);    
-    Logger.getLogger("ModuleManager").addHandler(handler);    
+    Logger.getLogger("HttpServer").setLevel(Level.FINE);
+    Logger.getLogger("HttpServer").addHandler(LOG_HANDLER);
+    Logger.getLogger("ModuleManager").setLevel(Level.FINE);
+    Logger.getLogger("ModuleManager").addHandler(LOG_HANDLER);
   }
   
   public static AndroidService getInstance()
   {
     return instance;
+  }
+  
+  public static AndroidLogHandler getLogHandler()
+  {
+    return LOG_HANDLER;
   }
 
   public AndroidHttpServer getHttpServer()
@@ -123,7 +130,8 @@ public class AndroidService extends Service
         }
         catch (Exception ex)
         {
-          LOGGER.log(Level.SEVERE, "Initialization failure", ex);    
+          LOGGER.log(Level.SEVERE, "Initialization failure", ex);
+          stopSelf();
         }
       }
     };
@@ -222,7 +230,8 @@ public class AndroidService extends Service
       
       address = getAddresses().get(0);
 
-      String message = "Listening on " + address + ":" + getPort() + "...";
+      String message = getResources().getString(R.string.listening) + 
+        " " + address + ":" + getPort() + "...";
 
       Notification notification = createNotification(message);
       NotificationManager notificationManager =

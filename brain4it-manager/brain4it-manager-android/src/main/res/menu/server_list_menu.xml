@@ -14,6 +14,4 @@
         android:title="@string/threadDump" />
   <item android:id="@+id/about"
         android:title="@string/about" />
-  <item android:id="@+id/exit"
-        android:title="@string/exit" />
 </menu>

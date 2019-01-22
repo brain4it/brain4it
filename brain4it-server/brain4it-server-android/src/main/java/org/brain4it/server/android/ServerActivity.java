@@ -1,31 +1,31 @@
 /*
  * Brain4it
- * 
+ *
  * Copyright (C) 2018, Ajuntament de Sant Feliu de Llobregat
- * 
- * This program is licensed and may be used, modified and redistributed under 
- * the terms of the European Public License (EUPL), either version 1.1 or (at 
- * your option) any later version as soon as they are approved by the European 
+ *
+ * This program is licensed and may be used, modified and redistributed under
+ * the terms of the European Public License (EUPL), either version 1.1 or (at
+ * your option) any later version as soon as they are approved by the European
  * Commission.
- * 
- * Alternatively, you may redistribute and/or modify this program under the 
- * terms of the GNU Lesser General Public License as published by the Free 
- * Software Foundation; either  version 3 of the License, or (at your option) 
- * any later version. 
- *   
- * Unless required by applicable law or agreed to in writing, software 
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT 
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- *   
- * See the licenses for the specific language governing permissions, limitations 
+ *
+ * Alternatively, you may redistribute and/or modify this program under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either  version 3 of the License, or (at your option)
+ * any later version.
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *
+ * See the licenses for the specific language governing permissions, limitations
  * and more details.
- *   
- * You should have received a copy of the EUPL1.1 and the LGPLv3 licenses along 
- * with this program; if not, you may find them at: 
- *   
+ *
+ * You should have received a copy of the EUPL1.1 and the LGPLv3 licenses along
+ * with this program; if not, you may find them at:
+ *
  *   https://joinup.ec.europa.eu/software/page/eupl/licence-eupl
- *   http://www.gnu.org/licenses/ 
- *   and 
+ *   http://www.gnu.org/licenses/
+ *   and
  *   https://www.gnu.org/licenses/lgpl.txt
  */
 
@@ -33,18 +33,14 @@ package org.brain4it.server.android;
 
 import org.brain4it.server.standalone.HttpServer;
 import android.app.Activity;
-import android.content.ActivityNotFoundException;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.text.method.ScrollingMovementMethod;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -63,7 +59,7 @@ public class ServerActivity extends Activity
   {
     return instance;
   }
-  
+
   /**
    * Called when the activity is first created.
    *
@@ -78,12 +74,18 @@ public class ServerActivity extends Activity
     app.setupActivity(this, false);
 
     setContentView(R.layout.main);
-    
+
     outputText = (TextView)findViewById(R.id.output);
     startStopButton = (Button)findViewById(R.id.startStopButton);
     logViewer = (TextView)findViewById(R.id.logViewer);
     logViewer.setMovementMethod(new ScrollingMovementMethod());
-    
+
+    String logMessages = AndroidService.getLogHandler().getLogMessages();
+    if (logMessages != null)
+    {
+      logMessage(logMessages, false);
+    }
+
     startStopButton.setOnClickListener(new OnClickListener()
     {
       @Override
@@ -107,7 +109,7 @@ public class ServerActivity extends Activity
     });
     instance = this;
   }
-  
+
   @Override
   public boolean onCreateOptionsMenu(Menu menu)
   {
@@ -125,7 +127,7 @@ public class ServerActivity extends Activity
         setupServer();
         break;
       case R.id.clear:
-        logViewer.setText("");
+        clearLogMessages();
         break;
       case R.id.threadDump:
         createThreadDump();
@@ -136,23 +138,25 @@ public class ServerActivity extends Activity
     }
     return true;
   }
-  
+
   @Override
   public void onStart()
   {
     super.onStart();
     updateViews();
   }
-  
-  public void logMessage(final String message)
+
+  public void logMessage(final String message, final boolean append)
   {
     logViewer.post(new Runnable()
     {
       @Override
       public void run()
       {
-        logViewer.append(message + "\n");
-        final int scrollAmount = logViewer.getLayout().getLineTop(
+        if (append) logViewer.append(message + "\n");
+        else logViewer.setText(message);
+        // scroll bottom
+        int scrollAmount = logViewer.getLayout().getLineTop(
           logViewer.getLineCount()) - logViewer.getHeight();
         if (scrollAmount > 0)
           logViewer.scrollTo(0, scrollAmount);
@@ -161,7 +165,7 @@ public class ServerActivity extends Activity
       }
     });
   }
-  
+
   public void refresh()
   {
     runOnUiThread(new Runnable()
@@ -173,25 +177,32 @@ public class ServerActivity extends Activity
       }
     });
   }
-  
+
   private void setupServer()
   {
     Intent intent = new Intent(ServerActivity.this, ServerSetupActivity.class);
-    startActivity(intent);    
+    startActivity(intent);
+  }
+
+  private void clearLogMessages()
+  {
+    logViewer.setText("");
+    AndroidService.getLogHandler().clearLogMessages();
   }
 
   private void about()
   {
     Intent intent = new Intent(ServerActivity.this, AboutActivity.class);
-    startActivity(intent);    
+    startActivity(intent);
   }
-  
+
   private void updateViews()
   {
     AndroidService service = AndroidService.getInstance();
     if (service == null)
     {
-      outputText.setText("Server is stopped.");
+      String message = getResources().getString(R.string.serverStopped);
+      outputText.setText(message);
       startStopButton.setText(R.string.start);
       startStopButton.setEnabled(true);
     }
@@ -200,18 +211,18 @@ public class ServerActivity extends Activity
       HttpServer server = service.getHttpServer();
       String address = server.getAddress();
       int port = server.getPort();
-      outputText.setText("Listening on " + address + ":" + port + "...");
+      String message = getResources().getString(R.string.listening);
+      outputText.setText(message + " " + address + ":" + port + "...");
       startStopButton.setText(R.string.stop);
       startStopButton.setEnabled(true);
     }
-  }  
+  }
 
   private void createThreadDump()
   {
     try
     {
-      File baseDir = new File(Environment.getExternalStorageDirectory(), 
-        "brain4it");
+      File baseDir = new File(getExternalFilesDir(null), "brain4it");
       baseDir.mkdirs();
       File file = new File(baseDir + "/threads.txt");
       PrintWriter writer = new PrintWriter(file);
@@ -220,7 +231,7 @@ public class ServerActivity extends Activity
       for (Map.Entry<Thread, StackTraceElement[]> entry : stacks.entrySet())
       {
         Thread thread = entry.getKey();
-        writer.println("Thread: " + thread.getName() + 
+        writer.println("Thread: " + thread.getName() +
           " id:" + thread.getId() + ":");
         StackTraceElement[] stack = entry.getValue();
         for (StackTraceElement elem : stack)
@@ -232,25 +243,14 @@ public class ServerActivity extends Activity
       writer.flush();
       writer.close();
 
-      MimeTypeMap myMime = MimeTypeMap.getSingleton();
-      String mimeType = myMime.getMimeTypeFromExtension("txt");
-      Intent newIntent = new Intent(Intent.ACTION_VIEW);
-      newIntent.setDataAndType(Uri.fromFile(file), mimeType);
-      newIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-      try 
-      {
-        startActivity(newIntent);
-      } 
-      catch (ActivityNotFoundException e) 
-      {
-        Toast toast = Toast.makeText(this, "No handler for this type of file.", 
-          Toast.LENGTH_LONG);
-        toast.show();
-      }
+      String message = getResources().getString(R.string.threadDumpGenerated) +
+        " " + file.getAbsolutePath();
+      Toast toast = Toast.makeText(this, message, Toast.LENGTH_LONG);
+      toast.show();
     }
     catch (Exception ex)
     {
-      Toast toast = Toast.makeText(this, ex.toString(), 
+      Toast toast = Toast.makeText(this, ex.toString(),
         Toast.LENGTH_LONG);
       toast.show();
     }

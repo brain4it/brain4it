@@ -71,8 +71,8 @@
   <string name="moduleNameMandatory">El nombre del módulo es obligatorio</string>
   <string name="serverURLMandatory">La URL es obligatoria</string>
   <string name="invalidURL">URL inválida</string>
+  <string name="threadDumpGenerated">Volcado de hilos generado:</string>
 
-  <string name="threadDump">Volcado de threads</string>
+  <string name="threadDump">Volcado de hilos</string>
   <string name="about">Acerca de</string>
-  <string name="exit">Salir</string>
 </resources>

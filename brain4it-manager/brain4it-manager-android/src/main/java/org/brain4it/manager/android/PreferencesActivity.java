@@ -32,15 +32,12 @@
 package org.brain4it.manager.android;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Spinner;
 
 /**
  *
@@ -48,18 +45,11 @@ import android.widget.Spinner;
  */
 public class PreferencesActivity extends Activity
 {
-  private Spinner languageSpinner;
   private EditText textSizeEditText;
   private EditText indentSizeEditText;
   private EditText formatColumnsEditText;
 
   private Button okButton;
-
-  private static final String LANGUAGES[] =
-  {"en", "es", "ca"};
-
-  private static final String LANGUAGE_NAMES[] =
-  {"English", "Español", "Català"};
 
   /**
    * Called when the activity is first created.
@@ -77,17 +67,10 @@ public class PreferencesActivity extends Activity
     
     setContentView(R.layout.preferences);
 
-    languageSpinner = (Spinner)findViewById(R.id.languageSpinner);
     textSizeEditText = (EditText)findViewById(R.id.textSizeEditText);
     indentSizeEditText = (EditText)findViewById(R.id.indentSizeEditText);
     formatColumnsEditText = (EditText)findViewById(R.id.formatColumnsEditText);
     okButton = (Button)findViewById(R.id.setupOkButton);
-
-    ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-      android.R.layout.simple_spinner_item, LANGUAGE_NAMES);
-    adapter.setDropDownViewResource(
-      android.R.layout.simple_spinner_dropdown_item);
-    languageSpinner.setAdapter(adapter);
 
     okButton.setOnClickListener(new Button.OnClickListener()
     {
@@ -119,13 +102,10 @@ public class PreferencesActivity extends Activity
     ManagerApplication app = (ManagerApplication)getApplicationContext();
     SharedPreferences preferences = app.getPreferences();
 
-    String language = preferences.getString("language", app.getLanguage());
     int textSize = preferences.getInt("textSize", 15);
     int indentSize = preferences.getInt("indentSize", 2);
     int formatColumns = preferences.getInt("formatColumns", 40);
 
-    int index = findLanguageIndex(language);
-    languageSpinner.setSelection(index);
     textSizeEditText.setText(String.valueOf(textSize));
     indentSizeEditText.setText(String.valueOf(indentSize));
     formatColumnsEditText.setText(String.valueOf(formatColumns));
@@ -138,10 +118,6 @@ public class PreferencesActivity extends Activity
 
     SharedPreferences.Editor editor = preferences.edit();
 
-    int index = languageSpinner.getSelectedItemPosition();
-    String language = LANGUAGES[index];
-
-    editor.putString("language", language);
     editor.putInt("textSize",
       Integer.parseInt(textSizeEditText.getText().toString()));
     editor.putInt("indentSize",
@@ -150,37 +126,5 @@ public class PreferencesActivity extends Activity
       Integer.parseInt(formatColumnsEditText.getText().toString()));
 
     editor.commit();
-
-    String currentLanguage = app.getLanguage();
-
-    if (!currentLanguage.equals(language))
-    {
-      app.setLanguage(language);
-
-      // relaunch server list activity
-      Intent intent = new Intent(PreferencesActivity.this,
-        ServerListActivity.class);
-      intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK |
-        Intent.FLAG_ACTIVITY_NEW_TASK);
-      startActivity(intent);
-    }
-  }
-
-  private int findLanguageIndex(String language)
-  {
-    int index = -1;
-    int i = 0;
-    while (i < LANGUAGES.length && index == -1)
-    {
-      if (LANGUAGES[i].equals(language))
-      {
-        index = i;
-      }
-      else
-      {
-        i++;
-      }
-    }
-    return index == -1 ? 0 : index;
   }
 }

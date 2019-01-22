@@ -132,6 +132,8 @@ public class FileSystemStore implements Store
 
     Filter filter = pattern == null ? null : new Filter(pattern);
     File[] children = file.listFiles(filter);
+    if (children == null)
+      throw new IOException("Can't read directory: " + file.getAbsolutePath());
     Arrays.sort(children, FILE_COMPARATOR);
     for (File child : children)
     {

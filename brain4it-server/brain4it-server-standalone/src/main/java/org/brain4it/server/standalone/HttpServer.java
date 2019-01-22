@@ -203,11 +203,17 @@ public class HttpServer
 
   public synchronized void stop()
   {
-    if (thread == null) return;
-
-    closeConnections();
-    closeServerSocket();
-    waitForThread();
+    if (thread == null)
+    {
+      // already stopped
+      onStop();
+    }
+    else
+    {
+      closeConnections();
+      closeServerSocket();
+      waitForThread();
+    }
   }
 
   public boolean isRunning()

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="appName">Brain4it Server</string>
+  <string name="start">Iniciar</string>
+  <string name="stop">Parar</string>
+  <string name="starting">Iniciando...</string>
+  <string name="stopping">Parando...</string>
+  <string name="serverPort">Puerto del servidor (1024-65535)</string>
+  <string name="accessKey">Clave de acceso</string>
+  <string name="ok">Ok</string>
+  <string name="setup">Configurar</string>
+  <string name="clear">Borrar registro</string>
+  <string name="threadDump">Volcado de hilos</string>
+  <string name="about">Acerca de</string>
+  <string name="restartNotice">Reinicia el servidor para hacer efectivos los cambios.</string>
+  <string name="listening">Escuchando en</string>
+  <string name="serverStopped">El servidor está parado.</string>
+  <string name="threadDumpGenerated">Volcado de hilos generado:</string>
+</resources>

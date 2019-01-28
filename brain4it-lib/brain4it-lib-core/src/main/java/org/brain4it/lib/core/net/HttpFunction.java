@@ -145,7 +145,7 @@ public class HttpFunction implements Function
               (String)context.evaluate(args.get("output-format"));
             if (outputFormat != null)
             {
-              body = toObject(outputString, outputFormat);
+              body = toObject(outputString, outputFormat, context);
             }
             else body = outputString;
             result.put("body", body);
@@ -187,14 +187,14 @@ public class HttpFunction implements Function
     return text;
   }
 
-  protected Object toObject(String text, String format)
+  protected Object toObject(String text, String format, Context context)
   {
-    Object data = null;
+    Object data;
     try
     {
       if ("bpl".equals(format))
       {
-        data = Parser.fromString(text);
+        data = Parser.fromString(text, context.getFunctions());
       }
       else if ("json".equals(format))
       {

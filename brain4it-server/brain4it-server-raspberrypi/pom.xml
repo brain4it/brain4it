@@ -14,18 +14,6 @@
   <name>brain4it-server-raspberrypi</name>
   <description>brain4it server for Raspberry Pi</description>
 
-  <repositories>
-    <repository>
-      <id>oss-snapshots-repo</id>
-      <name>Sonatype OSS Maven Repository</name>
-      <url>https://oss.sonatype.org/content/groups/public</url>
-      <snapshots>
-        <enabled>true</enabled>
-        <updatePolicy>never</updatePolicy>
-      </snapshots>
-    </repository>
-  </repositories>
-
   <dependencies>
     <dependency>
       <groupId>org.brain4it</groupId>
@@ -35,7 +23,7 @@
     <dependency>
       <groupId>com.pi4j</groupId>
       <artifactId>pi4j-core</artifactId>
-      <version>1.2-SNAPSHOT</version>
+      <version>1.2</version>
     </dependency>
   </dependencies>
   

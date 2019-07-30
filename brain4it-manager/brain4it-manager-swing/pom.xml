@@ -47,16 +47,13 @@
           </descriptorRefs>
         </configuration>
       </plugin>
+<!--
       <plugin>
         <groupId>sh.tak.appbundler</groupId>
         <artifactId>appbundle-maven-plugin</artifactId>
         <version>1.2.0</version>
         <configuration>
           <mainClass>org.brain4it.manager.swing.ManagerApp</mainClass>
-          <!--
-          <dictionaryFile>Info.plist</dictionaryFile>
-          <iconFile>brain4it.icns</iconFile>
-          -->
         </configuration>
         <executions>
           <execution>
@@ -67,6 +64,7 @@
           </execution>
         </executions>
       </plugin>
+-->
       <plugin>
         <groupId>pl.project13.maven</groupId>
         <artifactId>git-commit-id-plugin</artifactId>

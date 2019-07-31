@@ -1,0 +1,24 @@
+(NlpParse (nlp-parse sentence 
+  "parser" => parser_model_path
+  "tokenizer" => tokenizer_model_path
+  "dictionary" => dict_path) parse_tree  
+  where =>
+  (
+    sentence => ("string" 1 1)
+    parser_model_path => ("string" 0 1)
+    tokenizer_model_path => ("string" 0 1)
+    dict_path => ("string" 0 1)
+    parse_tree => ("list" 1 1)
+  )
+  exceptions =>
+  (
+    ("FileNotFoundException")
+  )
+  examples =>
+  (
+    ((nlp-parse "My name is John.")
+     ("TOP" ("S" ("NP" ("PRP$" "my") ("NN" "name")) ("VP" ("VBZ" "be") ("NP" ("NNP" "John"))) ("." ".")))
+    )
+  )  
+  bundle => "org.brain4it.lib.NlpLibrary"
+)

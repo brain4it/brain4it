@@ -31,6 +31,23 @@
 
 package org.brain4it.lib;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashMap;
+import opennlp.tools.lemmatizer.DictionaryLemmatizer;
+import opennlp.tools.parser.Parser;
+import opennlp.tools.parser.ParserFactory;
+import opennlp.tools.parser.ParserModel;
+import opennlp.tools.sentdetect.NewlineSentenceDetector;
+import opennlp.tools.sentdetect.SentenceDetector;
+import opennlp.tools.sentdetect.SentenceDetectorME;
+import opennlp.tools.sentdetect.SentenceModel;
+import opennlp.tools.tokenize.Tokenizer;
+import opennlp.tools.tokenize.TokenizerME;
+import opennlp.tools.tokenize.TokenizerModel;
+import opennlp.tools.tokenize.WhitespaceTokenizer;
 import org.brain4it.lib.nlp.*;
 
 /**
@@ -39,6 +56,8 @@ import org.brain4it.lib.nlp.*;
  */
 public class NlpLibrary extends Library
 {
+  private final HashMap<String, Object> cache = new HashMap<>();
+  
   @Override
   public String getName()
   {
@@ -48,6 +67,157 @@ public class NlpLibrary extends Library
   @Override
   public void load()
   {
-    functions.put("nlp", new NlpFunction());
+    functions.put("nlp-sentences", new NlpSentencesFunction(this));
+    functions.put("nlp-parse", new NlpParseFunction(this));
+    functions.put("nlp-tokenize", new NlpTokenizeFunction(this));
+    functions.put("nlp-lemmatize", new NlpLemmatizeFunction(this));    
+  }
+  
+  @Override
+  public void unload()
+  {
+    cache.clear();
+  }
+  
+  public Parser getParser(String parserModelPath) throws IOException
+  {
+    if (parserModelPath == null)
+    {
+      parserModelPath = getDefaultPath("en-parser-chunking.bin");
+    }
+    else
+    {
+      parserModelPath = getAbsolutePath(parserModelPath);
+    }
+    
+    ParserModel model = (ParserModel)cache.get(parserModelPath);
+    if (model == null)
+    {
+      InputStream is = new FileInputStream(parserModelPath);
+      try
+      {
+        model = new ParserModel(is);
+        cache.put(parserModelPath, model);
+      }
+      finally
+      {
+        is.close();
+      }
+    }
+    return ParserFactory.create(model);
+  }
+
+  public Tokenizer getTokenizer(String tokenizerModelPath) throws IOException
+  {
+    if (tokenizerModelPath == null)
+    {
+      tokenizerModelPath = getDefaultPath("en-token.bin");
+    }
+    else if (tokenizerModelPath.length() == 0)
+    {
+      return WhitespaceTokenizer.INSTANCE;
+    }
+    else
+    {
+      tokenizerModelPath = getAbsolutePath(tokenizerModelPath);
+    }
+    
+    TokenizerModel model = (TokenizerModel)cache.get(tokenizerModelPath);    
+    if (model == null)
+    {
+      InputStream is = new FileInputStream(tokenizerModelPath);
+      try
+      {
+        model = new TokenizerModel(is);
+        cache.put(tokenizerModelPath, model);
+      }
+      finally
+      {
+        is.close();
+      }
+    }
+    return new TokenizerME(model);
+  }
+  
+  public SentenceDetector getSentenceDetector(String sentenceModelPath)
+    throws IOException
+  {
+    if (sentenceModelPath == null)
+    {
+      sentenceModelPath = getDefaultPath("en-sent.bin");
+    }
+    else if (sentenceModelPath.length() == 0)
+    {
+      return new NewlineSentenceDetector();      
+    }
+    else
+    {
+      sentenceModelPath = getAbsolutePath(sentenceModelPath);
+    }
+    
+    SentenceModel model = (SentenceModel)cache.get(sentenceModelPath);
+    if (model == null)
+    {
+      InputStream is = new FileInputStream(sentenceModelPath);
+      try
+      {
+        model = new SentenceModel(is);
+        cache.put(sentenceModelPath, model);
+      }
+      finally
+      {
+        is.close();
+      }        
+    }
+    return new SentenceDetectorME(model);
+  }
+
+  public DictionaryLemmatizer getDictionary(String dictPath) throws IOException
+  {
+    if (dictPath == null)
+    {
+      dictPath = getDefaultPath("en-lemmatizer.dict");
+    }
+    else if (dictPath.length() == 0)
+    {
+      return null;
+    }
+    else
+    {
+      dictPath = getAbsolutePath(dictPath);
+    }
+    
+    DictionaryLemmatizer dictionary = 
+      (DictionaryLemmatizer)cache.get(dictPath);
+    if (dictionary == null)
+    {
+      InputStream is = new FileInputStream(dictPath);
+      try
+      {
+        dictionary = new DictionaryLemmatizer(is);
+        cache.put(dictPath, dictionary);
+      }
+      finally
+      {
+        is.close();
+      }
+    }
+    return dictionary;
+  }
+  
+  private String getDefaultPath(String filename)
+  {
+    return getBasePath() + filename;
+  }
+  
+  private String getAbsolutePath(String filename)
+  {    
+    if (filename.startsWith(File.separator)) return filename;
+    return getBasePath() + filename;
+  }
+  
+  private String getBasePath()
+  {
+    return System.getProperty("user.home") + "/opennlp/";
   }
 }

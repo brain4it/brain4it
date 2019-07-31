@@ -1,0 +1,19 @@
+(NlpLemmatize (nlp-lemmatize word pos
+  "dictionary" => dict_path) lemma  
+  where =>
+  (
+    word => ("string" 1 1)
+    pos => ("string" 1 1)
+    dict_path => ("string" 0 1)
+    lemma => ("string" 1 1)
+  )
+  exceptions =>
+  (
+    ("FileNotFoundException")
+  )
+  examples =>
+  (
+    ((nlp-lemmatize "making" "VBG") "make")
+  )
+  bundle => "org.brain4it.lib.NlpLibrary"
+)

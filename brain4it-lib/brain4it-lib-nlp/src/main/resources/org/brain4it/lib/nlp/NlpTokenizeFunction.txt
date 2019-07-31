@@ -1,0 +1,21 @@
+(NlpTokenize (nlp-tokenize text 
+  "tokenizer" => tokenizer_model_path
+  ) (token)
+  where =>
+  (
+    text => ("string" 1 1)
+    tokenizer_model_path => ("string" 0 1)
+    token => ("string" 1 N)
+  )
+  exceptions =>
+  (
+    ("FileNotFoundException")
+  )
+  examples =>
+  (
+    ((nlp-tokenize "My name is John.")
+     ("My" "name" "is" "John" ".")
+    )
+  )
+  bundle => "org.brain4it.lib.NlpLibrary"
+)

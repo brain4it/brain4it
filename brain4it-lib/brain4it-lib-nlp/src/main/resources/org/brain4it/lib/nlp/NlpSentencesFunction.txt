@@ -1,0 +1,21 @@
+(NlpSentences (nlp-sentences text 
+  "sentence-detector" => sentence_model_path
+  ) (sentence) 
+  where =>
+  (
+    text => ("string" 1 1)
+    sentence_model_path => ("string" 0 1)
+    sentence => ("string" 1 N)
+  )
+  exceptions =>
+  (
+    ("FileNotFoundException")
+  )
+  examples =>
+  (
+    ((nlp-sentences "My name is John. What is your name?")
+     ("My name is John." "What is your name?")
+    )
+  )
+  bundle => "org.brain4it.lib.NlpLibrary"
+)

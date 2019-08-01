@@ -1,31 +1,31 @@
 /*
  * Brain4it
- * 
+ *
  * Copyright (C) 2018, Ajuntament de Sant Feliu de Llobregat
- * 
- * This program is licensed and may be used, modified and redistributed under 
- * the terms of the European Public License (EUPL), either version 1.1 or (at 
- * your option) any later version as soon as they are approved by the European 
+ *
+ * This program is licensed and may be used, modified and redistributed under
+ * the terms of the European Public License (EUPL), either version 1.1 or (at
+ * your option) any later version as soon as they are approved by the European
  * Commission.
- * 
- * Alternatively, you may redistribute and/or modify this program under the 
- * terms of the GNU Lesser General Public License as published by the Free 
- * Software Foundation; either  version 3 of the License, or (at your option) 
- * any later version. 
- *   
- * Unless required by applicable law or agreed to in writing, software 
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT 
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- *   
- * See the licenses for the specific language governing permissions, limitations 
+ *
+ * Alternatively, you may redistribute and/or modify this program under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either  version 3 of the License, or (at your option)
+ * any later version.
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *
+ * See the licenses for the specific language governing permissions, limitations
  * and more details.
- *   
- * You should have received a copy of the EUPL1.1 and the LGPLv3 licenses along 
- * with this program; if not, you may find them at: 
- *   
+ *
+ * You should have received a copy of the EUPL1.1 and the LGPLv3 licenses along
+ * with this program; if not, you may find them at:
+ *
  *   https://joinup.ec.europa.eu/software/page/eupl/licence-eupl
- *   http://www.gnu.org/licenses/ 
- *   and 
+ *   http://www.gnu.org/licenses/
+ *   and
  *   https://www.gnu.org/licenses/lgpl.txt
  */
 
@@ -57,7 +57,7 @@ import org.brain4it.lib.nlp.*;
 public class NlpLibrary extends Library
 {
   private final HashMap<String, Object> cache = new HashMap<>();
-  
+
   @Override
   public String getName()
   {
@@ -70,15 +70,16 @@ public class NlpLibrary extends Library
     functions.put("nlp-sentences", new NlpSentencesFunction(this));
     functions.put("nlp-parse", new NlpParseFunction(this));
     functions.put("nlp-tokenize", new NlpTokenizeFunction(this));
-    functions.put("nlp-lemmatize", new NlpLemmatizeFunction(this));    
+    functions.put("nlp-lemmatize", new NlpLemmatizeFunction(this));
+    functions.put("nlp-translate", new NlpTranslateFunction(this));
   }
-  
+
   @Override
   public void unload()
   {
     cache.clear();
   }
-  
+
   public Parser getParser(String parserModelPath) throws IOException
   {
     if (parserModelPath == null)
@@ -89,7 +90,7 @@ public class NlpLibrary extends Library
     {
       parserModelPath = getAbsolutePath(parserModelPath);
     }
-    
+
     ParserModel model = (ParserModel)cache.get(parserModelPath);
     if (model == null)
     {
@@ -121,8 +122,8 @@ public class NlpLibrary extends Library
     {
       tokenizerModelPath = getAbsolutePath(tokenizerModelPath);
     }
-    
-    TokenizerModel model = (TokenizerModel)cache.get(tokenizerModelPath);    
+
+    TokenizerModel model = (TokenizerModel)cache.get(tokenizerModelPath);
     if (model == null)
     {
       InputStream is = new FileInputStream(tokenizerModelPath);
@@ -138,7 +139,7 @@ public class NlpLibrary extends Library
     }
     return new TokenizerME(model);
   }
-  
+
   public SentenceDetector getSentenceDetector(String sentenceModelPath)
     throws IOException
   {
@@ -148,13 +149,13 @@ public class NlpLibrary extends Library
     }
     else if (sentenceModelPath.length() == 0)
     {
-      return new NewlineSentenceDetector();      
+      return new NewlineSentenceDetector();
     }
     else
     {
       sentenceModelPath = getAbsolutePath(sentenceModelPath);
     }
-    
+
     SentenceModel model = (SentenceModel)cache.get(sentenceModelPath);
     if (model == null)
     {
@@ -167,7 +168,7 @@ public class NlpLibrary extends Library
       finally
       {
         is.close();
-      }        
+      }
     }
     return new SentenceDetectorME(model);
   }
@@ -186,8 +187,8 @@ public class NlpLibrary extends Library
     {
       dictPath = getAbsolutePath(dictPath);
     }
-    
-    DictionaryLemmatizer dictionary = 
+
+    DictionaryLemmatizer dictionary =
       (DictionaryLemmatizer)cache.get(dictPath);
     if (dictionary == null)
     {
@@ -204,18 +205,18 @@ public class NlpLibrary extends Library
     }
     return dictionary;
   }
-  
+
   private String getDefaultPath(String filename)
   {
     return getBasePath() + filename;
   }
-  
+
   private String getAbsolutePath(String filename)
-  {    
+  {
     if (filename.startsWith(File.separator)) return filename;
     return getBasePath() + filename;
   }
-  
+
   private String getBasePath()
   {
     return System.getProperty("user.home") + "/opennlp/";

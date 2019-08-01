@@ -1,0 +1,20 @@
+(NlpTranslate (nlp-translate (text) source target service options 
+  ) (translation)
+  where =>
+  (
+    text => ("string" 1 N)
+    source => ("string" 1 1)
+    target => ("string" 1 1)
+    service => ("string" 1 1)
+    options => ("list" 0 1)
+    translation => ("string" 1 N)
+  )
+  examples =>
+  (
+    ((nlp-translate ("Em dic Ricard." "Com et dius?") "ca" "en" "google" 
+       ("key" => "Asd4jgh3hd42hnf9_dgF23k625ghs"))
+     ("My name is Ricard." "What's your name?")
+    )
+  )
+  bundle => "org.brain4it.lib.NlpLibrary"
+)

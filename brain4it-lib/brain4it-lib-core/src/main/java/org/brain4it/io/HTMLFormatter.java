@@ -125,6 +125,7 @@ public class HTMLFormatter extends Formatter
       if (value.contains("?")) return false;
       if (value.contains("/") && value.length() > 1) return false;
       if ("parameter".equals(value)) return false;
+      if ("text".equals(value)) return false;
       if ("value".equals(value)) return false;
       if ("context".equals(value)) return false;
       if ("data".equals(value)) return false;

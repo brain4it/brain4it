@@ -190,7 +190,7 @@ public class SelectWidget extends JPanel implements DashboardWidget
       GridBagConstraints.SOUTH, GridBagConstraints.HORIZONTAL,
       new Insets(2, 2, 2, 2), 0, 0));
     comboBox = new JComboBox<Option>();
-    comboBox.setModel(new DefaultComboBoxModel());
+    comboBox.setModel(new DefaultComboBoxModel<Option>());
     comboBox.addActionListener(actionListener);
     add(comboBox, new GridBagConstraints(0, 1, 1, 1, 1, 0.5,
       GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL,
@@ -227,7 +227,7 @@ public class SelectWidget extends JPanel implements DashboardWidget
   protected void loadOptions(Object data)
   {
     comboBox.removeActionListener(actionListener);
-    DefaultComboBoxModel model = new DefaultComboBoxModel();
+    DefaultComboBoxModel<Option> model = new DefaultComboBoxModel<Option>();
     try
     {
       BList options = (BList)data;

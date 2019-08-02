@@ -44,7 +44,8 @@ import org.brain4it.manager.TextCompleter.Candidate;
  *
  * @author realor
  */
-public class CandidateRenderer extends JLabel implements ListCellRenderer
+public class CandidateRenderer extends JLabel 
+  implements ListCellRenderer<Candidate>
 {
   private ImageIcon stringIcon;
   private ImageIcon numberIcon;
@@ -61,10 +62,9 @@ public class CandidateRenderer extends JLabel implements ListCellRenderer
   }  
   
   @Override
-  public JLabel getListCellRendererComponent(JList list, Object value,
+  public JLabel getListCellRendererComponent(JList list, Candidate candidate,
     int index, boolean selected, boolean hasFocus)
   {
-    Candidate candidate = (Candidate)value;
     if (selected)
     {
       setBackground(ManagerApp.BASE_COLOR);

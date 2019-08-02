@@ -78,7 +78,7 @@ public class Splitter extends JComponent
       repaint();
     }
   }
-  
+
   public Color getActiveColor()
   {
     return activeColor;
@@ -88,10 +88,10 @@ public class Splitter extends JComponent
   {
     this.activeColor = activeColor;
   }
-  
+
   public void showComponent(Component component)
   {
-    Container parent = component.getParent();    
+    Container parent = component.getParent();
     if (parent instanceof TabContainer)
     {
       TabContainer tabContainer = (TabContainer)parent;
@@ -114,7 +114,7 @@ public class Splitter extends JComponent
     }
     return null;
   }
-  
+
   public void addComponent(Component component, String title, Icon icon)
   {
     if (!componentList.contains(component))
@@ -147,7 +147,7 @@ public class Splitter extends JComponent
     {
       close = iter.next().componentClosing(event);
     }
-    
+
     if (close)
     {
       componentList.remove(component);
@@ -164,7 +164,7 @@ public class Splitter extends JComponent
   {
     Container parent = activeTabContainer.getParent();
     if (parent == Splitter.this) return;
-    
+
     JSplitPane splitPane = (JSplitPane)parent;
     Component other = null;
     if (activeTabContainer == splitPane.getTopComponent())
@@ -241,7 +241,7 @@ public class Splitter extends JComponent
     parent.invalidate();
     parent.revalidate();
   }
-  
+
   public boolean isSplitted()
   {
     return getComponentCount() > 0 && getComponent(0) instanceof JSplitPane;
@@ -249,7 +249,7 @@ public class Splitter extends JComponent
 
   public List<Component> getComponentList()
   {
-    return new ArrayList(componentList);
+    return new ArrayList<Component>(componentList);
   }
 
   public void addSplitterListener(SplitterListener listener)

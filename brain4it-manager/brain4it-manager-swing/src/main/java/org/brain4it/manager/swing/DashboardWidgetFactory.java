@@ -96,7 +96,7 @@ public class DashboardWidgetFactory
   
   public ArrayList<String> getTypes()
   {    
-    ArrayList<String> typeNames = new ArrayList(types.keySet());
+    ArrayList<String> typeNames = new ArrayList<String>(types.keySet());
     Collections.sort(typeNames);
     return typeNames;
   }

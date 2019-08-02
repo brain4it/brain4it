@@ -107,7 +107,7 @@ public class DesignerPanel extends ModulePanel
   {
     return managerApp.getLocalizedMessage("Designer");
   }
-  
+
   @Override
   public String getPanelName()
   {
@@ -120,7 +120,7 @@ public class DesignerPanel extends ModulePanel
     }
     return panelName;
   }
-  
+
   @SuppressWarnings("unchecked")
   // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
   private void initComponents()
@@ -338,7 +338,7 @@ public class DesignerPanel extends ModulePanel
   {//GEN-HEADEREND:event_stretchCheckBoxActionPerformed
     stretch = stretchCheckBox.isSelected();
     setModified(true);
-    repaint();    
+    repaint();
   }//GEN-LAST:event_stretchCheckBoxActionPerformed
 
   public void loadPath(String path)
@@ -368,7 +368,7 @@ public class DesignerPanel extends ModulePanel
   {
     final String path = getCurrentPath();
     if (path == null) return;
-    
+
     if (isModified())
     {
       int result = JOptionPane.showConfirmDialog(managerApp,
@@ -393,7 +393,7 @@ public class DesignerPanel extends ModulePanel
       }
     });
   }
-  
+
   protected void onReadSuccess(final String path, final String data)
   {
     SwingUtilities.invokeLater(new Runnable()
@@ -411,16 +411,16 @@ public class DesignerPanel extends ModulePanel
         catch (Exception ex)
         {
           managerApp.showError("Designer", ex);
-        }                
+        }
       }
-    });            
+    });
   }
 
   protected void saveData()
   {
     final String path = getCurrentPath();
     if (path == null)
-    { 
+    {
       getManagerApp().showError("Designer", "Enter path before saving.");
       return;
     }
@@ -454,20 +454,20 @@ public class DesignerPanel extends ModulePanel
       {
         managerApp.updateTab(DesignerPanel.this);
         addPathToComboBox(path);
-        setModified(false);        
+        setModified(false);
       }
     });
-  }  
-  
+  }
+
   protected void createDashboardsFunction(String path)
   {
-    module.saveData(DASHBOARDS_FUNCTION_NAME, 
+    module.saveData(DASHBOARDS_FUNCTION_NAME,
       "(function (ctx data) (list " + path + "))", null);
   }
-  
+
   protected void addPathToComboBox(String path)
   {
-    DefaultComboBoxModel model =
+    DefaultComboBoxModel<String> model =
      (DefaultComboBoxModel<String>)pathComboBox.getModel();
     if (model.getIndexOf(path) == -1)
     {
@@ -545,7 +545,7 @@ public class DesignerPanel extends ModulePanel
     }
     pollingIntervalTextField.setText(String.valueOf(pollingInterval));
     managerApp.getDesignerAuxiliaryPanel().
-      getDashboardWidgetEditor().setWidgetView(null);      
+      getDashboardWidgetEditor().setWidgetView(null);
     repaint();
   }
 
@@ -590,7 +590,7 @@ public class DesignerPanel extends ModulePanel
     }
     return Printer.toString(dashboard);
   }
-  
+
   public class WidgetsPanel extends JPanel
     implements MouseListener, MouseMotionListener, FocusListener, KeyListener
   {
@@ -625,7 +625,7 @@ public class DesignerPanel extends ModulePanel
       if (!stretch)
       {
         int cellSize = Math.min(cellWidth, cellHeight);
-        if (cellWidth > cellSize) 
+        if (cellWidth > cellSize)
         {
           xOffset += (panelWidth - cellSize * gridWidth) / 2;
           cellWidth = cellSize;
@@ -636,7 +636,7 @@ public class DesignerPanel extends ModulePanel
           cellHeight = cellSize;
         }
       }
-      g2.setStroke(new BasicStroke(1, BasicStroke.CAP_ROUND, 
+      g2.setStroke(new BasicStroke(1, BasicStroke.CAP_ROUND,
         BasicStroke.JOIN_ROUND, 0, new float[]{2f, 2f}, 0));
       g.setColor(Color.GRAY);
       for (int i = 0; i <= gridWidth; i++)
@@ -695,13 +695,13 @@ public class DesignerPanel extends ModulePanel
     {
       return selectedWidgetView;
     }
-    
+
     void setSelectedWidgetView(WidgetView widgetView)
     {
       selectedWidgetView = widgetView;
       widgetEditor.setWidgetView(widgetView);
     }
-        
+
     private Point getGridCoordinates(int x, int y, boolean round)
     {
       int panelWidth = getWidth() - 2 * gridMargin;
@@ -817,7 +817,7 @@ public class DesignerPanel extends ModulePanel
     public void mouseMoved(MouseEvent e)
     {
       Palette palette = managerApp.getDesignerAuxiliaryPanel().getPalette();
-      String widgetType = palette.getSelectedWidgetType();      
+      String widgetType = palette.getSelectedWidgetType();
       Point point = e.getPoint();
       if (selectionBounds != null && !drag && widgetType == null)
       {
@@ -987,7 +987,7 @@ public class DesignerPanel extends ModulePanel
       }
       else
       {
-        setCursor(DragSource.DefaultCopyDrop); 
+        setCursor(DragSource.DefaultCopyDrop);
       }
     }
 
@@ -1062,7 +1062,7 @@ public class DesignerPanel extends ModulePanel
       setFocusable(true);
     }
   }
-  
+
   @Override
   public void close()
   {
@@ -1090,7 +1090,7 @@ public class DesignerPanel extends ModulePanel
         widget.init(null, name, properties);
       }
       catch (Exception ex)
-      {          
+      {
       }
       WidgetView widgetView = new WidgetView();
       widgetView.name = name;
@@ -1109,10 +1109,10 @@ public class DesignerPanel extends ModulePanel
     catch (Exception ex)
     {
       // ignore
-    }    
+    }
   }
-  
-  public class WidgetView implements Comparable
+
+  public class WidgetView implements Comparable<WidgetView>
   {
     String name;
     int x;
@@ -1127,7 +1127,7 @@ public class DesignerPanel extends ModulePanel
     {
       return name;
     }
-    
+
     public WidgetType getWidgetType()
     {
       String type = (String)properties.get(WidgetType.TYPE);
@@ -1139,7 +1139,7 @@ public class DesignerPanel extends ModulePanel
     {
       return properties;
     }
-    
+
     public void setProperties(BList properties) throws Exception
     {
       widget.init(null, name, properties);
@@ -1152,16 +1152,15 @@ public class DesignerPanel extends ModulePanel
     {
       return widget;
     }
-    
+
     public DesignerPanel getDesignerPanel()
     {
       return DesignerPanel.this;
     }
-    
+
     @Override
-    public int compareTo(Object o)
+    public int compareTo(WidgetView other)
     {
-      WidgetView other = (WidgetView)o;
       if (y < other.y) return -1;
       else if (y > other.y) return 1;
       else
@@ -1175,7 +1174,7 @@ public class DesignerPanel extends ModulePanel
 
   private void initDesigner()
   {
-    widgetEditor = 
+    widgetEditor =
       managerApp.getDesignerAuxiliaryPanel().getDashboardWidgetEditor();
     gridWidth = (Integer)this.gridWidthSpinner.getValue();
     gridHeight = (Integer)this.gridWidthSpinner.getValue();
@@ -1186,12 +1185,12 @@ public class DesignerPanel extends ModulePanel
       public void componentShown(ComponentEvent e)
       {
         managerApp.setAuxiliaryPanel(managerApp.getDesignerAuxiliaryPanel());
-        WidgetView widgetView = 
+        WidgetView widgetView =
           ((WidgetsPanel)widgetsPanel).getSelectedWidgetView();
         widgetEditor.setWidgetView(widgetView);
       }
     });
-    
+
     pollingIntervalTextField.getDocument().addDocumentListener(
       new DocumentListener() {
       @Override
@@ -1211,13 +1210,13 @@ public class DesignerPanel extends ModulePanel
       {
         process();
       }
-      
+
       private void process()
       {
         saveButton.setEnabled(true);
       }
     });
-    
+
     JTextField textField =
       (JTextField)pathComboBox.getEditor().getEditorComponent();
     TextUtils.updateInputMap(textField);
@@ -1240,10 +1239,10 @@ public class DesignerPanel extends ModulePanel
       {
         process();
       }
-      
+
       private void process()
       {
-        saveButton.setEnabled(true);        
+        saveButton.setEnabled(true);
       }
     });
 

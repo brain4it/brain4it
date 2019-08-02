@@ -88,7 +88,7 @@ public class DashboardActivity extends ModuleActivity
 
     ManagerApplication app = (ManagerApplication)getApplicationContext();
     app.setupActivity(this, true);
-    
+
     widgets = new HashMap<String, View>();
     setContentView(R.layout.dashboard);
 
@@ -97,7 +97,7 @@ public class DashboardActivity extends ModuleActivity
     dashboardSpinner = (Spinner)findViewById(R.id.dashboard_spinner);
 
     sessionId = UUID.randomUUID().toString();
-    
+
     updateButton.setOnClickListener(new OnClickListener()
     {
       @Override
@@ -126,7 +126,7 @@ public class DashboardActivity extends ModuleActivity
 
     loadDashboards();
   }
-  
+
   @Override
   protected void onPause()
   {
@@ -153,19 +153,19 @@ public class DashboardActivity extends ModuleActivity
       timer = null;
     }
   }
-  
+
   public String getSessionId()
   {
     return sessionId;
   }
-  
+
   public RestClient getRestClient()
   {
     RestClient restClient = module.getRestClient();
     restClient.setSessionId(sessionId);
     return restClient;
   }
-  
+
   public synchronized Monitor getMonitor()
   {
     if (monitor == null && module != null)
@@ -186,7 +186,7 @@ public class DashboardActivity extends ModuleActivity
     }
     return invoker;
   }
-  
+
   public synchronized Timer getTimer()
   {
     if (timer == null)
@@ -207,8 +207,9 @@ public class DashboardActivity extends ModuleActivity
     widgets.clear();
     grid.removeAllViews();
     dashboards = null;
-    ArrayAdapter adapter = new ArrayAdapter(DashboardActivity.this,
-      android.R.layout.simple_spinner_item, Collections.EMPTY_LIST);
+    ArrayAdapter<Object> adapter = new ArrayAdapter<Object>(
+      DashboardActivity.this, android.R.layout.simple_spinner_item,
+      Collections.<Object> emptyList());
     dashboardSpinner.setAdapter(adapter);
 
     RestClient restClient = module.getRestClient();
@@ -270,7 +271,7 @@ public class DashboardActivity extends ModuleActivity
       }
     });
   }
-  
+
   protected void createDashboard(int index)
   {
     dashboardIndex = index;

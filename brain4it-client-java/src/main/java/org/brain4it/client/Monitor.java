@@ -62,17 +62,19 @@ import static org.brain4it.server.ServerConstants.*;
  */
 public class Monitor
 {
+  private static final Listener[] EMPTY = new Listener[0];
+
   private final String serverUrl;
   private final String moduleName;
   private String accessKey;
   private String sessionId;
   private int connectionDelay;
   private int pollingInterval;
-  private Map<String, Function> functions = Collections.EMPTY_MAP;
+  private Map<String, Function> functions =
+    Collections.<String, Function> emptyMap();
   private final HashMap<String, HashSet<Listener>> listeners;
   private Worker worker;
   private static final Logger LOGGER = Logger.getLogger("Monitor");
-  private static final Listener[] EMPTY = new Listener[0];
 
   public Monitor(String serverUrl, String moduleName)
   {

@@ -283,7 +283,7 @@ public class Formatter
 
   protected class TokenList
   {
-    protected ArrayList elements = new ArrayList();
+    protected ArrayList<Object> elements = new ArrayList<Object>();
     protected TokenList parent;
 
     protected TokenList(Token openToken)

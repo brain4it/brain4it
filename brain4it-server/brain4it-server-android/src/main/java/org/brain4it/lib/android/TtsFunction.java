@@ -1,31 +1,31 @@
 /*
  * Brain4it
- * 
+ *
  * Copyright (C) 2018, Ajuntament de Sant Feliu de Llobregat
- * 
- * This program is licensed and may be used, modified and redistributed under 
- * the terms of the European Public License (EUPL), either version 1.1 or (at 
- * your option) any later version as soon as they are approved by the European 
+ *
+ * This program is licensed and may be used, modified and redistributed under
+ * the terms of the European Public License (EUPL), either version 1.1 or (at
+ * your option) any later version as soon as they are approved by the European
  * Commission.
- * 
- * Alternatively, you may redistribute and/or modify this program under the 
- * terms of the GNU Lesser General Public License as published by the Free 
- * Software Foundation; either  version 3 of the License, or (at your option) 
- * any later version. 
- *   
- * Unless required by applicable law or agreed to in writing, software 
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT 
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- *   
- * See the licenses for the specific language governing permissions, limitations 
+ *
+ * Alternatively, you may redistribute and/or modify this program under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either  version 3 of the License, or (at your option)
+ * any later version.
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *
+ * See the licenses for the specific language governing permissions, limitations
  * and more details.
- *   
- * You should have received a copy of the EUPL1.1 and the LGPLv3 licenses along 
- * with this program; if not, you may find them at: 
- *   
+ *
+ * You should have received a copy of the EUPL1.1 and the LGPLv3 licenses along
+ * with this program; if not, you may find them at:
+ *
  *   https://joinup.ec.europa.eu/software/page/eupl/licence-eupl
- *   http://www.gnu.org/licenses/ 
- *   and 
+ *   http://www.gnu.org/licenses/
+ *   and
  *   https://www.gnu.org/licenses/lgpl.txt
  */
 
@@ -54,7 +54,7 @@ public class TtsFunction extends AndroidFunction
 {
   private static final double DEFAULT_VOLUME = 50;
   private final TextToSpeech tts;
-  private final UtteranceProgressListener progressListener = 
+  private final UtteranceProgressListener progressListener =
   new UtteranceProgressListener()
   {
     @Override
@@ -83,7 +83,7 @@ public class TtsFunction extends AndroidFunction
 
   public TtsFunction()
   {
-    AndroidService service = AndroidService.getInstance();      
+    AndroidService service = AndroidService.getInstance();
     tts = new TextToSpeech(service, new OnInitListener()
     {
       @Override
@@ -91,7 +91,7 @@ public class TtsFunction extends AndroidFunction
       {
         if (status == TextToSpeech.SUCCESS)
         {
-          tts.setOnUtteranceProgressListener(progressListener);      
+          tts.setOnUtteranceProgressListener(progressListener);
           Log.i(TAG, "tts initialized");
         }
         else
@@ -103,43 +103,43 @@ public class TtsFunction extends AndroidFunction
   }
 
   @Override
-  public synchronized Object invoke(Context context, BList args) 
+  public synchronized Object invoke(Context context, BList args)
     throws Exception
   {
     if (tts != null)
     {
       Utils.checkArguments(args, 1);
       String text = Utils.toString(context.evaluate(args.get(1)));
-      
+
       // set language
       String language = (String)context.evaluate(args.get("language"));
       if (language != null)
       {
-        tts.setLanguage(new Locale(language));            
+        tts.setLanguage(new Locale(language));
       }
       else
       {
-        tts.setLanguage(Locale.getDefault());            
+        tts.setLanguage(Locale.getDefault());
       }
-      
+
       // set volume
       double volume = DEFAULT_VOLUME;
       Number number = (Number)context.evaluate(args.get("volume"));
       if (number != null)
       {
-        volume = number.doubleValue();    
+        volume = number.doubleValue();
         if (volume > 100) volume = 100;
         else if (volume < 0) volume = 0;
       }
-      AndroidService service = AndroidService.getInstance();      
-      AudioManager audioManager = 
+      AndroidService service = AndroidService.getInstance();
+      AudioManager audioManager =
         (AudioManager)service.getSystemService(AUDIO_SERVICE);
       int maxVolume = audioManager.getStreamMaxVolume(STREAM_MUSIC);
       int volumeIndex = (int)Math.round(maxVolume * volume / 100.0);
       audioManager.setStreamVolume(STREAM_MUSIC, volumeIndex, 0);
 
       // speech text
-      HashMap map = new HashMap();
+      HashMap<String, String> map = new HashMap<String, String>();
       map.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "1");
       tts.speak(text, QUEUE_FLUSH, map);
       wait(); // wait for utterance termination

@@ -1,31 +1,31 @@
 /*
  * Brain4it
- * 
+ *
  * Copyright (C) 2018, Ajuntament de Sant Feliu de Llobregat
- * 
- * This program is licensed and may be used, modified and redistributed under 
- * the terms of the European Public License (EUPL), either version 1.1 or (at 
- * your option) any later version as soon as they are approved by the European 
+ *
+ * This program is licensed and may be used, modified and redistributed under
+ * the terms of the European Public License (EUPL), either version 1.1 or (at
+ * your option) any later version as soon as they are approved by the European
  * Commission.
- * 
- * Alternatively, you may redistribute and/or modify this program under the 
- * terms of the GNU Lesser General Public License as published by the Free 
- * Software Foundation; either  version 3 of the License, or (at your option) 
- * any later version. 
- *   
- * Unless required by applicable law or agreed to in writing, software 
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT 
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- *   
- * See the licenses for the specific language governing permissions, limitations 
+ *
+ * Alternatively, you may redistribute and/or modify this program under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either  version 3 of the License, or (at your option)
+ * any later version.
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *
+ * See the licenses for the specific language governing permissions, limitations
  * and more details.
- *   
- * You should have received a copy of the EUPL1.1 and the LGPLv3 licenses along 
- * with this program; if not, you may find them at: 
- *   
+ *
+ * You should have received a copy of the EUPL1.1 and the LGPLv3 licenses along
+ * with this program; if not, you may find them at:
+ *
  *   https://joinup.ec.europa.eu/software/page/eupl/licence-eupl
- *   http://www.gnu.org/licenses/ 
- *   and 
+ *   http://www.gnu.org/licenses/
+ *   and
  *   https://www.gnu.org/licenses/lgpl.txt
  */
 package org.brain4it.manager.widgets;
@@ -64,9 +64,9 @@ public abstract class WidgetType
   public static final String SWITCH = "switch";
 
   /* special widget type property in property BList */
-  public static final String TYPE = "type"; 
-  
-  /* common properties */  
+  public static final String TYPE = "type";
+
+  /* common properties */
   public static final String LABEL = "label";
   public static final String FONT_FAMILY = "font-family";
   public static final String FONT_SIZE = "font-size";
@@ -77,46 +77,46 @@ public abstract class WidgetType
   public static final String COLOR = "color";
   public static final String INVOKE_INTERVAL = "invoke-interval";
 
-  public static final WidgetProperty LABEL_PROPERTY = 
-    new WidgetProperty(LABEL, STRING, false, null);  
-  public static final WidgetProperty FONT_FAMILY_PROPERTY = 
+  public static final WidgetProperty LABEL_PROPERTY =
+    new WidgetProperty(LABEL, STRING, false, null);
+  public static final WidgetProperty FONT_FAMILY_PROPERTY =
     new WidgetProperty(FONT_FAMILY, STRING, false, null);
-  public static final WidgetProperty FONT_SIZE_PROPERTY = 
+  public static final WidgetProperty FONT_SIZE_PROPERTY =
     new WidgetProperty(FONT_SIZE, NUMBER, false, 14);
-  public static final WidgetProperty MIN_PROPERTY = 
+  public static final WidgetProperty MIN_PROPERTY =
     new WidgetProperty(MIN, NUMBER, false, 0);
-  public static final WidgetProperty MAX_PROPERTY = 
+  public static final WidgetProperty MAX_PROPERTY =
     new WidgetProperty(MAX, NUMBER, false, 100);
-  public static final WidgetProperty COLOR_PROPERTY = 
+  public static final WidgetProperty COLOR_PROPERTY =
     new WidgetProperty(COLOR, STRING, false, null);
-  public static final WidgetProperty INVOKE_INTERVAL_PROPERTY = 
+  public static final WidgetProperty INVOKE_INTERVAL_PROPERTY =
     new WidgetProperty(INVOKE_INTERVAL, NUMBER, false, 100);
-  
-  public static final Map<String, WidgetType> TYPES = 
+
+  public static final Map<String, WidgetType> TYPES =
     new HashMap<String, WidgetType>();
-  
-  protected Map<String, WidgetProperty> propertyMap = 
+
+  protected Map<String, WidgetProperty> propertyMap =
     new TreeMap<String, WidgetProperty>();
-  
+
   public abstract String getWidgetType();
 
   public Collection<WidgetProperty> getProperties()
   {
     return Collections.unmodifiableCollection(propertyMap.values());
   }
-  
+
   public WidgetProperty getProperty(String name)
   {
     return propertyMap.get(name);
   }
 
   /* common properties */
-  
+
   public String getLabel(BList properties)
   {
     return this.propertyMap.get(LABEL).getString(properties);
   }
-  
+
   public String getFontFamily(BList properties)
   {
     return this.propertyMap.get(FONT_FAMILY).getString(properties);
@@ -126,7 +126,7 @@ public abstract class WidgetType
   {
     return this.propertyMap.get(FONT_SIZE).getInteger(properties);
   }
-  
+
   public int getMin(BList properties) throws Exception
   {
     return this.propertyMap.get(MIN).getInteger(properties);
@@ -136,39 +136,39 @@ public abstract class WidgetType
   {
     return this.propertyMap.get(MAX).getInteger(properties);
   }
-  
+
   public BSoftReference getGetValueFunction(BList properties) throws Exception
   {
     return this.propertyMap.get(GET_VALUE).getFunction(properties);
-  }  
+  }
 
   public BSoftReference getSetValueFunction(BList properties) throws Exception
   {
     return this.propertyMap.get(SET_VALUE).getFunction(properties);
-  }    
-  
+  }
+
   public int getColor(BList properties)
   {
-    return this.propertyMap.get(COLOR).getColor(properties);    
+    return this.propertyMap.get(COLOR).getColor(properties);
   }
 
   public int getInvokeInterval(BList properties) throws Exception
   {
     return getProperty(INVOKE_INTERVAL).getInteger(properties);
   }
-  
+
   /* gets widget description */
   public String getDescription(Locale locale)
   {
     return getLocalizedText(getWidgetType(), locale);
   }
 
-  /* gets property description */  
+  /* gets property description */
   public String getDescription(String property, Locale locale)
   {
     return getLocalizedText(getWidgetType() + "." + property, locale);
   }
-    
+
   public void init(BList properties)
   {
     for (WidgetProperty property : this.propertyMap.values())
@@ -178,21 +178,21 @@ public abstract class WidgetType
   }
 
   public void validate(BList properties) throws Exception
-  {    
+  {
   }
 
   public static List<String> getWidgetTypes()
   {
-    ArrayList<String> typeNames = new ArrayList(TYPES.keySet());
+    ArrayList<String> typeNames = new ArrayList<String>(TYPES.keySet());
     Collections.sort(typeNames);
-    return typeNames;    
+    return typeNames;
   }
-  
+
   public static WidgetType getType(String widgetType)
   {
     return TYPES.get(widgetType);
   }
-  
+
   protected String getLocalizedText(String key, Locale locale)
   {
     ResourceBundle bundle = ResourceBundle.getBundle(
@@ -203,18 +203,18 @@ public abstract class WidgetType
     }
     return null;
   }
-  
+
   protected final void addProperty(WidgetProperty property)
   {
     propertyMap.put(property.getName(), property);
   }
-  
-  protected final void addProperty(String name, String type, boolean function, 
+
+  protected final void addProperty(String name, String type, boolean function,
     Object defaultValue)
   {
     propertyMap.put(name, new WidgetProperty(name, type, function, defaultValue));
   }
-  
+
   static
   {
     TYPES.put(BUTTON, new ButtonWidgetType());

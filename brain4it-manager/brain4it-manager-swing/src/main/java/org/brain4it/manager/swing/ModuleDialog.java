@@ -163,7 +163,7 @@ public class ModuleDialog extends javax.swing.JDialog
       }
       walk.close();
       Collections.sort(iconNames);
-      DefaultComboBoxModel model = new DefaultComboBoxModel(
+      DefaultComboBoxModel<String> model = new DefaultComboBoxModel<String>(
         iconNames.toArray(new String[iconNames.size()]));
       iconComboBox.setModel(model);
       iconComboBox.setRenderer(new IconRenderer());
@@ -174,7 +174,7 @@ public class ModuleDialog extends javax.swing.JDialog
     }
   }
 
-  public class IconRenderer extends JLabel implements ListCellRenderer
+  public class IconRenderer extends JLabel implements ListCellRenderer<String>
   {
     private static final int BORDER = 2;
     public IconRenderer()
@@ -184,9 +184,9 @@ public class ModuleDialog extends javax.swing.JDialog
 
     @Override
     public Component getListCellRendererComponent(JList list,
-       Object value, int index, boolean selected, boolean hasFocus)
+       String value, int index, boolean selected, boolean hasFocus)
     {
-      String iconName = (String)value;
+      String iconName = value;
       if (selected)
       {
         setBackground(ManagerApp.BASE_COLOR);
@@ -339,7 +339,7 @@ public class ModuleDialog extends javax.swing.JDialog
     String moduleName = nameTextField.getText().trim();
     if (moduleName.length() == 0)
     {
-      JOptionPane.showMessageDialog(null, 
+      JOptionPane.showMessageDialog(null,
         managerApp.getLocalizedMessage("ModuleNameMandatory"),
         "Warning", JOptionPane.WARNING_MESSAGE);
       return;

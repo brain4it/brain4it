@@ -1,31 +1,31 @@
 /*
  * Brain4it
- * 
+ *
  * Copyright (C) 2018, Ajuntament de Sant Feliu de Llobregat
- * 
- * This program is licensed and may be used, modified and redistributed under 
- * the terms of the European Public License (EUPL), either version 1.1 or (at 
- * your option) any later version as soon as they are approved by the European 
+ *
+ * This program is licensed and may be used, modified and redistributed under
+ * the terms of the European Public License (EUPL), either version 1.1 or (at
+ * your option) any later version as soon as they are approved by the European
  * Commission.
- * 
- * Alternatively, you may redistribute and/or modify this program under the 
- * terms of the GNU Lesser General Public License as published by the Free 
- * Software Foundation; either  version 3 of the License, or (at your option) 
- * any later version. 
- *   
- * Unless required by applicable law or agreed to in writing, software 
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT 
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- *   
- * See the licenses for the specific language governing permissions, limitations 
+ *
+ * Alternatively, you may redistribute and/or modify this program under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either  version 3 of the License, or (at your option)
+ * any later version.
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *
+ * See the licenses for the specific language governing permissions, limitations
  * and more details.
- *   
- * You should have received a copy of the EUPL1.1 and the LGPLv3 licenses along 
- * with this program; if not, you may find them at: 
- *   
+ *
+ * You should have received a copy of the EUPL1.1 and the LGPLv3 licenses along
+ * with this program; if not, you may find them at:
+ *
  *   https://joinup.ec.europa.eu/software/page/eupl/licence-eupl
- *   http://www.gnu.org/licenses/ 
- *   and 
+ *   http://www.gnu.org/licenses/
+ *   and
  *   https://www.gnu.org/licenses/lgpl.txt
  */
 
@@ -84,8 +84,8 @@ public class ModuleManager
   {
     this(name, store, false, accessKey, null);
   }
-  
-  public ModuleManager(String name, Store store, boolean multiTenant, 
+
+  public ModuleManager(String name, Store store, boolean multiTenant,
     String accessKey, File accessKeyFile)
   {
     this.name = name;
@@ -94,7 +94,7 @@ public class ModuleManager
     this.functions = Collections.synchronizedMap(
       new HashMap<String, Function>());
     this.multiTenant = multiTenant;
-    this.modules = multiTenant ? 
+    this.modules = multiTenant ?
       new MultiTenantModuleMap() : new SingleTenantModuleMap();
     this.store = store;
     this.accessKey = accessKey;
@@ -102,7 +102,7 @@ public class ModuleManager
     this.accessKeys = new Properties();
 
     LOGGER.log(Level.INFO, "Store: {0}", store.getClass().getName());
-    LOGGER.log(Level.INFO, "Multi-tenant mode: {0}", multiTenant);          
+    LOGGER.log(Level.INFO, "Multi-tenant mode: {0}", multiTenant);
     LOGGER.log(Level.INFO, "Access key: {0}", accessKey != null);
     LOGGER.log(Level.INFO, "Access key file: {0}", accessKeyFile);
   }
@@ -111,36 +111,36 @@ public class ModuleManager
   {
     return name;
   }
-  
+
   public boolean isMultiTenant()
   {
     return multiTenant;
   }
- 
+
   public Logger getLogger()
   {
     return LOGGER;
   }
-  
+
   public List<Library> getLibraries()
   {
     return libraries;
   }
-  
+
   public String getAccessKey()
   {
     return accessKey;
   }
-  
+
   public synchronized String getAccessKey(String tenant) throws IOException
   {
     if (tenant == null)
       throw new IOException("Undefined tenant");
 
     if (accessKeyFile == null) return accessKey;
-    
+
     long now = System.currentTimeMillis();
-    if (now - accessKeyFileLastRead > 5000) // look for changes every 5 seconds 
+    if (now - accessKeyFileLastRead > 5000) // look for changes every 5 seconds
     {
       accessKeyFileLastRead = now;
       if (accessKeyFile.lastModified() != accessKeyFileLastModified)
@@ -151,8 +151,8 @@ public class ModuleManager
           FileInputStream is = new FileInputStream(accessKeyFile);
           try
           {
-            LOGGER.log(Level.INFO, "Loading access key file {0}...", 
-              accessKeyFile.getAbsolutePath());             
+            LOGGER.log(Level.INFO, "Loading access key file {0}...",
+              accessKeyFile.getAbsolutePath());
             accessKeys.load(is);
             accessKeyFileLastModified = accessKeyFile.lastModified();
           }
@@ -165,7 +165,7 @@ public class ModuleManager
     }
     return accessKeys.getProperty(tenant);
   }
-  
+
   public void addLibraries(String libraryClassNames)
   {
     if (libraryClassNames == null) return;
@@ -179,7 +179,7 @@ public class ModuleManager
       }
       catch (Exception ex)
       {
-        LOGGER.log(Level.SEVERE, "Can not add library {0}...", 
+        LOGGER.log(Level.SEVERE, "Can not add library {0}...",
           libraryClassName);
       }
     }
@@ -212,7 +212,7 @@ public class ModuleManager
   public void loadLibraries()
   {
     LOGGER.log(Level.INFO, "Loading libraries...");
-    
+
     functions.clear();
     for (int i = 0; i < libraries.size(); i++)
     {
@@ -238,7 +238,7 @@ public class ModuleManager
   public void loadModules() throws IOException
   {
     LOGGER.log(Level.INFO, "Loading modules...");
-    
+
     if (multiTenant)
     {
       List<Entry> entries = store.listEntries("", null);
@@ -253,7 +253,7 @@ public class ModuleManager
           }
           catch (IOException ex)
           {
-            LOGGER.log(Level.SEVERE, "[{0}]: {1}", 
+            LOGGER.log(Level.SEVERE, "[{0}]: {1}",
               new Object[]{tenant == null ? "" : tenant, ex.getMessage()});
           }
         }
@@ -264,14 +264,14 @@ public class ModuleManager
       loadModules(null);
     }
   }
-  
+
   public void loadModules(String tenant) throws IOException
   {
     if (multiTenant && tenant == null)
       throw new IOException("Undefined tenant");
-    
+
     String path = tenant == null ? "" : tenant;
- 
+
     List<Entry> entries = store.listEntries(path, null);
 
     for (Entry entry : entries)
@@ -289,17 +289,17 @@ public class ModuleManager
           LOGGER.log(Level.INFO, "Module {0} loaded successfully.", fullName);
           try
           {
-            module.start();          
+            module.start();
           }
           catch (Exception ex)
           {
-            LOGGER.log(Level.SEVERE, "Module {0} start failed: {1}", 
+            LOGGER.log(Level.SEVERE, "Module {0} start failed: {1}",
               new Object[]{fullName, ex.toString()});
           }
         }
         catch (Exception ex)
         {
-          LOGGER.log(Level.SEVERE, "Module {0} load failed: {1}", 
+          LOGGER.log(Level.SEVERE, "Module {0} load failed: {1}",
            new Object[]{fullName, ex.toString()});
           // continue loading tenantModules
         }
@@ -321,8 +321,8 @@ public class ModuleManager
         }
         catch (IOException ex)
         {
-          LOGGER.log(Level.SEVERE, "[{0}]: {1}", 
-            new Object[]{tenant == null ? "" : tenant, ex.getMessage()});            
+          LOGGER.log(Level.SEVERE, "[{0}]: {1}",
+            new Object[]{tenant == null ? "" : tenant, ex.getMessage()});
         }
       }
     }
@@ -331,7 +331,7 @@ public class ModuleManager
       saveModules(null);
     }
   }
-  
+
   public void saveModules(String tenant) throws IOException
   {
     for (Module module : modules.getModules(tenant, false))
@@ -343,17 +343,17 @@ public class ModuleManager
       }
       catch (Exception ex)
       {
-        LOGGER.log(Level.INFO, "Module {0} stop failed: {1}", 
+        LOGGER.log(Level.INFO, "Module {0} stop failed: {1}",
           new Object[]{fullName, ex.toString()});
       }
       try
       {
-        module.saveSnapshot();     
+        module.saveSnapshot();
         LOGGER.log(Level.INFO, "Module {0} saved successfully.", fullName);
       }
       catch (Exception ex)
       {
-        LOGGER.log(Level.SEVERE, "Module {0} save failed: {1}", 
+        LOGGER.log(Level.SEVERE, "Module {0} save failed: {1}",
           new Object[]{fullName, ex.toString()});
         // continue saving tenantModules
       }
@@ -364,9 +364,9 @@ public class ModuleManager
   {
     if (multiTenant && tenant == null)
       throw new IOException("Undefined tenant");
-    
+
     BList moduleList = new BList();
-    
+
     Collection<Module> tenantModules = modules.getModules(tenant, true);
     for (Module module : tenantModules)
     {
@@ -385,8 +385,8 @@ public class ModuleManager
     }
     return moduleList;
   }
-  
-  public Module getModule(String tenant, String moduleName, boolean notNull) 
+
+  public Module getModule(String tenant, String moduleName, boolean notNull)
     throws IOException
   {
     if (multiTenant && tenant == null)
@@ -399,15 +399,15 @@ public class ModuleManager
     return module;
   }
 
-  public Module createModule(String tenant, String moduleName, BList data) 
+  public Module createModule(String tenant, String moduleName, BList data)
     throws IOException
   {
     if (multiTenant && tenant == null)
       throw new IOException("Undefined tenant");
-    
-    String fullName = multiTenant ? 
+
+    String fullName = multiTenant ?
       tenant + PATH_SEPARATOR + moduleName : moduleName;
-    
+
     LOGGER.log(Level.INFO, "Creating module {0}...", fullName);
 
     if (!isValidModuleName(moduleName))
@@ -416,7 +416,7 @@ public class ModuleManager
     }
 
     Module module;
-    
+
     synchronized (modules)
     {
       if (modules.getModule(tenant, moduleName) != null)
@@ -435,7 +435,7 @@ public class ModuleManager
     }
     catch (Exception ex)
     {
-      LOGGER.log(Level.SEVERE, "Module {0} creation failed: {1}.", 
+      LOGGER.log(Level.SEVERE, "Module {0} creation failed: {1}.",
         new Object[]{fullName, ex.toString()});
     }
     return module;
@@ -447,9 +447,9 @@ public class ModuleManager
     if (multiTenant && tenant == null)
       throw new IOException("Undefined tenant");
 
-    String fullName = multiTenant ? 
+    String fullName = multiTenant ?
       tenant + PATH_SEPARATOR + moduleName : moduleName;
-    
+
     LOGGER.log(Level.INFO, "Destroying module {0}...", fullName);
 
     if (modules.getModule(tenant, moduleName) == null)
@@ -472,17 +472,17 @@ public class ModuleManager
   }
 
   /* internal classes & functions */
-  
+
   interface ModuleMap
   {
     Collection<String> getTenants();
     Collection<Module> getModules(String tenant, boolean sort);
     Module getModule(String tenant, String moduleName);
     void putModule(Module module);
-    Module removeModule(String tenant, String moduleName);     
+    Module removeModule(String tenant, String moduleName);
   }
 
-  class SingleTenantModuleMap extends HashMap<String, Module> 
+  class SingleTenantModuleMap extends HashMap<String, Module>
     implements ModuleMap
   {
     @Override
@@ -492,7 +492,7 @@ public class ModuleManager
     }
 
     @Override
-    public synchronized Collection<Module> getModules(String tenant, 
+    public synchronized Collection<Module> getModules(String tenant,
       boolean sort)
     {
       ArrayList<Module> moduleList = new ArrayList<Module>(values());
@@ -519,10 +519,10 @@ public class ModuleManager
     public synchronized Module removeModule(String tenant, String moduleName)
     {
       return remove(moduleName);
-    }    
+    }
   }
-  
-  class MultiTenantModuleMap extends HashMap<String, Map<String, Module>> 
+
+  class MultiTenantModuleMap extends HashMap<String, Map<String, Module>>
     implements ModuleMap
   {
     @Override
@@ -530,15 +530,15 @@ public class ModuleManager
     {
       return new ArrayList<String>(keySet());
     }
-    
+
     @Override
-    public synchronized Collection<Module> getModules(String tenant, 
+    public synchronized Collection<Module> getModules(String tenant,
        boolean sort)
     {
       Map<String, Module> tenantModules = get(tenant);
-      if (tenantModules == null) return Collections.EMPTY_LIST;
-      
-      ArrayList<Module> moduleList = 
+      if (tenantModules == null) return Collections.<Module> emptyList();
+
+      ArrayList<Module> moduleList =
         new ArrayList<Module>(tenantModules.values());
       if (sort)
       {
@@ -546,14 +546,14 @@ public class ModuleManager
       }
       return moduleList;
     }
-    
+
     @Override
     public synchronized Module getModule(String tenant, String moduleName)
     {
       Map<String, Module> tenantModules = get(tenant);
       return tenantModules == null ? null : tenantModules.get(moduleName);
     }
-    
+
     @Override
     public synchronized void putModule(Module module)
     {
@@ -566,7 +566,7 @@ public class ModuleManager
       }
       tenantModules.put(module.getName(), module);
     }
-    
+
     @Override
     public synchronized Module removeModule(String tenant, String moduleName)
     {
@@ -574,11 +574,11 @@ public class ModuleManager
       if (tenantModules != null)
       {
         return tenantModules.remove(moduleName);
-      }     
+      }
       return null;
     }
   }
-  
+
   private void sortModuleList(List<Module> moduleList)
   {
     Collections.sort(moduleList, new Comparator<Module>()
@@ -588,9 +588,9 @@ public class ModuleManager
       {
         return o1.getName().compareTo(o2.getName());
       }
-    });    
+    });
   }
-  
+
   private boolean isValidModuleName(String moduleName)
   {
     if (moduleName == null || moduleName.length() == 0) return false;

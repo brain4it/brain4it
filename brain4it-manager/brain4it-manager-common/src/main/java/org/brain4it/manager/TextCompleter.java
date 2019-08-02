@@ -1,31 +1,31 @@
 /*
  * Brain4it
- * 
+ *
  * Copyright (C) 2018, Ajuntament de Sant Feliu de Llobregat
- * 
- * This program is licensed and may be used, modified and redistributed under 
- * the terms of the European Public License (EUPL), either version 1.1 or (at 
- * your option) any later version as soon as they are approved by the European 
+ *
+ * This program is licensed and may be used, modified and redistributed under
+ * the terms of the European Public License (EUPL), either version 1.1 or (at
+ * your option) any later version as soon as they are approved by the European
  * Commission.
- * 
- * Alternatively, you may redistribute and/or modify this program under the 
- * terms of the GNU Lesser General Public License as published by the Free 
- * Software Foundation; either  version 3 of the License, or (at your option) 
- * any later version. 
- *   
- * Unless required by applicable law or agreed to in writing, software 
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT 
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- *   
- * See the licenses for the specific language governing permissions, limitations 
+ *
+ * Alternatively, you may redistribute and/or modify this program under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either  version 3 of the License, or (at your option)
+ * any later version.
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *
+ * See the licenses for the specific language governing permissions, limitations
  * and more details.
- *   
- * You should have received a copy of the EUPL1.1 and the LGPLv3 licenses along 
- * with this program; if not, you may find them at: 
- *   
+ *
+ * You should have received a copy of the EUPL1.1 and the LGPLv3 licenses along
+ * with this program; if not, you may find them at:
+ *
  *   https://joinup.ec.europa.eu/software/page/eupl/licence-eupl
- *   http://www.gnu.org/licenses/ 
- *   and 
+ *   http://www.gnu.org/licenses/
+ *   and
  *   https://www.gnu.org/licenses/lgpl.txt
  */
 package org.brain4it.manager;
@@ -50,8 +50,8 @@ import org.brain4it.lang.Utils;
 public class TextCompleter
 {
   private final Module module;
-  private static final String FIND_COMMAND = 
-  "(call " + 
+  private static final String FIND_COMMAND =
+  "(call " +
   "  (function (lst head)" +
   "    (if (= (type-of lst) \"list\") " +
   "      (apply " +
@@ -72,7 +72,7 @@ public class TextCompleter
   {
     return module;
   }
-  
+
   /**
    * finds the head of the editing text
    * @param text the editing text to cursor position
@@ -121,7 +121,7 @@ public class TextCompleter
     {
       k = 0;
     }
-    return text.substring(k);    
+    return text.substring(k);
   }
 
   /**
@@ -132,13 +132,13 @@ public class TextCompleter
   public void complete(final String head, final OnCompleteListener listener)
   {
     final List<Candidate> candidates = new ArrayList<Candidate>();
-    final String lastHead; 
+    final String lastHead;
     String command;
 
     int index = head.lastIndexOf(IOConstants.PATH_REFERENCE_SEPARATOR);
     if (index == -1)
     {
-      Set<String> functionNames = module.getFunctionNames();    
+      Set<String> functionNames = module.getFunctionNames();
       if (functionNames != null)
       {
         for (String functionName : functionNames)
@@ -190,7 +190,7 @@ public class TextCompleter
                 String.valueOf(IOConstants.PATH_REFERENCE_SEPARATOR)))
               {
                 name = "\"" + Utils.escapeString(name) + "\"";
-                candidates.add(new Candidate(name, type));              
+                candidates.add(new Candidate(name, type));
               }
             }
             else
@@ -215,9 +215,9 @@ public class TextCompleter
       }
     });
   }
-  
+
   /**
-   * Finds the common head to all the given candidates 
+   * Finds the common head to all the given candidates
    * @param candidates the candidates to find a common head
    * @return the common head found (may be empty string)
    */
@@ -248,8 +248,8 @@ public class TextCompleter
     }
     return firstCandidate.getName().substring(0, i);
   }
-  
-  public class Candidate implements Comparable
+
+  public class Candidate implements Comparable<Candidate>
   {
     private final String name;
     private final String type;
@@ -259,7 +259,7 @@ public class TextCompleter
       this.name = name;
       this.type = type;
     }
-    
+
     public String getName()
     {
       return name;
@@ -271,19 +271,18 @@ public class TextCompleter
     }
 
     @Override
-    public int compareTo(Object o)
+    public int compareTo(Candidate other)
     {
-      Candidate other = (Candidate)o;
       return name.compareTo(other.name);
     }
-    
+
     @Override
     public String toString()
     {
       return "[" + name + ", " + type + "]";
     }
   }
-  
+
   public interface OnCompleteListener
   {
     void textCompleted(String head, List<Candidate> candidates);

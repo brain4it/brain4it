@@ -43,16 +43,16 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Executes BPL code in a dedicated thread.
- * 
- * This class allow to run code synchronouslly (with the execute method) or 
+ *
+ * This class allow to run code synchronouslly (with the execute method) or
  * asynchronouslly (with the spawn method).
- * 
- * In both cases a running executor can always be interrupted with the 
+ *
+ * In both cases a running executor can always be interrupted with the
  * kill method.
- * 
+ *
  * @author realor
  */
-public class Executor implements Callable
+public class Executor implements Callable<Object>
 {
   private static final Map<Integer, Executor> EXECUTORS =
     Collections.synchronizedMap(new HashMap<Integer, Executor>());

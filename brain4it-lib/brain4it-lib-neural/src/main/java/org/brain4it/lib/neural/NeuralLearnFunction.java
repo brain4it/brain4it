@@ -54,6 +54,7 @@ public class NeuralLearnFunction extends NeuralFunction
   }
 
   @Override
+  @SuppressWarnings("unchecked")
   public Object invoke(Context context, BList args) throws Exception
   {
     Utils.checkArguments(args, 2);

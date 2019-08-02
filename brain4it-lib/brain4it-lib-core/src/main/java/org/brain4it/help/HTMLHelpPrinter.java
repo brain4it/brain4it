@@ -123,7 +123,7 @@ public class HTMLHelpPrinter extends TextHelpPrinter
     }
     if (groupSet.size() > 0)
     {
-      ArrayList<String> groups = new ArrayList(groupSet);
+      ArrayList<String> groups = new ArrayList<String>(groupSet);
       Collections.sort(groups);
       writer.write("<div class=\"groups\">");
       writer.write("<a href=\"#\" class=\"selected\" " + 

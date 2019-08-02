@@ -126,7 +126,7 @@ public class FileSystemStore implements Store
 
     if (!file.exists() ||
         !file.isDirectory() ||
-        file.isHidden()) return Collections.EMPTY_LIST;
+        file.isHidden()) return Collections.<Entry> emptyList();
 
     ArrayList<Entry> entries = new ArrayList<Entry>();
 

@@ -59,6 +59,7 @@ public class WrapperFunction implements Function
     this.parameterTypes = method.getParameterTypes();
   }
 
+  @SuppressWarnings("unchecked")
   public WrapperFunction(String pathName, Class cls, String methodName, 
     Class... parameterTypes) throws NoSuchMethodException
   {
@@ -68,6 +69,7 @@ public class WrapperFunction implements Function
     this.parameterTypes = parameterTypes;
   }
 
+  @SuppressWarnings("unchecked")
   public WrapperFunction(String pathName, Object instance, String methodName, 
      Class... parameterTypes) throws NoSuchMethodException
   {

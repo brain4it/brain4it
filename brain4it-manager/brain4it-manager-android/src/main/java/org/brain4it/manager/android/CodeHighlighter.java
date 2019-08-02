@@ -1,31 +1,31 @@
 /*
  * Brain4it
- * 
+ *
  * Copyright (C) 2018, Ajuntament de Sant Feliu de Llobregat
- * 
- * This program is licensed and may be used, modified and redistributed under 
- * the terms of the European Public License (EUPL), either version 1.1 or (at 
- * your option) any later version as soon as they are approved by the European 
+ *
+ * This program is licensed and may be used, modified and redistributed under
+ * the terms of the European Public License (EUPL), either version 1.1 or (at
+ * your option) any later version as soon as they are approved by the European
  * Commission.
- * 
- * Alternatively, you may redistribute and/or modify this program under the 
- * terms of the GNU Lesser General Public License as published by the Free 
- * Software Foundation; either  version 3 of the License, or (at your option) 
- * any later version. 
- *   
- * Unless required by applicable law or agreed to in writing, software 
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT 
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- *   
- * See the licenses for the specific language governing permissions, limitations 
+ *
+ * Alternatively, you may redistribute and/or modify this program under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either  version 3 of the License, or (at your option)
+ * any later version.
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *
+ * See the licenses for the specific language governing permissions, limitations
  * and more details.
- *   
- * You should have received a copy of the EUPL1.1 and the LGPLv3 licenses along 
- * with this program; if not, you may find them at: 
- *   
+ *
+ * You should have received a copy of the EUPL1.1 and the LGPLv3 licenses along
+ * with this program; if not, you may find them at:
+ *
  *   https://joinup.ec.europa.eu/software/page/eupl/licence-eupl
- *   http://www.gnu.org/licenses/ 
- *   and 
+ *   http://www.gnu.org/licenses/
+ *   and
  *   https://www.gnu.org/licenses/lgpl.txt
  */
 
@@ -33,6 +33,7 @@ package org.brain4it.manager.android;
 
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.text.ParcelableSpan;
 import android.text.Spannable;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
@@ -52,9 +53,9 @@ import org.brain4it.io.TokenizerComments;
 public class CodeHighlighter
 {
   private static final String COMMENT_TYPE = "COMMENT";
-  private final List spans = new ArrayList();
+  private final List<ParcelableSpan> spans = new ArrayList<ParcelableSpan>();
   private final HashMap<String, Integer> colors = new HashMap<String, Integer>();
-  
+
   public CodeHighlighter()
   {
     colors.put(Token.NULL, Color.argb(255, 128, 0, 128));
@@ -74,13 +75,13 @@ public class CodeHighlighter
     updateHighlight(spannable, null);
   }
 
-  public void updateHighlight(Spannable spannable, 
+  public void updateHighlight(Spannable spannable,
      Set<String> functionNames)
   {
     updateHighlight(spannable, 0, spannable.length(), functionNames);
-  }  
-  
-  public void updateHighlight(Spannable spannable, 
+  }
+
+  public void updateHighlight(Spannable spannable,
      int vstart, int vend, Set<String> functionNames)
   {
     try
@@ -99,17 +100,17 @@ public class CodeHighlighter
       {
         start = token.getStartPosition();
         end = token.getEndPosition();
-        
+
         if (end >= vstart)
         {
-          if ((token.getFlags() & TokenizerComments.COMMENT_FLAG) == 
+          if ((token.getFlags() & TokenizerComments.COMMENT_FLAG) ==
             TokenizerComments.COMMENT_FLAG && !token.isType(Token.INVALID))
           {
-            Integer color = colors.get(COMMENT_TYPE);            
-            ForegroundColorSpan span = new ForegroundColorSpan(color); 
-            spannable.setSpan(span, start, end, 
+            Integer color = colors.get(COMMENT_TYPE);
+            ForegroundColorSpan span = new ForegroundColorSpan(color);
+            spannable.setSpan(span, start, end,
               Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-            spans.add(span);            
+            spans.add(span);
           }
           else if (token.isType(Token.REFERENCE))
           {
@@ -119,7 +120,7 @@ public class CodeHighlighter
               if (functionNames.contains(name))
               {
                 StyleSpan span = new StyleSpan(Typeface.BOLD);
-                spannable.setSpan(span, start, end, 
+                spannable.setSpan(span, start, end,
                   Spannable.SPAN_INCLUSIVE_INCLUSIVE);
                 spans.add(span);
               }
@@ -131,8 +132,8 @@ public class CodeHighlighter
             Integer color = colors.get(type);
             if (color != null)
             {
-              ForegroundColorSpan span = new ForegroundColorSpan(color); 
-              spannable.setSpan(span, start, end, 
+              ForegroundColorSpan span = new ForegroundColorSpan(color);
+              spannable.setSpan(span, start, end,
                 Spannable.SPAN_INCLUSIVE_INCLUSIVE);
               spans.add(span);
             }
@@ -142,7 +143,7 @@ public class CodeHighlighter
       }
     }
     catch (Exception ex)
-    {      
+    {
     }
   }
 }

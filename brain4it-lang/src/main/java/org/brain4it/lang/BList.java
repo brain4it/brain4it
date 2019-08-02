@@ -1,31 +1,31 @@
 /*
  * Brain4it
- * 
+ *
  * Copyright (C) 2018, Ajuntament de Sant Feliu de Llobregat
- * 
- * This program is licensed and may be used, modified and redistributed under 
- * the terms of the European Public License (EUPL), either version 1.1 or (at 
- * your option) any later version as soon as they are approved by the European 
+ *
+ * This program is licensed and may be used, modified and redistributed under
+ * the terms of the European Public License (EUPL), either version 1.1 or (at
+ * your option) any later version as soon as they are approved by the European
  * Commission.
- * 
- * Alternatively, you may redistribute and/or modify this program under the 
- * terms of the GNU Lesser General Public License as published by the Free 
- * Software Foundation; either  version 3 of the License, or (at your option) 
- * any later version. 
- *   
- * Unless required by applicable law or agreed to in writing, software 
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT 
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- *   
- * See the licenses for the specific language governing permissions, limitations 
+ *
+ * Alternatively, you may redistribute and/or modify this program under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either  version 3 of the License, or (at your option)
+ * any later version.
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *
+ * See the licenses for the specific language governing permissions, limitations
  * and more details.
- *   
- * You should have received a copy of the EUPL1.1 and the LGPLv3 licenses along 
- * with this program; if not, you may find them at: 
- *   
+ *
+ * You should have received a copy of the EUPL1.1 and the LGPLv3 licenses along
+ * with this program; if not, you may find them at:
+ *
  *   https://joinup.ec.europa.eu/software/page/eupl/licence-eupl
- *   http://www.gnu.org/licenses/ 
- *   and 
+ *   http://www.gnu.org/licenses/
+ *   and
  *   https://www.gnu.org/licenses/lgpl.txt
  */
 
@@ -37,33 +37,33 @@ import java.util.Map;
 
 /**
  * A BPL list.
- * 
+ *
  * Lists are the only mutable data type in BPL.
- * 
+ *
  * They contain a list of elements, where each of them can be of any of the
  * supported BPL types.
- * 
- * Elements in a list can be labeled with a name that identifies 
+ *
+ * Elements in a list can be labeled with a name that identifies
  * univocally that element within the list.
- * 
- * When a list has elements labeled with names, it holds a 
- * {@link org.brain4it.lang.Structure} that maps these names to 
+ *
+ * When a list has elements labeled with names, it holds a
+ * {@link org.brain4it.lang.Structure} that maps these names to
  * indices and viceversa.
- * 
+ *
  * Elements in a BList can be acceded by index of by name.
- * 
- * All lists evaluate to themselves except if the first element references a 
- * function. In that case, the result of the evaluation is the value obtained 
- * by invoking that function passing the rest of elements of the list as 
+ *
+ * All lists evaluate to themselves except if the first element references a
+ * function. In that case, the result of the evaluation is the value obtained
+ * by invoking that function passing the rest of elements of the list as
  * arguments.
- * 
+ *
  * @author realor
  */
 public class BList extends BObject implements Cloneable
 {
   private static final int DEFAULT_CAPACITY = 4;
 
-  private ArrayList elements;
+  private ArrayList<Object> elements;
   private Structure structure;
   private int hash;
   Function function = Context.DEFAULT_FUNCTION;
@@ -75,20 +75,20 @@ public class BList extends BObject implements Cloneable
 
   public BList(int capacity)
   {
-    elements = new ArrayList(capacity);
+    elements = new ArrayList<Object>(capacity);
   }
 
   public BList(Structure structure)
   {
     structure.setShared(true);
     this.structure = structure;
-    elements = new ArrayList(structure.size());
+    elements = new ArrayList<Object>(structure.size());
     for (int i = 0; i < structure.size(); i++)
     {
       elements.add(null);
     }
   }
-  
+
   public Structure getStructure()
   {
     return structure;
@@ -96,8 +96,8 @@ public class BList extends BObject implements Cloneable
 
   public synchronized void setStructure(Structure structure)
   {
-    structure.setShared(true); 
-    this.structure = structure;   
+    structure.setShared(true);
+    this.structure = structure;
 
     if (elements.size() > structure.size())
     {
@@ -105,7 +105,7 @@ public class BList extends BObject implements Cloneable
       {
         elements.remove(i);
       }
-    } 
+    }
     else if (elements.size() < structure.size())
     {
       for (int i = elements.size(); i < structure.size(); i++)
@@ -114,7 +114,7 @@ public class BList extends BObject implements Cloneable
       }
     }
   }
-  
+
   public synchronized void add(Object element)
   {
     if (structure != null)
@@ -343,7 +343,7 @@ public class BList extends BObject implements Cloneable
   {
     return index >= 0 && index < elements.size();
   }
-  
+
   public synchronized boolean has(String name)
   {
     if (structure == null) return false;
@@ -376,7 +376,7 @@ public class BList extends BObject implements Cloneable
     }
     else if (spec instanceof BList)
     {
-      return has((BList)spec);      
+      return has((BList)spec);
     }
     return false;
   }
@@ -482,8 +482,8 @@ public class BList extends BObject implements Cloneable
   public synchronized BList sublist(int fromIndex)
   {
     return sublist(fromIndex, elements.size());
-  }  
-  
+  }
+
   public synchronized BList sublist(int fromIndex, int toIndex)
   {
     BList sublist = new BList();
@@ -507,7 +507,7 @@ public class BList extends BObject implements Cloneable
   {
     return elements.toArray();
   }
-  
+
   @Override
   public String toString()
   {

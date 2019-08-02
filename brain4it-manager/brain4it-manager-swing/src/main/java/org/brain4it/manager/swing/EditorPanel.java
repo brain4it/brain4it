@@ -464,7 +464,7 @@ public class EditorPanel extends ModulePanel
 
   protected void addPathToComboBox(String path)
   {
-    DefaultComboBoxModel model =
+    DefaultComboBoxModel<String> model =
      (DefaultComboBoxModel<String>)pathComboBox.getModel();
     if (model.getIndexOf(path) == -1)
     {
@@ -560,7 +560,7 @@ public class EditorPanel extends ModulePanel
       }
     });
 
-    DefaultComboBoxModel model =
+    DefaultComboBoxModel<String> model =
      (DefaultComboBoxModel<String>)pathComboBox.getModel();
     model.addElement("");
     model.addElement(MODULE_START_VAR);

@@ -1119,6 +1119,7 @@ public class ManagerApp extends javax.swing.JFrame
     }
   }
 
+  @SuppressWarnings("unchecked")
   private void setMacOSIcon(ImageIcon icon)
   {
     try

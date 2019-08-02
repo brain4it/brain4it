@@ -75,7 +75,7 @@ public class AutoCompleter implements OnCompleteListener
   private TextCompleter textCompleter;
   private boolean enabled;
   private JWindow window;
-  private JList optionsList;
+  private JList<Candidate> optionsList;
   private final KeyListener keyListener;
   private final FocusListener focusListener;
   private Action preTabAction;
@@ -380,7 +380,7 @@ public class AutoCompleter implements OnCompleteListener
     window = new JWindow(frame);
     window.setAlwaysOnTop(true);
     window.setFocusableWindowState(false);
-    optionsList = new JList();
+    optionsList = new JList<Candidate>();
     optionsList.setFont(textComponent.getFont());
     optionsList.setCellRenderer(new CandidateRenderer());
     optionsList.addMouseListener(new MouseAdapter()

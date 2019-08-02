@@ -40,6 +40,9 @@ import opennlp.tools.lemmatizer.DictionaryLemmatizer;
 import opennlp.tools.parser.Parser;
 import opennlp.tools.parser.ParserFactory;
 import opennlp.tools.parser.ParserModel;
+import opennlp.tools.postag.POSModel;
+import opennlp.tools.postag.POSTagger;
+import opennlp.tools.postag.POSTaggerME;
 import opennlp.tools.sentdetect.NewlineSentenceDetector;
 import opennlp.tools.sentdetect.SentenceDetector;
 import opennlp.tools.sentdetect.SentenceDetectorME;
@@ -69,6 +72,7 @@ public class NlpLibrary extends Library
   {
     functions.put("nlp-sentences", new NlpSentencesFunction(this));
     functions.put("nlp-parse", new NlpParseFunction(this));
+    functions.put("nlp-postag", new NlpPosTagFunction(this));
     functions.put("nlp-tokenize", new NlpTokenizeFunction(this));
     functions.put("nlp-lemmatize", new NlpLemmatizeFunction(this));
     functions.put("nlp-translate", new NlpTranslateFunction(this));
@@ -140,6 +144,35 @@ public class NlpLibrary extends Library
     return new TokenizerME(model);
   }
 
+  public POSTagger getPOSTagger(String posModelPath)
+    throws IOException
+  {
+    if (posModelPath == null)
+    {
+      posModelPath = getDefaultPath("en-pos-maxent.bin");
+    }
+    else
+    {
+      posModelPath = getAbsolutePath(posModelPath);
+    }
+
+    POSModel model = (POSModel)cache.get(posModelPath);
+    if (model == null)
+    {
+      InputStream is = new FileInputStream(posModelPath);
+      try
+      {
+        model = new POSModel(is);
+        cache.put(posModelPath, model);
+      }
+      finally
+      {
+        is.close();
+      }
+    }
+    return new POSTaggerME(model);
+  }  
+  
   public SentenceDetector getSentenceDetector(String sentenceModelPath)
     throws IOException
   {

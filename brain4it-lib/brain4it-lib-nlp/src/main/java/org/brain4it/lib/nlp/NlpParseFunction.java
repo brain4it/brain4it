@@ -57,7 +57,7 @@ public class NlpParseFunction extends NlpBaseFunction
   public Object invoke(Context context, BList args) throws Exception
   {
     Utils.checkArguments(args, 1);
-    String text = Utils.toString(context.evaluate(args.get(1)));
+    String text = (String)context.evaluate(args.get(1));
 
     String parserModelPath = (String)context.evaluate(args.get("parser"));
     Parser parser = library.getParser(parserModelPath);
@@ -68,7 +68,11 @@ public class NlpParseFunction extends NlpBaseFunction
     String dictionaryPath = (String)context.evaluate(args.get("dictionary"));
     Lemmatizer lemmatizer = library.getDictionary(dictionaryPath);
 
-    Parse[] parse = ParserTool.parseLine(text, parser, tokenizer, 1);
+    Number parses = (Number)context.evaluate(args.get("parses"));
+    if (parses == null) parses = 1;
+    
+    Parse[] parse = ParserTool.parseLine(text, parser, tokenizer, 
+      parses.intValue());
     return toObject(parse[0], lemmatizer);
   }
 

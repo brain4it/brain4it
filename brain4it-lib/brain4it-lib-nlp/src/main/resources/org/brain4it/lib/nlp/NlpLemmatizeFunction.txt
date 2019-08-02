@@ -13,7 +13,7 @@
   )
   examples =>
   (
-    ((nlp-lemmatize "making" "VBG") "make")
+    ((nlp-lemmatize "making" "VBG" "dictionary" => "en-lemmatizer.dict") "make")
   )
   bundle => "org.brain4it.lib.NlpLibrary"
 )

@@ -171,8 +171,8 @@ public class NlpLibrary extends Library
       }
     }
     return new POSTaggerME(model);
-  }  
-  
+  }
+
   public SentenceDetector getSentenceDetector(String sentenceModelPath)
     throws IOException
   {
@@ -209,10 +209,6 @@ public class NlpLibrary extends Library
   public DictionaryLemmatizer getDictionary(String dictPath) throws IOException
   {
     if (dictPath == null)
-    {
-      dictPath = getDefaultPath("en-lemmatizer.dict");
-    }
-    else if (dictPath.length() == 0)
     {
       return null;
     }

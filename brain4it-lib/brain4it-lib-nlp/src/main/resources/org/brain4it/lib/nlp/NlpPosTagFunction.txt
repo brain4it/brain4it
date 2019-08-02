@@ -1,12 +1,14 @@
 (NlpPosTag (nlp-postag (word) 
-  "pos" => pos_model_path) (tag_word) 
+  "pos" => pos_model_path
+  "dictionary" => dict_path) (tag_word) 
   where =>
   (
     word => ("string" 1 N)
     pos_model_path => ("string" 0 1)
-    tag_word => ((tag input_word) 1 N)
+    dict_path => ("string" 0 1)
+    tag_word => ((tag output_word) 1 N)
     tag => ("string" 1 1)
-    input_word => ("string" 1 1)
+    output_word => ("string" 1 1)
   )
   exceptions =>
   (

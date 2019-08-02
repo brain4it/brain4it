@@ -19,7 +19,8 @@
   examples =>
   (
     ((nlp-parse "My name is John.")
-     ("TOP" ("S" ("NP" ("PRP$" "my") ("NN" "name")) ("VP" ("VBZ" "be") ("NP" ("NNP" "John"))) ("." ".")))
+     ("TOP" ("S" ("NP" ("PRP$" "my") ("NN" "name")) 
+       ("VP" ("VBZ" "is") ("NP" ("NNP" "John"))) ("." ".")))
     )
   )  
   bundle => "org.brain4it.lib.NlpLibrary"

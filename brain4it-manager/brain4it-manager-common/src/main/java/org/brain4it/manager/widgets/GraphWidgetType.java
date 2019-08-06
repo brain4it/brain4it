@@ -134,7 +134,7 @@ public class GraphWidgetType extends WidgetType
   public Collection<String> getDataSetNames(BList properties) throws Exception
   {
     String names = getProperty(DATASET_NAMES).getString(properties);
-    if (names == null) Collections.<String> emptyList();
+    if (names == null) return Collections.<String> emptyList();
     StringTokenizer tokenizer = new StringTokenizer(names, " ");
     ArrayList<String> dataSetNames = new ArrayList<String>();
     while (tokenizer.hasMoreTokens())

@@ -140,7 +140,7 @@ public class ModuleDialog extends javax.swing.JDialog
         catch (FileSystemNotFoundException ex)
         {
           fileSystem = FileSystems.newFileSystem(uri,
-          Collections.<String, Object>emptyMap());
+            Collections.<String, Object>emptyMap());
         }
         path = fileSystem.getPath(iconsFolder);
       }

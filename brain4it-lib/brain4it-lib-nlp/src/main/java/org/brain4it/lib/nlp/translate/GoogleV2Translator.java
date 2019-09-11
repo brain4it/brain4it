@@ -93,7 +93,12 @@ public class GoogleV2Translator implements Translator
     for (int i = 0; i < list.size(); i++)
     {
       BList subList = (BList)list.get(i);
-      translations.add((String)subList.get("translatedText"));
+      BList translationEntry = new BList(2);
+      translationEntry.put(TRANSLATED_TEXT,
+        (String)subList.get("translatedText"));
+      translationEntry.put(DETECTED_LANGUAGE,
+        (String)subList.get("detectedSourceLanguage"));
+      translations.add(translationEntry);
     }
     return translations;
   }

@@ -33,11 +33,29 @@ package org.brain4it.lib.nlp.translate;
 import org.brain4it.lang.BList;
 
 /**
- *
+ * 
  * @author realor
  */
+
 public interface Translator
 {
+  public static final String TRANSLATED_TEXT = "translated-text";
+  public static final String DETECTED_LANGUAGE = "detected-language";
+  
+  /**
+   * Translates a list of texts to a target language.
+   * 
+   * @param text the list of texts to translate
+   * @param sourceLanguage the source language. May be null.
+   * @param targetLanguage the target language (ISO code).
+   * @param options for the specified translation service (credentials, etc.)
+   * @return a list that contains for each input text a list like this:
+   * (
+   *   "translated-text" => tranlated_text 
+   *   "detected-language" => detected_language
+   * )
+   * @throws Exception 
+   */
   public BList translate(BList text,
     String sourceLanguage, String targetLanguage, BList options)
     throws Exception;

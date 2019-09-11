@@ -1,11 +1,33 @@
-(LocalScope (local-scope) result
+(LocalScope (local-scope depth) result
   where =>
   (
+    depth => ("number" 0 1)
     result => ("list" 1 1)
   )
   examples =>
   (
-    ((local-scope) ("x" => 8))
+    (
+      (do
+        (local a b)
+        (set a 8)
+        (set b 6)
+        (local-scope)
+      )
+      ("a" => 8 "b" => 6)
+    )
+    (
+      (do
+        (set fn (function (x) (put (local-scope 1) "y" (+ x 1))))
+        (local x)
+        (set x 5)
+        (fn (* 2 x))
+        (local-scope)
+      )
+      (
+        "x" => 5
+        "y" => 11
+      )
+    )
   )
   related => (global-scope exists)
   bundle => "org.brain4it.lib.CoreLibrary"

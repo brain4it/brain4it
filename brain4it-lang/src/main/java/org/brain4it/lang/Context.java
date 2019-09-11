@@ -37,29 +37,29 @@ import static org.brain4it.io.IOConstants.FUNCTION_FUNCTION_NAME;
 
 /**
  * The BPL evaluation context.
- * 
+ *
  * All code in BPL run inside a Context.
- * 
+ *
  * A context contains:
  * <ul>
- * <li>A global scope list ({@link org.brain4it.lang.BList}) where global 
+ * <li>A global scope list ({@link org.brain4it.lang.BList}) where global
  * variables are stored.</li>
- * <li>A stack of local scopes lists ({@link org.brain4it.lang.BList}) 
+ * <li>A stack of local scopes lists ({@link org.brain4it.lang.BList})
  * that contains the local variables.</li>
- * <li>A {@link java.util.Map} that contains the implementation of the built-in 
+ * <li>A {@link java.util.Map} that contains the implementation of the built-in
  * functions available in this context.</li>
- * <li>A {@link org.brain4it.lang.BList} that contains the stack of user 
+ * <li>A {@link org.brain4it.lang.BList} that contains the stack of user
  * functions calls.</li>
  * </ul>
- * 
+ *
  * This class has methods to evaluate expressions and resolve variables
  * (soft references).
- * 
+ *
  * The variable resolution follows these rules:
  * If the variable is found in local scope, its value is returned,
  * else if the variable is found in global scope, its value is returned,
  * otherwise, null is returned.
- * 
+ *
  * @author realor
  */
 
@@ -73,7 +73,7 @@ public class Context
   private final Stack<BList> localScopes = new Stack<BList>();
   private final BList callStack = new BList();
   private final Map<String, Function> functions;
-  
+
   public Context(BList globalScope, Map<String, Function> functions)
   {
     this.globalScope = globalScope;
@@ -85,7 +85,7 @@ public class Context
   {
     this(context.getGlobalScope(), context.getFunctions());
   }
-  
+
   public BList getGlobalScope()
   {
     return globalScope;
@@ -100,22 +100,22 @@ public class Context
   public BList getLocalScope(int depth)
   {
     int size = localScopes.size();
-    if (depth >= size) return null;
+    if (depth < 0 || depth >= size) return null;
     return localScopes.get(size - depth - 1);
   }
-  
+
   public void pushLocalScope(BList scope)
   {
     localScopes.push(scope);
   }
-  
+
   public BList popLocalScope()
   {
-    if (localScopes.size() == 1) 
+    if (localScopes.size() == 1)
       throw new RuntimeException("Can't remove local scope");
     return localScopes.pop();
   }
-  
+
   public Map<String, Function> getFunctions()
   {
     return functions;
@@ -134,7 +134,7 @@ public class Context
     }
     return globalScope.get(name);
   }
-  
+
   public void set(String name, Object value)
   {
     BList scope = localScopes.peek();
@@ -165,7 +165,7 @@ public class Context
     }
     else throw new RuntimeException("Invalid local reference: " + reference);
   }
-  
+
   public boolean delete(String name)
   {
     BList scope = localScopes.peek();
@@ -205,18 +205,18 @@ public class Context
 
   /**
    * Evaluates BPL code.
-   * 
+   *
    * Code evaluation is always performed with this method.
    * All BPL data but BLists and BSoftReferences evaluate themselves.
    * If the given code throws a Java Exception it is converted to BException
    * unless it be an InterruptedException.
-   * 
+   *
    * @param code the BPL code to evaluate
    * @return the result of evaluating the given code
    * @throws BException when the execution throws an Exception
    * @throws InterruptedException when the execution was interrupted (via kill)
    */
-  public final Object evaluate(Object code) 
+  public final Object evaluate(Object code)
     throws BException, InterruptedException
   {
     try
@@ -260,13 +260,13 @@ public class Context
     }
     return false;
   }
-  
-  public Object invokeUserFunction(BList function, BList argExprs) 
+
+  public Object invokeUserFunction(BList function, BList argExprs)
     throws Exception
   {
     return invokeUserFunction(function, argExprs, 0);
-  }  
-  
+  }
+
   public Object invokeUserFunction(BList function, BList argExprs,
     int fromIndex) throws Exception
   {
@@ -278,7 +278,7 @@ public class Context
     if (second instanceof BList)
     {
       BList argDefs = (BList)second;
-      
+
       // passing parameters
       int j = fromIndex;
       for (int i = 0; i < argDefs.size(); i++)
@@ -291,7 +291,7 @@ public class Context
           String callArgName = argDefs.getName(i);
           if (callArgName == null)
           {
-            Object argValue = j < argExprs.size() ? 
+            Object argValue = j < argExprs.size() ?
               evaluate(argExprs.get(j)) : null;
             localScope.put(argName, argValue);
             j++;

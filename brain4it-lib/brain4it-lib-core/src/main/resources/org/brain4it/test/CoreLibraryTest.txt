@@ -142,7 +142,14 @@
   (### local)
   (do
     (set y 23) 
-    (call (function (x) (local y) (set y x)) 88) 
+    (call (function (x) (local y) (set y x) y) 88)
+    (assert (= y 23))
+  )
+
+  (### set-local)
+  (do
+    (set y 23) 
+    (call (function (x) (set-local y x) (assert (= x y))) 88)
     (assert (= y 23))
   )
 

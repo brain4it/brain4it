@@ -110,6 +110,7 @@ public class CoreLibrary extends Library
     functions.put("help", new HelpFunction());
     functions.put("global-scope", new GlobalScopeFunction());
     functions.put("local-scope", new LocalScopeFunction());
+    functions.put("set-local", new SetLocalFunction());
     functions.put("system", new SystemFunction());
 
     functions.put("and", new AndFunction());

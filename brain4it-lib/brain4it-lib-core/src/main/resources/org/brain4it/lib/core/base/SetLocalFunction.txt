@@ -1,0 +1,22 @@
+(SetLocal (set-local variable expression) result
+  where =>
+  (
+    variable => ("reference" 1 1)
+    expression => ("object" 1 1)
+    result => ("object" 1 1)
+  )
+  examples =>
+  (
+    (
+      (do
+        (set y 23)
+        (set fn (function (x) (set-local y (+ x 23))))
+        (fn 7)
+        y
+      )
+      23
+    )
+  )
+  related => (set local exists delete)
+  bundle => "org.brain4it.lib.CoreLibrary"
+)

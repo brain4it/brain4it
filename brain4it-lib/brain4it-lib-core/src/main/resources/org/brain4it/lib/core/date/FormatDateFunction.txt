@@ -1,8 +1,9 @@
-(FormatDate (format-date date_millis date_pattern) date_string
+(FormatDate (format-date date_millis date_pattern language) date_string
   where =>
   (
     date_millis => ("number" 1 1)
     date_pattern => ("string" 0 1)
+    language => ("string" 0 1)
     date_string => ("string" 1 1)
   )
   examples =>

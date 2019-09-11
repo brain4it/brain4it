@@ -1,8 +1,9 @@
-(ParseDate (parse-date date_string date_pattern) date_millis
+(ParseDate (parse-date date_string date_pattern language) date_millis
   where =>
   (
     date_string => ("string" 1 1)
     date_pattern => ("string" 0 1)
+    language => ("string" 0 1)
     date_millis => ("number" 1 1)
   )
   examples =>

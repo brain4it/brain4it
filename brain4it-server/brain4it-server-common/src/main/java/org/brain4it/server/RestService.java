@@ -223,8 +223,10 @@ public class RestService
         checkSecurity(parser, accessKey);
         result = Executor.execute(code, module, functions, maxWaitTime);
       }
-      else if (isExteriorFunction(functionName))
+      else
       {
+        // execute exterior function
+        functionName = getExteriorFunction(functionName);
         try
         {
           // call exterior function passing header and data as arguments
@@ -239,7 +241,6 @@ public class RestService
           throw ex.removeSourceInfo();
         }
       }
-      else result = null;
     }
     return result;
   }
@@ -271,10 +272,5 @@ public class RestService
       }
     }
     throw new SecurityException("Operation not authorized.");
-  }
-
-  private boolean isExteriorFunction(String functionName)
-  {
-    return functionName.startsWith(EXTERIOR_FUNCTION_PREFIX);
   }
 }

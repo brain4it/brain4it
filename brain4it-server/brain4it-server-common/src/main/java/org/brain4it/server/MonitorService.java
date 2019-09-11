@@ -205,10 +205,7 @@ public class MonitorService
       if (element instanceof String)
       {
         String functionName = (String)element;
-        if (isExteriorFunction(functionName))
-        {
-          functionNames.add(functionName);
-        }
+        functionNames.add(getExteriorFunction(functionName));
       }
     }
     return functionNames;
@@ -248,11 +245,6 @@ public class MonitorService
       lastSentData.put(functionName, result);
     }
     return send;
-  }
-
-  private boolean isExteriorFunction(String functionName)
-  {
-    return functionName.startsWith(EXTERIOR_FUNCTION_PREFIX);
   }
 
   class FunctionQueue extends LinkedList<String>

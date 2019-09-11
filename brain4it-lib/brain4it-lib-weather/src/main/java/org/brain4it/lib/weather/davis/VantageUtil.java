@@ -131,11 +131,11 @@ public final class VantageUtil
 
   private static double parseRain(byte[] buf, int offset)
   {
-    // This value is sent as number of rain clicks (0.2mm or 0.01in).
+    // This value is sent as number of rain clicks (0.2mm or 0.078in).
     // For example, 256 can represent 2.56 inches/hour.
-    // So in mm: value*0,2
+    // So rain in mm: value * 0.2
     int word = parseWord(buf, offset);
-    double value = (word / 5.0) * 0.2;
+    double value = word * 0.2;
     return (double)Math.round(value * 100d) / 100d;
   }
 

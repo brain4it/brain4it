@@ -60,7 +60,14 @@ public class AboutDialog extends javax.swing.JDialog
 
     ResourceBundle bundle = ResourceBundle.getBundle(
       "org/brain4it/manager/swing/resources/Manager");
-    DefaultTableModel model = new DefaultTableModel();
+    DefaultTableModel model = new DefaultTableModel()
+    {
+      @Override
+      public boolean isCellEditable(int row, int column)
+      {
+        return false;
+      }
+    };
     model.addColumn("Property");
     model.addColumn("Value");
     propertiesTable.getTableHeader().setReorderingAllowed(false);

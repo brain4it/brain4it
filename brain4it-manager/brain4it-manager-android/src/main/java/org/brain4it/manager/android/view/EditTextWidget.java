@@ -1,31 +1,31 @@
 /*
  * Brain4it
- * 
+ *
  * Copyright (C) 2018, Ajuntament de Sant Feliu de Llobregat
- * 
- * This program is licensed and may be used, modified and redistributed under 
- * the terms of the European Public License (EUPL), either version 1.1 or (at 
- * your option) any later version as soon as they are approved by the European 
+ *
+ * This program is licensed and may be used, modified and redistributed under
+ * the terms of the European Public License (EUPL), either version 1.1 or (at
+ * your option) any later version as soon as they are approved by the European
  * Commission.
- * 
- * Alternatively, you may redistribute and/or modify this program under the 
- * terms of the GNU Lesser General Public License as published by the Free 
- * Software Foundation; either  version 3 of the License, or (at your option) 
- * any later version. 
- *   
- * Unless required by applicable law or agreed to in writing, software 
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT 
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- *   
- * See the licenses for the specific language governing permissions, limitations 
+ *
+ * Alternatively, you may redistribute and/or modify this program under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either  version 3 of the License, or (at your option)
+ * any later version.
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *
+ * See the licenses for the specific language governing permissions, limitations
  * and more details.
- *   
- * You should have received a copy of the EUPL1.1 and the LGPLv3 licenses along 
- * with this program; if not, you may find them at: 
- *   
+ *
+ * You should have received a copy of the EUPL1.1 and the LGPLv3 licenses along
+ * with this program; if not, you may find them at:
+ *
  *   https://joinup.ec.europa.eu/software/page/eupl/licence-eupl
- *   http://www.gnu.org/licenses/ 
- *   and 
+ *   http://www.gnu.org/licenses/
+ *   and
  *   https://www.gnu.org/licenses/lgpl.txt
  */
 package org.brain4it.manager.android.view;
@@ -69,7 +69,7 @@ public class EditTextWidget extends LinearLayout implements DashboardWidget
   protected final Monitor.Listener monitorListener = new Monitor.Listener()
   {
     @Override
-    public void onChange(String reference, final Object value, 
+    public void onChange(String reference, final Object value,
       final long serverTime)
     {
       if (value instanceof String)
@@ -79,13 +79,13 @@ public class EditTextWidget extends LinearLayout implements DashboardWidget
           @Override
           public void run()
           {
-            if (invoker == null || 
+            if (invoker == null ||
                 (!invoker.isSending() && invoker.updateInvokeTime(serverTime)))
             {
               String text = (String)value;
               int selStart = editText.getSelectionStart();
               int selEnd = editText.getSelectionEnd();
-              editText.removeTextChangedListener(textWatcher);    
+              editText.removeTextChangedListener(textWatcher);
               editText.setText(text);
               editText.addTextChangedListener(textWatcher);
               if (selStart > text.length()) selStart = text.length();
@@ -94,10 +94,10 @@ public class EditTextWidget extends LinearLayout implements DashboardWidget
             }
           }
         });
-      }    
-    }    
+      }
+    }
   };
-  
+
   protected TextWatcher textWatcher = new TextWatcher()
   {
     @Override
@@ -115,24 +115,32 @@ public class EditTextWidget extends LinearLayout implements DashboardWidget
     {
       if (invoker != null)
       {
-        invoker.invoke(editText.getText().toString());      
+        invoker.invoke(editText.getText().toString());
       }
-    }          
+    }
   };
 
   @Override
-  public void init(DashboardActivity dashboard, String name, BList properties) 
+  public void init(DashboardActivity dashboard, String name, BList properties)
     throws Exception
   {
     this.dashboard = dashboard;
 
-    EditTextWidgetType type = 
+    EditTextWidgetType type =
       (EditTextWidgetType)WidgetType.getType(WidgetType.EDIT_TEXT);
-    
+
     type.validate(properties);
-    
+
     String labelText = type.getLabel(properties);
-    textView.setText(labelText);
+    if (labelText == null || labelText.length() == 0)
+    {
+      textView.setVisibility(GONE);
+    }
+    else
+    {
+      textView.setVisibility(VISIBLE);
+      textView.setText(labelText);
+    }
 
     String fontFamily = type.getFontFamily(properties);
     editText.setTypeface(FontCache.getFont(dashboard, fontFamily));
@@ -141,7 +149,7 @@ public class EditTextWidget extends LinearLayout implements DashboardWidget
     editText.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize);
 
     invokeInterval = type.getInvokeInterval(properties);
-    
+
     BSoftReference func;
     func = type.getGetValueFunction(properties);
     if (func != null)
@@ -168,12 +176,12 @@ public class EditTextWidget extends LinearLayout implements DashboardWidget
       {
         if (invokeInterval == 0)
         {
-          invoker = new FunctionInvoker(dashboard.getInvoker(), 
-            setValueFunction);          
+          invoker = new FunctionInvoker(dashboard.getInvoker(),
+            setValueFunction);
         }
         else
         {
-          invoker = new FunctionInvoker(dashboard.getInvoker(), 
+          invoker = new FunctionInvoker(dashboard.getInvoker(),
             setValueFunction, dashboard.getTimer(), invokeInterval);
         }
       }
@@ -183,24 +191,24 @@ public class EditTextWidget extends LinearLayout implements DashboardWidget
   public EditTextWidget(Context context)
   {
     this(context, null);
-  }  
-  
+  }
+
   public EditTextWidget(Context context, AttributeSet attrs)
   {
     super(context, attrs);
-    
+
     setOrientation(LinearLayout.VERTICAL);
     setGravity(Gravity.CENTER_VERTICAL);
     float density = getResources().getDisplayMetrics().density;
     int padding = (int)Math.round(4 * density);
     setPadding(padding, padding, padding, padding);
-    
+
     textView = new TextView(context);
     textView.setLayoutParams(new LinearLayout.LayoutParams(
       LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
     textView.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
     addView(textView);
-    
+
     editText = new EditText(context);
     editText.setBackgroundResource(R.drawable.edit_text);
     editText.setLayoutParams(new LinearLayout.LayoutParams(
@@ -209,10 +217,10 @@ public class EditTextWidget extends LinearLayout implements DashboardWidget
     editText.setSingleLine(false);
     editText.setVerticalScrollBarEnabled(true);
     editText.setImeOptions(EditorInfo.IME_FLAG_NO_ENTER_ACTION);
-    editText.setInputType(InputType.TYPE_CLASS_TEXT | 
+    editText.setInputType(InputType.TYPE_CLASS_TEXT |
       InputType.TYPE_TEXT_FLAG_MULTI_LINE|
       InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
     editText.setGravity(Gravity.LEFT | Gravity.TOP);
-    addView(editText);    
+    addView(editText);
   }
 }

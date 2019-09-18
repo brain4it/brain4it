@@ -1,31 +1,31 @@
 /*
  * Brain4it
- * 
+ *
  * Copyright (C) 2018, Ajuntament de Sant Feliu de Llobregat
- * 
- * This program is licensed and may be used, modified and redistributed under 
- * the terms of the European Public License (EUPL), either version 1.1 or (at 
- * your option) any later version as soon as they are approved by the European 
+ *
+ * This program is licensed and may be used, modified and redistributed under
+ * the terms of the European Public License (EUPL), either version 1.1 or (at
+ * your option) any later version as soon as they are approved by the European
  * Commission.
- * 
- * Alternatively, you may redistribute and/or modify this program under the 
- * terms of the GNU Lesser General Public License as published by the Free 
- * Software Foundation; either  version 3 of the License, or (at your option) 
- * any later version. 
- *   
- * Unless required by applicable law or agreed to in writing, software 
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT 
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- *   
- * See the licenses for the specific language governing permissions, limitations 
+ *
+ * Alternatively, you may redistribute and/or modify this program under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either  version 3 of the License, or (at your option)
+ * any later version.
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *
+ * See the licenses for the specific language governing permissions, limitations
  * and more details.
- *   
- * You should have received a copy of the EUPL1.1 and the LGPLv3 licenses along 
- * with this program; if not, you may find them at: 
- *   
+ *
+ * You should have received a copy of the EUPL1.1 and the LGPLv3 licenses along
+ * with this program; if not, you may find them at:
+ *
  *   https://joinup.ec.europa.eu/software/page/eupl/licence-eupl
- *   http://www.gnu.org/licenses/ 
- *   and 
+ *   http://www.gnu.org/licenses/
+ *   and
  *   https://www.gnu.org/licenses/lgpl.txt
  */
 
@@ -62,12 +62,12 @@ public class DashboardPanel extends ModulePanel
   private Invoker invoker;
   private Timer timer;
   private BoxGridLayout boxGridLayout;
-  private final HashMap<String, Component> widgets = 
+  private final HashMap<String, Component> widgets =
     new HashMap<String, Component>();
   private BList dashboards;
   private int dashboardIndex;
   private final String sessionId;
-  
+
   public DashboardPanel(ManagerApp managerApp, Module module)
   {
     super(managerApp, module);
@@ -81,13 +81,21 @@ public class DashboardPanel extends ModulePanel
   public String getPanelType()
   {
     return managerApp.getLocalizedMessage("Designer");
-  }  
-  
+  }
+
   public String getSessionId()
   {
     return sessionId;
   }
-  
+
+  @Override
+  public RestClient getRestClient()
+  {
+    RestClient restClient = module.getRestClient();
+    restClient.setSessionId(sessionId);
+    return restClient;
+  }
+
   public synchronized Monitor getMonitor()
   {
     if (monitor == null && module != null)
@@ -99,12 +107,12 @@ public class DashboardPanel extends ModulePanel
     }
     return monitor;
   }
-  
+
   public synchronized Invoker getInvoker()
   {
     if (invoker == null && module != null)
     {
-      invoker = new Invoker(module.getRestClient(), module.getName());
+      invoker = new Invoker(getRestClient(), module.getName());
     }
     return invoker;
   }
@@ -117,15 +125,7 @@ public class DashboardPanel extends ModulePanel
     }
     return timer;
   }
-  
-  @Override
-  public RestClient getRestClient()
-  {
-    RestClient restClient = module.getRestClient();
-    restClient.setSessionId(sessionId);
-    return restClient;
-  }
-  
+
   @Override
   public void close()
   {
@@ -147,8 +147,8 @@ public class DashboardPanel extends ModulePanel
     dashboards = null;
     dashboardComboBox.setModel(new DefaultComboBoxModel<String>());
 
-    RestClient restClient = module.getRestClient();
-    restClient.invokeFunction(module.getName(), DASHBOARDS_FUNCTION_NAME, 
+    RestClient restClient = getRestClient();
+    restClient.invokeFunction(module.getName(), DASHBOARDS_FUNCTION_NAME,
       null, new Callback()
     {
       @Override
@@ -156,13 +156,13 @@ public class DashboardPanel extends ModulePanel
       {
         try
         {
-          final Object result = Parser.fromString(resultString);            
+          final Object result = Parser.fromString(resultString);
           SwingUtilities.invokeLater(new Runnable()
           {
             @Override
             public void run()
             {
-              DefaultComboBoxModel<String> model = 
+              DefaultComboBoxModel<String> model =
                 (DefaultComboBoxModel<String>) dashboardComboBox.getModel();
               if (result instanceof BList)
               {
@@ -171,7 +171,7 @@ public class DashboardPanel extends ModulePanel
                 {
                   String dashboardName = dashboards.getName(i);
                   if (dashboardName == null) dashboardName = "dashboard-" + i;
-                  model.addElement(dashboardName);            
+                  model.addElement(dashboardName);
                 }
               }
               dashboardComboBox.setModel(model);
@@ -197,7 +197,7 @@ public class DashboardPanel extends ModulePanel
       }
     });
   }
-  
+
   public void createDashboard(int index)
   {
     dashboardIndex = index;
@@ -208,7 +208,7 @@ public class DashboardPanel extends ModulePanel
 
     BList dashboard = (BList)dashboards.get(index);
     if (dashboard == null) return;
-    
+
     createWidgets((BList)dashboard.get("widgets"));
     layoutWidgets((BList)dashboard.get("layouts"));
     Object value = dashboard.get("polling-interval");
@@ -222,7 +222,7 @@ public class DashboardPanel extends ModulePanel
   protected void createWidgets(BList widgetDefinitions)
   {
     if (widgetDefinitions == null) return;
-    
+
     for (int i = 0; i < widgetDefinitions.size(); i++)
     {
       String name = widgetDefinitions.getName(i);
@@ -244,7 +244,7 @@ public class DashboardPanel extends ModulePanel
       widget = DashboardWidgetFactory.getInstance().createWidget(type);
       if (widget != null)
       {
-        widget.init(this, name, properties);      
+        widget.init(this, name, properties);
       }
     }
     catch (Exception ex)
@@ -282,14 +282,14 @@ public class DashboardPanel extends ModulePanel
       Component widget = widgets.get(name);
       if (widget != null)
       {
-        widgetsPanel.add(widget, 
+        widgetsPanel.add(widget,
          new BoxGridLayout.Constraints(x, y, xSize, ySize));
       }
     }
     widgetsPanel.doLayout();
     widgetsPanel.revalidate();
   }
-    
+
   protected void unwatchAll()
   {
     if (monitor != null)
@@ -298,7 +298,7 @@ public class DashboardPanel extends ModulePanel
       monitor = null;
     }
   }
-  
+
   /**
    * This method is called from within the constructor to initialize the form.
    * WARNING: Do NOT modify this code. The content of this method is always

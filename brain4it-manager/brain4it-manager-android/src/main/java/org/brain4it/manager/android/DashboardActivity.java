@@ -182,7 +182,7 @@ public class DashboardActivity extends ModuleActivity
   {
     if (invoker == null && module != null)
     {
-      invoker = new Invoker(module.getRestClient(), module.getName());
+      invoker = new Invoker(getRestClient(), module.getName());
     }
     return invoker;
   }
@@ -212,7 +212,7 @@ public class DashboardActivity extends ModuleActivity
       Collections.<Object> emptyList());
     dashboardSpinner.setAdapter(adapter);
 
-    RestClient restClient = module.getRestClient();
+    RestClient restClient = getRestClient();
     restClient.invokeFunction(module.getName(), DASHBOARDS_FUNCTION_NAME,
       null, new Callback()
     {

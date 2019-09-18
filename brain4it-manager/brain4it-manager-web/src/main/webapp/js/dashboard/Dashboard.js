@@ -9,13 +9,13 @@ Brain4it.Dashboard = function(serverUrl, module, accessKey)
   {
     return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
   }
-  var sessionId = s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + 
+  var sessionId = s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() +
     '-' + s4() + s4() + s4();
   this.sessionId = sessionId;
   this.dashboards = null;
   this.widgets = [];
   this.dashboardIndex = 0;
-  this.monitor = 
+  this.monitor =
     new Brain4it.Monitor(serverUrl, module, accessKey, sessionId);
   var client = new Brain4it.Client(serverUrl, null, accessKey, sessionId);
   this.invoker = new Brain4it.Invoker(client, module);
@@ -44,23 +44,23 @@ Brain4it.Dashboard.prototype =
     this.dashboardSelect = document.createElement("select");
     this.dashboardSelect.className = "dashboard_selector";
     this.toolBarElem.appendChild(this.dashboardSelect);
-    
-    this.dashboardSelect.addEventListener("change", function(event) { 
+
+    this.dashboardSelect.addEventListener("change", function(event) {
       scope.createDashboard(scope.dashboardSelect.selectedIndex); }, false);
 
     window.addEventListener("resize", function() { scope.doLayout(); }, false);
     this.loadDashboards();
   },
-  
+
   show : function()
   {
   },
-  
+
   hide : function()
   {
-    this.monitor.unwatchAll();    
+    this.monitor.unwatchAll();
   },
-  
+
   loadDashboards : function()
   {
     var scope = this;
@@ -72,7 +72,8 @@ Brain4it.Dashboard.prototype =
     scope.dashboardSelect.innerHTML = "";
 
     var path = this.module + "/" + Brain4it.DASHBOARDS_FUNCTION_NAME;
-    var client = new Brain4it.Client(this.serverUrl, path, this.accessKey);
+    var client = new Brain4it.Client(this.serverUrl, path,
+      this.accessKey, this.sessionId);
     client.method = "POST";
     client.callback = function(status, output)
     {
@@ -107,22 +108,22 @@ Brain4it.Dashboard.prototype =
     };
     client.send();
   },
-  
+
   createDashboard : function(index)
   {
     this.monitor.unwatchAll();
     this.widgets = [];
-    this.dashboardElem.innerHTML = "";    
+    this.dashboardElem.innerHTML = "";
     this.dashboardIndex = index;
     console.info(index);
     this.doLayout();
   },
-  
+
   doLayout : function()
   {
     var dashboard = this.dashboards.getByIndex(this.dashboardIndex);
     if (dashboard === null) return;
-    
+
     var widgetDefs = dashboard.getByName("widgets");
     var layouts = dashboard.getByName("layouts");
     var pollingInterval = dashboard.getByName("polling-interval");

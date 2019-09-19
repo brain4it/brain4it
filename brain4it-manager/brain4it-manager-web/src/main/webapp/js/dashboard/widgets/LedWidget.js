@@ -16,15 +16,16 @@ Brain4it.LedWidget.prototype.init = function(name, setup)
   this.element.appendChild(this.ledElem);
 
   this.ledColor = setup.getByName("color") || "#FFFF00";
-  
+
   this.divElem = document.createElement("div");
   this.ledElem.appendChild(this.divElem);
-  
+
   var outputId = name + "_output";
-  this.outputElem = document.createElement("output");
-  this.outputElem.id = outputId;  
+  // replace output tag by span tag to fix chrome issue
+  this.outputElem = document.createElement("span"); 
+  this.outputElem.id = outputId;
   this.divElem.appendChild(this.outputElem);
-  
+
   var label = setup.getByName("label");
   if (label)
   {
@@ -45,7 +46,7 @@ Brain4it.LedWidget.prototype.init = function(name, setup)
   this.updateLayout();
 };
 
-Brain4it.LedWidget.prototype.onRemoteChange = 
+Brain4it.LedWidget.prototype.onRemoteChange =
   function(functionName, value, serverTime)
 {
   if (value)
@@ -56,7 +57,7 @@ Brain4it.LedWidget.prototype.onRemoteChange =
   else
   {
     this.outputElem.style.backgroundColor = "gray";
-    this.outputElem.style.boxShadow = "none";    
+    this.outputElem.style.boxShadow = "none";
   }
 };
 

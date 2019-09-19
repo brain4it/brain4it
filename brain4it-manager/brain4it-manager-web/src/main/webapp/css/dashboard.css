@@ -1,9 +1,9 @@
-/* 
+/*
     Created on : 05-jul-2015, 18:04:38
     Author     : realor
 */
 
-@font-face 
+@font-face
 {
   font-family: 'gidoleregular';
   src: url('../fonts/gidole.woff2') format('woff2'),
@@ -12,8 +12,8 @@
   font-style: normal;
 }
 
-@font-face 
-{ 
+@font-face
+{
 	font-family: 'LCD';
 	src: url('../fonts/lcd.eot');
 	src: url('../fonts/lcd.eot?#iefix') format('embedded-opentype'),
@@ -22,7 +22,7 @@
 	     url('../fonts/lcd.svg#webfont') format('svg');
 }
 
-@font-face 
+@font-face
 {
 	font-family: 'fontawesome';
 	src: url('../fonts/fontawesome.eot');
@@ -33,7 +33,7 @@
 
 body
 {
-  font-family: 'gidoleregular';  
+  font-family: 'gidoleregular';
   font-size: 14px;
   position:absolute;
   top:0;
@@ -66,7 +66,7 @@ body
 
 .dashboard_selector
 {
-  font-family: 'gidoleregular';  
+  font-family: 'gidoleregular';
   font-size: 14px;
   border: 1px solid #C0C0C0;
   background-color: white;
@@ -81,12 +81,12 @@ body
   position: absolute;
 }
 
-button:focus 
+button:focus
 {
   outline: 0;
 }
 
-button::-moz-focus-inner 
+button::-moz-focus-inner
 {
   border: 0;
 }
@@ -96,9 +96,9 @@ button::-moz-focus-inner
   display: block;
   background-color: #f7f7f7;
   background-image: -webkit-gradient(linear, left top, left bottom, to(#d7d7d7), from(#e7e7e7));
-  background-image: -webkit-linear-gradient(top, #d7d7d7, #e7e7e7); 
-  background-image: -moz-linear-gradient(top, #d7d7d7, #e7e7e7); 
-  background-image: -ms-linear-gradient(top, #d7d7d7, #e7e7e7); 
+  background-image: -webkit-linear-gradient(top, #d7d7d7, #e7e7e7);
+  background-image: -moz-linear-gradient(top, #d7d7d7, #e7e7e7);
+  background-image: -ms-linear-gradient(top, #d7d7d7, #e7e7e7);
   background-image: -o-linear-gradient(top, #d7d7d7, #e7e7e7);
   color: gray;
   position: absolute;
@@ -127,9 +127,9 @@ button::-moz-focus-inner
 .round_button.active
 {
   background-image: -webkit-gradient(linear, left top, left bottom, to(#d0d0d0), from(#f0f0f0));
-  background-image: -webkit-linear-gradient(top, #d0d0d0, #f0f0f0); 
-  background-image: -moz-linear-gradient(top, #d0d0d0, #f0f0f0); 
-  background-image: -ms-linear-gradient(top, #d0d0d0, #f0f0f0); 
+  background-image: -webkit-linear-gradient(top, #d0d0d0, #f0f0f0);
+  background-image: -moz-linear-gradient(top, #d0d0d0, #f0f0f0);
+  background-image: -ms-linear-gradient(top, #d0d0d0, #f0f0f0);
   background-image: -o-linear-gradient(top, #d0d0d0, #f0f0f0);
   outline: none;
   box-shadow: 0px 1px 2px #388, inset 0px 3px 3px #fff;
@@ -139,9 +139,9 @@ button::-moz-focus-inner
 {
   background-color: #f90000;
   background-image: -webkit-gradient(linear, left top, left bottom, to(#c70000), from(#f90000));
-  background-image: -webkit-linear-gradient(top, #c70000, #f90000); 
-  background-image: -moz-linear-gradient(top, #c70000, #f90000); 
-  background-image: -ms-linear-gradient(top, #c70000, #f90000); 
+  background-image: -webkit-linear-gradient(top, #c70000, #f90000);
+  background-image: -moz-linear-gradient(top, #c70000, #f90000);
+  background-image: -ms-linear-gradient(top, #c70000, #f90000);
   background-image: -o-linear-gradient(top, #c70000, #f90000);
   color: #FFC0C0;
   box-shadow: 0px 2px 10px #388, inset 0px 3px 3px #f88;
@@ -151,10 +151,10 @@ button::-moz-focus-inner
 .round_button.red.active
 {
   background-image: -webkit-gradient(linear, left top, left bottom, to(#c00000), from(#ff0000));
-  background-image: -webkit-linear-gradient(top, #c00000, #ff0000); 
-  background-image: -moz-linear-gradient(top, #c00000, #ff0000); 
-  background-image: -ms-linear-gradient(top, #c00000, #ff0000); 
-  background-image: -o-linear-gradient(top, #c00000, #ff0000);  
+  background-image: -webkit-linear-gradient(top, #c00000, #ff0000);
+  background-image: -moz-linear-gradient(top, #c00000, #ff0000);
+  background-image: -ms-linear-gradient(top, #c00000, #ff0000);
+  background-image: -o-linear-gradient(top, #c00000, #ff0000);
   box-shadow: 0px 1px 4px #388, inset 0px 3px 3px #f88;
 }
 
@@ -162,9 +162,9 @@ button::-moz-focus-inner
 {
   background-color: #00f000;
   background-image: -webkit-gradient(linear, left top, left bottom, to(#00c000), from(#00f000));
-  background-image: -webkit-linear-gradient(top, #00c700, #00f000); 
-  background-image: -moz-linear-gradient(top, #00c700, #00f000); 
-  background-image: -ms-linear-gradient(top, #00c700, #00f000); 
+  background-image: -webkit-linear-gradient(top, #00c700, #00f000);
+  background-image: -moz-linear-gradient(top, #00c700, #00f000);
+  background-image: -ms-linear-gradient(top, #00c700, #00f000);
   background-image: -o-linear-gradient(top, #00c700, #00f000);
   color: #204020;
   box-shadow: 0px 2px 10px #388, inset 0px 3px 3px #8f8;
@@ -174,10 +174,10 @@ button::-moz-focus-inner
 .round_button.green.active
 {
   background-image: -webkit-gradient(linear, left top, left bottom, to(#00c000), from(#00ff00));
-  background-image: -webkit-linear-gradient(top, #00c000, #00ff00); 
-  background-image: -moz-linear-gradient(top, #00c000, #00ff00); 
-  background-image: -ms-linear-gradient(top, #00c000, #00ff00); 
-  background-image: -o-linear-gradient(top, #00c000, #00ff00);  
+  background-image: -webkit-linear-gradient(top, #00c000, #00ff00);
+  background-image: -moz-linear-gradient(top, #00c000, #00ff00);
+  background-image: -ms-linear-gradient(top, #00c000, #00ff00);
+  background-image: -o-linear-gradient(top, #00c000, #00ff00);
   box-shadow: 0px 1px 4px #388, inset 0px 3px 3px #8f8;
 }
 
@@ -185,9 +185,9 @@ button::-moz-focus-inner
 {
   background-color: #0000f0;
   background-image: -webkit-gradient(linear, left top, left bottom, to(#0000c0), from(#0000f0));
-  background-image: -webkit-linear-gradient(top, #0000c7, #0000f0); 
-  background-image: -moz-linear-gradient(top, #0000c7, #0000f0); 
-  background-image: -ms-linear-gradient(top, #0000c7, #0000f0); 
+  background-image: -webkit-linear-gradient(top, #0000c7, #0000f0);
+  background-image: -moz-linear-gradient(top, #0000c7, #0000f0);
+  background-image: -ms-linear-gradient(top, #0000c7, #0000f0);
   background-image: -o-linear-gradient(top, #0000c7, #0000f0);
   color: white;
   box-shadow: 0px 2px 10px #388, inset 0px 3px 3px #88f;
@@ -197,14 +197,14 @@ button::-moz-focus-inner
 .round_button.blue.active
 {
   background-image: -webkit-gradient(linear, left top, left bottom, to(#0000c0), from(#4040ff));
-  background-image: -webkit-linear-gradient(top, #0000c0, #4040ff); 
-  background-image: -moz-linear-gradient(top, #0000c0, #4040ff); 
-  background-image: -ms-linear-gradient(top, #0000c0, #4040ff); 
-  background-image: -o-linear-gradient(top, #0000c0, #4040ff);  
+  background-image: -webkit-linear-gradient(top, #0000c0, #4040ff);
+  background-image: -moz-linear-gradient(top, #0000c0, #4040ff);
+  background-image: -ms-linear-gradient(top, #0000c0, #4040ff);
+  background-image: -o-linear-gradient(top, #0000c0, #4040ff);
   box-shadow: 0px 1px 4px #388, inset 0px 3px 3px #88f;
 }
 
-.square_button 
+.square_button
 {
   display:block;
   font-family:Arial, "Helvetica", sans-serif;
@@ -315,7 +315,7 @@ button::-moz-focus-inner
 {
   display:inline-block;
   margin-right: 2px;
-  overflow: hidden;  
+  overflow: hidden;
 }
 
 .range output
@@ -413,7 +413,7 @@ button::-moz-focus-inner
   margin: 10pt;
 }
 
-.led div output
+.led div span
 {
   position:absolute;
   top:0;
@@ -459,7 +459,7 @@ button::-moz-focus-inner
 
 /* switch widget */
 
-.switch 
+.switch
 {
   position: relative;
   display: inline-block;
@@ -490,7 +490,7 @@ button::-moz-focus-inner
   background-color: #ccc;
 }
 
-.switch .slider:before 
+.switch .slider:before
 {
   position: absolute;
   content: "";
@@ -505,7 +505,7 @@ button::-moz-focus-inner
   transition: .4s;
 }
 
-.switch input:checked + .slider:before 
+.switch input:checked + .slider:before
 {
   background-color: #7ec5e7;
   -webkit-transform: translateX(26px);
@@ -513,7 +513,7 @@ button::-moz-focus-inner
   transform: translateX(26px);
 }
 
-.switch input:focus + .slider:before 
+.switch input:focus + .slider:before
 {
   border: 1px solid gray;
 }
@@ -523,5 +523,5 @@ button::-moz-focus-inner
   position: absolute;
   top: 50%; left:4px;
   width: calc(100% - 64px);
-  transform: translate(0,-50%);  
+  transform: translate(0,-50%);
 }

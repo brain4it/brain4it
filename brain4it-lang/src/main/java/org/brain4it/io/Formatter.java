@@ -484,6 +484,7 @@ public class Formatter
       inlineArguments.put("function", 1);
       inlineArguments.put("if", 1);
       inlineArguments.put("set", 1);
+      inlineArguments.put("set-local", 1);
       inlineArguments.put("when", 1);
       inlineArguments.put("while", 1);
       inlineArguments.put("for", 3);

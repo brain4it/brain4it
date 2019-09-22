@@ -33,6 +33,7 @@ package org.brain4it.manager.swing.widgets;
 import java.awt.BorderLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 import javax.swing.SwingUtilities;
@@ -47,6 +48,7 @@ import org.brain4it.manager.swing.FontCache;
 import org.brain4it.manager.widgets.EditTextWidgetType;
 import org.brain4it.manager.widgets.FunctionInvoker;
 import org.brain4it.manager.widgets.WidgetType;
+import static org.brain4it.manager.widgets.EditTextWidgetType.*;
 
 /**
  *
@@ -62,12 +64,13 @@ public class EditTextWidget extends JPanel implements DashboardWidget,
   protected JTextPane textPane;
   protected JScrollPane scrollPane;
   protected int invokeInterval = 100;
+  protected String autoScroll;
   protected FunctionInvoker invoker;
 
   protected final Monitor.Listener monitorListener = new Monitor.Listener()
   {
     @Override
-    public void onChange(String reference, final Object value, 
+    public void onChange(String reference, final Object value,
       final long serverTime)
     {
       if (value instanceof String)
@@ -80,15 +83,19 @@ public class EditTextWidget extends JPanel implements DashboardWidget,
             if (invoker == null ||
                 (!invoker.isSending() && invoker.updateInvokeTime(serverTime)))
             {
+              int scrollValue = scrollPane.getVerticalScrollBar().getValue();
+
               String text = (String)value;
               int selStart = textPane.getSelectionStart();
               int selEnd = textPane.getSelectionEnd();
               textPane.getDocument().
                 removeDocumentListener(EditTextWidget.this);
               textPane.setText(text);
-              textPane.getDocument().addDocumentListener(EditTextWidget.this);
               textPane.setSelectionStart(selStart);
               textPane.setSelectionEnd(selEnd);
+              textPane.getDocument().addDocumentListener(EditTextWidget.this);
+
+              doAutoScroll(scrollValue);
             }
           }
         });
@@ -122,7 +129,9 @@ public class EditTextWidget extends JPanel implements DashboardWidget,
     textPane.setFont(textPane.getFont().deriveFont((float)fontSize));
 
     invokeInterval = type.getInvokeInterval(properties);
-    
+
+    autoScroll = type.getAutoScroll(properties);
+
     BSoftReference func;
     func = type.getGetValueFunction(properties);
     if (func != null)
@@ -147,12 +156,12 @@ public class EditTextWidget extends JPanel implements DashboardWidget,
       {
         if (invokeInterval == 0)
         {
-          invoker = new FunctionInvoker(dashboard.getInvoker(), 
-            setValueFunction);          
+          invoker = new FunctionInvoker(dashboard.getInvoker(),
+            setValueFunction);
         }
         else
         {
-          invoker = new FunctionInvoker(dashboard.getInvoker(), 
+          invoker = new FunctionInvoker(dashboard.getInvoker(),
             setValueFunction, dashboard.getTimer(), invokeInterval);
         }
       }
@@ -202,5 +211,30 @@ public class EditTextWidget extends JPanel implements DashboardWidget,
     {
       invoker.invoke(textPane.getText());
     }
+  }
+
+  private void doAutoScroll(final int scrollValue)
+  {
+    SwingUtilities.invokeLater(new Runnable()
+    {
+      @Override
+      public void run()
+      {
+        JScrollBar scrollBar = scrollPane.getVerticalScrollBar();
+
+        if (AUTO_SCROLL_TOP.equals(autoScroll))
+        {
+          scrollBar.setValue(scrollBar.getMinimum());
+        }
+        else if (AUTO_SCROLL_BOTTOM.equals(autoScroll))
+        {
+          scrollBar.setValue(scrollBar.getMaximum());
+        }
+        else
+        {
+          scrollBar.setValue(scrollValue);
+        }
+      }
+    });
   }
 }

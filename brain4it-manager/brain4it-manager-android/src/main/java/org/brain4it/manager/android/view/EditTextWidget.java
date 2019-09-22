@@ -51,6 +51,7 @@ import org.brain4it.manager.android.R;
 import org.brain4it.manager.widgets.EditTextWidgetType;
 import org.brain4it.manager.widgets.FunctionInvoker;
 import org.brain4it.manager.widgets.WidgetType;
+import static org.brain4it.manager.widgets.EditTextWidgetType.*;
 
 /**
  *
@@ -64,6 +65,7 @@ public class EditTextWidget extends LinearLayout implements DashboardWidget
   protected TextView textView;
   protected EditText editText;
   protected int invokeInterval = 100;
+  protected String autoScroll;
   protected FunctionInvoker invoker;
 
   protected final Monitor.Listener monitorListener = new Monitor.Listener()
@@ -82,15 +84,19 @@ public class EditTextWidget extends LinearLayout implements DashboardWidget
             if (invoker == null ||
                 (!invoker.isSending() && invoker.updateInvokeTime(serverTime)))
             {
+              int scrollValue = editText.getScrollY();
+
               String text = (String)value;
               int selStart = editText.getSelectionStart();
               int selEnd = editText.getSelectionEnd();
               editText.removeTextChangedListener(textWatcher);
               editText.setText(text);
-              editText.addTextChangedListener(textWatcher);
               if (selStart > text.length()) selStart = text.length();
               if (selEnd > text.length()) selEnd = text.length();
               editText.setSelection(selStart, selEnd);
+              editText.addTextChangedListener(textWatcher);
+
+              doAutoScroll(scrollValue);
             }
           }
         });
@@ -150,6 +156,8 @@ public class EditTextWidget extends LinearLayout implements DashboardWidget
 
     invokeInterval = type.getInvokeInterval(properties);
 
+    autoScroll = type.getAutoScroll(properties);
+
     BSoftReference func;
     func = type.getGetValueFunction(properties);
     if (func != null)
@@ -186,6 +194,43 @@ public class EditTextWidget extends LinearLayout implements DashboardWidget
         }
       }
     }
+  }
+
+  private void doAutoScroll(final int scrollValue)
+  {
+    post(new Runnable()
+    {
+      @Override
+      public void run()
+      {
+        if (AUTO_SCROLL_TOP.equals(autoScroll))
+        {
+          editText.scrollTo(0, 0);
+        }
+        else
+        {
+          int scrollBottomValue = editText.getLayout().getLineTop(
+            editText.getLineCount()) - editText.getHeight();
+          if (scrollBottomValue < 0) scrollBottomValue = 0;
+
+          if (AUTO_SCROLL_BOTTOM.equals(autoScroll))
+          {
+            editText.scrollTo(0, scrollBottomValue);
+          }
+          else
+          {
+            if (scrollValue > scrollBottomValue)
+            {
+              editText.scrollTo(0, scrollBottomValue);
+            }
+            else
+            {
+              editText.scrollTo(0, scrollValue);
+            }
+          }
+        }
+      }
+    });
   }
 
   public EditTextWidget(Context context)

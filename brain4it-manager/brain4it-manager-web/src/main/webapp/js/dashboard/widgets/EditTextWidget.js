@@ -129,6 +129,8 @@ Brain4it.EditTextWidget.prototype.doAutoScroll = function(scrollValue)
 
 Brain4it.EditTextWidget.prototype.updateLayout = function()
 {
+  var scrollValue = this.textareaElem.scrollTop;
+  this.doAutoScroll(scrollValue);
 };
 
 Brain4it.Dashboard.prototype.widgetTypes['editText'] = Brain4it.EditTextWidget;

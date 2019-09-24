@@ -31,6 +31,8 @@
 package org.brain4it.manager.swing.widgets;
 
 import java.awt.BorderLayout;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
@@ -185,6 +187,16 @@ public class EditTextWidget extends JPanel implements DashboardWidget,
     textPane = new JTextPane();
     textPane.getDocument().addDocumentListener(this);
     scrollPane.setViewportView(textPane);
+
+    addComponentListener(new ComponentAdapter()
+    {
+      @Override
+      public void componentResized(ComponentEvent e)
+      {
+        int scrollValue = scrollPane.getVerticalScrollBar().getValue();
+        doAutoScroll(scrollValue);
+      }
+    });
   }
 
   @Override

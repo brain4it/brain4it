@@ -104,6 +104,15 @@ public class EditTextWidget extends LinearLayout implements DashboardWidget
     }
   };
 
+  @Override
+  protected void onLayout(boolean changed,
+    int left, int top, int right, int bottom)
+  {
+    int scrollValue = editText.getScrollY();
+    super.onLayout(changed, left, top, right, bottom);
+    doAutoScroll(scrollValue);
+  }
+
   protected TextWatcher textWatcher = new TextWatcher()
   {
     @Override

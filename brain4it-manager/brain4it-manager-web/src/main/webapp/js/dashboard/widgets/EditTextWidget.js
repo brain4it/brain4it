@@ -101,11 +101,16 @@ Brain4it.EditTextWidget.prototype.onRemoteChange =
       var selStart = this.textareaElem.selectionStart;
       var selEnd = this.textareaElem.selectionEnd;
       this.textareaElem.value = value;
-      if (selStart > value.length) selStart = value.length;
-      if (selEnd > value.length) selEnd = value.length;
-      this.textareaElem.selectionStart = selStart;
-      this.textareaElem.selectionEnd = selEnd;
-
+      var isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
+      if (!isFirefox || this.invoker !== null)
+      {
+        // In Firefox selection is only updated when this widget is editable to
+        // prevent scroll top
+        if (selStart > value.length) selStart = value.length;
+        if (selEnd > value.length) selEnd = value.length;
+        this.textareaElem.selectionStart = selStart;
+        this.textareaElem.selectionEnd = selEnd;
+      }
       this.doAutoScroll(scrollValue);
     }
   }

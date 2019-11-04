@@ -1931,14 +1931,15 @@ Brain4it.Monitor.prototype =
     this.sendWatchRequest();
   },
 
-  unwatchAll : function()
+  unwatchAll : function(sync)
   {
     this.listeners = {};
     var watchRequest = this.watchRequest;
-    if (watchRequest.readyState > 0)
+    if (watchRequest.readyState !== 0 && watchRequest.readyState !== 4)
     {
+      // request in progress
       watchRequest.abort();
-      this.sendUnwatchRequest();
+      this.sendUnwatchRequest(sync);
     }
   },
 
@@ -1947,9 +1948,9 @@ Brain4it.Monitor.prototype =
     var scope = this;
     var watchRequest = this.watchRequest;
 
-    if (watchRequest.readyState > 0)
+    if (watchRequest.readyState !== 0 && watchRequest.readyState !== 4)
     {
-      // cancel previous request
+      // cancel request in progress
       watchRequest.abort();
       this.sendUnwatchRequest();
     }
@@ -2009,18 +2010,20 @@ Brain4it.Monitor.prototype =
     watchRequest.send(functionNames);
   },
 
-  sendUnwatchRequest : function()
+  sendUnwatchRequest : function(sync)
   {
     if (this.monitorSessionId)
     {
+      if (typeof sync === "undefined") sync = false;
       var unwatchRequest = new XMLHttpRequest();
-      unwatchRequest.open("POST", this.url, false); // synchronous call
+      unwatchRequest.open("POST", this.url, !sync);
       unwatchRequest.setRequestHeader("Content-Type",
         Brain4it.MIMETYPE + "; charset=" + Brain4it.CHARSET);
       unwatchRequest.setRequestHeader(Brain4it.MONITOR_HEADER, "0");
       unwatchRequest.send('"' + this.monitorSessionId + '"');
+      console.info("unwatch request sent " + this.monitorSessionId +
+        " " + sync);
       this.monitorSessionId = null;
-      console.info("unwatch request sent");
     }
   },
 

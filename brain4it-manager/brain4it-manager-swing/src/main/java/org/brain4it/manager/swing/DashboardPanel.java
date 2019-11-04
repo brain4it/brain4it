@@ -43,8 +43,6 @@ import javax.swing.SwingUtilities;
 import org.brain4it.client.Invoker;
 import org.brain4it.client.Monitor;
 import org.brain4it.client.RestClient;
-import org.brain4it.client.RestClient.Callback;
-import org.brain4it.io.Parser;
 import org.brain4it.lang.BList;
 import org.brain4it.lang.Utils;
 import org.brain4it.manager.Module;
@@ -56,8 +54,9 @@ import static org.brain4it.server.ServerConstants.DASHBOARDS_FUNCTION_NAME;
  *
  * @author realor
  */
-public class DashboardPanel extends ModulePanel
+public class DashboardPanel extends ModulePanel implements Monitor.Listener
 {
+  private Monitor dashboardsMonitor;
   private Monitor monitor;
   private Invoker invoker;
   private Timer timer;
@@ -74,7 +73,8 @@ public class DashboardPanel extends ModulePanel
     initComponents();
     initDashboard();
     sessionId = UUID.randomUUID().toString();
-    loadDashboards();
+
+    createDashboardsMonitor();
   }
 
   @Override
@@ -135,87 +135,89 @@ public class DashboardPanel extends ModulePanel
       timer.cancel();
       timer = null;
     }
+    dashboardsMonitor.unwatchAll();
     super.close();
   }
 
-  public void loadDashboards()
+  // DASHBOARDS_FUNCTION_NAME listener
+  @Override
+  public void onChange(String functionName, final Object value,
+    long serverTime)
   {
-    unwatchAll();
-    widgets.clear();
-    widgetsPanel.removeAll();
-    widgetsPanel.repaint();
-    dashboards = null;
-    dashboardComboBox.setModel(new DefaultComboBoxModel<String>());
-
-    RestClient restClient = getRestClient();
-    restClient.invokeFunction(module.getName(), DASHBOARDS_FUNCTION_NAME,
-      null, new Callback()
+    SwingUtilities.invokeLater(new Runnable()
     {
       @Override
-      public void onSuccess(RestClient client, String resultString)
+      public void run()
       {
-        try
-        {
-          final Object result = Parser.fromString(resultString);
-          SwingUtilities.invokeLater(new Runnable()
-          {
-            @Override
-            public void run()
-            {
-              DefaultComboBoxModel<String> model =
-                (DefaultComboBoxModel<String>) dashboardComboBox.getModel();
-              if (result instanceof BList)
-              {
-                dashboards = (BList)result;
-                for (int i = 0; i < dashboards.size(); i++)
-                {
-                  String dashboardName = dashboards.getName(i);
-                  if (dashboardName == null) dashboardName = "dashboard-" + i;
-                  model.addElement(dashboardName);
-                }
-              }
-              dashboardComboBox.setModel(model);
-              if (dashboards != null && dashboards.size() > 0)
-              {
-                createDashboard(0);
-              }
-            }
-          });
-        }
-        catch (Exception ex)
-        {
-          managerApp.showError(
-            managerApp.getLocalizedMessage("Dashboard"), ex);
-        }
-      }
-
-      @Override
-      public void onError(RestClient client, Exception ex)
-      {
-        managerApp.showError(
-         managerApp.getLocalizedMessage("Dashboard"), ex);
+        loadDashboards(value);
       }
     });
   }
 
-  public void createDashboard(int index)
+  protected final void createDashboardsMonitor()
   {
-    dashboardIndex = index;
-    unwatchAll();
-    widgets.clear();
-    widgetsPanel.removeAll();
-    widgetsPanel.repaint();
+    Server server = module.getServer();
+    dashboardsMonitor = new Monitor(server.getUrl(), module.getName());
+    dashboardsMonitor.setAccessKey(module.getAccessKey());
+    dashboardsMonitor.setSessionId(sessionId);
+    dashboardsMonitor.watch(DASHBOARDS_FUNCTION_NAME, this);
+  }
 
-    BList dashboard = (BList)dashboards.get(index);
-    if (dashboard == null) return;
+  protected void loadDashboards(final Object value)
+  {
+    dashboards = null;
+    dashboardComboBox.setModel(new DefaultComboBoxModel<String>());
 
-    createWidgets((BList)dashboard.get("widgets"));
-    layoutWidgets((BList)dashboard.get("layouts"));
-    Object value = dashboard.get("polling-interval");
-    if (value instanceof Number)
+    DefaultComboBoxModel<String> model =
+      (DefaultComboBoxModel<String>) dashboardComboBox.getModel();
+    if (value instanceof BList)
     {
-      int pollingInterval = ((Number)value).intValue();
-      getMonitor().setPollingInterval(pollingInterval);
+      dashboards = (BList)value;
+      for (int i = 0; i < dashboards.size(); i++)
+      {
+        String dashboardName = dashboards.getName(i);
+        if (dashboardName == null) dashboardName = "dashboard-" + i;
+        model.addElement(dashboardName);
+      }
+    }
+    dashboardComboBox.setModel(model);
+    if (dashboards != null && dashboards.size() > 0)
+    {
+      createDashboard(0);
+    }
+    else
+    {
+      // module has no dashboards
+      unwatchAll();
+    }
+  }
+
+  protected void createDashboard(int index)
+  {
+    try
+    {
+      dashboardIndex = index;
+      unwatchAll();
+      widgets.clear();
+      widgetsPanel.removeAll();
+      widgetsPanel.repaint();
+
+      BList dashboard = (BList)dashboards.get(index);
+      if (dashboard == null) return;
+
+      createWidgets((BList)dashboard.get("widgets"));
+      layoutWidgets((BList)dashboard.get("layouts"));
+      Object value = dashboard.get("polling-interval");
+      if (value instanceof Number)
+      {
+        int pollingInterval = ((Number)value).intValue();
+        getMonitor().setPollingInterval(pollingInterval);
+      }
+    }
+    catch (Exception ex)
+    {
+      managerApp.showError(
+        managerApp.getLocalizedMessage("Dashboard"), ex);
     }
   }
 
@@ -350,7 +352,8 @@ public class DashboardPanel extends ModulePanel
 
   private void updateButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_updateButtonActionPerformed
   {//GEN-HEADEREND:event_updateButtonActionPerformed
-    loadDashboards();
+    dashboardsMonitor.unwatchAll();
+    dashboardsMonitor.watch(DASHBOARDS_FUNCTION_NAME, this);
   }//GEN-LAST:event_updateButtonActionPerformed
 
   private void dashboardComboBoxActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_dashboardComboBoxActionPerformed

@@ -17,6 +17,8 @@ Brain4it.Dashboard = function(serverUrl, module, accessKey)
   this.dashboardIndex = 0;
   this.monitor =
     new Brain4it.Monitor(serverUrl, module, accessKey, sessionId);
+  this.dashboardsMonitor =
+    new Brain4it.Monitor(serverUrl, module, accessKey, sessionId);
   var client = new Brain4it.Client(serverUrl, null, accessKey, sessionId);
   this.invoker = new Brain4it.Invoker(client, module);
 };
@@ -35,10 +37,17 @@ Brain4it.Dashboard.prototype =
     this.dashboardElem.className = "dashboard";
     containerElem.appendChild(this.dashboardElem);
 
+    var _dashboardsListener = this.dashboardsListener.bind(this);
+
     var scope = this;
 
     this.refreshButton = createButton("refresh_button", "Refresh", "refresh",
-      function() { scope.loadDashboards(); });
+      function() {
+        scope.dashboardsMonitor.unwatchAll();
+        scope.dashboardsMonitor.watch(Brain4it.DASHBOARDS_FUNCTION_NAME,
+          _dashboardsListener
+        );
+      });
     this.toolBarElem.appendChild(this.refreshButton);
 
     this.dashboardSelect = document.createElement("select");
@@ -49,7 +58,9 @@ Brain4it.Dashboard.prototype =
       scope.createDashboard(scope.dashboardSelect.selectedIndex); }, false);
 
     window.addEventListener("resize", function() { scope.doLayout(); }, false);
-    this.loadDashboards();
+    this.dashboardsMonitor.watch(Brain4it.DASHBOARDS_FUNCTION_NAME,
+      _dashboardsListener
+    );
   },
 
   show : function()
@@ -58,65 +69,64 @@ Brain4it.Dashboard.prototype =
 
   hide : function()
   {
-    this.monitor.unwatchAll();
+    // call unwatch in sync mode to ensure the connection is closed
+    this.monitor.unwatchAll(true);
+    this.dashboardsMonitor.unwatchAll(true);
   },
 
-  loadDashboards : function()
+  dashboardsListener : function(functionName, value, serverTime)
   {
-    var scope = this;
-    scope.monitor.unwatchAll();
-    scope.dashboards = null;
-    scope.widgets = [];
-    scope.dashboardIndex = 0;
-    scope.dashboardElem.innerHTML = "";
-    scope.dashboardSelect.innerHTML = "";
+    this.loadDashboards(value);
+  },
 
-    var path = this.module + "/" + Brain4it.DASHBOARDS_FUNCTION_NAME;
-    var client = new Brain4it.Client(this.serverUrl, path,
-      this.accessKey, this.sessionId);
-    client.method = "POST";
-    client.callback = function(status, output)
+  loadDashboards : function(value)
+  {
+    this.dashboards = null;
+    this.dashboardIndex = 0;
+    this.dashboardElem.innerHTML = "";
+    this.dashboardSelect.innerHTML = "";
+
+    if (value instanceof Brain4it.List)
     {
-      console.info(output);
-      if (status === 200)
+      this.dashboards = value;
+      if (this.dashboards.size() > 0)
       {
-        var parser = new Brain4it.Parser();
-        scope.dashboards = parser.parse(output);
-        if (scope.dashboards instanceof Brain4it.List)
+        for (var i = 0; i < this.dashboards.size(); i++)
         {
-          if (scope.dashboards.size() > 0)
-          {
-            for (var i = 0; i < scope.dashboards.size(); i++)
-            {
-              var optionElem = document.createElement("option");
-              optionElem.value = i;
-              var dashboardName = scope.dashboards.getName(i);
-              if (dashboardName === null) dashboardName = "dashboard-" + i;
-              optionElem.innerHTML = dashboardName;
-              scope.dashboardSelect.appendChild(optionElem);
-            }
-            scope.doLayout();
-          }
+          var optionElem = document.createElement("option");
+          optionElem.value = i;
+          var dashboardName = this.dashboards.getName(i);
+          if (dashboardName === null) dashboardName = "dashboard-" + i;
+          optionElem.innerHTML = dashboardName;
+          this.dashboardSelect.appendChild(optionElem);
         }
       }
-      else
-      {
-        var messageDialog = new MessageDialog("Error",
-          "Load failed: " + status, "error");
-        messageDialog.show();
-      }
-    };
-    client.send();
+    }
+    if (this.dashboards !== null && this.dashboards.size() > 0)
+    {
+      this.createDashboard(0);
+    }
+    else
+    {
+      // module has no dashboards
+      this.monitor.unwatchAll();
+    }
   },
 
   createDashboard : function(index)
   {
-    this.monitor.unwatchAll();
-    this.widgets = [];
-    this.dashboardElem.innerHTML = "";
-    this.dashboardIndex = index;
-    console.info(index);
-    this.doLayout();
+    try
+    {
+      this.monitor.unwatchAll();
+      this.widgets = [];
+      this.dashboardElem.innerHTML = "";
+      this.dashboardIndex = index;
+      this.doLayout();
+    }
+    catch (ex)
+    {
+      console.info(ex);
+    }
   },
 
   doLayout : function()

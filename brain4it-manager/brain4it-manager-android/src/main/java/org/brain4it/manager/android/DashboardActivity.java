@@ -41,15 +41,12 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Timer;
 import java.util.UUID;
 import org.brain4it.client.Invoker;
 import org.brain4it.client.Monitor;
 import org.brain4it.client.RestClient;
-import org.brain4it.client.RestClient.Callback;
-import org.brain4it.io.Parser;
 import org.brain4it.lang.BList;
 import org.brain4it.lang.Utils;
 import org.brain4it.manager.Module;
@@ -63,7 +60,9 @@ import static org.brain4it.server.ServerConstants.DASHBOARDS_FUNCTION_NAME;
  * @author realor
  */
 public class DashboardActivity extends ModuleActivity
+  implements Monitor.Listener
 {
+  private Monitor dashboardsMonitor;
   private Monitor monitor;
   private Invoker invoker;
   private Timer timer;
@@ -103,7 +102,8 @@ public class DashboardActivity extends ModuleActivity
       @Override
       public void onClick(View view)
       {
-        loadDashboards();
+        dashboardsMonitor.unwatchAll();
+        dashboardsMonitor.watch(DASHBOARDS_FUNCTION_NAME, DashboardActivity.this);
       }
     });
 
@@ -124,7 +124,7 @@ public class DashboardActivity extends ModuleActivity
       }
     });
 
-    loadDashboards();
+    createDashboardsMonitor();
   }
 
   @Override
@@ -152,6 +152,7 @@ public class DashboardActivity extends ModuleActivity
       timer.cancel();
       timer = null;
     }
+    dashboardsMonitor.unwatchAll();
   }
 
   public String getSessionId()
@@ -201,94 +202,90 @@ public class DashboardActivity extends ModuleActivity
     return module;
   }
 
-  public void loadDashboards()
+  // DASHBOARDS_FUNCTION_NAME listener
+  @Override
+  public void onChange(String functionName, final Object value,
+    long serverTime)
   {
-    unwatchAll();
-    widgets.clear();
-    grid.removeAllViews();
-    dashboards = null;
-    ArrayAdapter<Object> adapter = new ArrayAdapter<Object>(
-      DashboardActivity.this, android.R.layout.simple_spinner_item,
-      Collections.<Object> emptyList());
-    dashboardSpinner.setAdapter(adapter);
-
-    RestClient restClient = getRestClient();
-    restClient.invokeFunction(module.getName(), DASHBOARDS_FUNCTION_NAME,
-      null, new Callback()
+    runOnUiThread(new Runnable()
     {
       @Override
-      public void onSuccess(RestClient client, String resultString)
+      public void run()
       {
-        try
-        {
-          final Object result = Parser.fromString(resultString);
-          DashboardActivity.this.runOnUiThread(new Runnable()
-          {
-            @Override
-            public void run()
-            {
-              ArrayList<String> dashboardNames = new ArrayList<String>();
-              if (result instanceof BList)
-              {
-                dashboards = (BList)result;
-                for (int i = 0; i < dashboards.size(); i++)
-                {
-                  String dashboardName = dashboards.getName(i);
-                  if (dashboardName == null) dashboardName = "dashboard-" + i;
-                  dashboardNames.add(dashboardName);
-                }
-              }
-              else
-              {
-                String message = getResources().getString(
-                  R.string.noDashboards);
-                ToastUtils.showLong(DashboardActivity.this, message);
-              }
-              ArrayAdapter<String> adapter =
-                new ArrayAdapter<String>(DashboardActivity.this,
-                  android.R.layout.simple_spinner_item,
-                  dashboardNames);
-              adapter.setDropDownViewResource(
-                android.R.layout.simple_spinner_dropdown_item);
-              dashboardSpinner.setAdapter(adapter);
-              if (dashboards != null && dashboards.size() > 0)
-              {
-                createDashboard(0);
-              }
-            }
-          });
-        }
-        catch (Exception ex)
-        {
-          ToastUtils.showLong(DashboardActivity.this, ex.toString());
-        }
-      }
-
-      @Override
-      public void onError(RestClient client, Exception ex)
-      {
-        ToastUtils.showLong(DashboardActivity.this, ex.toString());
+        loadDashboards(value);
       }
     });
   }
 
+  protected final void createDashboardsMonitor()
+  {
+    Server server = module.getServer();
+    dashboardsMonitor = new Monitor(server.getUrl(), module.getName());
+    dashboardsMonitor.setAccessKey(module.getAccessKey());
+    dashboardsMonitor.setSessionId(sessionId);
+    dashboardsMonitor.watch(DASHBOARDS_FUNCTION_NAME, this);
+  }
+
+  protected void loadDashboards(final Object value)
+  {
+    ArrayList<String> dashboardNames = new ArrayList<String>();
+    if (value instanceof BList)
+    {
+      dashboards = (BList)value;
+      for (int i = 0; i < dashboards.size(); i++)
+      {
+        String dashboardName = dashboards.getName(i);
+        if (dashboardName == null) dashboardName = "dashboard-" + i;
+        dashboardNames.add(dashboardName);
+      }
+    }
+    ArrayAdapter<String> adapter =
+      new ArrayAdapter<String>(DashboardActivity.this,
+        android.R.layout.simple_spinner_item,
+        dashboardNames);
+    adapter.setDropDownViewResource(
+      android.R.layout.simple_spinner_dropdown_item);
+    dashboardSpinner.setAdapter(adapter);
+
+    if (dashboards != null && dashboards.size() > 0)
+    {
+      createDashboard(0);
+    }
+    else
+    {
+      // module has no dashboards
+      unwatchAll();
+
+      String message = getResources().getString(
+        R.string.noDashboards);
+      ToastUtils.showLong(DashboardActivity.this, message);
+    }
+  }
+
   protected void createDashboard(int index)
   {
-    dashboardIndex = index;
-    unwatchAll();
-    grid.removeAllViews();
-    widgets.clear();
-
-    BList dashboard = (BList)dashboards.get(index);
-    if (dashboard == null) return;
-
-    createWidgets((BList)dashboard.get("widgets"));
-    layoutWidgets((BList)dashboard.get("layouts"));
-    Object value = dashboard.get("polling-interval");
-    if (value instanceof Number)
+    try
     {
-      int pollingInterval = ((Number)value).intValue();
-      getMonitor().setPollingInterval(pollingInterval);
+      dashboardIndex = index;
+      unwatchAll();
+      grid.removeAllViews();
+      widgets.clear();
+
+      BList dashboard = (BList)dashboards.get(index);
+      if (dashboard == null) return;
+
+      createWidgets((BList)dashboard.get("widgets"));
+      layoutWidgets((BList)dashboard.get("layouts"));
+      Object value = dashboard.get("polling-interval");
+      if (value instanceof Number)
+      {
+        int pollingInterval = ((Number)value).intValue();
+        getMonitor().setPollingInterval(pollingInterval);
+      }
+    }
+    catch (Exception ex)
+    {
+      ToastUtils.showLong(DashboardActivity.this, ex.toString());
     }
   }
 

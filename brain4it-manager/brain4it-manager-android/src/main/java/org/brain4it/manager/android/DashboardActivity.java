@@ -228,6 +228,7 @@ public class DashboardActivity extends ModuleActivity
 
   protected void loadDashboards(final Object value)
   {
+    dashboards = null;
     ArrayList<String> dashboardNames = new ArrayList<String>();
     if (value instanceof BList)
     {
@@ -255,6 +256,9 @@ public class DashboardActivity extends ModuleActivity
     {
       // module has no dashboards
       unwatchAll();
+      dashboardIndex = 0;
+      widgets.clear();
+      grid.removeAllViews();
 
       String message = getResources().getString(
         R.string.noDashboards);
@@ -266,14 +270,12 @@ public class DashboardActivity extends ModuleActivity
   {
     try
     {
-      dashboardIndex = index;
       unwatchAll();
-      grid.removeAllViews();
+      dashboardIndex = index;
       widgets.clear();
+      grid.removeAllViews();
 
       BList dashboard = (BList)dashboards.get(index);
-      if (dashboard == null) return;
-
       createWidgets((BList)dashboard.get("widgets"));
       layoutWidgets((BList)dashboard.get("layouts"));
       Object value = dashboard.get("polling-interval");
@@ -285,7 +287,13 @@ public class DashboardActivity extends ModuleActivity
     }
     catch (Exception ex)
     {
-      ToastUtils.showLong(DashboardActivity.this, ex.toString());
+      unwatchAll();
+      widgets.clear();
+      grid.removeAllViews();
+
+      String message = getResources().getString(
+        R.string.invalidDashboardFormat);
+      ToastUtils.showLong(DashboardActivity.this, message);
     }
   }
 

@@ -39,6 +39,7 @@ import java.util.HashMap;
 import java.util.Timer;
 import java.util.UUID;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 import org.brain4it.client.Invoker;
 import org.brain4it.client.Monitor;
@@ -189,6 +190,17 @@ public class DashboardPanel extends ModulePanel implements Monitor.Listener
     {
       // module has no dashboards
       unwatchAll();
+      dashboardIndex = 0;
+      widgets.clear();
+      widgetsPanel.removeAll();
+
+      // show no dashboards message
+      boxGridLayout.setGridSize(1, 1);
+      boxGridLayout.setStretch(true);
+      widgetsPanel.add(new JLabel(
+        managerApp.getLocalizedMessage("NoDashboards"),
+        JLabel.CENTER), new BoxGridLayout.Constraints(0, 0, 1, 1));
+      widgetsPanel.repaint();
     }
   }
 
@@ -196,15 +208,12 @@ public class DashboardPanel extends ModulePanel implements Monitor.Listener
   {
     try
     {
-      dashboardIndex = index;
       unwatchAll();
+      dashboardIndex = index;
       widgets.clear();
       widgetsPanel.removeAll();
-      widgetsPanel.repaint();
 
       BList dashboard = (BList)dashboards.get(index);
-      if (dashboard == null) return;
-
       createWidgets((BList)dashboard.get("widgets"));
       layoutWidgets((BList)dashboard.get("layouts"));
       Object value = dashboard.get("polling-interval");
@@ -213,11 +222,18 @@ public class DashboardPanel extends ModulePanel implements Monitor.Listener
         int pollingInterval = ((Number)value).intValue();
         getMonitor().setPollingInterval(pollingInterval);
       }
+      widgetsPanel.repaint();
     }
     catch (Exception ex)
     {
+      unwatchAll();
+      widgets.clear();
+      widgetsPanel.removeAll();
+      widgetsPanel.repaint();
+
       managerApp.showError(
-        managerApp.getLocalizedMessage("Dashboard"), ex);
+        managerApp.getLocalizedMessage("Dashboard"),
+        managerApp.getLocalizedMessage("InvalidDashboardFormat"));
     }
   }
 

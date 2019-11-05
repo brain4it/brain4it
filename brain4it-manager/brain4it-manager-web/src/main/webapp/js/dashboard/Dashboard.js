@@ -82,8 +82,6 @@ Brain4it.Dashboard.prototype =
   loadDashboards : function(value)
   {
     this.dashboards = null;
-    this.dashboardIndex = 0;
-    this.dashboardElem.innerHTML = "";
     this.dashboardSelect.innerHTML = "";
 
     if (value instanceof Brain4it.List)
@@ -110,6 +108,11 @@ Brain4it.Dashboard.prototype =
     {
       // module has no dashboards
       this.monitor.unwatchAll();
+      this.dashboardIndex = 0;
+      this.widgets = [];
+      this.dashboardElem.innerHTML = "";
+
+      // TODO: show message
     }
   },
 
@@ -118,14 +121,20 @@ Brain4it.Dashboard.prototype =
     try
     {
       this.monitor.unwatchAll();
+      this.dashboardIndex = index;
       this.widgets = [];
       this.dashboardElem.innerHTML = "";
-      this.dashboardIndex = index;
       this.doLayout();
     }
     catch (ex)
     {
-      console.info(ex);
+      this.monitor.unwatchAll();
+      this.dashboardElem.innerHTML = "";
+
+      // show error
+      var messageDialog = new MessageDialog("ERROR",
+        "Invalid dashboard format!", "error");
+      messageDialog.show(this.dashboardElem);
     }
   },
 

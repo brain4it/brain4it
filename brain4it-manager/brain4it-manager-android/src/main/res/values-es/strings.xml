@@ -64,7 +64,8 @@
 
   <string name="loadSuccessfull">Cargado correctamente.</string>
   <string name="saveSuccessfull">Guardado correctamente.</string>
-  <string name="noDashboards">Este módulo no tiene paneles!</string>
+  <string name="noDashboards">Este módulo no tiene paneles.</string>
+  <string name="invalidDashboardFormat">Formato de panel incorrecto!</string>
   <string name="importCompleted">Importación finalizada.</string>
   <string name="noMatches">No hay coincidencias</string>
   <string name="serverNameMandatory">El nombre del servidor es obligatorio</string>

@@ -410,7 +410,8 @@ public class DesignerPanel extends ModulePanel
         }
         catch (Exception ex)
         {
-          managerApp.showError("Designer", ex);
+          managerApp.showError("Designer",
+            managerApp.getLocalizedMessage("InvalidDashboardFormat"));
         }
       }
     });

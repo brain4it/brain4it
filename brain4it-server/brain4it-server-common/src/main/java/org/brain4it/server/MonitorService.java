@@ -249,20 +249,13 @@ public class MonitorService
 
   class FunctionQueue extends LinkedList<String>
   {
-    public synchronized String poll(long waitMillis)
+    public synchronized String poll(long waitMillis) throws InterruptedException
     {
       String functionName = poll();
       if (functionName == null)
       {
-        try
-        {
-          wait(waitMillis);
-          functionName = poll();
-        }
-        catch (InterruptedException ex)
-        {
-          // ignore
-        }
+        wait(waitMillis);
+        functionName = poll();
       }
       return functionName;
     }

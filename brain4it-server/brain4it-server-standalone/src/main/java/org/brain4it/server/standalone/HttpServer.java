@@ -276,7 +276,8 @@ public class HttpServer
 
   protected void closeConnections()
   {
-    for (Socket socket : connections)
+    Socket[] sockets = connections.toArray(new Socket[0]);
+    for (Socket socket : sockets)
     {
       try
       {

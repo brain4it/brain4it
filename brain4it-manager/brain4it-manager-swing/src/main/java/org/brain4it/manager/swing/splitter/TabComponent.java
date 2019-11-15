@@ -52,9 +52,10 @@ public class TabComponent extends javax.swing.JPanel
   
   /**
    * Creates new form TabPanel
-   * @param name text to show in tab
-   * @param icon tab icon
-   * @param listener that attends button press
+   * @param splitter the parent splitter
+   * @param component the associated component
+   * @param title the tab title
+   * @param icon the tab icon
    */
   public TabComponent(Splitter splitter, Component component,
     String title, Icon icon)
@@ -69,7 +70,7 @@ public class TabComponent extends javax.swing.JPanel
     label.addMouseListener(new MouseAdapter()
     {
       @Override
-      public void mouseClicked(MouseEvent e)
+      public void mousePressed(MouseEvent e)
       {
         Component component = TabComponent.this.component;
         TabContainer tabContainer = (TabContainer)component.getParent();

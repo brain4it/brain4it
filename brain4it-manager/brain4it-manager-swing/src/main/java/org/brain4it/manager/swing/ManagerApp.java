@@ -928,6 +928,11 @@ public class ManagerApp extends javax.swing.JFrame
             executeDefaultAction(node);
           }
         }
+        else if (event.getKeyCode() == KeyEvent.VK_DELETE)
+        {
+          removeNodeAction.actionPerformed(
+            new ActionEvent(explorer, 0, "remove"));
+        }
       }
     });
     explorer.addMouseListener(new MouseAdapter()

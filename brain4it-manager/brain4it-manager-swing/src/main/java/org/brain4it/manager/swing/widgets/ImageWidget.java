@@ -37,6 +37,7 @@ import java.awt.event.HierarchyListener;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import javax.imageio.ImageIO;
@@ -156,30 +157,42 @@ public class ImageWidget extends JComponent implements DashboardWidget
     }
     else
     {
+      HttpURLConnection conn = null;
       try
       {
         URL url = new URL(currentUrl);
-        HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+        conn = (HttpURLConnection)url.openConnection();
         SSLUtils.skipCertificateValidation(conn);
         String contentType = conn.getContentType();
-        conn.disconnect();
-        if (contentType == null)
+        if (contentType == null || contentType.startsWith("image/"))
         {
-          setImage(null);
-        }
-        else if (contentType.startsWith("image/"))
-        {
-          setImage(ImageIO.read(url));
+          InputStream is = conn.getInputStream();
+          try
+          {
+            setImage(ImageIO.read(is));
+          }
+          finally
+          {
+            is.close();
+          }
         }
         else if (contentType.startsWith("multipart/x-mixed-replace"))
         {
           videoThread = new VideoThread(currentUrl);
           videoThread.start();       
-        }   
+        }
+        else
+        {
+          setImage(null);
+        }
       }
       catch (IOException ex)
       {
         setImage(null);
+      }
+      finally
+      {
+        if (conn != null) conn.disconnect();
       }
     }
   }

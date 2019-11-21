@@ -181,18 +181,14 @@ public class ImageWidget extends ImageView implements DashboardWidget
     }
     else
     {
+      HttpURLConnection conn = null;
       try
       {
         URL url = new URL(currentUrl);
-        HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+        conn = (HttpURLConnection)url.openConnection();
         SSLUtils.skipCertificateValidation(conn);
         String contentType = conn.getContentType();
-        conn.disconnect();
-        if (contentType == null)
-        {
-          setImage(null);
-        }
-        else if (contentType.startsWith("image/"))
+        if (contentType == null || contentType.startsWith("image/"))
         {
           InputStream is = url.openStream();
           try
@@ -209,10 +205,18 @@ public class ImageWidget extends ImageView implements DashboardWidget
           videoThread = new VideoThread(currentUrl);
           videoThread.start();
         }
+        else
+        {
+          setImage(null);          
+        }
       }
       catch (IOException ex)
       {
         setImage(null);
+      }
+      finally
+      {
+        if (conn != null) conn.disconnect();        
       }
     }
   }

@@ -930,8 +930,23 @@ public class ManagerApp extends javax.swing.JFrame
         }
         else if (event.getKeyCode() == KeyEvent.VK_DELETE)
         {
-          removeNodeAction.actionPerformed(
-            new ActionEvent(explorer, 0, "remove"));
+          TreePath path = explorer.getSelectionPath();
+          if (path != null)
+          {
+            DefaultMutableTreeNode node =
+              (DefaultMutableTreeNode)path.getLastPathComponent();
+            Object userObject = node.getUserObject();
+            if (userObject instanceof Server || userObject instanceof Module)
+            {
+              removeNodeAction.actionPerformed(
+                new ActionEvent(explorer, 0, "remove"));
+            }
+            else if (node instanceof DataNode)
+            {
+              deleteDataAction.actionPerformed(
+                new ActionEvent(explorer, 0, "delete"));              
+            }
+          }
         }
       }
     });

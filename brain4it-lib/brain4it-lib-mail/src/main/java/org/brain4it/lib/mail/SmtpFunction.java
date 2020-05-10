@@ -63,6 +63,7 @@ public class SmtpFunction implements Function
     String from = (String)context.evaluate(args.get("from"));
     String subject = (String)context.evaluate(args.get("subject"));
     String body = (String)context.evaluate(args.get("body"));
+    String contentType = (String)context.evaluate(args.get("content-type"));
     BList properties = (BList)context.evaluate(args.get("properties"));
     final String username = (String)context.evaluate(args.get("username"));
     final String password = (String)context.evaluate(args.get("password"));
@@ -108,7 +109,7 @@ public class SmtpFunction implements Function
 	  Session session = Session.getInstance(props, authenticator);
 		session.setDebug(true);
 
-	  Message msg = new MimeMessage(session);
+	  MimeMessage msg = new MimeMessage(session);
     if (from != null)
     {
   		msg.setFrom(new InternetAddress(from));
@@ -127,7 +128,11 @@ public class SmtpFunction implements Function
   	  msg.setSubject(subject);
     }
     
-    msg.setText(body == null ? "" : body);
+    if (contentType == null)
+    {
+      contentType = "text/plain; charset=UTF-8";
+    }
+    msg.setContent(body, contentType);
     
 	  msg.setHeader("X-Mailer", "brain4it");
 	  msg.setSentDate(new Date());

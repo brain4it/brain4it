@@ -87,10 +87,21 @@ public class HTMLFormatter extends Formatter
     {
       className = type.toLowerCase();
     }
-    if (value.startsWith(SOFT_REFERENCE_PREFIX))
+
+    if (Token.STRING.equals(type))
     {
-      value = value.substring(SOFT_REFERENCE_PREFIX.length());
+      value = value.replace("<", "&lt;");
+      value = value.replace(">", "&gt;");
+      value = value.replace("\"", "&quot;");
     }
+    else if (Token.REFERENCE.equals(type))
+    {
+      if (value.startsWith(SOFT_REFERENCE_PREFIX))
+      {
+        value = value.substring(SOFT_REFERENCE_PREFIX.length());
+      }
+    }
+    
     writer.write("<span class=\"");
     writer.write(className);
     if ((token.getFlags() & TokenizerComments.COMMENT_FLAG) ==
@@ -119,7 +130,7 @@ public class HTMLFormatter extends Formatter
   protected boolean isHardReference(String type, String value)
   {
     // heuristic method to detect if a reference is a built-in function
-    if (lastOpenList && type.equals(Token.REFERENCE))
+    if (lastOpenList && Token.REFERENCE.equals(type))
     {
       if (value.contains("_")) return false;
       if (value.contains("?")) return false;

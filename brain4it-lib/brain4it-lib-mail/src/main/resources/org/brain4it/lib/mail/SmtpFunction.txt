@@ -1,28 +1,45 @@
-(Smtp (smtp "host" => host "port" => port "from" => from 
-  "to" => to "cc" => cc "bcc" => bcc "subject" => subject "body" => body
+(Smtp (smtp "host" => host "port" => port "properties" => properties
+  "from" => from "to" => to "cc" => cc "bcc" => bcc 
+  "subject" => subject "body" => body "content-type" => content_type 
   "username" => username "password" => password)
   null
   where =>
   (
     host => ("string" 1 1)
     port => ("string" 0 1)
+    properties => ("list" 0 1)
     from => ("string" 0 1)
     to => ("object" 0 1)
     cc => ("object" 0 1)
     bcc => ("object" 0 1)
     subject => ("string" 0 1)
     body => ("string" 0 1)
+    content_type => ("string" 0 1)
     username => ("string" 0 1)
     password => ("string" 0 1)
   )
   examples =>
   (
-    ((stmp 
-      "host" => "stmp.brain4it.org" "port" => 25 
-      "from" => "admin@brain4it.org" 
-      "to" => "realor@brain4it.org" 
-      "subject" => "Hello"
-      "body" => "Hello world"))
+    (
+      (stmp 
+        "host" => "stmp.brain4it.org" "port" => 25 
+        "from" => "admin@brain4it.org" 
+        "to" => "realor@brain4it.org" 
+        "subject" => "Hello"
+        "body" => "Hello world"
+      )
+    )
+    (
+      (stmp 
+        "host" => "stmp.brain4it.org" "port" => 25 
+        "from" => "sanchezmuf@brain4it.org" 
+        "to" => ("admin@brain4it.org" "suport@santfeliu.cat")
+        "cc" => "realor@brain4it.org"
+        "subject" => "HTML message"
+        "body" => "<html><body>CPU:<span style=\"color:red\">95%!</span></body></html>"
+        "content-type" => "text/html; charset=UTF-8"
+      )
+    )
   )
   bundle => "org.brain4it.lib.MailLibrary"
 )

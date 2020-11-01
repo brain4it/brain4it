@@ -52,6 +52,7 @@ import org.brain4it.lib.core.math.*;
 import org.brain4it.lib.core.logical.*;
 import org.brain4it.lib.core.date.*;
 import static org.brain4it.io.IOConstants.CALL_FUNCTION_NAME;
+import static org.brain4it.io.IOConstants.QUOTE_FUNCTION_NAME;
 import static org.brain4it.io.IOConstants.COMMENT_FUNCTION_NAME;
 import static org.brain4it.io.IOConstants.FUNCTION_FUNCTION_NAME;
 
@@ -80,7 +81,7 @@ public class CoreLibrary extends Library
     functions.put(CALL_FUNCTION_NAME, new CallFunction());
     functions.put("delete", new DeleteFunction());
     functions.put("do", new DoFunction());
-    functions.put("quote", new QuoteFunction());
+    functions.put(QUOTE_FUNCTION_NAME, new QuoteFunction());
     functions.put("eval", new EvalFunction());
     functions.put("when", new WhenFunction());
     functions.put("while", new WhileFunction());

@@ -1,0 +1,29 @@
+(RemoteCall (remote-call function_url args) 
+  result
+  where =>
+  (
+    function_url => ("string" 1 1)
+    args => ("list" 0 N)
+    result => ("object" 1 1)
+  )
+  examples =>
+  (
+    (
+      (remote-call "https://localhost:9999/lib/math/@PI")
+      3.14159265359
+    )
+    (
+      (remote-call "https://localhost:9999/lib/math/@distance-to" x y)
+      7.5456456
+    )
+    (
+      (do
+        (set setup/remote-modules/math "http://localhost:9999/lib/math")
+        (remote-call "math:@distance-to" x y)
+      )
+      7.5456456
+    )
+  )
+  bundle => "org.brain4it.lib.ModuleLibrary"
+)
+

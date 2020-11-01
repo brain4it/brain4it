@@ -41,6 +41,7 @@ import org.brain4it.lib.module.ModuleLoadFunction;
 import org.brain4it.lib.module.ModuleDeleteFunction;
 import org.brain4it.lib.module.ModuleMonitorFunction;
 import org.brain4it.lib.module.ModuleStartFunction;
+import org.brain4it.lib.module.RemoteCallFunction;
 
 /**
  *
@@ -67,6 +68,7 @@ public class ModuleLibrary extends Library
     functions.put("module-stop", new ModuleStopFunction());
     functions.put("module-monitor", new ModuleMonitorFunction());
     functions.put("module-notify", new ModuleNotifyFunction());
+    functions.put("remote-call", new RemoteCallFunction());
 
     // backward compatibility
     functions.put("module-publish", functions.get("module-notify"));    

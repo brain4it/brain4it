@@ -1,31 +1,31 @@
 /*
  * Brain4it
- * 
+ *
  * Copyright (C) 2018, Ajuntament de Sant Feliu de Llobregat
- * 
- * This program is licensed and may be used, modified and redistributed under 
- * the terms of the European Public License (EUPL), either version 1.1 or (at 
- * your option) any later version as soon as they are approved by the European 
+ *
+ * This program is licensed and may be used, modified and redistributed under
+ * the terms of the European Public License (EUPL), either version 1.1 or (at
+ * your option) any later version as soon as they are approved by the European
  * Commission.
- * 
- * Alternatively, you may redistribute and/or modify this program under the 
- * terms of the GNU Lesser General Public License as published by the Free 
- * Software Foundation; either  version 3 of the License, or (at your option) 
- * any later version. 
- *   
- * Unless required by applicable law or agreed to in writing, software 
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT 
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- *   
- * See the licenses for the specific language governing permissions, limitations 
+ *
+ * Alternatively, you may redistribute and/or modify this program under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either  version 3 of the License, or (at your option)
+ * any later version.
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *
+ * See the licenses for the specific language governing permissions, limitations
  * and more details.
- *   
- * You should have received a copy of the EUPL1.1 and the LGPLv3 licenses along 
- * with this program; if not, you may find them at: 
- *   
+ *
+ * You should have received a copy of the EUPL1.1 and the LGPLv3 licenses along
+ * with this program; if not, you may find them at:
+ *
  *   https://joinup.ec.europa.eu/software/page/eupl/licence-eupl
- *   http://www.gnu.org/licenses/ 
- *   and 
+ *   http://www.gnu.org/licenses/
+ *   and
  *   https://www.gnu.org/licenses/lgpl.txt
  */
 package org.brain4it.server;
@@ -70,7 +70,7 @@ public abstract class HttpDispatcher
           setResponseHeader("Access-Control-Allow-Methods",
             "GET,PUT,DELETE,POST,OPTIONS");
           setResponseHeader("Access-Control-Allow-Headers",
-            ACCESS_KEY_HEADER + "," + MONITOR_HEADER + "," + 
+            ACCESS_KEY_HEADER + "," + MONITOR_HEADER + "," +
             SESSION_ID_HEADER);
           break;
         case "GET":
@@ -114,7 +114,7 @@ public abstract class HttpDispatcher
               int pollingInterval = Integer.parseInt(monitor);
               BList functions = (BList)data;
               getMonitorService().watch(path, functions, requestContext,
-                pollingInterval, getResponseWriter()); 
+                pollingInterval, getResponseWriter());
               // do not returns until a stop signal or network error
             }
             else if (data instanceof String) // stop monitoring session
@@ -148,7 +148,7 @@ public abstract class HttpDispatcher
     Reader reader = getRequestReader();
     if (contentType == null || contentType.startsWith(BPL_MIMETYPE))
     {
-      Map<String, Function> functions = 
+      Map<String, Function> functions =
         getRestService().getModuleManager().getFunctions();
       Parser parser = new Parser(reader, functions);
       data = parser.parse();
@@ -184,14 +184,14 @@ public abstract class HttpDispatcher
   {
     setStatusCode(HttpURLConnection.HTTP_OK);
     setStatusMessage("OK");
-    
+
     long serverTime = System.currentTimeMillis();
     setResponseHeader(SERVER_TIME_HEADER, String.valueOf(serverTime));
-    
-    BList headers = requestContext == null ? 
+
+    BList headers = requestContext == null ?
       null : (BList)requestContext.get(RESPONSE_HEADERS);
 
-    String contentType = headers == null ? 
+    String contentType = headers == null ?
       null : (String)headers.get("content-type");
 
     if (contentType == null || contentType.startsWith(BPL_MIMETYPE))
@@ -241,7 +241,7 @@ public abstract class HttpDispatcher
   {
     setStatusCode(HttpURLConnection.HTTP_INTERNAL_ERROR);
     setStatusMessage("INTERNAL_SERVER_ERROR");
-    setResponseHeader("Content-Type", 
+    setResponseHeader("Content-Type",
       BPL_MIMETYPE + "; charset=" + BPL_CHARSET);
     setCharacterEncoding(BPL_CHARSET);
     Printer printer = new Printer(getResponseWriter());
@@ -287,7 +287,7 @@ public abstract class HttpDispatcher
   protected abstract Collection<String> getResponseHeaderNames();
 
   protected abstract Reader getRequestReader() throws IOException;
-  
+
   protected abstract PrintWriter getResponseWriter() throws IOException;
 
   protected abstract RestService getRestService();

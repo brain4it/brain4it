@@ -53,5 +53,6 @@ public class IOConstants
   // special function names
   public static final String FUNCTION_FUNCTION_NAME = "function";
   public static final String CALL_FUNCTION_NAME = "call";
+  public static final String QUOTE_FUNCTION_NAME = "quote";
   public static final String COMMENT_FUNCTION_NAME = "###";
 }

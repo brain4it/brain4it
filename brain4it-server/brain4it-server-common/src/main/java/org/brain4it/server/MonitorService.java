@@ -47,7 +47,6 @@ import org.brain4it.lang.Function;
 import org.brain4it.lang.Utils;
 import org.brain4it.server.module.Module;
 import org.brain4it.server.module.ModuleManager;
-import static org.brain4it.server.ServerConstants.*;
 
 /**
  *
@@ -205,7 +204,7 @@ public class MonitorService
       if (element instanceof String)
       {
         String functionName = (String)element;
-        functionNames.add(getExteriorFunction(functionName));
+        functionNames.add(functionName);
       }
     }
     return functionNames;
@@ -220,10 +219,11 @@ public class MonitorService
     boolean send;
     try
     {
+      BList code = module.createExteriorFunctionCall(functionName,
+        requestContext, null);
       Map<String, Function> functions = moduleManager.getFunctions();
-      BList code = Utils.createFunctionCall(functions, functionName,
-        requestContext);
-      result = Executor.execute(code, module, functions, maxWaitTime);
+      result = code == null ? null :
+        Executor.execute(code, module, functions, maxWaitTime);
       Object last = lastSentData.get(functionName);
       send = !Utils.equals(result, last) ||
         !lastSentData.containsKey(functionName);

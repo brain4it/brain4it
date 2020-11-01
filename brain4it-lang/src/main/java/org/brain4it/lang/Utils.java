@@ -1,31 +1,31 @@
 /*
  * Brain4it
- * 
+ *
  * Copyright (C) 2018, Ajuntament de Sant Feliu de Llobregat
- * 
- * This program is licensed and may be used, modified and redistributed under 
- * the terms of the European Public License (EUPL), either version 1.1 or (at 
- * your option) any later version as soon as they are approved by the European 
+ *
+ * This program is licensed and may be used, modified and redistributed under
+ * the terms of the European Public License (EUPL), either version 1.1 or (at
+ * your option) any later version as soon as they are approved by the European
  * Commission.
- * 
- * Alternatively, you may redistribute and/or modify this program under the 
- * terms of the GNU Lesser General Public License as published by the Free 
- * Software Foundation; either  version 3 of the License, or (at your option) 
- * any later version. 
- *   
- * Unless required by applicable law or agreed to in writing, software 
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT 
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- *   
- * See the licenses for the specific language governing permissions, limitations 
+ *
+ * Alternatively, you may redistribute and/or modify this program under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either  version 3 of the License, or (at your option)
+ * any later version.
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *
+ * See the licenses for the specific language governing permissions, limitations
  * and more details.
- *   
- * You should have received a copy of the EUPL1.1 and the LGPLv3 licenses along 
- * with this program; if not, you may find them at: 
- *   
+ *
+ * You should have received a copy of the EUPL1.1 and the LGPLv3 licenses along
+ * with this program; if not, you may find them at:
+ *
  *   https://joinup.ec.europa.eu/software/page/eupl/licence-eupl
- *   http://www.gnu.org/licenses/ 
- *   and 
+ *   http://www.gnu.org/licenses/
+ *   and
  *   https://www.gnu.org/licenses/lgpl.txt
  */
 
@@ -44,7 +44,7 @@ import static org.brain4it.io.IOConstants.FUNCTION_FUNCTION_NAME;
 
 /**
  * A utility class with data conversion methods and other basic operations.
- * 
+ *
  * @author realor
  */
 public class Utils
@@ -55,7 +55,7 @@ public class Utils
   public static final String STRING_TYPE = "string";
   public static final String REFERENCE_TYPE = "reference";
   public static final String LIST_TYPE = "list";
-  
+
   public static final String INTEGER_SUBTYPE = "integer";
   public static final String LONG_SUBTYPE = "long";
   public static final String DOUBLE_SUBTYPE = "double";
@@ -64,7 +64,7 @@ public class Utils
   public static final String FUNCTION_LIST_SUBTYPE = "function-list";
   public static final String CODE_LIST_SUBTYPE = "code-list";
   public static final String DATA_LIST_SUBTYPE = "data-list";
-  
+
   public static String toString(Number number)
   {
     return toString(number, 10, false);
@@ -194,12 +194,12 @@ public class Utils
     return equals(value1, value2, null, false);
   }
 
-  public static boolean equals(Object value1, Object value2, 
+  public static boolean equals(Object value1, Object value2,
     boolean compareNames)
   {
     return equals(value1, value2, null, compareNames);
   }
-  
+
   public static boolean exactEquals(Object value1, Object value2)
   {
     if (value1 != null && value2 != null)
@@ -208,7 +208,7 @@ public class Utils
     }
     return value1 == value2;
   }
-  
+
   public static int compare(Object value1, Object value2)
   {
     if (value1 instanceof Integer && value2 instanceof Integer)
@@ -241,7 +241,7 @@ public class Utils
     }
     return 0;
   }
-  
+
   /* get the index of name in list case insensitive */
   public static int getIndexOfNameCI(BList list, String name)
   {
@@ -296,7 +296,7 @@ public class Utils
     }
     return list;
   }
-  
+
   public static BList toBList(Throwable t)
   {
     BList list;
@@ -356,7 +356,7 @@ public class Utils
     }
     return null;
   }
-  
+
   public static String unescapeString(String text) throws ParseException
   {
     boolean escape = false;
@@ -377,7 +377,7 @@ public class Utils
           case '\'': buffer.append('\''); break;
           case '"': buffer.append('"'); break;
           case 'u':
-            try 
+            try
             {
               StringBuilder unicodeBuffer = new StringBuilder();
               unicodeBuffer.append(text.substring(i + 1, i + 5));
@@ -386,7 +386,7 @@ public class Utils
             }
             catch (NumberFormatException | StringIndexOutOfBoundsException ex)
             {
-              throw new ParseException("Invalid unicode character", i);              
+              throw new ParseException("Invalid unicode character", i);
             }
             break;
           default:
@@ -395,10 +395,10 @@ public class Utils
         escape = false;
       }
       else if (ch == '"')
-      {        
+      {
       }
       else if (ch == '\\')
-      {        
+      {
         escape = true;
       }
       else
@@ -408,8 +408,8 @@ public class Utils
     }
     return buffer.toString();
   }
-  
-  
+
+
   public static String escapeString(String text)
   {
     if (text == null) return null;
@@ -444,15 +444,15 @@ public class Utils
 
   public static final void checkArguments(BList args, int expected)
   {
-    if (expected >= args.size()) 
-      throw new BException("RuntimeException", 
+    if (expected >= args.size())
+      throw new BException("RuntimeException",
         "Insufficient number of arguments");
   }
-  
-  public static final BReference getBReference(Context context, BList args, 
+
+  public static final BReference getBReference(Context context, BList args,
     int pos) throws Exception
   {
-    if (pos >= args.size()) 
+    if (pos >= args.size())
       throw new BException("MissingArgument", "At position " + pos);
     Object arg = args.get(pos);
     if (arg instanceof BList)
@@ -462,8 +462,8 @@ public class Utils
     if (arg instanceof BReference) return (BReference)arg;
     throw new BException("InvalidReference", "At position " + pos);
   }
-  
-  public static BReference createBReference(Map<String, Function> functions, 
+
+  public static BReference createBReference(Map<String, Function> functions,
     String value)
   {
     Function function = functions.get(value);
@@ -476,8 +476,8 @@ public class Utils
       return new BHardReference(value, function);
     }
   }
-  
-  public static BList createFunctionCall(Map<String, Function> functions, 
+
+  public static BList createFunctionCall(Map<String, Function> functions,
     Object function, Object... args)
   {
     BList call = new BList();
@@ -500,7 +500,7 @@ public class Utils
     }
     return call;
   }
-  
+
   /* if object is a Class only static methods are considered */
   public static void createFunctions(Object object,
     Map<String, Function> functions)
@@ -544,7 +544,30 @@ public class Utils
     }
   }
 
-  private static boolean equals(Object value1, Object value2, 
+  public static boolean isUserFunction(Object function)
+  {
+    if (function instanceof BList)
+    {
+      return isUserFunction((BList)function);
+    }
+    return false;
+  }
+
+  public static boolean isUserFunction(BList function)
+  {
+    if (function != null && function.size() >= 3)
+    {
+      Object first = function.get(0);
+      if (first instanceof BReference)
+      {
+        BReference reference = (BReference)first;
+        return reference.getName().equals(FUNCTION_FUNCTION_NAME);
+      }
+    }
+    return false;
+  }
+
+  private static boolean equals(Object value1, Object value2,
      Map<BList, BList> listMatch, boolean compareNames)
   {
     if (value1 == value2)
@@ -579,7 +602,7 @@ public class Utils
             (structure1 != null && !structure1.equals(structure2)))
           return false;
       }
-      
+
       if (listMatch == null)
       {
         listMatch = new HashMap<BList, BList>();
@@ -600,12 +623,12 @@ public class Utils
         equals = Utils.equals(elem1, elem2, listMatch, compareNames);
         i++;
       }
-      return equals;      
+      return equals;
     }
     else
     {
       return value1.equals(value2);
     }
-  }  
+  }
 }
 

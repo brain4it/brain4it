@@ -33,7 +33,6 @@ package org.brain4it.lang;
 
 import java.util.Map;
 import java.util.Stack;
-import static org.brain4it.io.IOConstants.FUNCTION_FUNCTION_NAME;
 
 /**
  * The BPL evaluation context.
@@ -249,16 +248,7 @@ public class Context
 
   public boolean isUserFunction(BList function)
   {
-    if (function.size() >= 3)
-    {
-      Object first = function.get(0);
-      if (first instanceof BReference)
-      {
-        BReference reference = (BReference)first;
-        return isFunction(reference);
-      }
-    }
-    return false;
+    return Utils.isUserFunction(function);
   }
 
   public Object invokeUserFunction(BList function, BList argExprs)
@@ -289,22 +279,26 @@ public class Context
           BReference reference = (BReference)argDef;
           String argName = reference.getName();
           String callArgName = argDefs.getName(i);
-          if (callArgName == null)
+          if (callArgName == null) // (... vx ...)
           {
-            Object argValue = j < argExprs.size() ?
-              evaluate(argExprs.get(j)) : null;
+            Object argValue = j < argExprs.size() ? argExprs.get(j) : null;
+            argValue = evaluate(argValue);
             localScope.put(argName, argValue);
             j++;
           }
-          else
+          else // (... "vx" => x ...)
           {
-            localScope.put(argName, evaluate(argExprs.get(callArgName)));
+            Object argValue = argExprs.get(callArgName);
+            argValue = evaluate(argValue);
+            localScope.put(argName, argValue);
           }
         }
-        else if (argDef instanceof String) // optional parameter
+        else if (argDef instanceof String) // (... "vx" ...)
         {
           String argName = (String)argDef;
-          localScope.put(argName, evaluate(argExprs.get(argName)));
+          Object argValue = argExprs.get(argName);
+          argValue = evaluate(argValue);
+          localScope.put(argName, argValue);
         }
       }
     }
@@ -314,7 +308,7 @@ public class Context
       localScope.put(reference.getName(), argExprs.sublist(fromIndex));
     }
 
-    // execution
+    // execute function code
     localScopes.push(localScope);
     for (int i = 2; i < function.size(); i++)
     {
@@ -323,13 +317,6 @@ public class Context
     localScopes.pop();
 
     return result;
-  }
-
-  /* private methods */
-
-  private boolean isFunction(BReference reference)
-  {
-    return reference.getName().equals(FUNCTION_FUNCTION_NAME);
   }
 
   static class IdentityFunction implements Function

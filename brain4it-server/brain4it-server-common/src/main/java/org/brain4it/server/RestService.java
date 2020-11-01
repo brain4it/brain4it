@@ -39,7 +39,6 @@ import org.brain4it.lang.BException;
 import org.brain4it.lang.Executor;
 import org.brain4it.lang.BList;
 import org.brain4it.lang.Function;
-import org.brain4it.lang.Utils;
 import org.brain4it.server.module.Module;
 import org.brain4it.server.module.ModuleManager;
 import static org.brain4it.server.ServerConstants.*;
@@ -200,10 +199,10 @@ public class RestService
     return result;
   }
 
-  public Object execute(String path, Object code, String accessKey,
+  public Object execute(String path, Object data, String accessKey,
     BList requestContext) throws Exception
   {
-    LOGGER.log(Level.FINE, "path: {0} code: {1}", new Object[]{path, code});
+    LOGGER.log(Level.FINE, "path: {0} code: {1}", new Object[]{path, data});
     Object result;
     PathParser parser = new PathParser(moduleManager, path);
     String moduleName = parser.getModuleName();
@@ -219,20 +218,19 @@ public class RestService
       Map<String, Function> functions = moduleManager.getFunctions();
       if (functionName == null)
       {
-        // execute any code
+        // execute data as code
         checkSecurity(parser, accessKey);
-        result = Executor.execute(code, module, functions, maxWaitTime);
+        result = Executor.execute(data, module, functions, maxWaitTime);
       }
       else
       {
-        // execute exterior function
-        functionName = getExteriorFunction(functionName);
+        // call exterior function passing requestContext and data as arguments
         try
         {
-          // call exterior function passing header and data as arguments
-          Object call = Utils.createFunctionCall(functions, functionName,
-            requestContext, code);
-          result = Executor.execute(call, module, functions, maxWaitTime);
+          BList code = module.createExteriorFunctionCall(functionName,
+            requestContext, data);
+          result = code == null ? null :
+            Executor.execute(code, module, functions, maxWaitTime);
         }
         catch (BException ex)
         {

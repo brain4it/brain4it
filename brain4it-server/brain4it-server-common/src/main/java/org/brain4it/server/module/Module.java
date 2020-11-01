@@ -42,12 +42,21 @@ import java.util.List;
 import org.brain4it.client.Monitor;
 import org.brain4it.io.Parser;
 import org.brain4it.io.Printer;
+import org.brain4it.lang.BHardReference;
 import org.brain4it.lang.Executor;
 import org.brain4it.lang.BList;
+import org.brain4it.lang.BPathReference;
+import org.brain4it.lang.BReference;
+import org.brain4it.lang.BSingleReference;
+import org.brain4it.lang.BSoftReference;
+import org.brain4it.lang.Function;
+import org.brain4it.lang.Utils;
 import org.brain4it.server.store.Store;
 import org.brain4it.server.store.Entry;
 import static org.brain4it.server.store.Store.*;
 import static org.brain4it.server.ServerConstants.*;
+import static org.brain4it.io.IOConstants.CALL_FUNCTION_NAME;
+import static org.brain4it.io.IOConstants.QUOTE_FUNCTION_NAME;
 
 /**
  *
@@ -68,6 +77,9 @@ public final class Module extends BList
   private final String name;
   private final HashMap<String, HashSet<Listener>> listeners;
   private final HashMap<String, Monitor> monitors;
+
+  private static BHardReference callReference;
+  private static BHardReference quoteReference;
 
   Module(ModuleManager moduleManager, String tenant, String name)
   {
@@ -342,6 +354,91 @@ public final class Module extends BList
   public String toString()
   {
     return getFullName();
+  }
+
+  /**
+   * Creates the code to call an exterior function
+   *
+   * @param functionName the function name or function path to execute
+   * @param requestContext the request context
+   * @param data the function data argument
+   * @return the code to call the exterior function or null if functionName is
+   * not an exterior function. An exterior function must have a name that starts
+   * with @ or any of its parent lists must have a name that starts with @.
+   */
+  public BList createExteriorFunctionCall(String functionName,
+    BList requestContext, Object data)
+  {
+    try
+    {
+      Object userFunction = null;
+      BSoftReference reference = BSoftReference.getInstance(functionName);
+      if (reference instanceof BSingleReference)
+      {
+        String referenceName = reference.getName();
+        if (referenceName.startsWith(EXTERIOR_FUNCTION_PREFIX))
+        {
+          userFunction = get(referenceName);
+        }
+      }
+      else if (reference instanceof BPathReference)
+      {
+        BList path = ((BPathReference)reference).getInternalPath();
+        for (int i = 0; i < path.size(); i++)
+        {
+          Object elem = path.get(i);
+          if (elem instanceof String)
+          {
+            String referenceName = (String)elem;
+            if (referenceName.startsWith(EXTERIOR_FUNCTION_PREFIX))
+            {
+              userFunction = get(path);
+              break;
+            }
+          }
+        }
+      }
+
+      if (!Utils.isUserFunction(userFunction)) return null;
+
+      if (callReference == null)
+      {
+        Function callFunction =
+          moduleManager.getFunctions().get(CALL_FUNCTION_NAME);
+        if (callFunction == null) return null;
+        callReference = new BHardReference(CALL_FUNCTION_NAME, callFunction);
+      }
+
+      if (quoteReference == null)
+      {
+        Function quoteFunction =
+          moduleManager.getFunctions().get(QUOTE_FUNCTION_NAME);
+        if (quoteFunction == null) return null;
+        quoteReference = new BHardReference(QUOTE_FUNCTION_NAME, quoteFunction);
+      }
+
+      BList call = new BList();
+      call.add(callReference);
+      call.add(userFunction);
+      call.add(requestContext);
+
+      if (data instanceof BList || data instanceof BReference)
+      {
+        BList quotedData = new BList();
+        quotedData.add(quoteReference);
+        quotedData.add(data);
+        call.add(quotedData);
+      }
+      else if (data != null)
+      {
+        call.add(data);
+      }
+      return call;
+    }
+    catch (Exception ex)
+    {
+      return null;
+    }
   }
 
   /* private methods */

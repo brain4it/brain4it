@@ -56,6 +56,7 @@ public class ServerConstants
   public static final String MODULE_STOP_VAR = "stop";
   public static final String MODULE_METADATA_VAR = "module-metadata";
   public static final String MODULE_ACCESS_KEY_VAR = "access-key";
+  public static final String MODULE_SETUP_VAR = "setup";
   public static final String EXTERIOR_FUNCTION_PREFIX = "@";
   public static final String DASHBOARDS_FUNCTION_NAME =
     EXTERIOR_FUNCTION_PREFIX + "dashboards";
@@ -66,17 +67,6 @@ public class ServerConstants
   public static final String RESPONSE_HEADERS = "response-headers";
   public static final String REMOTE_ADDRESS = "remote-address";
   public static final String REMOTE_PORT = "remote-port";
-
-  public static boolean isExteriorFunction(String functionName)
-  {
-    return functionName.startsWith(EXTERIOR_FUNCTION_PREFIX);
-  }
-
-  public static String getExteriorFunction(String functionName)
-  {
-    return functionName.startsWith(EXTERIOR_FUNCTION_PREFIX) ?
-      functionName : EXTERIOR_FUNCTION_PREFIX + functionName;
-  }
 
   /* Exterior functions request context structure definition */
   static

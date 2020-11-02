@@ -1,9 +1,9 @@
-(RemoteCall (remote-call function_url args) 
+(RemoteCall (remote-call function_url arg) 
   result
   where =>
   (
     function_url => ("string" 1 1)
-    args => ("list" 0 N)
+    arg => ("list" 0 N)
     result => ("object" 1 1)
   )
   examples =>
@@ -18,7 +18,7 @@
     )
     (
       (do
-        (set setup/remote-modules/math "http://localhost:9999/lib/math")
+        (set setup/remote-modules/math "https://localhost:9999/lib/math")
         (remote-call "math:@distance-to" x y)
       )
       7.5456456

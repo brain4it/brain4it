@@ -116,7 +116,8 @@ public class NeuralLearnFunction extends NeuralFunction
 
     Listener listener = new Listener();
     learningRule.addListener(listener);
-    neuralNetwork.learn(dataSet, learningRule);
+    neuralNetwork.learn(dataSet);
+    neuralNetwork.setLearningRule(learningRule);
     learningRule.removeListener(listener);
 
     if (learningRule instanceof IterativeLearning)

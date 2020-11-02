@@ -9,8 +9,8 @@
   examples =>
   (
     (
-      (remote-call "https://localhost:9999/lib/math/@PI")
-      3.14159265359
+      (remote-call "https://localhost:9999/cars/@get-detections")
+      56356
     )
     (
       (remote-call "https://localhost:9999/lib/math/@distance-to" x y)

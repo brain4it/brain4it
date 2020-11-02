@@ -82,6 +82,8 @@ public class RemoteCallFunction implements Function
     conn.setUseCaches(false);
     conn.setRequestMethod("POST");
     conn.setDoInput(true);
+    conn.setConnectTimeout(10000);
+    conn.setReadTimeout(30000);
     conn.setRequestProperty("Content-Type", ServerConstants.BPL_MIMETYPE);
     try
     {
@@ -122,11 +124,21 @@ public class RemoteCallFunction implements Function
       if (contentType == null ||
         contentType.contains(ServerConstants.BPL_MIMETYPE))
       {
-        String responseString = new String(readResponse(conn),
-          ServerConstants.BPL_CHARSET);
-        Object response = Parser.fromString(responseString,
-          context.getFunctions());
-
+        byte[] bytes = readResponse(conn);
+        
+        Object response;
+        String responseString;
+        if (bytes == null)
+        {
+          responseString = null;
+          response = null;
+        }
+        else
+        {
+          responseString = new String(bytes, ServerConstants.BPL_CHARSET);
+          response = Parser.fromString(responseString, context.getFunctions());
+        }
+        
         int responseCode = conn.getResponseCode();
         if (responseCode == HttpURLConnection.HTTP_OK)
         {
@@ -136,9 +148,13 @@ public class RemoteCallFunction implements Function
         {
           throw new BException((BList)response);
         }
+        else if (response instanceof String)
+        {
+          throw new BException("IOException", (String)response);
+        }
         else
         {
-          throw new BException("IOException", responseString);
+          throw new BException("IOException");          
         }
       }
       return null;

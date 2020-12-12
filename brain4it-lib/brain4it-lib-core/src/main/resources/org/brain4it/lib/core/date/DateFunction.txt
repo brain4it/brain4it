@@ -11,7 +11,7 @@
   (
     ((date) 1509266462425)
     ((date "now") 1509266462625)
-    ((date "add" (date) "day" -7) 1508657988101)
+    ((date "add" (date) "day_of_week" -7) 1508657988101)
     ((date "set" (date) "day_of_month" 3) 1507016618627)
   )
   related => (format-date parse-date)

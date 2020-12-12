@@ -168,7 +168,7 @@ public class ManagerApp extends javax.swing.JFrame
   private boolean workspaceModified = false;
   private static final int[] LOGO_SIZES = new int[]{16, 32, 48, 64, 72, 128};
   private int auxiliaryPanelWidth = 200;
-  
+
 
   public ManagerApp()
   {
@@ -252,12 +252,12 @@ public class ManagerApp extends javax.swing.JFrame
   {
     return findDialog;
   }
-  
+
   public Component getAuxiliaryPanel()
   {
     return secondSplitPane.getRightComponent();
   }
-  
+
   public void setAuxiliaryPanel(Component panel)
   {
     Component prevPanel = secondSplitPane.getRightComponent();
@@ -270,7 +270,7 @@ public class ManagerApp extends javax.swing.JFrame
           secondSplitPane.setDividerSize(firstSplitPane.getDividerSize());
           int location = secondSplitPane.getWidth() -
             auxiliaryPanelWidth - firstSplitPane.getDividerSize();
-          secondSplitPane.setDividerLocation(location);          
+          secondSplitPane.setDividerLocation(location);
         }
         secondSplitPane.setRightComponent(panel);
       }
@@ -279,20 +279,20 @@ public class ManagerApp extends javax.swing.JFrame
     {
       if (prevPanel != null)
       {
-        auxiliaryPanelWidth = secondSplitPane.getWidth() - 
+        auxiliaryPanelWidth = secondSplitPane.getWidth() -
           secondSplitPane.getDividerLocation() - firstSplitPane.getDividerSize();
         secondSplitPane.setRightComponent(null);
-        secondSplitPane.setDividerSize(0);      
+        secondSplitPane.setDividerSize(0);
         secondSplitPane.setDividerLocation(Integer.MAX_VALUE);
       }
     }
   }
-  
+
   public static Preferences getPreferences()
   {
     return preferences;
   }
-  
+
   public boolean isWorkspaceModified()
   {
     return workspaceModified;
@@ -315,18 +315,18 @@ public class ManagerApp extends javax.swing.JFrame
     if (path == null) return null;
     return (DefaultMutableTreeNode)path.getLastPathComponent();
   }
-  
+
   public void openConsole(Module module)
   {
-    ConsolePanel console = new ConsolePanel(this, module);  
+    ConsolePanel console = new ConsolePanel(this, module);
     ImageIcon icon = IconCache.getIcon("console");
-    splitter.addComponent(console, console.getPanelName(), icon);      
-    module.findFunctions(null);    
+    splitter.addComponent(console, console.getPanelName(), icon);
+    module.findFunctions(null);
   }
-  
+
   public void openDashboard(Module module)
   {
-    DashboardPanel dashboard = new DashboardPanel(this, module);      
+    DashboardPanel dashboard = new DashboardPanel(this, module);
     ImageIcon icon = IconCache.getIcon("dashboard");
     splitter.addComponent(dashboard, dashboard.getPanelName(), icon);
   }
@@ -365,7 +365,7 @@ public class ManagerApp extends javax.swing.JFrame
 
       ImageIcon icon = IconCache.getIcon("editor");
       splitter.addComponent(editorPanel, editorPanel.getPanelName(), icon);
-      
+
       module.findFunctions(null);
 
       if (path.length() > 0)
@@ -377,9 +377,9 @@ public class ManagerApp extends javax.swing.JFrame
     {
       TabContainer tabContainer = (TabContainer)editorPanel.getParent();
       tabContainer.setSelectedComponent(editorPanel);
-    }    
+    }
   }
-  
+
   public void openDesigner(Module module, String path)
   {
     DesignerPanel designerPanel = null;
@@ -414,7 +414,7 @@ public class ManagerApp extends javax.swing.JFrame
 
       ImageIcon icon = IconCache.getIcon("designer");
       splitter.addComponent(designerPanel, designerPanel.getPanelName(), icon);
-      
+
       module.findFunctions(null);
 
       if (path.length() > 0)
@@ -426,8 +426,8 @@ public class ManagerApp extends javax.swing.JFrame
     {
       TabContainer tabContainer = (TabContainer)designerPanel.getParent();
       tabContainer.setSelectedComponent(designerPanel);
-    }    
-  }          
+    }
+  }
 
   public File getWorkspaceFile()
   {
@@ -459,7 +459,7 @@ public class ManagerApp extends javax.swing.JFrame
       }
     }
   }
-  
+
   public void updateTab(ModulePanel modulePanel)
   {
     TabComponent tabComponent = splitter.getTabComponent(modulePanel);
@@ -470,8 +470,8 @@ public class ManagerApp extends javax.swing.JFrame
   public boolean closeTabs()
   {
     return closeTabs(null);
-  }  
-  
+  }
+
   public boolean closeTabs(DefaultMutableTreeNode treeNode)
   {
     boolean allClosed = true;
@@ -750,7 +750,7 @@ public class ManagerApp extends javax.swing.JFrame
   private org.brain4it.manager.swing.splitter.Splitter splitter;
   private javax.swing.JToolBar toolBar;
   // End of variables declaration//GEN-END:variables
-  
+
   private void initApp()
   {
     setFrameIcons();
@@ -758,13 +758,13 @@ public class ManagerApp extends javax.swing.JFrame
     auxiliaryPanelWidth = preferences.getAuxiliaryPanelWidth();
     firstSplitPane.setDividerLocation(preferences.getExplorerWidth());
     secondSplitPane.setRightComponent(null);
-        
+
     JFileChooser.setDefaultLocale(Locale.getDefault());
     JOptionPane.setDefaultLocale(Locale.getDefault());
 
     int scalingFactor = preferences.getScalingFactor();
     explorer.setRowHeight(20 * scalingFactor);
-    
+
     resourceBundle =
       ResourceBundle.getBundle("org/brain4it/manager/swing/resources/Manager");
 
@@ -809,8 +809,8 @@ public class ManagerApp extends javax.swing.JFrame
       createModuleAction,
       addModuleAction,
       editModuleAction,
+      null,
       removeNodeAction,
-      refreshNodeAction,
       destroyModuleAction,
       listModulesAction,
       renameDataAction,
@@ -820,6 +820,8 @@ public class ManagerApp extends javax.swing.JFrame
       openEditorAction,
       openDashboardAction,
       openDesignerAction,
+      null,
+      refreshNodeAction,
       null,
       importModuleAction,
       exportModuleAction,
@@ -854,8 +856,8 @@ public class ManagerApp extends javax.swing.JFrame
     editMenu.add(createModuleAction);
     editMenu.add(addModuleAction);
     editMenu.addSeparator();
-    editMenu.add(destroyModuleAction);
     editMenu.add(editModuleAction);
+    editMenu.add(destroyModuleAction);
     editMenu.addSeparator();
     editMenu.add(removeNodeAction);
     editMenu.addSeparator();
@@ -899,7 +901,7 @@ public class ManagerApp extends javax.swing.JFrame
     popupMenu = new JPopupMenu();
 
     findDialog = new FindDialog(this);
-    
+
     workspace = new Workspace();
     DefaultMutableTreeNode workspaceNode =
       new DefaultMutableTreeNode(workspace);
@@ -944,7 +946,7 @@ public class ManagerApp extends javax.swing.JFrame
             else if (node instanceof DataNode)
             {
               deleteDataAction.actionPerformed(
-                new ActionEvent(explorer, 0, "delete"));              
+                new ActionEvent(explorer, 0, "delete"));
             }
           }
         }
@@ -975,21 +977,24 @@ public class ManagerApp extends javax.swing.JFrame
           {
             explorer.setSelectionPath(path);
             popupMenu.removeAll();
-            boolean lastIsSeparator = false;
+            boolean haveSeparator = false;
             for (ManagerAction action : contextActions)
             {
               if (action == null)
               {
-                if (!lastIsSeparator)
-                {
-                  popupMenu.addSeparator();
-                  lastIsSeparator = true;
-                }
+                haveSeparator = true;
               }
-              else if (action.isEnabled())
+              else
               {
-                popupMenu.add(action);
-                lastIsSeparator = false;
+                if (action.isEnabled())
+                {
+                  if (haveSeparator)
+                  {
+                    popupMenu.addSeparator();
+                  }
+                  popupMenu.add(action);
+                  haveSeparator = false;
+                }
               }
             }
             popupMenu.show(ManagerApp.this.explorer, e.getX(), e.getY());
@@ -1035,11 +1040,11 @@ public class ManagerApp extends javax.swing.JFrame
       loadWorkspace(file);
     }
   }
-  
+
   private static void initLookAndFeel()
   {
     try
-    {      
+    {
       for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels())
       {
         if ("Nimbus".equals(info.getName()))
@@ -1064,13 +1069,13 @@ public class ManagerApp extends javax.swing.JFrame
           uiDefaults.put("ToolBar:Button[Disabled].textForeground", new Color(150, 150, 150));
           if (System.getProperty("os.name").toLowerCase().contains("windows"))
           {
-            uiDefaults.put("defaultFont", 
+            uiDefaults.put("defaultFont",
              new Font("Segoe UI", 0, 12 * scalingFactor));
           }
           else
           {
             Font font = (Font)uiDefaults.get("defaultFont");
-            uiDefaults.put("defaultFont", font.deriveFont(12.0f * scalingFactor));            
+            uiDefaults.put("defaultFont", font.deriveFont(12.0f * scalingFactor));
           }
           break;
         }
@@ -1079,7 +1084,7 @@ public class ManagerApp extends javax.swing.JFrame
     catch (Exception ex)
     {
       Logger.getLogger(ManagerApp.class.getName()).log(Level.SEVERE, null, ex);
-    }    
+    }
   }
 
   private void executeDefaultAction(DefaultMutableTreeNode node)
@@ -1155,7 +1160,7 @@ public class ManagerApp extends javax.swing.JFrame
       Logger.getLogger(ManagerApp.class.getName()).log(Level.SEVERE, null, ex);
     }
   }
-  
+
   private void setScreenMenuBarOnMacOs()
   {
     if (System.getProperty("os.name").toLowerCase().contains("mac os"))
@@ -1164,7 +1169,7 @@ public class ManagerApp extends javax.swing.JFrame
       {
         Class cls = Class.forName("com.apple.laf.AquaMenuBarUI");
         System.setProperty("apple.laf.useScreenMenuBar", "true");
-        System.setProperty("com.apple.mrj.application.apple.menu.about.name", 
+        System.setProperty("com.apple.mrj.application.apple.menu.about.name",
           "Brain4it");
         MenuBarUI ui = (MenuBarUI)cls.newInstance();
         menuBar.setUI(ui);

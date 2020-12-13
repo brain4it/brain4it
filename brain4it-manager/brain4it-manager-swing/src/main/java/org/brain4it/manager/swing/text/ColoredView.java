@@ -34,6 +34,7 @@ package org.brain4it.manager.swing.text;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.util.ArrayList;
@@ -60,7 +61,7 @@ public class ColoredView extends PlainView
   }
 
   @Override
-  protected float drawUnselectedText(Graphics2D g, float x, float y,
+  protected int drawUnselectedText(Graphics g, int x, int y,
     int p0, int p1) throws BadLocationException
   {
     Component component = getContainer();
@@ -106,9 +107,10 @@ public class ColoredView extends PlainView
       }
       g.setFont(kit.getFontOf(type, component));
       g.setColor(kit.getColorOf(type, component));
-      g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+      Graphics2D g2 = (Graphics2D)g;
+      g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
         RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB);
-      g.setRenderingHint(RenderingHints.KEY_TEXT_LCD_CONTRAST,
+      g2.setRenderingHint(RenderingHints.KEY_TEXT_LCD_CONTRAST,
         100);
       if (kit.getIndentSize() > 0)
       {
@@ -123,13 +125,13 @@ public class ColoredView extends PlainView
   }
 
   @Override
-  protected float drawSelectedText(Graphics2D g, float x, float y,
+  protected int drawSelectedText(Graphics g, int x, int y,
     int p0, int p1) throws BadLocationException
   {
     return drawUnselectedText(g, x, y, p0, p1);
   }
 
-  protected void drawIndentLines(Segment text, float x, float y, Graphics2D g)
+  protected void drawIndentLines(Segment text, int x, int y, Graphics g)
   {
     if (text.count == 0 || text.charAt(0) != ' ') return;
 
@@ -149,8 +151,8 @@ public class ColoredView extends PlainView
     for (int i = 0; i < length; i += indentSize)
     {
       int column = Math.round(x + i * charWidth);
-      int y1 = Math.round(top + y - charHeight);
-      int y2 = Math.round(top + y - 1);
+      int y1 = top + y - charHeight;
+      int y2 = top + y - 1;
       g.setColor(indentLineColor);
       g.drawLine(column, y1, column, y2);
     }

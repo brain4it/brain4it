@@ -462,6 +462,14 @@ public class EditorPanel extends ModulePanel
     inputTextPane.repaint();
   }
 
+  @Override
+  public void globalsUpdated(ModuleEvent event)
+  {
+    Set<String> globalNames = module.getGlobalNames();
+    editorKit.setGlobalNames(globalNames);
+    inputTextPane.repaint();
+  }
+
   protected void addPathToComboBox(String path)
   {
     DefaultComboBoxModel<String> model =

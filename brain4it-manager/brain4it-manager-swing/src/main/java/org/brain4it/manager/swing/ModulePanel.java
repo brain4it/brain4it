@@ -34,6 +34,7 @@ package org.brain4it.manager.swing;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import org.brain4it.client.RestClient;
+import org.brain4it.io.IOConstants;
 import org.brain4it.manager.Module;
 import org.brain4it.manager.ModuleEvent;
 import org.brain4it.manager.ModuleListener;
@@ -61,7 +62,8 @@ public abstract class ModulePanel extends JPanel implements ModuleListener
   public String getPanelName()
   {
     Server server = module.getServer();
-    return server.getName() + "/" + module.getName();
+    return server.getName() + IOConstants.PATH_REFERENCE_SEPARATOR +
+      module.getName();
   }
 
   public ManagerApp getManagerApp()
@@ -102,7 +104,7 @@ public abstract class ModulePanel extends JPanel implements ModuleListener
   {
     return modified;
   }
-  
+
   public void setModified(boolean modified)
   {
     this.modified = modified;
@@ -121,6 +123,11 @@ public abstract class ModulePanel extends JPanel implements ModuleListener
 
   @Override
   public void functionsUpdated(ModuleEvent event)
+  {
+  }
+
+  @Override
+  public void globalsUpdated(ModuleEvent event)
   {
   }
 }

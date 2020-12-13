@@ -50,6 +50,8 @@ import org.brain4it.server.ServerConstants;
 public class Module
 {
   private static final String LIST_FUNCTIONS = "(functions)";
+  private static final String LIST_GLOBALS = "(names (global-scope))";
+
   private final ArrayList<ModuleListener> listeners =
     new ArrayList<ModuleListener>();
 
@@ -57,9 +59,12 @@ public class Module
   private String name;
   private String accessKey;
   private BList functions;
+  private BList metadata;
+
   private final Set<String> functionNames =
     Collections.synchronizedSet(new HashSet<String>());
-  private BList metadata;
+  private final Set<String> globalNames =
+    Collections.synchronizedSet(new HashSet<String>());
 
   public Module(Server server)
   {
@@ -130,6 +135,21 @@ public class Module
   public void setMetadata(BList metadata)
   {
     this.metadata = metadata;
+  }
+
+  public BList getFunctions()
+  {
+    return functions;
+  }
+
+  public Set<String> getFunctionNames()
+  {
+    return functionNames;
+  }
+
+  public Set<String> getGlobalNames()
+  {
+    return globalNames;
   }
 
   public RestClient getRestClient()
@@ -349,14 +369,48 @@ public class Module
     });
   }
 
-  public BList getFunctions()
+  public void findGlobals(final Callback callback)
   {
-    return functions;
-  }
+    RestClient restClient = getRestClient();
+    restClient.execute(getName(), LIST_GLOBALS, new RestClient.Callback()
+    {
+      @Override
+      public void onSuccess(RestClient client, String resultString)
+      {
+        try
+        {
+          BList globals = (BList)Parser.fromString(resultString);
+          globalNames.clear();
+          for (int i = 0; i < globals.size(); i++)
+          {
+            globalNames.add((String)globals.get(i));
+          }
+          ModuleEvent event = new ModuleEvent(Module.this,
+            ModuleEvent.GLOBALS_UPDATED);
+          notifyGlobalsUpdated(event);
+          if (callback != null)
+          {
+            callback.actionCompleted(Module.this, "findGlobals");
+          }
+        }
+        catch (Exception ex)
+        {
+          if (callback != null)
+          {
+            callback.actionFailed(Module.this, "findGlobals", ex);
+          }
+        }
+      }
 
-  public Set<String> getFunctionNames()
-  {
-    return functionNames;
+      @Override
+      public void onError(RestClient client, Exception ex)
+      {
+        if (callback != null)
+        {
+          callback.actionFailed(Module.this, "findGlobals", ex);
+        }
+      }
+    });
   }
 
   public void addModuleListener(ModuleListener listener)
@@ -386,6 +440,16 @@ public class Module
     for (ModuleListener listener : array)
     {
       listener.functionsUpdated(event);
+    }
+  }
+
+  private void notifyGlobalsUpdated(ModuleEvent event)
+  {
+    ModuleListener[] array = new ModuleListener[listeners.size()];
+    listeners.toArray(array);
+    for (ModuleListener listener : array)
+    {
+      listener.globalsUpdated(event);
     }
   }
 

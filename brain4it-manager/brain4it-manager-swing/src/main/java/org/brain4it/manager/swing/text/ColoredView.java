@@ -34,7 +34,6 @@ package org.brain4it.manager.swing.text;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.util.ArrayList;
@@ -45,6 +44,7 @@ import javax.swing.text.Element;
 import javax.swing.text.PlainView;
 import javax.swing.text.Segment;
 import javax.swing.text.Utilities;
+import org.brain4it.io.IOConstants;
 import org.brain4it.io.Token;
 import static org.brain4it.io.TokenizerComments.COMMENT_FLAG;
 
@@ -60,8 +60,8 @@ public class ColoredView extends PlainView
   }
 
   @Override
-  protected int drawUnselectedText(Graphics g, int x, int y, int p0, int p1)
-    throws BadLocationException
+  protected float drawUnselectedText(Graphics2D g, float x, float y,
+    int p0, int p1) throws BadLocationException
   {
     Component component = getContainer();
     ColoredDocument document = (ColoredDocument)getDocument();
@@ -85,23 +85,34 @@ public class ColoredView extends PlainView
       }
       else if (type.equals(Token.REFERENCE))
       {
-        Set<String> functionNames = kit.getFunctionNames();
         String name = token.getText();
+
+        Set<String> functionNames = kit.getFunctionNames();
         if (functionNames != null && functionNames.contains(name))
         {
           type = TextAppearance.FUNCTION_TYPE;
         }
+        else
+        {
+          int index = name.indexOf(IOConstants.PATH_REFERENCE_SEPARATOR);
+          if (index != -1) name = name.substring(0, index);
+
+          Set<String> globalNames = kit.getGlobalNames();
+          if (globalNames != null && globalNames.contains(name))
+          {
+            type = TextAppearance.GLOBAL_TYPE;
+          }
+        }
       }
       g.setFont(kit.getFontOf(type, component));
       g.setColor(kit.getColorOf(type, component));
-      Graphics2D g2 = (Graphics2D)g;
-      g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+      g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
         RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB);
-      g2.setRenderingHint(RenderingHints.KEY_TEXT_LCD_CONTRAST,
+      g.setRenderingHint(RenderingHints.KEY_TEXT_LCD_CONTRAST,
         100);
       if (kit.getIndentSize() > 0)
       {
-        drawIndentLines(text, x, y, g2);
+        drawIndentLines(text, x, y, g);
       }
       x = Utilities.drawTabbedText(text, x, y, g, this, p0);
       p0 = p2;
@@ -112,16 +123,16 @@ public class ColoredView extends PlainView
   }
 
   @Override
-  protected int drawSelectedText(Graphics g, int x, int y, int p0, int p1)
-          throws BadLocationException
+  protected float drawSelectedText(Graphics2D g, float x, float y,
+    int p0, int p1) throws BadLocationException
   {
     return drawUnselectedText(g, x, y, p0, p1);
   }
 
-  protected void drawIndentLines(Segment text, int x, int y, Graphics2D g)
+  protected void drawIndentLines(Segment text, float x, float y, Graphics2D g)
   {
     if (text.count == 0 || text.charAt(0) != ' ') return;
-    
+
     Container container = (Container)getContainer();
     if (!(container instanceof JComponent)) return;
 
@@ -137,9 +148,11 @@ public class ColoredView extends PlainView
     int length = (text.length() / indentSize) * indentSize;
     for (int i = 0; i < length; i += indentSize)
     {
-      int column = x + i * charWidth;
+      int column = Math.round(x + i * charWidth);
+      int y1 = Math.round(top + y - charHeight);
+      int y2 = Math.round(top + y - 1);
       g.setColor(indentLineColor);
-      g.drawLine(column, top + y - charHeight, column, top + y - 1);
+      g.drawLine(column, y1, column, y2);
     }
     g.setColor(color);
   }

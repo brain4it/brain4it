@@ -322,6 +322,7 @@ public class ManagerApp extends javax.swing.JFrame
     ImageIcon icon = IconCache.getIcon("console");
     splitter.addComponent(console, console.getPanelName(), icon);
     module.findFunctions(null);
+    module.findGlobals(null);
   }
 
   public void openDashboard(Module module)
@@ -334,30 +335,29 @@ public class ManagerApp extends javax.swing.JFrame
   public void openEditor(Module module, String path)
   {
     EditorPanel editorPanel = null;
-    if (path != null && path.length() > 0)
+    if (path == null || path.trim().length() == 0) return;
+
+    List<Component> components = splitter.getComponentList();
+    int tabCount = components.size();
+    int i = 0;
+    while (i < tabCount && editorPanel == null)
     {
-      List<Component> components = splitter.getComponentList();
-      int tabCount = components.size();
-      int i = 0;
-      while (i < tabCount && editorPanel == null)
+      Component component = components.get(i);
+      if (component instanceof ModulePanel)
       {
-        Component component = components.get(i);
-        if (component instanceof ModulePanel)
+        ModulePanel modulePanel = (ModulePanel)component;
+        if (modulePanel.getModule() == module)
         {
-          ModulePanel modulePanel = (ModulePanel)component;
-          if (modulePanel.getModule() == module)
+          if (modulePanel instanceof EditorPanel)
           {
-            if (modulePanel instanceof EditorPanel)
+            if (path.equals(((EditorPanel)modulePanel).getCurrentPath()))
             {
-              if (path.equals(((EditorPanel)modulePanel).getCurrentPath()))
-              {
-                editorPanel = (EditorPanel)modulePanel;
-              }
+              editorPanel = (EditorPanel)modulePanel;
             }
           }
         }
-        i++;
       }
+      i++;
     }
     if (editorPanel == null)
     {
@@ -367,11 +367,9 @@ public class ManagerApp extends javax.swing.JFrame
       splitter.addComponent(editorPanel, editorPanel.getPanelName(), icon);
 
       module.findFunctions(null);
+      module.findGlobals(null);
 
-      if (path.length() > 0)
-      {
-        editorPanel.loadPath(path);
-      }
+      editorPanel.loadPath(path);
     }
     else
     {

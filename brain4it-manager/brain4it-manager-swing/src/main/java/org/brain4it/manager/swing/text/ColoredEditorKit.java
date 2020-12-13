@@ -46,6 +46,7 @@ public class ColoredEditorKit extends StyledEditorKit
 {
   private TextAppearance textAppearance;
   private Set<String> functionNames;
+  private Set<String> globalNames;
   private int indentSize;
 
   public ColoredEditorKit()
@@ -79,18 +80,6 @@ public class ColoredEditorKit extends StyledEditorKit
     this.indentSize = indentSize;
   }
 
-  @Override
-  public Document createDefaultDocument()
-  {
-    return new ColoredDocument();
-  }
-
-  @Override
-  public ViewFactory getViewFactory()
-  {
-    return this;
-  }
-
   public TextAppearance getTextAppearance()
   {
     return textAppearance;
@@ -109,6 +98,28 @@ public class ColoredEditorKit extends StyledEditorKit
   public void setFunctionNames(Set<String> functionNames)
   {
     this.functionNames = functionNames;
+  }
+
+  public Set<String> getGlobalNames()
+  {
+    return globalNames;
+  }
+
+  public void setGlobalNames(Set<String> globalNames)
+  {
+    this.globalNames = globalNames;
+  }
+
+  @Override
+  public Document createDefaultDocument()
+  {
+    return new ColoredDocument();
+  }
+
+  @Override
+  public ViewFactory getViewFactory()
+  {
+    return this;
   }
 
   @Override

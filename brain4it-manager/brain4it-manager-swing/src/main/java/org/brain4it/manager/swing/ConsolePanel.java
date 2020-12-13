@@ -473,6 +473,15 @@ public class ConsolePanel extends ModulePanel
     inputTextPane.repaint();
   }
 
+  @Override
+  public void globalsUpdated(ModuleEvent event)
+  {
+    Set<String> globalNames = module.getGlobalNames();
+    editorKit.setGlobalNames(globalNames);
+    ((ColoredTextPane)outputTextPane).setGlobalNames(globalNames);
+    inputTextPane.repaint();
+  }
+
   protected void showResult(final String resultString)
   {
     showResult(resultString, false);

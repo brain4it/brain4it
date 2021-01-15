@@ -45,6 +45,8 @@ import org.brain4it.lang.Function;
 import org.brain4it.lang.Utils;
 import org.brain4it.net.SSLUtils;
 import org.brain4it.server.ServerConstants;
+import static org.brain4it.server.ServerConstants.BPL_CHARSET;
+import static org.brain4it.server.ServerConstants.BPL_MIMETYPE;
 import static org.brain4it.server.ServerConstants.MODULE_SETUP_VAR;
 
 /**
@@ -84,7 +86,8 @@ public class RemoteCallFunction implements Function
     conn.setDoInput(true);
     conn.setConnectTimeout(10000);
     conn.setReadTimeout(30000);
-    conn.setRequestProperty("Content-Type", ServerConstants.BPL_MIMETYPE);
+    conn.setRequestProperty("Content-Type", BPL_MIMETYPE + 
+      "; charset=" + BPL_CHARSET);
     try
     {
       if (args.size() >= 3)

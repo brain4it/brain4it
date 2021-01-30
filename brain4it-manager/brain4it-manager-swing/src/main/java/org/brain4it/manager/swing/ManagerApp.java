@@ -73,6 +73,7 @@ import org.brain4it.manager.Server;
 import org.brain4it.manager.Workspace;
 import org.brain4it.manager.swing.actions.AddModuleAction;
 import org.brain4it.manager.swing.actions.AddServerAction;
+import org.brain4it.manager.swing.actions.DuplicateServerAction;
 import org.brain4it.manager.swing.actions.CloseTabsAction;
 import org.brain4it.manager.swing.actions.CreateModuleAction;
 import org.brain4it.manager.swing.actions.DestroyModuleAction;
@@ -136,6 +137,7 @@ public class ManagerApp extends javax.swing.JFrame
   private AboutAction aboutAction;
   private ExitAction exitAction;
   private AddServerAction addServerAction;
+  private DuplicateServerAction duplicateServerAction;
   private RenameWorkspaceAction renameWorkspaceAction;
   private EditServerAction editServerAction;
   private AddModuleAction addModuleAction;
@@ -777,6 +779,7 @@ public class ManagerApp extends javax.swing.JFrame
     exitAction = new ExitAction(this);
 
     addServerAction = new AddServerAction(this);
+    duplicateServerAction = new DuplicateServerAction(this);
     renameWorkspaceAction = new RenameWorkspaceAction(this);
     editServerAction = new EditServerAction(this);
     addModuleAction = new AddModuleAction(this);
@@ -802,6 +805,7 @@ public class ManagerApp extends javax.swing.JFrame
 
     contextActions = new ManagerAction[]{
       addServerAction,
+      duplicateServerAction,
       renameWorkspaceAction,
       editServerAction,
       createModuleAction,
@@ -849,6 +853,7 @@ public class ManagerApp extends javax.swing.JFrame
 
     JMenu editMenu = new JMenu(getLocalizedMessage("Edit"));
     editMenu.add(addServerAction);
+    editMenu.add(duplicateServerAction);
     editMenu.add(editServerAction);
     editMenu.add(listModulesAction);
     editMenu.add(createModuleAction);
@@ -881,6 +886,7 @@ public class ManagerApp extends javax.swing.JFrame
     menuBar.add(helpMenu);
 
     toolBar.add(new ToolBarAction(addServerAction));
+    toolBar.add(new ToolBarAction(duplicateServerAction));
     toolBar.add(new ToolBarAction(createModuleAction));
     toolBar.add(new ToolBarAction(addModuleAction));
     toolBar.add(new ToolBarAction(listModulesAction));

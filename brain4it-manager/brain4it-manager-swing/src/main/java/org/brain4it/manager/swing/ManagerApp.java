@@ -714,7 +714,7 @@ public class ManagerApp extends javax.swing.JFrame
         String text = message;
         if (text.length() > 100)
         {
-          text = text.substring(0, 100) + "...";
+          text = text.substring(0, 100) + "…";
         }
         JOptionPane.showMessageDialog(ManagerApp.this, text,
           getLocalizedMessage(title), JOptionPane.ERROR_MESSAGE);

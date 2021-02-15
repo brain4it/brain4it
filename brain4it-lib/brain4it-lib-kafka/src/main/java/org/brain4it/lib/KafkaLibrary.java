@@ -28,72 +28,87 @@
  *   and 
  *   https://www.gnu.org/licenses/lgpl.txt
  */
-
 package org.brain4it.lib;
 
-import org.brain4it.lib.kafka.KafkaNewFunction;
+import org.brain4it.lib.kafka.KafkaConsumerFunction;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import org.brain4it.lib.kafka.*;
-import java.lang.AutoCloseable;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.brain4it.lang.BList;
 
 /**
  *
  * @author quergf
  */
-public class KafkaLibrary extends Library{
+public class KafkaLibrary extends Library {
+
     //private final Map<String, AutoCloseable> apps = 
     //Collections.synchronizedMap(new HashMap<String, AutoCloseable>());
-    protected final Map<String, AutoCloseable> apps =
-            Collections.synchronizedMap(new HashMap<String, AutoCloseable>());
-  
-  @Override
-  public String getName()
-  {
-    return "Kafka";
-  }
+    protected final Map<String, AutoCloseable> apps
+            = Collections.synchronizedMap(new HashMap<String, AutoCloseable>());
 
-  @Override
-  public void load()
-  {
-    functions.put("kafka-new",  new KafkaNewFunction(this));
-    functions.put("kafka-send", new KafkaSendFunction(this));
-    functions.put("kafka-poll", new KafkaPollFunction(this));
-  }
-  
-  @Override
-  public void unload()
-  {
-    for (AutoCloseable app : apps.values())
-    {
-        try {
-            app.close();
-        } catch (Exception ex) {
-            Logger.getLogger(KafkaLibrary.class.getName()).log(Level.SEVERE, null, ex);
+    @Override
+    public String getName() {
+        return "Kafka";
+    }
+
+    @Override
+    public void load() {
+        functions.put("kafka-consumer", new KafkaConsumerFunction(this));
+        functions.put("kafka-producer", new KafkaProducerFunction(this));
+        functions.put("kafka-send", new KafkaSendFunction(this));
+        functions.put("kafka-poll", new KafkaPollFunction(this));
+    }
+
+    @Override
+    public void unload() {
+        for (AutoCloseable app : apps.values()) {
+            try {
+                app.close();
+            } catch (Exception ex) {
+                Logger.getLogger(KafkaLibrary.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
-  }
-  
-  public AutoCloseable getApp(String appId)
-  {
-    return apps.get(appId);
-  }
 
-  public String putApp(AutoCloseable kafkaApp)
-  {
-    UUID uuid = UUID.randomUUID();
-    String appId = Long.toHexString(uuid.getMostSignificantBits()) + 
-      Long.toHexString(uuid.getLeastSignificantBits());
-    apps.put(appId, kafkaApp);
-    return appId;
-  }
-  
-  public AutoCloseable removeApp(String appId)
-  {
-    return apps.remove(appId);
-  }
+    public AutoCloseable getApp(String appId) {
+        return apps.get(appId);
+    }
+
+    public String putApp(AutoCloseable kafkaApp, String prefix) {
+        UUID uuid = UUID.randomUUID();
+        String appId = prefix + Long.toHexString(uuid.getMostSignificantBits())
+                + Long.toHexString(uuid.getLeastSignificantBits());
+        apps.put(appId, kafkaApp);
+        return appId;
+    }
+
+    public AutoCloseable removeApp(String appId) {
+        return apps.remove(appId);
+    }
+    
+    /**
+     * Converts an unknown input to a string representations, usable as a
+     * "property's" value.
+     * 
+     * @param input. Expects either BList with strings or String
+     * @return String representation of `input`, separating fields by ','
+     * @throws ClassCastException 
+     */
+    public static String flattenInput(Object input) throws ClassCastException {
+        String str;
+        if (input instanceof BList) {
+            String arr[] = (String[]) ((BList) input).toArray();
+            str = String.join(",", arr);
+        } else if (input instanceof String) {
+            str = (String) input;
+        } else {
+            throw new java.lang.ClassCastException("`servers` is not a list of strings nor a string");
+        }
+        return str;
+    }
 }

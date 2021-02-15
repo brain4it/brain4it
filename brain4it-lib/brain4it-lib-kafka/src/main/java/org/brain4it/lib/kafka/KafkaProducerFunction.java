@@ -52,21 +52,28 @@ public class KafkaProducerFunction implements Function {
     /**
      * Generic call from Brain4IT:
      * <code>(kafka-producer servers key-serializer value-serializer)</code>
-     * 
+     *
      * @param context Brain4IT context
-     * @param args Positional arguments:
-     *  bootstrap server url list,
-     *  key-serializer classname,
-     *  value-serializer classname,
+     * @param args Positional arguments: bootstrap server url list,
+     * key-serializer classname, value-serializer classname,
      * @return
-     * @throws Exception 
+     * @throws Exception
      */
     @Override
     public Object invoke(Context context, BList args) throws Exception {
-        Utils.checkArguments(args, 3);
+        // positional arguments
+        Utils.checkArguments(args, 1);
         Object serversRaw = context.evaluate(args.get(1));
-        String keySerializer = (String) context.evaluate(args.get(2));
-        String valueSerializer = (String) context.evaluate(args.get(3));
+        // named and optional arguments
+        String keySerializer = (String) context.evaluate(args.get("key-serializer"));
+        String valueSerializer = (String) context.evaluate(args.get("value-serializer"));
+        // fill optional arguments with default values if not provided
+        if (keySerializer == null) {
+            keySerializer = "org.apache.kafka.common.serialization.StringSerializer";
+        }
+        if (valueSerializer == null) {
+            valueSerializer = "org.apache.kafka.common.serialization.StringSerializer";
+        }
 
         // servers.
         // Throws an exception if conditions are nor met or casting fails

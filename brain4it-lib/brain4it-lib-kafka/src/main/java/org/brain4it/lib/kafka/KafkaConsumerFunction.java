@@ -50,25 +50,32 @@ public class KafkaConsumerFunction implements Function {
     public KafkaConsumerFunction(KafkaLibrary library) {
         this.library = library;
     }
-    
+
     /**
      * Generic call from Brain4IT:
      * <code>(kafka-consumer servers key-serializer value-serializer)</code>
-     * 
+     *
      * @param context Brain4IT context
-     * @param args Positional arguments:
-     *  bootstrap server url list,
-     *  key-serializer classname,
-     *  value-serializer classname,
+     * @param args Positional arguments: bootstrap server url list,
+     * key-serializer classname, value-serializer classname,
      * @return
-     * @throws Exception 
+     * @throws Exception
      */
     @Override
     public Object invoke(Context context, BList args) throws Exception {
-        Utils.checkArguments(args, 3);
+        // positional arguments
+        Utils.checkArguments(args, 1);
         Object serversRaw = context.evaluate(args.get(1));
-        String keyDeserializer = (String) context.evaluate(args.get(2));
-        String valueDeserializer = (String) context.evaluate(args.get(3));
+        // named and optional arguments
+        Object keyDeserializer = context.evaluate(args.get("key-deserializer"));
+        Object valueDeserializer = context.evaluate(args.get("value-deserializer"));
+        // fill optional arguments with default values if not provided
+        if (keyDeserializer == null) {
+            keyDeserializer = "org.apache.kafka.common.serialization.StringDeserializer";
+        }
+        if (valueDeserializer == null) {
+            valueDeserializer = "org.apache.kafka.common.serialization.StringDeserializer";
+        }
 
         // servers.
         // Throws an exception if conditions are nor met or casting fails
@@ -76,12 +83,12 @@ public class KafkaConsumerFunction implements Function {
 
         // serializers
         // Expect either:
-        // - complete classnames like "org.apache.kafka.common.serialization.StringSerializer"
-        // - classname base like "StringSerializer", that we complete assuming its package
-        if (!keyDeserializer.contains(".")) {
+        // - complete classnames like "org.apache.kafka.common.serialization.StringDeserializer"
+        // - classname base like "StringDeserializer", that we complete assuming its package
+        if (!((String) keyDeserializer).contains(".")) {
             keyDeserializer = "org.apache.kafka.common.serialization." + keyDeserializer;
         }
-        if (!valueDeserializer.contains(".")) {
+        if (!((String) valueDeserializer).contains(".")) {
             valueDeserializer = "org.apache.kafka.common.serialization." + valueDeserializer;
         }
 

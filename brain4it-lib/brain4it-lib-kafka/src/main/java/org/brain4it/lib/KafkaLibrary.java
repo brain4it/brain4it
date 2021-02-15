@@ -90,14 +90,14 @@ public class KafkaLibrary extends Library {
     public AutoCloseable removeApp(String appId) {
         return apps.remove(appId);
     }
-    
+
     /**
      * Converts an unknown input to a string representations, usable as a
      * "property's" value.
-     * 
+     *
      * @param input. Expects either BList with strings or String
      * @return String representation of `input`, separating fields by ','
-     * @throws ClassCastException 
+     * @throws ClassCastException
      */
     public static String flattenInput(Object input) throws ClassCastException {
         String str;
@@ -110,5 +110,12 @@ public class KafkaLibrary extends Library {
             throw new java.lang.ClassCastException("`servers` is not a list of strings nor a string");
         }
         return str;
+    }
+
+    public static Object notNullOrDefault(Object input, Object defaultValue) {
+        if (input == null) {
+            return defaultValue;
+        }
+        return input;
     }
 }

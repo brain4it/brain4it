@@ -60,7 +60,7 @@ public class KafkaProducerFunction implements Function {
      * @throws Exception
      */
     @Override
-    public Object invoke(Context context, BList args) throws Exception {
+    public String invoke(Context context, BList args) throws Exception {
         // positional arguments
         Utils.checkArguments(args, 1);
         Object serversRaw = context.evaluate(args.get(1));

@@ -111,11 +111,4 @@ public class KafkaLibrary extends Library {
         }
         return str;
     }
-
-    public static Object notNullOrDefault(Object input, Object defaultValue) {
-        if (input == null) {
-            return defaultValue;
-        }
-        return input;
-    }
 }

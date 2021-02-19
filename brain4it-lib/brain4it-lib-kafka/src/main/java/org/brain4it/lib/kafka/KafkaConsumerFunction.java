@@ -95,6 +95,7 @@ public class KafkaConsumerFunction implements Function {
         // fill in properties
         Properties properties = new Properties();
         properties.put("bootstrap.servers", serversStr);
+        properties.put("group.id", "brain4it-group"); // TODO: understand implications of this setting
 
         properties.put("key.deserializer", keyDeserializer);
         properties.put("value.deserializer", valueDeserializer);

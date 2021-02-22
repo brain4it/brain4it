@@ -17,9 +17,9 @@ import org.junit.Test;
  *
  * @author quergf
  */
-public class KafkaProducerFunctionTest {
+public class KafkaConsumerFunctionTest {
     
-    public KafkaProducerFunctionTest() {
+    public KafkaConsumerFunctionTest() {
     }
     
     @BeforeClass
@@ -49,10 +49,10 @@ public class KafkaProducerFunctionTest {
         KafkaLibrary klib = new KafkaLibrary();
         Context context = new Context(new BList(), null);
         BList args = new BList(2);
-        args.add("kafka-producer");
+        args.add("kafka-consumer");
         args.add("localhost:9092");
-        KafkaProducerFunction instance = new KafkaProducerFunction(klib);
+        KafkaConsumerFunction instance = new KafkaConsumerFunction(klib);
         String result = instance.invoke(context, args);
-        assert(result.startsWith("p"));
+        assert(result.startsWith("c"));
     }
 }

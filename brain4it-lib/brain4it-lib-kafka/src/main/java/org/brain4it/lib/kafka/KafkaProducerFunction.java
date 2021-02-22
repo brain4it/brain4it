@@ -99,7 +99,7 @@ public class KafkaProducerFunction implements Function {
         KafkaProducer app = new KafkaProducer<>(properties);
 
         // save the app in the shared map
-        return library.putApp(app, "p");
+        return library.putApp(app, "p" + KafkaLibrary.randomId());
     }
 
 }

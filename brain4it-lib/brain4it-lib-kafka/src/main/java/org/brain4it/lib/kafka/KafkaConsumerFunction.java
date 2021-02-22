@@ -62,7 +62,7 @@ public class KafkaConsumerFunction implements Function {
      * @throws Exception
      */
     @Override
-    public Object invoke(Context context, BList args) throws Exception {
+    public String invoke(Context context, BList args) throws Exception {
         // positional arguments
         Utils.checkArguments(args, 1);
         Object serversRaw = context.evaluate(args.get(1));
@@ -95,14 +95,18 @@ public class KafkaConsumerFunction implements Function {
         // fill in properties
         Properties properties = new Properties();
         properties.put("bootstrap.servers", serversStr);
-        properties.put("group.id", "brain4it-group"); // TODO: understand implications of this setting
+        
+        // Consumer groups are used to distribute the messages of a given topic
+        // To receive all messages from a topic, a consumer must use a unique group
+        String appId = "c" + KafkaLibrary.randomId();
+        properties.put("group.id", appId);
 
         properties.put("key.deserializer", keyDeserializer);
         properties.put("value.deserializer", valueDeserializer);
         KafkaConsumer app = new KafkaConsumer<>(properties);
 
         // save the app in the shared map
-        return library.putApp(app, "c");
+        return library.putApp(app, appId);
     }
 
 }

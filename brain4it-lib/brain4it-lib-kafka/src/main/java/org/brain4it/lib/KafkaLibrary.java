@@ -30,6 +30,7 @@
  */
 package org.brain4it.lib;
 
+import java.util.ArrayList;
 import org.brain4it.lib.kafka.KafkaConsumerFunction;
 import java.util.Collections;
 import java.util.HashMap;
@@ -62,6 +63,9 @@ public class KafkaLibrary extends Library {
         functions.put("kafka-producer", new KafkaProducerFunction(this));
         functions.put("kafka-send", new KafkaSendFunction(this));
         functions.put("kafka-poll", new KafkaPollFunction(this));
+        functions.put("kafka-delete-app", new KafkaDeleteAppFunction(this));
+        functions.put("kafka-create-topics", new KafkaCreateTopicsFunction(this));
+        functions.put("kafka-delete-topics", new KafkaDeleteTopicsFunction(this));
     }
 
     @Override
@@ -79,10 +83,13 @@ public class KafkaLibrary extends Library {
         return apps.get(appId);
     }
 
-    public String putApp(AutoCloseable kafkaApp, String prefix) {
+    public static String randomId() {
         UUID uuid = UUID.randomUUID();
-        String appId = prefix + Long.toHexString(uuid.getMostSignificantBits())
+        return Long.toHexString(uuid.getMostSignificantBits())
                 + Long.toHexString(uuid.getLeastSignificantBits());
+    }
+    
+    public String putApp(AutoCloseable kafkaApp, String appId) {
         apps.put(appId, kafkaApp);
         return appId;
     }
@@ -102,7 +109,9 @@ public class KafkaLibrary extends Library {
     public static String flattenInput(Object input) throws ClassCastException {
         String str;
         if (input instanceof BList) {
-            String arr[] = (String[]) ((BList) input).toArray();
+            ArrayList arr = new ArrayList<String>();
+            for (Object element: ((BList) input).toArray())
+                arr.add((String) element);
             str = String.join(",", arr);
         } else if (input instanceof String) {
             str = (String) input;

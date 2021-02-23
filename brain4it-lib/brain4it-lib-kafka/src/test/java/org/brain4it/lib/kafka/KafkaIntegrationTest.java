@@ -60,7 +60,6 @@ public class KafkaIntegrationTest {
         deleteTopic(topic3);
         deleteTopic(topic4);
     }
-
     
     // Apps functions
     

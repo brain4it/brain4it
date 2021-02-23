@@ -33,10 +33,15 @@ package org.brain4it.lib.kafka;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.kafka.clients.admin.AdminClient;
 import org.apache.kafka.clients.admin.CreateTopicsResult;
 import org.apache.kafka.clients.admin.KafkaAdminClient;
 import org.apache.kafka.clients.admin.NewTopic;
+import org.apache.kafka.common.errors.TopicExistsException;
+import org.brain4it.lang.BException;
 import org.brain4it.lang.BList;
 import org.brain4it.lang.Context;
 import org.brain4it.lang.Function;
@@ -62,7 +67,7 @@ public class KafkaCreateTopicsFunction implements Function {
      * @throws Exception
      */
     @Override
-    public BList invoke(Context context, BList args) throws Exception {
+    public BList invoke(Context context, BList args) throws BException, InterruptedException {
         // positional arguments
         Utils.checkArguments(args, 2);
 
@@ -85,11 +90,24 @@ public class KafkaCreateTopicsFunction implements Function {
         properties.put("bootstrap.servers", serversStr);
 
         AdminClient admin = KafkaAdminClient.create(properties);
-        CreateTopicsResult kresult = admin.createTopics(topicsList);
+        CreateTopicsResult kresult = null;
+        kresult = admin.createTopics(topicsList);
+
+        if (kresult == null) {
+            return null;
+        }
+
         BList result = new BList();
-        for (String key: kresult.values().keySet())
-            result.put(key, kresult.values().get(key).isDone());
-        
+        for (String key : kresult.values().keySet()) {
+            // wait for each topic to complete
+            boolean created = false;
+            try {
+                kresult.values().get(key).get();
+                created = true;
+            } catch (ExecutionException ex) { }
+            result.put(key, created);
+        }
+
         return result;
     }
 

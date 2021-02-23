@@ -20,9 +20,9 @@ import static org.junit.Assert.*;
  *
  * @author quergf
  */
-public class KafkaDeleteFunctionTest {
+public class KafkaDeleteAppFunctionTest {
     
-    public KafkaDeleteFunctionTest() {
+    public KafkaDeleteAppFunctionTest() {
     }
     
     @BeforeClass

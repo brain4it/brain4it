@@ -54,9 +54,16 @@ public class KafkaIntegrationTest {
     }
 
     @After
-    public void tearDown() {
+    public void tearDown() throws Exception {
+        deleteTopic(topic1);
+        deleteTopic(topic2);
+        deleteTopic(topic3);
+        deleteTopic(topic4);
     }
 
+    
+    // Apps functions
+    
     protected String newProducer(boolean numeric) throws Exception {
         BList prodArgs = new BList(2);
         prodArgs.add("kafka-producer");
@@ -81,6 +88,17 @@ public class KafkaIntegrationTest {
         return consId;
     }
     
+    protected void deleteApp(String appId) throws Exception {
+        KafkaDeleteAppFunction deleteFn = new KafkaDeleteAppFunction(klib);
+        BList deleteArgs = new BList(2);
+
+        deleteArgs.add("kafka-delete");
+        deleteArgs.add(appId);
+        deleteFn.invoke(context, deleteArgs);
+    }
+    
+    // Topics functions
+    
     protected void newTopic(String topic) throws Exception {
         BList adminArgs = new BList(2);
         adminArgs.add("kafka-create-topics");
@@ -89,16 +107,18 @@ public class KafkaIntegrationTest {
 
         KafkaCreateTopicsFunction createFn = new KafkaCreateTopicsFunction(klib);
         createFn.invoke(context, adminArgs);
-        //assert something on invoke result
+
     }
     
-    protected void deleteApp(String appId) throws Exception {
-        KafkaDeleteAppFunction deleteFn = new KafkaDeleteAppFunction(klib);
-        BList deleteArgs = new BList(2);
+    
+    protected void deleteTopic(String topic) throws Exception {
+        BList adminArgs = new BList(2);
+        adminArgs.add("kafka-delete-topics");
+        adminArgs.add("localhost:9092");
+        adminArgs.add(topic);
 
-        deleteArgs.add("kafka-delete");
-        deleteArgs.add(appId);
-        deleteFn.invoke(context, deleteArgs);
+        KafkaDeleteTopicsFunction deleteFn = new KafkaDeleteTopicsFunction(klib);
+        deleteFn.invoke(context, adminArgs);
     }
 
     // Tests //

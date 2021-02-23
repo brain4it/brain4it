@@ -30,13 +30,16 @@ public class KafkaIntegrationTest {
     // test 1
     protected final String topic1 = "greetings";
     protected final String messageStr = "Brain4IT <3 Kafka";
-    ;
+    protected volatile BList pollResult;
     // test 2
     protected final String[] messageArr = {"Brain4IT", "<3", "Kafka"};
     protected final String topic2 = "array-of-greetings";
-    volatile ArrayList receivedMessages;
+    protected volatile ArrayList receivedMessages;
     // test 3
-    protected final String topic3 = "sensors";
+    protected final String topic3 = "meaning-of-life";
+    protected final double messageNum = 42.0;
+    // test 4
+    protected final String topic4 = "sensors";
     protected final String messageKey = "thermometer-diff";
     protected final double messageValue = 1.5;
 
@@ -77,77 +80,109 @@ public class KafkaIntegrationTest {
         consId = consFn.invoke(context, prodArgs);
         return consId;
     }
-
-    // Tests
     
-    // FIXME: not working for timing issues
-    // @Test
-    public void simpleMessageTest() throws Exception {
+    protected void newTopic(String topic) throws Exception {
+        BList adminArgs = new BList(2);
+        adminArgs.add("kafka-create-topics");
+        adminArgs.add("localhost:9092");
+        adminArgs.add(topic);
 
-        // Common
-        System.out.println("invoke");
-
-        prodId = newProducer(false);
-        consId = newConsumer(false);
-
-        // Send
-        BList sendArgs = new BList(4);
-        sendArgs.add("kafka-send");
-        sendArgs.add(prodId);
-        sendArgs.add(topic1);
-        sendArgs.add(messageStr);
-
-        KafkaSendFunction sendFn = new KafkaSendFunction(klib);
-        Object sendResult = sendFn.invoke(context, sendArgs);
-        assertEquals(sendResult, null);
-
-        // Receive
-        BList pollArgs = new BList(4);
-        pollArgs.add("kafka-poll");
-        pollArgs.add(consId);
-        pollArgs.add(topic1);
-        pollArgs.add(3000);
-
-        KafkaPollFunction pollFn = new KafkaPollFunction(klib);
-        BList pollResult = new BList();
-        while (pollResult.size() == 0) {
-            pollResult = pollFn.invoke(context, pollArgs);
-        }
-
-        // Compare input and output
-        assertEquals(pollResult.get(0), messageStr);
-
-        // Clean
+        KafkaCreateTopicsFunction createFn = new KafkaCreateTopicsFunction(klib);
+        createFn.invoke(context, adminArgs);
+        //assert something on invoke result
+    }
+    
+    protected void deleteApp(String appId) throws Exception {
         KafkaDeleteAppFunction deleteFn = new KafkaDeleteAppFunction(klib);
         BList deleteArgs = new BList(2);
 
         deleteArgs.add("kafka-delete");
-        deleteArgs.add(consId);
-        deleteFn.invoke(context, deleteArgs);
-
-        deleteArgs.removeAll();
-        deleteArgs.add("kafka-delete");
-        deleteArgs.add(prodId);
+        deleteArgs.add(appId);
         deleteFn.invoke(context, deleteArgs);
     }
 
-    //@Test
-    public void multipleMessagesTest() throws Exception {
+    // Tests //
+    
+    @Test
+    public void simpleMessageTest() throws Exception {
+
         // Common
-        System.out.println("invoke");
+        System.out.println("simpleMessageTest");
 
         prodId = newProducer(false);
         consId = newConsumer(false);
 
         // Create topic
-        BList adminArgs = new BList(2);
-        adminArgs.add("kafka-create-topics");
-        adminArgs.add("localhost:9092");
-        adminArgs.add(topic2);
+        newTopic(topic1);
 
-        KafkaCreateTopicsFunction createFn = new KafkaCreateTopicsFunction(klib);
-        createFn.invoke(context, adminArgs);
-        //assert something on invoke result
+        // Receive
+        Thread receiveT = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    BList pollArgs = new BList(4);
+                    pollArgs.add("kafka-poll");
+                    pollArgs.add(consId);
+                    pollArgs.add(topic1);
+                    pollArgs.add(3000);
+
+                    KafkaPollFunction pollFn = new KafkaPollFunction(klib);
+                    pollResult = new BList();
+
+                    while (pollResult.size() == 0) {
+                        pollResult = pollFn.invoke(context, pollArgs);
+                    }
+                } catch (Exception ex) {
+                    Logger.getLogger(KafkaIntegrationTest.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        };
+        receiveT.start();
+        Thread.sleep(2000);
+
+        // Send
+        Thread sendT = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    BList sendArgs = new BList(4);
+                    sendArgs.add("kafka-send");
+                    sendArgs.add(prodId);
+                    sendArgs.add(topic1);
+                    sendArgs.add(messageStr);
+
+                    KafkaSendFunction sendFn = new KafkaSendFunction(klib);
+                    Object sendResult = sendFn.invoke(context, sendArgs);
+                    assertEquals(sendResult, null);
+                } catch (Exception ex) {
+                    Logger.getLogger(KafkaIntegrationTest.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        };
+        sendT.start();
+
+        // synchronize
+        sendT.join();
+        receiveT.join();
+
+        // Compare input and output
+        assertEquals(messageStr, pollResult.get(0));
+
+        // Clean
+        deleteApp(consId);
+        deleteApp(prodId);
+    }
+    
+    @Test
+    public void multipleMessagesTest() throws Exception {
+        // Common
+        System.out.println("multipleMessageTest");
+
+        prodId = newProducer(false);
+        consId = newConsumer(false);
+
+        // Create topic
+        newTopic(topic2);
 
         // Receive
         Thread receiveT = new Thread() {
@@ -178,13 +213,13 @@ public class KafkaIntegrationTest {
             }
         };
         receiveT.start();
+        Thread.sleep(2000);
 
         // Send
         Thread sendT = new Thread() {
             @Override
             public void run() {
                 try {
-                    Thread.sleep(2000);
                     BList sendArgs = new BList(4);
                     sendArgs.add("kafka-send");
                     sendArgs.add(prodId);
@@ -216,26 +251,151 @@ public class KafkaIntegrationTest {
         }
 
         // Clean
-        KafkaDeleteAppFunction deleteFn = new KafkaDeleteAppFunction(klib);
-        BList deleteArgs = new BList(2);
-
-        deleteArgs.add("kafka-delete");
-        deleteArgs.add(consId);
-        deleteFn.invoke(context, deleteArgs);
-
-        deleteArgs.removeAll();
-        deleteArgs.add("kafka-delete");
-        deleteArgs.add(prodId);
-        deleteFn.invoke(context, deleteArgs);
+        deleteApp(consId);
+        deleteApp(prodId);
     }
 
     @Test
-    public void numericMessageTest() {
+    public void numericMessageTest() throws Exception {
+        
+        // Common
+        System.out.println("numericMessageTest");
+
+        prodId = newProducer(true);
+        consId = newConsumer(true);
+
+        // Create topic
+        newTopic(topic3);
+
+        // Receive
+        Thread receiveT = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    BList pollArgs = new BList(4);
+                    pollArgs.add("kafka-poll");
+                    pollArgs.add(consId);
+                    pollArgs.add(topic3);
+                    pollArgs.add(3000);
+
+                    KafkaPollFunction pollFn = new KafkaPollFunction(klib);
+                    pollResult = new BList();
+
+                    while (pollResult.size() == 0) {
+                        pollResult = pollFn.invoke(context, pollArgs);
+                    }
+                } catch (Exception ex) {
+                    Logger.getLogger(KafkaIntegrationTest.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        };
+        receiveT.start();
+        Thread.sleep(2000);
+
+        // Send
+        Thread sendT = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    BList sendArgs = new BList(4);
+                    sendArgs.add("kafka-send");
+                    sendArgs.add(prodId);
+                    sendArgs.add(topic3);
+                    sendArgs.add(messageNum);
+
+                    KafkaSendFunction sendFn = new KafkaSendFunction(klib);
+                    Object sendResult = sendFn.invoke(context, sendArgs);
+                    assertEquals(sendResult, null);
+                } catch (Exception ex) {
+                    Logger.getLogger(KafkaIntegrationTest.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        };
+        sendT.start();
+
+        // synchronize
+        sendT.join();
+        receiveT.join();
+
+        // Compare input and output
+        assertEquals(messageNum, pollResult.get(0));
+
+        // Clean
+        deleteApp(consId);
+        deleteApp(prodId);
 
     }
 
     @Test
-    public void MessageWithKeyTest() {
+    public void messageWithKeyTest() throws Exception {
+        
+        // Common
+        System.out.println("messageWithKeyTest");
 
+        prodId = newProducer(true);
+        consId = newConsumer(true);
+
+        // Create topic
+        newTopic(topic4);
+
+        // Receive
+        Thread receiveT = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    BList pollArgs = new BList(4);
+                    pollArgs.add("kafka-poll");
+                    pollArgs.add(consId);
+                    pollArgs.add(topic4);
+                    pollArgs.add(3000);
+
+                    KafkaPollFunction pollFn = new KafkaPollFunction(klib);
+                    pollResult = new BList();
+
+                    while (pollResult.size() == 0) {
+                        pollResult = pollFn.invoke(context, pollArgs);
+                    }
+                } catch (Exception ex) {
+                    Logger.getLogger(KafkaIntegrationTest.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        };
+        receiveT.start();
+        Thread.sleep(2000);
+
+        // Send
+        Thread sendT = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    BList sendArgs = new BList(4);
+                    sendArgs.add("kafka-send");
+                    sendArgs.add(prodId);
+                    sendArgs.add(topic4);
+                    
+                    BList messageList = new BList();
+                    messageList.put(messageKey, messageValue);
+                    sendArgs.add(messageList);
+
+                    KafkaSendFunction sendFn = new KafkaSendFunction(klib);
+                    Object sendResult = sendFn.invoke(context, sendArgs);
+                    assertEquals(sendResult, null);
+                } catch (Exception ex) {
+                    Logger.getLogger(KafkaIntegrationTest.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        };
+        sendT.start();
+
+        // synchronize
+        sendT.join();
+        receiveT.join();
+
+        // Compare input and output
+        assertEquals(messageValue, pollResult.get(messageKey));
+
+        // Clean
+        deleteApp(consId);
+        deleteApp(prodId);
     }
 }

@@ -1,0 +1,13 @@
+(KafkaProducer (kafka-producer app_id) deleted
+  where =>
+  (
+    app_id => ("string" 1 1)
+    deleted => ("boolean" 1 1)
+  )
+  examples =>
+  (
+    ((kafka-delete-app "pbf8114e907f045a093f53abce9564553") true)
+  )
+  bundle => "org.brain4it.lib.KafkaLibrary"
+)
+

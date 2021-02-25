@@ -1,0 +1,14 @@
+(KafkaPoll (kafka-poll consumer_id topics timeout_ms) 
+  where =>
+  (
+    consumer_id => ("string" 1 1)
+    topics => ("list" 1 1)
+    timeout_ms => ("int" 1 1)
+  )
+  examples =>
+  (
+    ((kafka-poll "c1a3de99eb26446d0965a044ac89632f8" "sensors" 2000) "town_square_temp=16")
+    ((kafka-poll cons-id ("sensors" "temperature") 2000) "town_square_temp=16")
+  )
+  bundle => "org.brain4it.lib.KafkaLibrary"
+)

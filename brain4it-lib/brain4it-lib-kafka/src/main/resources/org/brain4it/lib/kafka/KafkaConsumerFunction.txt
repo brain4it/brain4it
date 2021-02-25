@@ -1,0 +1,21 @@
+(KafkaConsumer (kafka-consumer servers
+  "key-deserializer" => "key_deserializer"
+  "value-deserializer" => "value_deserializer")
+  consumer_id
+  where =>
+  (
+    servers => ("list" 1 1)
+    key_deserializer => ("string" 0 1)
+    value_deserializer => ("string" 0 1)
+    producer_id => ("string" 1 1)
+  )
+  examples =>
+  (
+    ((kafka-consumer "localhost:9092") "c1a3de99eb26446d0965a044ac89632f8")
+    ((kafka-consumer ("10.0.0.1.90:9092" "10.0.0.2.90:9092")) "c1a3de99eb26446d0965a044ac89632f8")
+    ((kafka-consumer "localhost:9092" "value-deserializer" => "DoubleDeserializer") "c1a3de99eb26446d0965a044ac89632f8")
+    ((kafka-consumer "localhost:9092") "c1a3de99eb26446d0965a044ac89632f8")
+  )
+  bundle => "org.brain4it.lib.KafkaLibrary"
+)
+

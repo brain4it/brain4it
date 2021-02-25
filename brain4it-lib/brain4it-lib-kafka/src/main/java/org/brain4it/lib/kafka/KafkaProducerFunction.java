@@ -30,9 +30,6 @@
  */
 package org.brain4it.lib.kafka;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Properties;
 import org.brain4it.lang.BList;
 import org.brain4it.lang.Context;

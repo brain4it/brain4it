@@ -1,0 +1,17 @@
+(KafkaCreateTopics (kafka-create-topics servers topics) result
+  where =>
+  (
+    servers => ("list" 1 1)
+    topics => ("list" 1 1)
+    result => ("list" 1 1)
+  )
+  examples =>
+  (
+    ((### kafka-producer "localhost:9092") "pbf8114e907f045a093f53abce9564553")
+    ((### kafka-producer ("10.0.0.1.90:9092" "10.0.0.2.90:9092")) "pbf8114e907f045a093f53abce9564553")
+    ((### kafka-producer "localhost:9092" "value-serializer" => "DoubleSerializer") "pbf8114e907f045a093f53abce9564553")
+    ((### kafka-producer "localhost:9092") "pbf8114e907f045a093f53abce9564553")
+  )
+  bundle => "org.brain4it.lib.KafkaLibrary"
+)
+

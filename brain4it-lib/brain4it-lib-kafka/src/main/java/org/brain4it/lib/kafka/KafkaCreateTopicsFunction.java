@@ -31,16 +31,12 @@
 package org.brain4it.lib.kafka;
 
 import java.util.ArrayList;
-import java.util.Optional;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.apache.kafka.clients.admin.AdminClient;
 import org.apache.kafka.clients.admin.CreateTopicsResult;
 import org.apache.kafka.clients.admin.KafkaAdminClient;
 import org.apache.kafka.clients.admin.NewTopic;
-import org.apache.kafka.common.errors.TopicExistsException;
 import org.brain4it.lang.BException;
 import org.brain4it.lang.BList;
 import org.brain4it.lang.Context;
@@ -63,11 +59,12 @@ public class KafkaCreateTopicsFunction implements Function {
      * @param context Brain4IT context
      * @param args Positional arguments: bootstrap server url list or string,
      * topics list or string
-     * @return BList of isDone status for each new topic
-     * @throws Exception
+     * @return named BList showing wether a topic was created (true) or was \
+     *   already present, or otherwise (false)
+     * @throws java.lang.InterruptedException
      */
     @Override
-    public BList invoke(Context context, BList args) throws BException, InterruptedException {
+    public BList invoke(Context context, BList args) throws BException, InterruptedException{
         // positional arguments
         Utils.checkArguments(args, 2);
 
@@ -90,7 +87,7 @@ public class KafkaCreateTopicsFunction implements Function {
         properties.put("bootstrap.servers", serversStr);
 
         AdminClient admin = KafkaAdminClient.create(properties);
-        CreateTopicsResult kresult = null;
+        CreateTopicsResult kresult;
         kresult = admin.createTopics(topicsList);
 
         if (kresult == null) {

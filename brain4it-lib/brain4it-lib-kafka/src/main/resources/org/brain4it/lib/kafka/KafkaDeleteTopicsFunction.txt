@@ -1,0 +1,14 @@
+(KafkaDeleteTopics (kafka-delete-topics servers topics) result
+  where =>
+  (
+    servers => ("list" 1 1)
+    topics => ("list" 1 1)
+    result => ("list" 1 1)
+  )
+  examples =>
+  (
+    ((kafka-delete-topics "localhost:9092" ("traffic" "pollution")) ("pollution" => true "traffic" => true))
+    ((kafka-delete-topics ("10.0.0.1.90:9092" "10.0.0.2.90:9092") "pollution") ("pollution" => false))
+  )
+  bundle => "org.brain4it.lib.KafkaLibrary"
+)

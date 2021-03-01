@@ -1,0 +1,13 @@
+(KafkaListTopics (kafka-list-topics servers) topics
+  where =>
+  (
+    servers => ("list" 1 1)
+    topics => ("list" 1 1)
+  )
+  examples =>
+  (
+    ((kafka-list-topics "localhost:9092") ("pollution" "traffic"))
+    ((kafka-list-topics ("10.0.0.1.90:9092" "10.0.0.2.90:9092")) ("pollution"))
+  )
+  bundle => "org.brain4it.lib.KafkaLibrary"
+)

@@ -39,6 +39,7 @@ import org.brain4it.lib.kafka.*;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.brain4it.lang.BList;
 
 /**
@@ -73,6 +74,9 @@ public class KafkaLibrary extends Library {
     public void unload() {
         for (AutoCloseable app : apps.values()) {
             try {
+                if (app instanceof KafkaConsumer) {
+                    ((KafkaConsumer) app).unsubscribe();
+                }
                 app.close();
             } catch (Exception ex) {
                 Logger.getLogger(KafkaLibrary.class.getName()).log(Level.SEVERE, null, ex);
@@ -89,7 +93,7 @@ public class KafkaLibrary extends Library {
         return Long.toHexString(uuid.getMostSignificantBits())
                 + Long.toHexString(uuid.getLeastSignificantBits());
     }
-    
+
     public String putApp(AutoCloseable kafkaApp, String appId) {
         apps.put(appId, kafkaApp);
         return appId;

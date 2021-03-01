@@ -56,9 +56,10 @@ public class KafkaConsumerFunction implements Function {
      * <code>(kafka-consumer servers key-serializer value-serializer)</code>
      *
      * @param context Brain4IT context
-     * @param args Positional arguments: bootstrap server url list,
-     * key-serializer classname, value-serializer classname,
-     * @return
+     * @param args Positional arguments: bootstrap server url list.
+     * Named, optional arguments: key-serializer classname, value-serializer
+     * classname, consumer group-id 
+     * @return String consumer id
      * @throws Exception
      */
     @Override
@@ -69,12 +70,19 @@ public class KafkaConsumerFunction implements Function {
         // named and optional arguments
         Object keyDeserializer = context.evaluate(args.get("key-deserializer"));
         Object valueDeserializer = context.evaluate(args.get("value-deserializer"));
+        Object consumerGroupId = context.evaluate(args.get("group-id"));
         // fill optional arguments with default values if not provided
         if (keyDeserializer == null) {
             keyDeserializer = "org.apache.kafka.common.serialization.StringDeserializer";
         }
         if (valueDeserializer == null) {
             valueDeserializer = "org.apache.kafka.common.serialization.StringDeserializer";
+        }
+        // Consumer groups are used to distribute the messages of a given topic
+        // To receive all messages from a topic, a consumer must use a unique group
+        String appId = "c" + KafkaLibrary.randomId();
+        if (consumerGroupId == null) {
+            consumerGroupId = appId;
         }
 
         // servers.
@@ -94,13 +102,8 @@ public class KafkaConsumerFunction implements Function {
 
         // fill in properties
         Properties properties = new Properties();
-        properties.put("bootstrap.servers", serversStr);
-        
-        // Consumer groups are used to distribute the messages of a given topic
-        // To receive all messages from a topic, a consumer must use a unique group
-        String appId = "c" + KafkaLibrary.randomId();
-        properties.put("group.id", appId);
-
+        properties.put("bootstrap.servers", serversStr);               
+        properties.put("group.id", consumerGroupId);
         properties.put("key.deserializer", keyDeserializer);
         properties.put("value.deserializer", valueDeserializer);
         KafkaConsumer app = new KafkaConsumer<>(properties);

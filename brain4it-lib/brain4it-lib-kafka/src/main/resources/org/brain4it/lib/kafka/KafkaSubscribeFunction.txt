@@ -1,0 +1,16 @@
+(KafkaSubscribe (kafka-subscribe servers desired-topics) subscribed-topics
+  where =>
+  (
+    servers => ("list" 1 1)
+    desired-topics => ("list" 1 1)
+    subscribed-topics => ("list" 1 1)
+  )
+  examples =>
+  (
+    ((kafka-subscribe "c1a3de99eb26446d0965a044ac89632f8" "pollution" ) ("pollution"))
+    ((kafka-subscribe "c1a3de99eb26446d0965a044ac89632f8" ("pollution" "traffic")) ("pollution" "traffic"))
+    ((kafka-subscribe "c1a3de99eb26446d0965a044ac89632f8" () ) ())
+  )
+  bundle => "org.brain4it.lib.KafkaLibrary"
+)
+

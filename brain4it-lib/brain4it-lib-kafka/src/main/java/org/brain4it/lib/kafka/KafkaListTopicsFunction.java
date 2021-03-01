@@ -30,11 +30,9 @@
  */
 package org.brain4it.lib.kafka;
 
-import java.util.ArrayList;
 import java.util.Properties;
 import java.util.Set;
 import org.apache.kafka.clients.admin.AdminClient;
-import org.apache.kafka.clients.admin.DeleteTopicsResult;
 import org.apache.kafka.clients.admin.KafkaAdminClient;
 import org.apache.kafka.clients.admin.ListTopicsResult;
 import org.brain4it.lang.BList;
@@ -62,7 +60,7 @@ public class KafkaListTopicsFunction implements Function {
      *
      * @param context Brain4IT context
      * @param args Positional arguments: bootstrap server url list or string
-     * @return BList of isDone status for each new topic
+     * @return BList of names of current topics
      * @throws Exception
      */
     @Override

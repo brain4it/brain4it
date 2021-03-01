@@ -116,8 +116,9 @@ public class KafkaLibrary extends Library {
         String str;
         if (input instanceof BList) {
             ArrayList arr = new ArrayList<String>();
-            for (Object element: ((BList) input).toArray())
+            for (Object element : ((BList) input).toArray()) {
                 arr.add((String) element);
+            }
             str = String.join(",", arr);
         } else if (input instanceof String) {
             str = (String) input;

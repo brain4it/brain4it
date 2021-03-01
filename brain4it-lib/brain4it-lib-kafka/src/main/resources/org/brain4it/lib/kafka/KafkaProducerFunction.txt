@@ -1,6 +1,6 @@
 (KafkaProducer (kafka-producer servers
-  "key-serializer" => "key_serializer"
-  "value-serializer" => "value_serializer")
+  "key-serializer" => key_serializer
+  "value-serializer" => value_serializer)
   producer_id
   where =>
   (

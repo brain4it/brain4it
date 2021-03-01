@@ -68,6 +68,7 @@ public class KafkaLibrary extends Library {
         functions.put("kafka-create-topics", new KafkaCreateTopicsFunction(this));
         functions.put("kafka-delete-topics", new KafkaDeleteTopicsFunction(this));
         functions.put("kafka-list-topics", new KafkaListTopicsFunction(this));
+        functions.put("kafka-subscribe", new KafkaSubscribeFunction(this));
     }
 
     @Override

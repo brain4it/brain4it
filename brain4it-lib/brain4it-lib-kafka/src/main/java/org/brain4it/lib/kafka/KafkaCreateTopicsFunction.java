@@ -60,11 +60,11 @@ public class KafkaCreateTopicsFunction implements Function {
      * @param args Positional arguments: bootstrap server url list or string,
      * topics list or string
      * @return named BList showing wether a topic was created (true) or was \
-     *   already present, or otherwise (false)
+     * already present, or otherwise (false)
      * @throws java.lang.InterruptedException
      */
     @Override
-    public BList invoke(Context context, BList args) throws BException, InterruptedException{
+    public BList invoke(Context context, BList args) throws BException, InterruptedException {
         // positional arguments
         Utils.checkArguments(args, 2);
 
@@ -97,11 +97,18 @@ public class KafkaCreateTopicsFunction implements Function {
         BList result = new BList();
         for (String key : kresult.values().keySet()) {
             // wait for each topic to complete
-            boolean created = false;
+            boolean created;
             try {
                 kresult.values().get(key).get();
                 created = true;
-            } catch (ExecutionException ex) { }
+            } catch (ExecutionException ex) {
+                created = false;
+            } catch (Exception ex) {
+                // ExecutionException if topic exists
+                // Other exceptions
+                created = false;
+            }
+            
             result.put(key, created);
         }
 

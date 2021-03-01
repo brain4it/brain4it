@@ -7,11 +7,8 @@
   )
   examples =>
   (
-    ((### kafka-producer "localhost:9092") "pbf8114e907f045a093f53abce9564553")
-    ((### kafka-producer ("10.0.0.1.90:9092" "10.0.0.2.90:9092")) "pbf8114e907f045a093f53abce9564553")
-    ((### kafka-producer "localhost:9092" "value-serializer" => "DoubleSerializer") "pbf8114e907f045a093f53abce9564553")
-    ((### kafka-producer "localhost:9092") "pbf8114e907f045a093f53abce9564553")
+    ((kafka-create-topics "localhost:9092" ("traffic" "pollution")) ("pollution" => true "traffic" => true))
+    ((kafka-create-topics ("10.0.0.1.90:9092" "10.0.0.2.90:9092") "pollution") ("pollution" => false))
   )
   bundle => "org.brain4it.lib.KafkaLibrary"
 )
-

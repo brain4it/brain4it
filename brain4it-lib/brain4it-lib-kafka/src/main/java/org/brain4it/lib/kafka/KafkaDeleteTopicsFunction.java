@@ -33,6 +33,7 @@ package org.brain4it.lib.kafka;
 import java.util.ArrayList;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 import org.apache.kafka.clients.admin.AdminClient;
 import org.apache.kafka.clients.admin.DeleteTopicsResult;
 import org.apache.kafka.clients.admin.KafkaAdminClient;
@@ -84,17 +85,25 @@ public class KafkaDeleteTopicsFunction implements Function {
 
         AdminClient admin = KafkaAdminClient.create(properties);
         DeleteTopicsResult kresult = admin.deleteTopics(topicsList);
+        if (kresult == null) {
+            return null;
+        }
+
         BList result = new BList();
-        for (String key: kresult.values().keySet()) {
+        for (String key : kresult.values().keySet()) {
             // wait for each topic to complete
-            boolean deleted = false;
+            boolean deleted;
             try {
                 kresult.values().get(key).get();
                 deleted = true;
-            } catch (ExecutionException ex) { }
+            } catch (Exception ex) {
+                // ExecutionException if topic doesn't exist
+                // Other exceptions
+                deleted = false;
+            }
             result.put(key, deleted);
         }
-        
+
         return result;
     }
 

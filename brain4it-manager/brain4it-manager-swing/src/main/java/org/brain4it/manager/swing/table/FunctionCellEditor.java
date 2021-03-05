@@ -79,7 +79,7 @@ public class FunctionCellEditor extends AbstractCellEditor
     button.setBorder(new LineBorder(Color.GRAY, 1));
     button.setMargin(new Insets(0, 0, 0, 0));
     button.setUI(new BasicButtonUI());
-    button.setText("...");
+    button.setText("…");
     panel.add(textField, BorderLayout.CENTER);
     panel.add(button, BorderLayout.EAST);
     button.addActionListener(new ActionListener()

@@ -136,7 +136,7 @@ public class TabComponent extends javax.swing.JPanel
     int length = title.length();
     if (length > MAX_TAB_NAME_LENGTH)
     {
-      title = "..." + title.substring(length - MAX_TAB_NAME_LENGTH);
+      title = "…" + title.substring(length - MAX_TAB_NAME_LENGTH);
     }
     return title;
   }

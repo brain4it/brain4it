@@ -46,43 +46,46 @@ import org.brain4it.lib.KafkaLibrary;
  *
  * @author quergf
  */
-public class KafkaListTopicsFunction implements Function {
+public class KafkaListTopicsFunction implements Function
+{
 
-    protected KafkaLibrary library;
+  protected KafkaLibrary library;
 
-    public KafkaListTopicsFunction(KafkaLibrary library) {
-        this.library = library;
+  public KafkaListTopicsFunction(KafkaLibrary library)
+  {
+    this.library = library;
+  }
+
+  /**
+   * Generic call from Brain4IT: <code>(kafka-list-topics servers)</code>
+   *
+   * @param context Brain4IT context
+   * @param args Positional arguments: bootstrap server url list or string
+   * @return BList of names of current topics
+   * @throws Exception
+   */
+  @Override
+  public BList invoke(Context context, BList args) throws Exception
+  {
+    // positional arguments
+    Utils.checkArguments(args, 1);
+
+    Object serversRaw = context.evaluate(args.get(1));
+    String serversStr = KafkaLibrary.flattenInput(serversRaw);
+
+    // fill in properties
+    Properties properties = new Properties();
+    properties.put("bootstrap.servers", serversStr);
+
+    AdminClient admin = KafkaAdminClient.create(properties);
+    ListTopicsResult kresult = admin.listTopics();
+    Set topicSet = kresult.names().get();
+    BList result = new BList();
+    for (String topic : (Set<String>) topicSet)
+    {
+      result.add(topic);
     }
 
-    /**
-     * Generic call from Brain4IT:
-     * <code>(kafka-list-topics servers)</code>
-     *
-     * @param context Brain4IT context
-     * @param args Positional arguments: bootstrap server url list or string
-     * @return BList of names of current topics
-     * @throws Exception
-     */
-    @Override
-    public BList invoke(Context context, BList args) throws Exception {
-        // positional arguments
-        Utils.checkArguments(args, 1);
-
-        Object serversRaw = context.evaluate(args.get(1));
-        String serversStr = KafkaLibrary.flattenInput(serversRaw);
-
-        // fill in properties
-        Properties properties = new Properties();
-        properties.put("bootstrap.servers", serversStr);
-
-        AdminClient admin = KafkaAdminClient.create(properties);
-        ListTopicsResult kresult = admin.listTopics();
-        Set topicSet = kresult.names().get();
-        BList result = new BList();
-        for (String topic: (Set<String>) topicSet) {
-            result.add(topic);
-        }
-        
-        return result;
-    }
+    return result;
+  }
 }

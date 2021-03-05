@@ -43,37 +43,45 @@ import org.brain4it.lib.KafkaLibrary;
  *
  * @author quergf
  */
-public class KafkaDeleteAppFunction implements Function {
+public class KafkaDeleteAppFunction implements Function
+{
 
-    protected KafkaLibrary library;
+  protected KafkaLibrary library;
 
-    public KafkaDeleteAppFunction(KafkaLibrary library) {
-        this.library = library;
+  public KafkaDeleteAppFunction(KafkaLibrary library)
+  {
+    this.library = library;
+  }
+
+  /**
+   * Generic call from Brain4IT: <code>(kafka-delete app-id)</code>
+   *
+   * @param context Brain4IT context
+   * @param args Positional argument: id of application to delete
+   * @return true if success
+   * @throws java.lang.InterruptedException
+   * @throws org.brain4it.lang.BException
+   */
+  @Override
+  public Boolean invoke(Context context, BList args) throws BException, InterruptedException
+  {
+    Utils.checkArguments(args, 1);
+    String applicationId = (String) context.evaluate(args.get(1));
+
+    try
+    {
+      AutoCloseable application = library.removeApp(applicationId);
+      if (application instanceof KafkaConsumer)
+      {
+        ((KafkaConsumer) application).unsubscribe();
+      }
+      application.close();
+    }
+    catch (Exception ex)
+    {
+      return false;
     }
 
-    /**
-     * Generic call from Brain4IT: <code>(kafka-delete app-id)</code>
-     *
-     * @param context Brain4IT context
-     * @param args Positional argument: id of application to delete
-     * @return true if success
-     * @throws java.lang.InterruptedException
-     * @throws org.brain4it.lang.BException
-     */
-    @Override
-    public Boolean invoke(Context context, BList args) throws BException, InterruptedException {
-        Utils.checkArguments(args, 1);
-        String applicationId = (String) context.evaluate(args.get(1));
-
-        try {
-            AutoCloseable application = library.removeApp(applicationId);
-            if (application instanceof KafkaConsumer)
-                ((KafkaConsumer) application).unsubscribe();
-            application.close();
-        } catch (Exception ex) {
-            return false;
-        }
-
-        return true;
-    }
+    return true;
+  }
 }

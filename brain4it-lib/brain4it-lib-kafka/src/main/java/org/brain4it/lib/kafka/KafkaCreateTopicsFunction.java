@@ -44,75 +44,89 @@ import org.brain4it.lang.Function;
 import org.brain4it.lang.Utils;
 import org.brain4it.lib.KafkaLibrary;
 
-public class KafkaCreateTopicsFunction implements Function {
+public class KafkaCreateTopicsFunction implements Function
+{
 
-    protected KafkaLibrary library;
+  protected KafkaLibrary library;
 
-    public KafkaCreateTopicsFunction(KafkaLibrary library) {
-        this.library = library;
+  public KafkaCreateTopicsFunction(KafkaLibrary library)
+  {
+    this.library = library;
+  }
+
+  /**
+   * Generic call from Brain4IT:
+   * <code>(kafka-create-topics servers topics)</code>
+   *
+   * @param context Brain4IT context
+   * @param args Positional arguments: bootstrap server url list or string,
+   * topics list or string
+   * @return named BList showing wether a topic was created (true) or was \
+   * already present, or otherwise (false)
+   * @throws java.lang.InterruptedException
+   */
+  @Override
+  public BList invoke(Context context, BList args) throws BException, InterruptedException
+  {
+    // positional arguments
+    Utils.checkArguments(args, 2);
+
+    Object serversRaw = context.evaluate(args.get(1));
+    String serversStr = KafkaLibrary.flattenInput(serversRaw);
+
+    Object topicsRaw = context.evaluate(args.get(2));
+    ArrayList topicsList = new ArrayList<String>();
+    if (topicsRaw instanceof String)
+    {
+      topicsList.add(new NewTopic((String) topicsRaw, 1, (short) 1));
+    }
+    else if (topicsRaw instanceof BList)
+    {
+      for (Object topic : ((BList) topicsRaw).toArray())
+      {
+        //topicsList.add(new NewTopic((String) topic, Optional.<Integer>empty(), Optional.<Short>empty()));
+        topicsList.add(new NewTopic((String) topic, 1, (short) 1));
+      }
     }
 
-    /**
-     * Generic call from Brain4IT:
-     * <code>(kafka-create-topics servers topics)</code>
-     *
-     * @param context Brain4IT context
-     * @param args Positional arguments: bootstrap server url list or string,
-     * topics list or string
-     * @return named BList showing wether a topic was created (true) or was \
-     * already present, or otherwise (false)
-     * @throws java.lang.InterruptedException
-     */
-    @Override
-    public BList invoke(Context context, BList args) throws BException, InterruptedException {
-        // positional arguments
-        Utils.checkArguments(args, 2);
+    // fill in properties
+    Properties properties = new Properties();
+    properties.put("bootstrap.servers", serversStr);
 
-        Object serversRaw = context.evaluate(args.get(1));
-        String serversStr = KafkaLibrary.flattenInput(serversRaw);
+    AdminClient admin = KafkaAdminClient.create(properties);
+    CreateTopicsResult kresult;
+    kresult = admin.createTopics(topicsList);
 
-        Object topicsRaw = context.evaluate(args.get(2));
-        ArrayList topicsList = new ArrayList<String>();
-        if (topicsRaw instanceof String) {
-            topicsList.add(new NewTopic((String) topicsRaw, 1, (short) 1));
-        } else if (topicsRaw instanceof BList) {
-            for (Object topic : ((BList) topicsRaw).toArray()) {
-                //topicsList.add(new NewTopic((String) topic, Optional.<Integer>empty(), Optional.<Short>empty()));
-                topicsList.add(new NewTopic((String) topic, 1, (short) 1));
-            }
-        }
-
-        // fill in properties
-        Properties properties = new Properties();
-        properties.put("bootstrap.servers", serversStr);
-
-        AdminClient admin = KafkaAdminClient.create(properties);
-        CreateTopicsResult kresult;
-        kresult = admin.createTopics(topicsList);
-
-        if (kresult == null) {
-            return null;
-        }
-
-        BList result = new BList();
-        for (String key : kresult.values().keySet()) {
-            // wait for each topic to complete
-            boolean created;
-            try {
-                kresult.values().get(key).get();
-                created = true;
-            } catch (ExecutionException ex) {
-                created = false;
-            } catch (Exception ex) {
-                // ExecutionException if topic exists
-                // Other exceptions
-                created = false;
-            }
-            
-            result.put(key, created);
-        }
-
-        return result;
+    if (kresult == null)
+    {
+      return null;
     }
+
+    BList result = new BList();
+    for (String key : kresult.values().keySet())
+    {
+      // wait for each topic to complete
+      boolean created;
+      try
+      {
+        kresult.values().get(key).get();
+        created = true;
+      }
+      catch (ExecutionException ex)
+      {
+        created = false;
+      }
+      catch (Exception ex)
+      {
+        // ExecutionException if topic exists
+        // Other exceptions
+        created = false;
+      }
+
+      result.put(key, created);
+    }
+
+    return result;
+  }
 
 }

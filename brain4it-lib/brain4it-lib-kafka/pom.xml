@@ -9,14 +9,14 @@
     <artifactId>brain4it-lib-kafka</artifactId>
     <packaging>jar</packaging>
       
-  <name>brain4it-lib-kafka</name>
-  <description>brain4it kafka library</description>
+    <name>brain4it-lib-kafka</name>
+    <description>brain4it kafka library</description>
     <dependencies>
         <dependency>
-      <groupId>org.brain4it</groupId>
-      <artifactId>brain4it-lib-core</artifactId>
-      <version>${brain4it-version}</version>
-    </dependency>
+            <groupId>org.brain4it</groupId>
+            <artifactId>brain4it-lib-core</artifactId>
+            <version>${brain4it-version}</version>
+        </dependency>
         <dependency>
             <groupId>org.apache.kafka</groupId>
             <artifactId>kafka-clients</artifactId>
@@ -24,19 +24,19 @@
             <type>jar</type>
         </dependency>
     </dependencies>
-      <build>
-    <plugins>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>exec-maven-plugin</artifactId>
-        <version>1.2.1</version>
-        <configuration>
-          <mainClass>org.brain4it.local.Console</mainClass>
-          <arguments>
-            <argument>Xmpp</argument>
-          </arguments>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.2.1</version>
+                <configuration>
+                    <mainClass>org.brain4it.local.Console</mainClass>
+                    <arguments>
+                        <argument>Kafka</argument>
+                    </arguments>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

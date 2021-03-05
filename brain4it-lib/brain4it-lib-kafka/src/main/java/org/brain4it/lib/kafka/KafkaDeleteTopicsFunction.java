@@ -43,68 +43,80 @@ import org.brain4it.lang.Function;
 import org.brain4it.lang.Utils;
 import org.brain4it.lib.KafkaLibrary;
 
-public class KafkaDeleteTopicsFunction implements Function {
+public class KafkaDeleteTopicsFunction implements Function
+{
 
-    protected KafkaLibrary library;
+  protected KafkaLibrary library;
 
-    public KafkaDeleteTopicsFunction(KafkaLibrary library) {
-        this.library = library;
+  public KafkaDeleteTopicsFunction(KafkaLibrary library)
+  {
+    this.library = library;
+  }
+
+  /**
+   * Generic call from Brain4IT:
+   * <code>(kafka-delete-topics servers topics)</code>
+   *
+   * @param context Brain4IT context
+   * @param args Positional arguments: bootstrap server url list or string,
+   * topics list or string
+   * @return BList of isDone status for each new topic
+   * @throws Exception
+   */
+  @Override
+  public BList invoke(Context context, BList args) throws Exception
+  {
+    // positional arguments
+    Utils.checkArguments(args, 2);
+
+    Object serversRaw = context.evaluate(args.get(1));
+    String serversStr = KafkaLibrary.flattenInput(serversRaw);
+
+    Object topicsRaw = context.evaluate(args.get(2));
+    ArrayList topicsList = new ArrayList<String>();
+    if (topicsRaw instanceof String)
+    {
+      topicsList.add((String) topicsRaw);
+    }
+    else if (topicsRaw instanceof BList)
+    {
+      for (Object topic : ((BList) topicsRaw).toArray())
+      {
+        topicsList.add((String) topic);
+      }
     }
 
-    /**
-     * Generic call from Brain4IT:
-     * <code>(kafka-delete-topics servers topics)</code>
-     *
-     * @param context Brain4IT context
-     * @param args Positional arguments: bootstrap server url list or string,
-     * topics list or string
-     * @return BList of isDone status for each new topic
-     * @throws Exception
-     */
-    @Override
-    public BList invoke(Context context, BList args) throws Exception {
-        // positional arguments
-        Utils.checkArguments(args, 2);
+    // fill in properties
+    Properties properties = new Properties();
+    properties.put("bootstrap.servers", serversStr);
 
-        Object serversRaw = context.evaluate(args.get(1));
-        String serversStr = KafkaLibrary.flattenInput(serversRaw);
-
-        Object topicsRaw = context.evaluate(args.get(2));
-        ArrayList topicsList = new ArrayList<String>();
-        if (topicsRaw instanceof String) {
-            topicsList.add((String) topicsRaw);
-        } else if (topicsRaw instanceof BList) {
-            for (Object topic : ((BList) topicsRaw).toArray()) {
-                topicsList.add((String) topic);
-            }
-        }
-
-        // fill in properties
-        Properties properties = new Properties();
-        properties.put("bootstrap.servers", serversStr);
-
-        AdminClient admin = KafkaAdminClient.create(properties);
-        DeleteTopicsResult kresult = admin.deleteTopics(topicsList);
-        if (kresult == null) {
-            return null;
-        }
-
-        BList result = new BList();
-        for (String key : kresult.values().keySet()) {
-            // wait for each topic to complete
-            boolean deleted;
-            try {
-                kresult.values().get(key).get();
-                deleted = true;
-            } catch (Exception ex) {
-                // ExecutionException if topic doesn't exist
-                // Other exceptions
-                deleted = false;
-            }
-            result.put(key, deleted);
-        }
-
-        return result;
+    AdminClient admin = KafkaAdminClient.create(properties);
+    DeleteTopicsResult kresult = admin.deleteTopics(topicsList);
+    if (kresult == null)
+    {
+      return null;
     }
+
+    BList result = new BList();
+    for (String key : kresult.values().keySet())
+    {
+      // wait for each topic to complete
+      boolean deleted;
+      try
+      {
+        kresult.values().get(key).get();
+        deleted = true;
+      }
+      catch (Exception ex)
+      {
+        // ExecutionException if topic doesn't exist
+        // Other exceptions
+        deleted = false;
+      }
+      result.put(key, deleted);
+    }
+
+    return result;
+  }
 
 }

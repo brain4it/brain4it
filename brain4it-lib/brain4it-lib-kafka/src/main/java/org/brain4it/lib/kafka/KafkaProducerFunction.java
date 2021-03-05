@@ -38,65 +38,72 @@ import org.brain4it.lang.Utils;
 import org.brain4it.lib.KafkaLibrary;
 import org.apache.kafka.clients.producer.KafkaProducer;
 
-public class KafkaProducerFunction implements Function {
+public class KafkaProducerFunction implements Function
+{
 
-    protected KafkaLibrary library;
+  protected KafkaLibrary library;
 
-    public KafkaProducerFunction(KafkaLibrary library) {
-        this.library = library;
+  public KafkaProducerFunction(KafkaLibrary library)
+  {
+    this.library = library;
+  }
+
+  /**
+   * Generic call from Brain4IT:
+   * <code>(kafka-producer servers key-serializer value-serializer)</code>
+   *
+   * @param context Brain4IT context
+   * @param args Positional arguments: bootstrap server url list, key-serializer
+   * classname, value-serializer classname,
+   * @return
+   * @throws Exception
+   */
+  @Override
+  public String invoke(Context context, BList args) throws Exception
+  {
+    // positional arguments
+    Utils.checkArguments(args, 1);
+    Object serversRaw = context.evaluate(args.get(1));
+    // named and optional arguments
+    String keySerializer = (String) context.evaluate(args.get("key-serializer"));
+    String valueSerializer = (String) context.evaluate(args.get("value-serializer"));
+    // fill optional arguments with default values if not provided
+    if (keySerializer == null)
+    {
+      keySerializer = "org.apache.kafka.common.serialization.StringSerializer";
+    }
+    if (valueSerializer == null)
+    {
+      valueSerializer = "org.apache.kafka.common.serialization.StringSerializer";
     }
 
-    /**
-     * Generic call from Brain4IT:
-     * <code>(kafka-producer servers key-serializer value-serializer)</code>
-     *
-     * @param context Brain4IT context
-     * @param args Positional arguments: bootstrap server url list,
-     * key-serializer classname, value-serializer classname,
-     * @return
-     * @throws Exception
-     */
-    @Override
-    public String invoke(Context context, BList args) throws Exception {
-        // positional arguments
-        Utils.checkArguments(args, 1);
-        Object serversRaw = context.evaluate(args.get(1));
-        // named and optional arguments
-        String keySerializer = (String) context.evaluate(args.get("key-serializer"));
-        String valueSerializer = (String) context.evaluate(args.get("value-serializer"));
-        // fill optional arguments with default values if not provided
-        if (keySerializer == null) {
-            keySerializer = "org.apache.kafka.common.serialization.StringSerializer";
-        }
-        if (valueSerializer == null) {
-            valueSerializer = "org.apache.kafka.common.serialization.StringSerializer";
-        }
+    // servers.
+    // Throws an exception if conditions are nor met or casting fails
+    String serversStr = KafkaLibrary.flattenInput(serversRaw);
 
-        // servers.
-        // Throws an exception if conditions are nor met or casting fails
-        String serversStr = KafkaLibrary.flattenInput(serversRaw);
-
-        // serializers
-        // Expect either:
-        // - complete classnames like "org.apache.kafka.common.serialization.StringSerializer"
-        // - classname base like "StringSerializer", that we complete assuming its package
-        if (!keySerializer.contains(".")) {
-            keySerializer = "org.apache.kafka.common.serialization." + keySerializer;
-        }
-        if (!valueSerializer.contains(".")) {
-            valueSerializer = "org.apache.kafka.common.serialization." + valueSerializer;
-        }
-
-        // fill in properties
-        Properties properties = new Properties();
-        properties.put("bootstrap.servers", serversStr);
-
-        properties.put("key.serializer", keySerializer);
-        properties.put("value.serializer", valueSerializer);
-        KafkaProducer app = new KafkaProducer<>(properties);
-
-        // save the app in the shared map
-        return library.putApp(app, "p" + KafkaLibrary.randomId());
+    // serializers
+    // Expect either:
+    // - complete classnames like "org.apache.kafka.common.serialization.StringSerializer"
+    // - classname base like "StringSerializer", that we complete assuming its package
+    if (!keySerializer.contains("."))
+    {
+      keySerializer = "org.apache.kafka.common.serialization." + keySerializer;
     }
+    if (!valueSerializer.contains("."))
+    {
+      valueSerializer = "org.apache.kafka.common.serialization." + valueSerializer;
+    }
+
+    // fill in properties
+    Properties properties = new Properties();
+    properties.put("bootstrap.servers", serversStr);
+
+    properties.put("key.serializer", keySerializer);
+    properties.put("value.serializer", valueSerializer);
+    KafkaProducer app = new KafkaProducer<>(properties);
+
+    // save the app in the shared map
+    return library.putApp(app, "p" + KafkaLibrary.randomId());
+  }
 
 }

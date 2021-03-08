@@ -1,8 +1,9 @@
-(KafkaPoll (kafka-poll consumer_id topics timeout_ms) 
+(KafkaPoll (kafka-poll consumer_id topics timeout_ms) messages
   where =>
   (
     consumer_id => ("string" 1 1)
     timeout_ms => ("int" 1 1)
+    messages => ("list" 1 1)
   )
   examples =>
   (

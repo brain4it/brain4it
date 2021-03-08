@@ -38,46 +38,55 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
 /**
  *
  * @author quergf
  */
-public class KafkaProducerFunctionTest {
-    
-    public KafkaProducerFunctionTest() {
-    }
-    
-    @BeforeClass
-    public static void setUpClass() {
-    }
-    
-    @AfterClass
-    public static void tearDownClass() {
-    }
-    
-    @Before
-    public void setUp() {
-    }
-    
-    @After
-    public void tearDown() {
-    }
+public class KafkaProducerFunctionTest
+{
 
-    /**
-     * Test of invoke method, of class KafkaProducerFunction.
-     * @throws java.lang.Exception
-     */
-    @Test
-    public void testInvoke() throws Exception {
-        System.out.println("invoke");
-        
-        KafkaLibrary klib = new KafkaLibrary();
-        Context context = new Context(new BList(), null);
-        BList args = new BList(2);
-        args.add("kafka-producer");
-        args.add("localhost:9092");
-        KafkaProducerFunction instance = new KafkaProducerFunction(klib);
-        String result = instance.invoke(context, args);
-        assert(result.startsWith("p"));
-    }
+  public KafkaProducerFunctionTest()
+  {
+  }
+
+  @BeforeClass
+  public static void setUpClass()
+  {
+  }
+
+  @AfterClass
+  public static void tearDownClass()
+  {
+  }
+
+  @Before
+  public void setUp()
+  {
+  }
+
+  @After
+  public void tearDown()
+  {
+  }
+
+  /**
+   * Test of invoke method, of class KafkaProducerFunction.
+   *
+   * @throws java.lang.Exception
+   */
+  @Test
+  public void testInvoke() throws Exception
+  {
+    System.out.println("invoke");
+
+    KafkaLibrary klib = new KafkaLibrary();
+    Context context = new Context(new BList(), null);
+    BList args = new BList(2);
+    args.add("kafka-producer");
+    args.add("localhost:9092");
+    KafkaProducerFunction instance = new KafkaProducerFunction(klib);
+    String result = instance.invoke(context, args);
+    assert (result.startsWith("p"));
+  }
 }

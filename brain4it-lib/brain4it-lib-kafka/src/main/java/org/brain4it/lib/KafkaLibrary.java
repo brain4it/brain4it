@@ -46,85 +46,105 @@ import org.brain4it.lang.BList;
  *
  * @author quergf
  */
-public class KafkaLibrary extends Library {
+public class KafkaLibrary extends Library
+{
 
-    //private final Map<String, AutoCloseable> apps = 
-    //Collections.synchronizedMap(new HashMap<String, AutoCloseable>());
-    protected final Map<String, AutoCloseable> apps
-            = Collections.synchronizedMap(new HashMap<String, AutoCloseable>());
+  //private final Map<String, AutoCloseable> apps = 
+  //Collections.synchronizedMap(new HashMap<String, AutoCloseable>());
+  protected final Map<String, AutoCloseable> apps
+    = Collections.synchronizedMap(new HashMap<String, AutoCloseable>());
 
-    @Override
-    public String getName() {
-        return "Kafka";
-    }
+  @Override
+  public String getName()
+  {
+    return "Kafka";
+  }
 
-    @Override
-    public void load() {
-        functions.put("kafka-consumer", new KafkaConsumerFunction(this));
-        functions.put("kafka-producer", new KafkaProducerFunction(this));
-        functions.put("kafka-send", new KafkaSendFunction(this));
-        functions.put("kafka-poll", new KafkaPollFunction(this));
-        functions.put("kafka-delete-app", new KafkaDeleteAppFunction(this));
-        functions.put("kafka-create-topics", new KafkaCreateTopicsFunction(this));
-        functions.put("kafka-delete-topics", new KafkaDeleteTopicsFunction(this));
-        functions.put("kafka-list-topics", new KafkaListTopicsFunction(this));
-        functions.put("kafka-subscribe", new KafkaSubscribeFunction(this));
-    }
+  @Override
+  public void load()
+  {
+    functions.put("kafka-consumer", new KafkaConsumerFunction(this));
+    functions.put("kafka-producer", new KafkaProducerFunction(this));
+    functions.put("kafka-send", new KafkaSendFunction(this));
+    functions.put("kafka-poll", new KafkaPollFunction(this));
+    functions.put("kafka-delete-app", new KafkaDeleteAppFunction(this));
+    functions.put("kafka-create-topics", new KafkaCreateTopicsFunction(this));
+    functions.put("kafka-delete-topics", new KafkaDeleteTopicsFunction(this));
+    functions.put("kafka-list-topics", new KafkaListTopicsFunction(this));
+    functions.put("kafka-subscribe", new KafkaSubscribeFunction(this));
+  }
 
-    @Override
-    public void unload() {
-        for (AutoCloseable app : apps.values()) {
-            try {
-                if (app instanceof KafkaConsumer) {
-                    ((KafkaConsumer) app).unsubscribe();
-                }
-                app.close();
-            } catch (Exception ex) {
-                Logger.getLogger(KafkaLibrary.class.getName()).log(Level.SEVERE, null, ex);
-            }
+  @Override
+  public void unload()
+  {
+    for (AutoCloseable app : apps.values())
+    {
+      try
+      {
+        if (app instanceof KafkaConsumer)
+        {
+          ((KafkaConsumer) app).unsubscribe();
         }
+        app.close();
+      }
+      catch (Exception ex)
+      {
+        Logger.getLogger(KafkaLibrary.class.getName()).log(Level.SEVERE, null, ex);
+      }
     }
+  }
 
-    public AutoCloseable getApp(String appId) {
-        return apps.get(appId);
-    }
+  public AutoCloseable getApp(String appId)
+  {
+    return apps.get(appId);
+  }
 
-    public static String randomId() {
-        UUID uuid = UUID.randomUUID();
-        return Long.toHexString(uuid.getMostSignificantBits())
-                + Long.toHexString(uuid.getLeastSignificantBits());
-    }
+  public static String randomId()
+  {
+    UUID uuid = UUID.randomUUID();
+    return Long.toHexString(uuid.getMostSignificantBits())
+      + Long.toHexString(uuid.getLeastSignificantBits());
+  }
 
-    public String putApp(AutoCloseable kafkaApp, String appId) {
-        apps.put(appId, kafkaApp);
-        return appId;
-    }
+  public String putApp(AutoCloseable kafkaApp, String appId)
+  {
+    apps.put(appId, kafkaApp);
+    return appId;
+  }
 
-    public AutoCloseable removeApp(String appId) {
-        return apps.remove(appId);
-    }
+  public AutoCloseable removeApp(String appId)
+  {
+    return apps.remove(appId);
+  }
 
-    /**
-     * Converts an unknown input to a string representations, usable as a
-     * "property's" value.
-     *
-     * @param input. Expects either BList with strings or String
-     * @return String representation of `input`, separating fields by ','
-     * @throws ClassCastException
-     */
-    public static String flattenInput(Object input) throws ClassCastException {
-        String str;
-        if (input instanceof BList) {
-            ArrayList arr = new ArrayList<String>();
-            for (Object element : ((BList) input).toArray()) {
-                arr.add((String) element);
-            }
-            str = String.join(",", arr);
-        } else if (input instanceof String) {
-            str = (String) input;
-        } else {
-            throw new java.lang.ClassCastException("`servers` is not a list of strings nor a string");
-        }
-        return str;
+  /**
+   * Converts an unknown input to a string representations, usable as a
+   * "property's" value.
+   *
+   * @param input. Expects either BList with strings or String
+   * @return String representation of `input`, separating fields by ','
+   * @throws ClassCastException
+   */
+  public static String flattenInput(Object input) throws ClassCastException
+  {
+    String str;
+    if (input instanceof BList)
+    {
+      ArrayList arr = new ArrayList<String>();
+      for (Object element : ((BList) input).toArray())
+      {
+        arr.add((String) element);
+      }
+      str = String.join(",", arr);
     }
+    else if (input instanceof String)
+    {
+      str = (String) input;
+    }
+    else
+    {
+      throw new java.lang.ClassCastException("`servers` is not a list of strings nor a string");
+    }
+    return str;
+  }
 }

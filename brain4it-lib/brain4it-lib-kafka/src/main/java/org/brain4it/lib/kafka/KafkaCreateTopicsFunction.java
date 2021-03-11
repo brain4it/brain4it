@@ -75,7 +75,7 @@ public class KafkaCreateTopicsFunction implements Function
     String serversStr = KafkaLibrary.flattenInput(serversRaw);
 
     Object topicsRaw = context.evaluate(args.get(2));
-    ArrayList topicsList = new ArrayList<String>();
+    ArrayList<NewTopic> topicsList = new ArrayList<NewTopic>();
     if (topicsRaw instanceof String)
     {
       topicsList.add(new NewTopic((String) topicsRaw, 1, (short) 1));

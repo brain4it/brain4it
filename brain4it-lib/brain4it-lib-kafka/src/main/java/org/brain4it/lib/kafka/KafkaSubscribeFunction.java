@@ -31,7 +31,6 @@
 package org.brain4it.lib.kafka;
 
 import java.util.ArrayList;
-import java.util.Set;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.brain4it.lang.BList;
 import org.brain4it.lang.Context;
@@ -64,7 +63,7 @@ public class KafkaSubscribeFunction implements Function
     consumerId = (String) context.evaluate(args.get(1));
 
     // Check arguments
-    KafkaConsumer cons = (KafkaConsumer) library.getApp(consumerId);
+    KafkaConsumer<Object, Object> cons = (KafkaConsumer<Object, Object>) library.getApp(consumerId);
     if (cons == null)
     {
       throw new java.lang.Exception("Consumer id not found");
@@ -90,7 +89,7 @@ public class KafkaSubscribeFunction implements Function
     }
 
     // Subscribe to topics
-    ArrayList<String> desiredTopics = new ArrayList();
+    ArrayList<String> desiredTopics = new ArrayList<String>();
     for (Object topic : topics.toArray())
     {
       desiredTopics.add((String) topic);
@@ -99,7 +98,7 @@ public class KafkaSubscribeFunction implements Function
 
     // Check currently subscribed topics
     BList currentTopics = new BList();
-    for (String topic : (Set<String>) cons.subscription())
+    for (String topic : cons.subscription())
     {
       currentTopics.add(topic);
     }

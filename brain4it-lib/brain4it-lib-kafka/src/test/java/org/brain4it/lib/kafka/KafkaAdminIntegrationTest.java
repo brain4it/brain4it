@@ -132,7 +132,7 @@ public class KafkaAdminIntegrationTest
   {
 
     // Create 3 topics
-    ArrayList<String> newTopics = new ArrayList();
+    ArrayList<String> newTopics = new ArrayList<>();
     newTopics.add("admin-integration-test--topic-1");
     newTopics.add("admin-integration-test--topic-2");
     newTopics.add("admin-integration-test--topic-3");
@@ -147,7 +147,7 @@ public class KafkaAdminIntegrationTest
     assert (bListHas(existingTopics, "admin-integration-test--topic-3"));
 
     // Delete 1 topic
-    ArrayList<String> rmTopics = new ArrayList();
+    ArrayList<String> rmTopics = new ArrayList<>();
     rmTopics.add("admin-integration-test--topic-2");
     deleteTopics(rmTopics);
 

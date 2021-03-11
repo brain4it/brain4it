@@ -37,9 +37,9 @@ import org.brain4it.lang.BList;
 import org.brain4it.lang.Context;
 import org.brain4it.lib.KafkaLibrary;
 import org.junit.After;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -63,7 +63,7 @@ public class KafkaIntegrationTest
     "Brain4IT", "<3", "Kafka"
   };
   protected final String topic2 = "array-of-greetings";
-  protected volatile ArrayList receivedMessages;
+  protected volatile ArrayList<String> receivedMessages;
   // test 3
   protected final String topic3 = "meaning-of-life";
   protected final double messageNum = 42.0;
@@ -79,7 +79,7 @@ public class KafkaIntegrationTest
   @Before
   public void setUp() throws Exception
   {
-    receivedMessages = new ArrayList<String>();
+    receivedMessages = new ArrayList<>();
     klib = new KafkaLibrary();
     context = new Context(new BList(), null);
   }

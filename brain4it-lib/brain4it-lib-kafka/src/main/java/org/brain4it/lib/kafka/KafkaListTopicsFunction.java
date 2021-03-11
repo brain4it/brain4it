@@ -79,9 +79,9 @@ public class KafkaListTopicsFunction implements Function
 
     AdminClient admin = KafkaAdminClient.create(properties);
     ListTopicsResult kresult = admin.listTopics();
-    Set topicSet = kresult.names().get();
+    Set<String> topicSet = kresult.names().get();
     BList result = new BList();
-    for (String topic : (Set<String>) topicSet)
+    for (String topic : topicSet)
     {
       result.add(topic);
     }

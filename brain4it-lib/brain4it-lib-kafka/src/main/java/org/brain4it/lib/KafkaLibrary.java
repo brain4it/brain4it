@@ -130,7 +130,7 @@ public class KafkaLibrary extends Library
     String str;
     if (input instanceof BList)
     {
-      ArrayList arr = new ArrayList<String>();
+      ArrayList<String> arr = new ArrayList<String>();
       for (Object element : ((BList) input).toArray())
       {
         arr.add((String) element);

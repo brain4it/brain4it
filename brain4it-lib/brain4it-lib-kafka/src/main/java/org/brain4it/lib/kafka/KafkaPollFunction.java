@@ -62,7 +62,7 @@ public class KafkaPollFunction implements Function
     Long timeout = new Long((Integer) context.evaluate(args.get(2)));
 
     // Check arguments
-    KafkaConsumer cons = (KafkaConsumer) library.getApp(consumerId);
+    KafkaConsumer<Object, Object> cons = (KafkaConsumer<Object, Object>) library.getApp(consumerId);
     if (cons == null)
     {
       throw new java.lang.Exception("Consumer id not found");
@@ -72,13 +72,13 @@ public class KafkaPollFunction implements Function
     // - BList name is Kafka records's id
     // - BList element is Kafka record's value
     BList result = new BList();
-    ConsumerRecords records = cons.poll(timeout);
+    ConsumerRecords<Object, Object> records = cons.poll(timeout);
     Set<String> topics = cons.subscription();
 
     for (String topic : topics)
     {
       BList topicRecords = new BList();
-      for (ConsumerRecord record : (Iterable<ConsumerRecord>) records.records(topic))
+      for (ConsumerRecord<Object, Object> record : records.records(topic))
       {
         if (record.key() != null)
         {

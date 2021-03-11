@@ -106,7 +106,7 @@ public class KafkaSendFunction implements Function
     }
     // Check arguments
     // producer id
-    KafkaProducer prod = (KafkaProducer) library.getApp(producerId);
+    KafkaProducer<Object, Object> prod = (KafkaProducer<Object, Object>) library.getApp(producerId);
     if (prod == null)
     {
       throw new java.lang.Exception("Producer id not found");
@@ -124,11 +124,11 @@ public class KafkaSendFunction implements Function
 
           if (key == null)
           {
-            prod.send(new ProducerRecord((String) topic, value));
+            prod.send(new ProducerRecord<>((String) topic, value));
           }
           else
           {
-            prod.send(new ProducerRecord((String) topic, key, value));
+            prod.send(new ProducerRecord<>((String) topic, key, value));
           }
         }
       }
@@ -137,7 +137,7 @@ public class KafkaSendFunction implements Function
     catch (SerializationException ex)
     {
       throw new IllegalArgumentException(ex);
-    };
+    }
 
     return null;
   }

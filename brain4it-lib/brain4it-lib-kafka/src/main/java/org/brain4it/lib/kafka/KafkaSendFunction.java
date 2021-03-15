@@ -30,15 +30,12 @@
  */
 package org.brain4it.lib.kafka;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.errors.SerializationException;
 import org.brain4it.lang.BList;
 import org.brain4it.lang.Context;
 import org.brain4it.lang.Function;
-import org.brain4it.lang.Structure;
 import org.brain4it.lang.Utils;
 import org.brain4it.lib.KafkaLibrary;
 

@@ -68,20 +68,18 @@ public class KafkaDeleteAppFunction implements Function
     Utils.checkArguments(args, 1);
     String applicationId = (String) context.evaluate(args.get(1));
 
-    try
+
+    try (AutoCloseable application = library.removeApp(applicationId))
     {
-      AutoCloseable application = library.removeApp(applicationId);
       if (application instanceof KafkaConsumer)
       {
         ((KafkaConsumer) application).unsubscribe();
       }
-      application.close();
+      return true;
     }
     catch (Exception ex)
     {
       return false;
     }
-
-    return true;
   }
 }

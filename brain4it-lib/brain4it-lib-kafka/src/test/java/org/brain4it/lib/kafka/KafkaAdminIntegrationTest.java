@@ -48,10 +48,6 @@ public class KafkaAdminIntegrationTest
   KafkaLibrary klib;
   Context context;
 
-  public KafkaAdminIntegrationTest()
-  {
-  }
-
   @Before
   public void setUp() throws Exception
   {

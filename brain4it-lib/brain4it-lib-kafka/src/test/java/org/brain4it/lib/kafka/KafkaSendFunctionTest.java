@@ -85,6 +85,7 @@ public class KafkaSendFunctionTest
 
   /**
    * Test of invoke method, of class KafkaSendFunction.
+   * @throws java.lang.Exception
    */
   @Test
   public void testInvokeBLists() throws Exception

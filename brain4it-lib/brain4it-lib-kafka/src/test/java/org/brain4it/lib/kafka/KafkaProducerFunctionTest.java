@@ -33,10 +33,6 @@ package org.brain4it.lib.kafka;
 import org.brain4it.lang.BList;
 import org.brain4it.lang.Context;
 import org.brain4it.lib.KafkaLibrary;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -45,31 +41,6 @@ import org.junit.Test;
  */
 public class KafkaProducerFunctionTest
 {
-
-  public KafkaProducerFunctionTest()
-  {
-  }
-
-  @BeforeClass
-  public static void setUpClass()
-  {
-  }
-
-  @AfterClass
-  public static void tearDownClass()
-  {
-  }
-
-  @Before
-  public void setUp()
-  {
-  }
-
-  @After
-  public void tearDown()
-  {
-  }
-
   /**
    * Test of invoke method, of class KafkaProducerFunction.
    *

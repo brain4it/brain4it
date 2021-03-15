@@ -73,7 +73,7 @@ public class KafkaDeleteTopicsFunction implements Function
     String serversStr = KafkaLibrary.flattenInput(serversRaw);
 
     Object topicsRaw = context.evaluate(args.get(2));
-    ArrayList<String> topicsList = new ArrayList<String>();
+    ArrayList<String> topicsList = new ArrayList<>();
     if (topicsRaw instanceof String)
     {
       topicsList.add((String) topicsRaw);

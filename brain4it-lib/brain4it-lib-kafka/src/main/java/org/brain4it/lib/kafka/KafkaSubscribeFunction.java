@@ -89,7 +89,7 @@ public class KafkaSubscribeFunction implements Function
     }
 
     // Subscribe to topics
-    ArrayList<String> desiredTopics = new ArrayList<String>();
+    ArrayList<String> desiredTopics = new ArrayList<>();
     for (Object topic : topics.toArray())
     {
       desiredTopics.add((String) topic);

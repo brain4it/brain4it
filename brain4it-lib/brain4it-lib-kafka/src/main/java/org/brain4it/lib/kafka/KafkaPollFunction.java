@@ -68,31 +68,35 @@ public class KafkaPollFunction implements Function
       throw new java.lang.Exception("Consumer id not found");
     }
 
-    // Build BList of records, where:
-    // - BList name is Kafka records's id
-    // - BList element is Kafka record's value
-    BList result = new BList();
-    ConsumerRecords<Object, Object> records = cons.poll(timeout);
-    Set<String> topics = cons.subscription();
-
-    for (String topic : topics)
+    // KafkaConsumer is not thread safe
+    synchronized (cons)
     {
-      BList topicRecords = new BList();
-      for (ConsumerRecord<Object, Object> record : records.records(topic))
-      {
-        if (record.key() != null)
-        {
-          topicRecords.put(record.key(), record.value());
-        }
-        else
-        {
-          topicRecords.add(record.value());
-        }
-      }
-      result.put(topic, topicRecords);
-    }
+      // Build BList of records, where:
+      // - BList name is Kafka records's id
+      // - BList element is Kafka record's value
+      BList result = new BList();
 
-    return result;
+      ConsumerRecords<Object, Object> records = cons.poll(timeout);
+      Set<String> topics = cons.subscription();
+
+      for (String topic : topics)
+      {
+        BList topicRecords = new BList();
+        for (ConsumerRecord<Object, Object> record : records.records(topic))
+        {
+          if (record.key() != null)
+          {
+            topicRecords.put(record.key(), record.value());
+          }
+          else
+          {
+            topicRecords.add(record.value());
+          }
+        }
+        result.put(topic, topicRecords);
+      }
+      return result;
+    }
   }
 
 }

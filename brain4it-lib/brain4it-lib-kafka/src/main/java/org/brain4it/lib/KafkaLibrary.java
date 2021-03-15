@@ -82,8 +82,12 @@ public class KafkaLibrary extends Library
   {
     for (KafkaConsumer<Object, Object> consumer : consumers.values())
     {
-      consumer.unsubscribe();
-      consumer.close();
+      // KafkaConsumer is not thread safe
+      synchronized (consumer)
+      {
+        consumer.unsubscribe();
+        consumer.close();
+      }
     }
 
     for (KafkaProducer<Object, Object> producer : producers.values())
@@ -108,13 +112,13 @@ public class KafkaLibrary extends Library
     return Long.toHexString(uuid.getMostSignificantBits())
       + Long.toHexString(uuid.getLeastSignificantBits());
   }
-  
+
   public String putConsumer(KafkaConsumer<Object, Object> consumer, String consId)
   {
     consumers.put(consId, consumer);
     return consId;
   }
-  
+
   public String putProducer(KafkaProducer<Object, Object> producer, String prodId)
   {
     producers.put(prodId, producer);

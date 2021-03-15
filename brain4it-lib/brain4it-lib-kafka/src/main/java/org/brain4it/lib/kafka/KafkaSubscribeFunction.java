@@ -94,16 +94,21 @@ public class KafkaSubscribeFunction implements Function
     {
       desiredTopics.add((String) topic);
     }
-    cons.subscribe(desiredTopics);
-
-    // Check currently subscribed topics
-    BList currentTopics = new BList();
-    for (String topic : cons.subscription())
+    
+    // KafkaConsumer is not thread safe
+    synchronized (cons)
     {
-      currentTopics.add(topic);
-    }
+      cons.subscribe(desiredTopics);
 
-    return currentTopics;
+      // Check currently subscribed topics
+      BList currentTopics = new BList();
+      for (String topic : cons.subscription())
+      {
+        currentTopics.add(topic);
+      }
+
+      return currentTopics;
+    }
   }
 
 }

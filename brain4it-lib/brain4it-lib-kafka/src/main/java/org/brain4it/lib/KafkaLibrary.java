@@ -37,9 +37,8 @@ import java.util.HashMap;
 import java.util.Map;
 import org.brain4it.lib.kafka.*;
 import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.clients.producer.KafkaProducer;
 import org.brain4it.lang.BList;
 
 /**
@@ -49,10 +48,14 @@ import org.brain4it.lang.BList;
 public class KafkaLibrary extends Library
 {
 
-  //private final Map<String, AutoCloseable> apps = 
-  //Collections.synchronizedMap(new HashMap<String, AutoCloseable>());
-  protected final Map<String, AutoCloseable> apps
-    = Collections.synchronizedMap(new HashMap<String, AutoCloseable>());
+  public static String PRODUCER_SUFFIX = "p";
+  public static String CONSUMER_SUFFIX = "c";
+
+  protected final Map<String, KafkaConsumer<Object, Object>> consumers
+    = Collections.synchronizedMap(new HashMap<String, KafkaConsumer<Object, Object>>());
+
+  protected final Map<String, KafkaProducer<Object, Object>> producers
+    = Collections.synchronizedMap(new HashMap<String, KafkaProducer<Object, Object>>());
 
   @Override
   public String getName()
@@ -77,26 +80,26 @@ public class KafkaLibrary extends Library
   @Override
   public void unload()
   {
-    for (AutoCloseable app : apps.values())
+    for (KafkaConsumer<Object, Object> consumer : consumers.values())
     {
-      try
-      {
-        if (app instanceof KafkaConsumer)
-        {
-          ((KafkaConsumer) app).unsubscribe();
-        }
-        app.close();
-      }
-      catch (Exception ex)
-      {
-        Logger.getLogger(KafkaLibrary.class.getName()).log(Level.SEVERE, null, ex);
-      }
+      consumer.unsubscribe();
+      consumer.close();
+    }
+
+    for (KafkaProducer<Object, Object> producer : producers.values())
+    {
+      producer.close();
     }
   }
 
-  public AutoCloseable getApp(String appId)
+  public KafkaConsumer<Object, Object> getConsumer(String consId)
   {
-    return apps.get(appId);
+    return consumers.get(consId);
+  }
+
+  public KafkaProducer<Object, Object> getProducer(String prodId)
+  {
+    return producers.get(prodId);
   }
 
   public static String randomId()
@@ -105,16 +108,30 @@ public class KafkaLibrary extends Library
     return Long.toHexString(uuid.getMostSignificantBits())
       + Long.toHexString(uuid.getLeastSignificantBits());
   }
-
-  public String putApp(AutoCloseable kafkaApp, String appId)
+  
+  public String putConsumer(KafkaConsumer<Object, Object> consumer, String consId)
   {
-    apps.put(appId, kafkaApp);
-    return appId;
+    consumers.put(consId, consumer);
+    return consId;
+  }
+  
+  public String putProducer(KafkaProducer<Object, Object> producer, String prodId)
+  {
+    producers.put(prodId, producer);
+    return prodId;
   }
 
   public AutoCloseable removeApp(String appId)
   {
-    return apps.remove(appId);
+    if (appId.startsWith(CONSUMER_SUFFIX))
+    {
+      return consumers.remove(appId);
+    }
+    if (appId.startsWith(PRODUCER_SUFFIX))
+    {
+      return producers.remove(appId);
+    }
+    return null;
   }
 
   /**

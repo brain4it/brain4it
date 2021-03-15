@@ -62,7 +62,7 @@ public class KafkaPollFunction implements Function
     Long timeout = new Long((Integer) context.evaluate(args.get(2)));
 
     // Check arguments
-    KafkaConsumer<Object, Object> cons = (KafkaConsumer<Object, Object>) library.getApp(consumerId);
+    KafkaConsumer<Object, Object> cons = library.getConsumer(consumerId);
     if (cons == null)
     {
       throw new java.lang.Exception("Consumer id not found");

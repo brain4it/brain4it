@@ -63,7 +63,7 @@ public class KafkaSubscribeFunction implements Function
     consumerId = (String) context.evaluate(args.get(1));
 
     // Check arguments
-    KafkaConsumer<Object, Object> cons = (KafkaConsumer<Object, Object>) library.getApp(consumerId);
+    KafkaConsumer<Object, Object> cons = library.getConsumer(consumerId);
     if (cons == null)
     {
       throw new java.lang.Exception("Consumer id not found");

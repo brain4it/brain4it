@@ -106,7 +106,7 @@ public class KafkaSendFunction implements Function
     }
     // Check arguments
     // producer id
-    KafkaProducer<Object, Object> prod = (KafkaProducer<Object, Object>) library.getApp(producerId);
+    KafkaProducer<Object, Object> prod = library.getProducer(producerId);
     if (prod == null)
     {
       throw new java.lang.Exception("Producer id not found");

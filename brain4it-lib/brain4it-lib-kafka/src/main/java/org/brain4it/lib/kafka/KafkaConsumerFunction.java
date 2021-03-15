@@ -85,7 +85,7 @@ public class KafkaConsumerFunction implements Function
     }
     // Consumer groups are used to distribute the messages of a given topic
     // To receive all messages from a topic, a consumer must use a unique group
-    String appId = "c" + KafkaLibrary.randomId();
+    String appId = KafkaLibrary.CONSUMER_SUFFIX + KafkaLibrary.randomId();
     if (consumerGroupId == null)
     {
       consumerGroupId = appId;
@@ -114,10 +114,10 @@ public class KafkaConsumerFunction implements Function
     properties.put("group.id", consumerGroupId);
     properties.put("key.deserializer", keyDeserializer);
     properties.put("value.deserializer", valueDeserializer);
-    KafkaConsumer app = new KafkaConsumer<>(properties);
+    KafkaConsumer<Object, Object> app = new KafkaConsumer<>(properties);
 
     // save the app in the shared map
-    return library.putApp(app, appId);
+    return library.putConsumer(app, appId);
   }
 
 }

@@ -100,10 +100,10 @@ public class KafkaProducerFunction implements Function
 
     properties.put("key.serializer", keySerializer);
     properties.put("value.serializer", valueSerializer);
-    KafkaProducer app = new KafkaProducer<>(properties);
+    KafkaProducer<Object, Object> app = new KafkaProducer<>(properties);
 
     // save the app in the shared map
-    return library.putApp(app, "p" + KafkaLibrary.randomId());
+    return library.putProducer(app, KafkaLibrary.PRODUCER_SUFFIX + KafkaLibrary.randomId());
   }
 
 }

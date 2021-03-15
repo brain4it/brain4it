@@ -1,0 +1,16 @@
+(KafkaSend (kafka-send producer_id topics messages) null
+  where =>
+  (
+    producer_id => ("string" 1 1)
+    topics => ("list" 1 1)
+    messages => ("list" 1 1)
+  )
+  examples =>
+  (
+    ((kafka-send "pbf8114e907f045a093f53abce9564553" "sensors" "town_square_temp=16") null)
+    ((kafka-send prod-id ("sensors" "temperature") "town_square_temp=16") null)
+    ((kafka-send prod-id "sensors" ("town_square_temp=16" "train_sta_temp=18")) null)
+    ((kafka-send prod-id "sensors" ("town_square" => "town_square_temp=16")) null)
+  )
+  bundle => "org.brain4it.lib.KafkaLibrary"
+)

@@ -37,6 +37,7 @@
     <module>brain4it-lib-vision</module>
     <module>brain4it-lib-weather</module>
     <module>brain4it-lib-xmpp</module>
+    <module>brain4it-lib-kafka</module>
   </modules>
 
 </project>

@@ -33,6 +33,11 @@
         </dependency>
         <dependency>
           <groupId>org.brain4it</groupId>
+          <artifactId>brain4it-lib-kafka</artifactId>
+          <version>${brain4it-version}</version>
+        </dependency>
+        <dependency>
+          <groupId>org.brain4it</groupId>
           <artifactId>brain4it-lib-mail</artifactId>
           <version>${brain4it-version}</version>
         </dependency>

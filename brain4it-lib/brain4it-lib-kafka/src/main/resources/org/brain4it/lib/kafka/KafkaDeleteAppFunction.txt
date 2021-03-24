@@ -1,4 +1,4 @@
-(KafkaProducer (kafka-producer app_id) deleted
+(KafkaDeleteApp (kafka-delete-app app_id) deleted
   where =>
   (
     app_id => ("string" 1 1)

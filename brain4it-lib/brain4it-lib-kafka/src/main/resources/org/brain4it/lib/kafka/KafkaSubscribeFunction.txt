@@ -1,7 +1,7 @@
-(KafkaSubscribe (kafka-subscribe servers desired-topics) subscribed-topics
+(KafkaSubscribe (kafka-subscribe consumer_id desired-topics) subscribed-topics
   where =>
   (
-    servers => ("list" 1 1)
+    consumer_id => ("string" 1 1)
     desired-topics => ("list" 1 1)
     subscribed-topics => ("list" 1 1)
   )

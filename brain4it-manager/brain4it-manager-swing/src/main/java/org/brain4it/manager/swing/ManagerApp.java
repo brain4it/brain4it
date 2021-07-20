@@ -337,29 +337,32 @@ public class ManagerApp extends javax.swing.JFrame
   public void openEditor(Module module, String path)
   {
     EditorPanel editorPanel = null;
-    if (path == null || path.trim().length() == 0) return;
 
-    List<Component> components = splitter.getComponentList();
-    int tabCount = components.size();
-    int i = 0;
-    while (i < tabCount && editorPanel == null)
+    if (path != null && path.trim().length() > 0)
     {
-      Component component = components.get(i);
-      if (component instanceof ModulePanel)
+      // is path open yet?
+      List<Component> components = splitter.getComponentList();
+      int tabCount = components.size();
+      int i = 0;
+      while (i < tabCount && editorPanel == null)
       {
-        ModulePanel modulePanel = (ModulePanel)component;
-        if (modulePanel.getModule() == module)
+        Component component = components.get(i);
+        if (component instanceof ModulePanel)
         {
-          if (modulePanel instanceof EditorPanel)
+          ModulePanel modulePanel = (ModulePanel)component;
+          if (modulePanel.getModule() == module)
           {
-            if (path.equals(((EditorPanel)modulePanel).getCurrentPath()))
+            if (modulePanel instanceof EditorPanel)
             {
-              editorPanel = (EditorPanel)modulePanel;
+              if (path.equals(((EditorPanel)modulePanel).getCurrentPath()))
+              {
+                editorPanel = (EditorPanel)modulePanel;
+              }
             }
           }
         }
+        i++;
       }
-      i++;
     }
     if (editorPanel == null)
     {

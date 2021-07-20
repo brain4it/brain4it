@@ -1131,7 +1131,7 @@ public class ManagerApp extends javax.swing.JFrame
       }
       else
       {
-        ArrayList<Image> icons = new ArrayList<Image>();
+        ArrayList<Image> icons = new ArrayList<>();
         for (int logoSize : LOGO_SIZES)
         {
           ImageIcon icon = new ImageIcon(getClass().getResource(
@@ -1175,7 +1175,7 @@ public class ManagerApp extends javax.swing.JFrame
         System.setProperty("apple.laf.useScreenMenuBar", "true");
         System.setProperty("com.apple.mrj.application.apple.menu.about.name",
           "Brain4it");
-        MenuBarUI ui = (MenuBarUI)cls.newInstance();
+        MenuBarUI ui = (MenuBarUI)cls.getConstructor().newInstance();
         menuBar.setUI(ui);
       }
       catch (Exception ex)

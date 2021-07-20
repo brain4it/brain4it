@@ -60,6 +60,6 @@ public class LibraryFactory
   public static Library createLibrary(String libraryName) throws Exception
   {
     Class<? extends Library> libraryClass = getLibraryClass(libraryName);
-    return libraryClass.newInstance();
+    return libraryClass.getConstructor().newInstance();
   }
 }

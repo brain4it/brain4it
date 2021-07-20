@@ -114,7 +114,7 @@ public class Runner
     String storeClassname = configuration.getProperty(STORE_CLASS_PARAM,
       DEFAULT_STORE_CLASS_VALUE);
     Class<?> storeClass = Class.forName(storeClassname);
-    Store store = (Store)storeClass.newInstance();
+    Store store = (Store)storeClass.getConstructor().newInstance();
     store.init(configuration);
 
     String accessKey = configuration.getProperty(ACCESS_KEY_PARAM);

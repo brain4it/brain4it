@@ -1574,10 +1574,10 @@ Brain4it.Formatter.prototype =
     if (configuration.notInlineFunctions.indexOf(functionName) === -1)
       return false;
 
-    var arguments = configuration.inlineArguments[functionName];
-    if (arguments === undefined) return true;
+    var args = configuration.inlineArguments[functionName];
+    if (args === undefined) return true;
 
-    return this.baseList.getCompletedArguments() >= arguments;
+    return this.baseList.getCompletedArguments() >= args;
   },
 
   nextLine : function()
@@ -1636,16 +1636,16 @@ Brain4it.Formatter.TokenList.prototype =
     }
     else
     {
-      var arguments = configuration.inlineArguments[functionName];
-      if (arguments === undefined)
+      var args = configuration.inlineArguments[functionName];
+      if (args === undefined)
       {
         this.unreadTokens(2);
       }
       else
       {
-        if (this.getCompletedArguments() >= arguments)
+        if (this.getCompletedArguments() >= args)
         {
-          var count = arguments + 2;
+          var count = args + 2;
           if (this.getLength(count) < configuration.maxColumns)
           {
             this.unreadTokens(count);
@@ -1924,7 +1924,7 @@ Brain4it.Monitor.prototype =
         functionListeners.splice(index, 1);
         if (functionListeners.length === 0)
         {
-          delete listeners[functionName];
+          delete this.listeners[functionName];
         }
       }
     }

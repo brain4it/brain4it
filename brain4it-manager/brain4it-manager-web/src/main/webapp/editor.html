@@ -1,4 +1,5 @@
-<html manifest="editor.appcache">
+<!DOCTYPE html>
+<html lang="en">
   <head>
     <title>Brain4it Text Editor</title>
     <meta charset="UTF-8">
@@ -27,9 +28,9 @@
     <script type="text/javascript" src="js/common/runmode.js" charset="utf-8"></script>
     <script type="text/javascript" src="js/common/cm_brain4it.js" charset="utf-8"></script>
     <script type="text/javascript" src="js/editor/Editor.js" charset="utf-8"></script>
-    <script type="text/javascript">      
+    <script type="text/javascript">
       var textEditor;
-  
+
       function init()
       {
         var params = getQueryParams();
@@ -37,10 +38,10 @@
         var module = params["module"];
         var accessKey = params["accessKey"];
         textEditor = new Brain4it.TextEditor(serverUrl, module, accessKey);
-        textEditor.init(document.body, 
+        textEditor.init(document.body,
           {lineNumbers: false, styleActiveLine: true, matchBrackets: true});
       }
-      
+
       function show()
       {
         textEditor.show();

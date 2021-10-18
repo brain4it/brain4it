@@ -1,4 +1,5 @@
-<html manifest="console.appcache">
+<!DOCTYPE html>
+<html lang="en">
   <head>
     <title>Brain4it Console</title>
     <meta charset="UTF-8">
@@ -26,7 +27,7 @@
     <script type="text/javascript">
 
       var brain4itConsole;
-      
+
       function init()
       {
         var params = getQueryParams();
@@ -34,10 +35,10 @@
         var module = params["module"];
         var accessKey = params["accessKey"];
         brain4itConsole = new Brain4it.Console(serverUrl, module, accessKey);
-        brain4itConsole.init(document.body, 
+        brain4itConsole.init(document.body,
           {lineNumbers: false, styleActiveLine: true, matchBrackets: true});
       }
-      
+
       function show()
       {
         brain4itConsole.show();

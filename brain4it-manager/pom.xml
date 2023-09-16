@@ -20,7 +20,7 @@
 	  <dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.13.1</version>			
+			<version>4.13.1</version>
 		</dependency>
   </dependencies>
 
@@ -28,7 +28,15 @@
     <module>brain4it-manager-common</module>
     <module>brain4it-manager-swing</module>
     <module>brain4it-manager-web</module>
-    <module>brain4it-manager-android</module>
   </modules>
+
+  <profiles>
+    <profile>
+      <id>android</id>
+      <modules>
+        <module>brain4it-manager-android</module>
+      </modules>
+    </profile>
+  </profiles>
 
 </project>

@@ -25,7 +25,14 @@
     <module>brain4it-lib</module>
     <module>brain4it-manager</module>
     <module>brain4it-server</module>
+    <module>brain4it-web</module>
   </modules>
+
+  <profiles>
+    <profile>
+      <id>android</id>
+    </profile>
+  </profiles>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

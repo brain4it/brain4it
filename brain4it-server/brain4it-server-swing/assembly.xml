@@ -5,6 +5,7 @@
   xsi:schemaLocation="
     http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2
       http://maven.apache.org/xsd/assembly-1.1.2.xsd">
+  <id>swing</id>
   <formats>
     <format>zip</format>
   </formats>

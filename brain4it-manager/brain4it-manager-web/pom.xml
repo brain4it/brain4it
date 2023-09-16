@@ -13,11 +13,11 @@
 
   <name>brain4it-manager-web</name>
   <description>brain4it web manager application</description>
-  
+
   <properties>
     <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
   </properties>
-    
+
   <dependencies>
     <dependency>
       <groupId>javax</groupId>
@@ -44,7 +44,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
-        <version>2.3</version>
+        <version>3.4.0</version>
         <configuration>
           <failOnMissingWebXml>false</failOnMissingWebXml>
         </configuration>

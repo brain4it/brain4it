@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>-</title>
+  </head>
+  <body>
+    {--title--}Project - Solver{----}
+    
+    {--projects_current--} <span class="sr-only">(current)</span>{----}
+    
+    {--projects_active--} active{----}
+        
+    {--body--}
+      <h1>Solver</h1>
+
+      <h2>Introduction</h2>
+      <div class="box">
+        <p>One of the most important features of the Brain4it language is <strong>homoiconicity</strong>, 
+          which means that code and data are represented in the same way. 
+          Homoiconicity allows a program to manage code as easily as it manages data, 
+          so it can create or modify other programs or even change itself at runtime.      
+        </p>
+        
+        <p>This module takes advantage of this feature to implement  
+          a transformation rule engine to solve mathematical equations algebraically.
+        </p>        
+      </div>
+      
+      <h2>How it works?</h2>
+      <div class="box">
+        <p>The <span class="code">rules</span> variable contains a list of 
+          transformation rules with this format:</p>
+        <div class="code">
+          <code>
+          (...
+            "&lt;rule_name&gt;" => 
+              ("&lt;rule_description&gt;"
+               &lt;matching_expression&gt;   
+               &lt;apply_condition&gt;
+               &lt;replacing_expression&gt;)
+            ...
+          )
+          </code>                            
+        </div>
+        <p>Where:</p>
+        <ul>
+          <li><span class="code">rule_name</span>: is the name of the rule, usually the word "rule" followed by an index.</li>
+          <li><span class="code">rule_description</span>: is a text that describes the purpose of the rule.</li>
+          <li><span class="code">matching_expression</span>: is the matching expression to look up in the input expression. 
+            This expression may contain substitution variables (x? or x...) like those supported by the 
+            <a href="library_core.html#an_match">match</a> function.</li>
+          <li><span class="code">apply_condition</span>: is a boolean expression on the subtitution variables that must evaluate to true to do the replacement 
+            or false to continue searching for a match. This expression may also set new variables that could be referenced in the replacing expression.</li>
+          <li><span class="code">replacing_expression</span>: is the expression that will replace the match found after dereferecing its substitution variables.</li>
+        </ul>
+        <p>Examples:</p>
+        <div class="code">
+          <code>
+            (
+              ...
+              "rule6" =>
+              ("Redundant negative operator" (- (- x?)) true x?)            
+              ...
+              "rule7" =>
+              (
+                "Join sum operators"
+                (+ a... (+ b...) c...)
+                true
+                (+ a... b... c...)
+              )
+              ...
+              "rule10" =>
+              (
+                "Sum numbers"
+                (+ a... x? b... y? c...)
+                (if
+                  (and
+                    (= (type-of x?) "number")
+                    (= (type-of y?) "number")
+                  )
+                  (do
+                    (set match_map$/res (+ x? y?))
+                    true
+                  )
+                  false
+                )
+                (+ res a... b... c...)
+              )
+              ...
+              "rule16" =>
+              (
+                "Sum element twice"
+                (+ a... x? b... x? c...)
+                true
+                (+ a... b... c... (* 2 x?))
+              )
+              ...
+              "rule28" =>
+              (
+                "Sort variables lexicografically"
+                (fn? a... x? y? b...)
+                (and
+                  (or (= fn? +) (= fn? *))
+                  (= (type-of x?) "reference")
+                  (= (type-of y?) "reference")
+                  (> (string x?) (string y?))
+                )
+                (fn? a... y? x? b...)
+              )
+              ...
+            )            
+          </code>         
+        </div>
+        <p>Usually, these transformation rules try to reduce or simplify the input expression.</p>
+        <p>The transformation engine is implemented by the 
+          <span class="code">apply_rules</span> and <span class="code">apply_rule</span> functions, 
+          that successively apply the rules of transformation on the input expression until it can no longer be transformed.
+        </p>
+        <p>This module offers 4 functions to transform (reduce) a mathematical expression:</p>
+        <ul>
+          <li><code>(%soft_reduce expr)</code>: where expr is evaluated before applying transformations. It returns the final reduced expression.</li>
+          <li><code>(%soft_reducet expr)</code>: where expr is evaluated before applying transformations. 
+            It returns a list of all the applied transformations.</li>
+          <li><code>(%soft_reduceq expr)</code>: where expr is transformed without evaluation. It returns the final reduced expression.</li>
+          <li><code>(%soft_reduceqt expr)</code>: where expr is transformed without evaluation. It returns a list of all the applied transformations.</li>
+        </ul>
+        <p>Examples:</p>
+        <div class="examples">
+          <div class="example">
+           <div class="input">
+              <code>
+                (%soft_reduceq (* (+ 3 x) (* 2 x)))
+              </code>
+           </div>
+           <div class="output">
+              <code>
+                (+ (* 2 (pow x 2)) (* 6 x))
+              </code>
+           </div>             
+          </div>
+          <div class="example">
+           <div class="input">
+              <code>
+                (%soft_reduceqt (* (+ 3 x) (* 2 x)))
+              </code>
+           </div>
+           <div class="output">
+              <code>
+            (
+              (* (+ 3 x) (* 2 x))
+              "Join product operators"
+              (* (+ 3 x) 2 x)
+              "Multiply sum terms (right)"
+              (* (+ (* 2 3) (* 2 (+ x))) x)
+              "Redundant sum operator"
+              (* (+ (* 2 3) (* 2 x)) x)
+              "Multiply numbers"
+              (* (+ (* 6) (* 2 x)) x)
+              "Redundant product operator"
+              (* (+ 6 (* 2 x)) x)
+              "Multiply sum terms (right)"
+              (* (+ (* x 6) (* x (+ (* 2 x)))))
+              "Redundant sum operator"
+              (* (+ (* x 6) (* x (* 2 x))))
+              "Redundant product operator"
+              (+ (* x 6) (* x (* 2 x)))
+              "Join product operators"
+              (+ (* x 6) (* x 2 x))
+              "Multiply element by itself"
+              (+ (* x 6) (* 2 (pow x 2)))
+              "Put number in front of expression in multiply"
+              (+ (* 6 x) (* 2 (pow x 2)))
+              "Sort terms by power (1 power)"
+              (+ (* 2 (pow x 2)) (* 6 x))
+            )                
+              </code>
+           </div>             
+          </div>
+        </div>
+        <p>Solving an equation is a particular case of reduction. 
+          For example, if we want to solve this equation:</p>
+        <span class="code">2 * x + b = 7</span>
+        <p>Then we should type this command:</p>
+        <div class="examples">
+          <div class="example">
+           <div class="input">
+            <code>
+              (%soft_reduceq (solve x (+ (* 2 x) b) 7))
+            </code>
+           </div>
+           <div class="output">
+            <code>
+              (%soft_solved x (+ (* -0.5 b) 3.5))
+            </code>
+           </div>             
+          </div>
+        </div>
+
+      </div>
+      
+      <a href="projects/solver/solver.snp" 
+         download="solver.snp"
+         class="btn btn-info read-more" role="button">Download module</a>
+
+    {----}
+  </body>
+</html>

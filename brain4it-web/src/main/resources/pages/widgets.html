@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>-</title>
+  </head>
+  <body>
+    {--title--}Dashboards - Brain4it{----}
+    
+    {--widgets_current--} <span class="sr-only">(current)</span>{----}
+    
+    {--reference_active--} active{----}
+        
+    {--body--}
+      <h1>Widget types</h1>
+     
+      <p>Below is shown the list of all the widget types currently supported by the dashboards 
+        of the manager applications:</p>
+      
+      <h2>Button widget</h2>
+      <div class="box widget">
+        <p>A push button that can invoke a function when it is pressed and when it is released.</p>
+        <div class="image"><img src="images/widgets/button.png" alt=""></div>
+        <div class="info">
+          <ul>
+            <li><span class="code">button-id</span>: a string that represents the button identifier that 
+              this widget will send to the exterior functions as the data argument. 
+              By default is null.</li>
+            <li><span class="code">label</span>: the text to show on the button. Default value is 'PUSH'.</li>
+            <li><span class="code">font-family</span>: the font family of the text. 
+              Supported values are "lcd", "monospace" and "fontawesome" but additional families may also be supported.</li>
+            <li><span class="code">font-size</span>: the font size of the text in pixels. Default value is 14.</li>
+            <li><span class="code">on-pressed</span>: the exterior function to call when the button is pressed.</li>
+            <li><span class="code">on-released</span>: the exterior function to call when the button is released.</li>
+          </ul>
+        </div>  
+      </div>
+
+      <h2>Display widget</h2>
+      <div class="box widget">
+        <p>A multiline text display.</p>
+        <div class="image"><img src="images/widgets/display.png" alt=""></div>
+        <div class="info">
+          <ul>
+            <li><span class="code">lines</span>: the number of lines of the display. Default value is 3.</li>
+            <li><span class="code">font-family</span>: the font family of the text. 
+              Supported values are "lcd", "monospace" and "fontawesome" but additional families may also be supported.</li>
+            <li><span class="code">get-value</span>: the exterior function that provides the text to show.</li>
+          </ul>
+        </div>
+      </div>
+
+      <h2>EditText widget</h2>
+      <div class="box widget">
+        <p>A component to edit text.</p>
+        <div class="image"><img src="images/widgets/editText.png" alt=""></div>
+        <div class="info">
+          <ul>
+            <li><span class="code">label</span>: the text to show above the edit box. 
+              By default label is an empty string.</li>
+            <li><span class="code">font-family</span>: the font family of the text. 
+              Supported values are "lcd", "monospace" and "fontawesome" but additional 
+              families may also be supported.</li>
+            <li><span class="code">font-size</span>: the font size of the text in pixels. Default value is 14.</li>
+            <li><span class="code">get-value</span>: the exterior function that provides the text to edit.</li>
+            <li><span class="code">set-value</span>: the exterior function that will be called when the
+               text changes. That text is passed to the exterior function as argument.</li>
+            <li><span class="code">invoke-interval</span>: the minimum time in milliseconds between two
+              consecutive calls to the <span class="code">set-value</span> external function.</li>
+            <li><span class="code">auto-scroll</span>: the type of automatic vertical scrolling to apply
+               when the text of this widget is changed. Its value can be "top" to scroll top
+               or "bottom" to scroll bottom. Any other value maintains the previous scroll position.</li>
+          </ul>
+        </div>
+      </div>      
+      
+      <h2>Gauge widget</h2>
+      <div class="box widget">
+        <p>A circular gauge with a needle that represents a numeric value within a range.</p>
+        <div class="image"><img src="images/widgets/gauge.png" alt=""></div>
+        <div class="info">
+          <ul>
+            <li><span class="code">label</span>: the text to show inside the gauge.</li>
+            <li><span class="code">min</span>: the minimum value of the gauge. Default value is 0. </li>
+            <li><span class="code">max</span>: the maximum value of the gauge. Default value is 100. </li>
+            <li><span class="code">divisions</span>: the number of divisions painted on the gauge (must be greater than 4). 
+              Default value is 10.</li>
+            <li><span class="code">decimals</span>: the maximum number of decimals to show for the value. By default is 0.</li>
+            <li><span class="code">get-value</span>: the exterior function that provides the value of the gauge.</li>
+          </ul>
+        </div>  
+      </div>
+
+      <h2>Graph widget</h2>
+      <div class="box widget">
+        <p>A widget that plots the values of multiple datasets in time scale. The time range can be changed dinamically dragging the mouse up and down. 
+          A mouse double click starts/stops the graph animation.</p>
+        <div class="image"><img src="images/widgets/graph.png" alt=""></div>
+        <div class="info">
+          <ul>
+            <li><span class="code">label</span>: the text to show on top of the graph widget.</li>
+            <li><span class="code">time-range</span>: the visible time range that must be one of the 
+              following values: 1s, 5s, 20s, 1m, 5m, 30m, 1h, 4h, 8h, 12h, 1d, 1w, 4w, 1y.</li>
+            <li><span class="code">max-data</span>: the maximum number of values to retain for each dataset. Default value is 1000. </li>
+            <li><span class="code">date-format</span>: a Java date pattern to specifiy the date format. Default value is "dd/MM/yyyy".</li>
+            <li><span class="code">dataset-names</span>:  a string that contains the names of the datasets to plot, separated by spaces.</li>
+            <li><span class="code">get-value</span>: the exterior function that returns the current values to 
+              plot for all datasets. The returned value can be: a single number or a list according to these 
+              formats: (dataSetName? => value+) or (dataSetName? => (value timestamp)+).
+              Examples:
+              <ul>
+                <li><code>25.34</code></li>
+                <li><code>(25.34)</code></li>
+                <li><code>("tem" => 22.5 "pre" => 1023.4 "hum" => 78.3 ...)</code></li>
+                <li><code>("tem" => (22.5 1525190567927) "pre" => (1023.1 1525190567927) ...)</code></li>
+              </ul>
+            </li>
+            <li><span class="code">get-history</span>: the exterior function that provides the historic values to 
+             plot. That function must return a list according to this format: (dataSetName? => ((value timestamp)+)+) 
+             where values are ordered from oldest to newest.
+             Example: 
+             <code>("x" => ((8.45 1525190567927) (7.41 1525190569231) ...) "y" => ((-2.65 1525190567927) (-1.08 1525190569231) ...))</code>
+             The graph widget only calls <span class="code">get-history</span> function the first time it is displayed and
+             then it refreshes its contents when the <span class="code">get-value</span> exterior function provides new data.
+            </li>
+          </ul>
+        </div>  
+      </div>      
+
+      <h2>Image widget</h2>
+      <div class="box widget">
+        <p>A widget to display images and videos.</p>
+        <div class="image"><img src="images/widgets/image.png" alt=""></div>
+        <div class="info">
+          <ul>
+            <li><span class="code">url</span>: the exterior function that provides the url of the image or video
+              to display. The supported image formats are JPEG, PNG and GIF. The only supported video format 
+              is MJPEG.</li>
+          </ul>
+        </div>  
+      </div>
+
+      <h2>Indicator widget</h2>
+      <div class="box widget">
+        <p>A widget to show an indicator value.</p>
+        <div class="image"><img src="images/widgets/indicator.png" alt=""></div>
+        <div class="info">
+          <ul>
+            <li><span class="code">label</span>: a string representing the title of the indicator that is
+              displayed on top of its value. By default no title is shown.</li>
+            <li><span class="code">get-value</span>: the exterior function that provides the value of the 
+              indicator.</li>
+            <li><span class="code">font-family</span>: the font family of the indicator value. Supported 
+              families are "lcd", "monospace" and "fontawesome" but other may also be supported.</li>
+            <li><span class="code">units</span>: a string that indicates the units of this indicator.
+              No units are displayed by default.</li>
+            <li><span class="code">max-value-length</span>: the maximum number of characters of the indicator
+              value that will be displayed. If max-value-length is 0, the font size of
+              the indicator value will be adjusted to fit all its characters.
+          </ul>
+        </div>  
+      </div>
+      
+      <h2>Led widget</h2>
+      <div class="box widget">
+        <p>A led indicator that turns on and off depending on the value of a exterior function.</p>
+        <div class="image"><img src="images/widgets/led.png" alt=""></div>
+        <div class="info">
+          <ul>
+            <li><span class="code">label</span>: the text to paint under the led.</li>
+            <li><span class="code">get-value</span>: the exterior function that provides a boolean value than
+            determines the state of the led.</li>
+            <li><span class="code">color</span>: the color of the led in hexadecimal format: #RRGGBB. 
+              Default color is yellow (#FFFF00).</li>
+          </ul>
+        </div>  
+      </div>
+
+      <h2>Range widget</h2>
+      <div class="box widget">
+        <p>A slider control that allows you to select a numeric value within a range. 
+          Changes in the server are also reflected in the slider.</p>
+        <div class="image"><img src="images/widgets/range.png" alt=""></div>
+        <div class="info">
+          <ul>
+            <li><span class="code">label</span>: the text to show above the range control.</li>
+            <li><span class="code">min</span>: the minimum value of the range. Default value is 0.</li>
+            <li><span class="code">max</span>: the maximum value of the range. Default value is 100.</li>
+            <li><span class="code">get-value</span>: the exterior function that provides the value of the range.</li>
+            <li><span class="code">set-value</span>: the exterior function that will be called when the slider is changed. 
+              The argument passed to that function is the current value of the range.</li>
+          </ul>
+        </div>  
+      </div>
+
+      <h2>Select widget</h2>
+      <div class="box widget">
+        <p>A component that allows you to select a value from a list of options. 
+          Changes in the server are also reflected in the widget.</p>
+        <div class="image"><img src="images/widgets/select.png" alt=""></div>
+        <div class="info">
+          <ul>
+            <li><span class="code">label</span>: the text to show above the selector.</li>
+            <li><span class="code">get-options</span>: the exterior function that provides the list of options. 
+              Each option is a list with 2 elements, the value to send to the server and the label to display, both are strings. 
+              Example: <code>(("1" "Option 1") ("2" "Option 2") ...)</code></li>
+            <li><span class="code">get-value</span>: the exterior function that provides the current value of the select widget.</li>
+            <li><span class="code">set-value</span>: the exterior function that will be called when the selected option changes. 
+              The argument passed to that function is the value of the current option.</li>
+          </ul>
+        </div>  
+      </div>      
+      
+      <h2>Stick widget</h2>
+      <div class="box widget">
+        <p>A stick control designed to drive robots, drones and other mobile objects.</p>
+        <div class="image"><img src="images/widgets/stick.png" alt=""></div>
+        <div class="info">
+          <ul>
+            <li><span class="code">set-value</span>: the exterior function to call when the stick position changes. 
+              The argument passed to that function is a list (x y) that 
+              contains the horizontal and vertical position of the stick, 
+              both in the range (-100, 100).</li>
+            <li><span class="code">invoke-interval</span>: the minimum time in milliseconds between two
+              consecutive calls to the <span class="code">set-value</span> external function.</li>
+          </ul>
+        </div>  
+      </div>
+
+      <h2>Switch widget</h2>
+      <div class="box widget">
+        <p>A switch button with two states, ON and OFF.</p>
+        <div class="image"><img src="images/widgets/switch.png" alt=""></div>
+        <div class="info">
+          <ul>
+            <li><span class="code">label</span>: the text to show beside the switch button.</li>
+            <li><span class="code">get-value</span>: the exterior function that provides the current state
+              of the switch (a boolean).</li>
+            <li><span class="code">set-value</span>: the exterior function that will be called when the state of 
+              the switch changes. The data argument passed to that function is a boolean
+              representing the current state of the switch.</li>
+          </ul>
+        </div>  
+      </div>
+      
+    {----}
+  </body>
+</html>

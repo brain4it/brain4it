@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>-</title>
+  </head>
+  <body>
+    {--title--}Quick start - Brain4it{----}
+    
+    {--quick_start_current--} <span class="sr-only">(current)</span>{----}
+    
+    {--learning_active--} active{----}
+        
+    {--body--}
+      <h1>Quick start</h1>
+      
+      <ul>
+        <li><a href="#desktop">Desktop computers (Windows, Linux and MacOS)</a></li>
+        <li><a href="#android">Android devices</a></li>        
+      </ul>
+
+      <a name="desktop">desktop</a>
+      <h2>Desktop computers</h2>
+      
+      <h3>Step 1: download an start the server</h3>
+      <div class="box">
+        <p>If your computer does not have Oracle Java installed (version 8+), 
+          download it from <a href="http://java.com" target="_blank" aria-label="open new window">http://java.com</a> and install it. 
+          Ensure that the <span class="code">java</span> executable is in your PATH.
+        </p>
+        <p>Download an unzip the file <a href="http://smartcity.esantfeliu.org/download/brain4it-server-standalone-1.0.zip">brain4it-server-standalone-1.0.zip</a> into your home directory.</p>
+        <p>Enter the <span class="code">brain4it-server-standalone-1.0</span> folder and execute the <span class="code">bin/startup.bat</span> script (Windows) 
+          or <span class="code">bin/startup.sh</span> (UNIX):</p>
+            <pre>
+[2018-10-04 19:23:02] [INFO] Initializing FileSystemStore... 
+[2018-10-04 19:23:03] [INFO] Store: org.brain4it.server.store.FileSystemStore 
+[2018-10-04 19:23:03] [INFO] Multi-tenant mode: false 
+[2018-10-04 19:23:03] [INFO] Access key: false 
+[2018-10-04 19:23:03] [INFO] Access key file: null 
+[2018-10-04 19:23:03] [INFO] Starting server 
+[2018-10-04 19:23:03] [INFO] Remove file /Users/realor/brain4it-server-standalone-1.0/conf/shutdown to stop server. 
+[2018-10-04 19:23:03] [INFO] Base path: /Users/realor/brain4it_modules 
+[2018-10-04 19:23:03] [INFO] Loading libraries... 
+[2018-10-04 19:23:03] [INFO] Loading library Core 
+[2018-10-04 19:23:03] [INFO] Loading library Module 
+[2018-10-04 19:23:03] [INFO] Loading modules... 
+[2018-10-04 19:23:04] [INFO] Server listening on port 9.999
+            </pre>
+        <p>Now the server is running and listening on port 9999. 
+          To stop it nicely you have these options:</p>
+        <ul>
+          <li>Execute the <span class="code">bin/shutdown</span> script or</li>
+          <li>Press CTRL-C on the server console or</li>
+          <li>Send a SIGTERM signal to the running process (<span class="code">kill &lt;pid&gt;</span> in UNIX systems).
+        </ul>
+        <p>If the server is not stopped by any of the above methods, 
+          its modules will not be saved and their data could be lost.</p>
+      </div>
+
+      <h3>Step 2: download and run the manager</h3>
+      <div class="box">
+        <p>Download the <a href="http://smartcity.esantfeliu.org/download/brain4it-manager-swing-1.0.jar">brain4it-manager-swing-1.0.jar</a> and copy it into your home directory.</p>  
+        <p>Doble click the jar file or open a new command shell in that directory and start the manager application with this command:
+            <pre>
+> java -jar brain4it-manager-swing-1.0.jar
+            </pre>
+        <p>If the command is successful, the Brain4it manager window will appear.</p>
+        <img src="images/quickstart_d1.png" alt="" class="screenshot">
+      </div>
+
+      <h3>Step 3: connect to the server from the manager</h3>
+      <div class="box">
+        <p>Ensure that your Brain4it server in running. Add it to the workspace from the menu option <span class="path">File > Add server...</span></p> 
+        <img src="images/quickstart_d2.png" alt="" class="screenshot">
+        <p>Give the server a name, for example, <span class="code">localhost</span>, enter this URL: 
+          <span class="code">http://localhost:9999</span> and press Accept button. The server will be added to the workspace.</p>
+        <p>Select that server in the workspace and create a new module with the menu option <span class="path">File > Create module...</span></p>
+        <img src="images/quickstart_d3.png" alt="" class="screenshot">
+        <p>Enter the module name, for example, <span class="code">test</span>, and press Accept button. The module will be created.</p> 
+        <p>Double click the module <span class="code">test</span>. On the right side of the window a console panel will appear.</p>
+        <img src="images/quickstart_d4.png" alt="" class="screenshot">
+        <p>Type the command <code>(+ 2 3)</code>. The server will evaluate this expression and return the value <code>5</code>.</p>
+
+      </div>
+
+      <br>
+      
+      <a name="android">android</a>
+      <h2>Android devices</h2>
+      
+      <h3>Step 1: download, install and start the server app</h3>
+      <div class="box">
+        <p>Download the file <a href="http://smartcity.esantfeliu.org/download/brain4it-server-android-1.0.apk">brain4it-server-android-1.0.apk</a> and install it in your android device. 
+          You may need to activate the option <span class="path">Device settings > General > Security > Unknown sources</span> to install the app.</p>
+        <p>Once installed, a new app called "Brain4it Server" will appear in your application list.</p>
+        <p>Enter the app and press the Start button.</p>
+        <img src="images/quickstart_a1.png" alt="" class="screenshot w400">
+        <p>The Brain4it server for android is now running. 
+          The app shows the ip address and port where it accepts connections.</p>
+      </div>
+
+      <h3>Step 2: download, install and run the manager app</h3>
+      <div class="box">
+        <p>Download the file <a href="http://smartcity.esantfeliu.org/download/brain4it-manager-android-1.0.apk">brain4it-manager-android-1.0.apk</a> and install it in your android device.</p>
+        <p>Once installed, a new app called "Brain4it Manager" will appear in your application list. 
+          Enter the app. The first time, you will see an empty server list.</p>
+        <img src="images/quickstart_a2.png" alt="" class="screenshot w400">
+      </div>      
+
+      <h3>Step 3: connect to the server from the manager</h3>
+      <div class="box">
+        <p>Inside the Brain4it Manager app, select the menu option "Add server" (plus icon):</p>
+        <img src="images/quickstart_a3.png" alt="" class="screenshot w400">
+        <p>Give the server a name, for example, <span class="code">localhost</span>, 
+          enter the URL of your server: <span class="code">http://localhost:9999</span> and press the Ok button.</p>
+        <p>The <span class="code">localhost</span> server will now appear in the server list.</p>
+        <img src="images/quickstart_a4.png" alt="" class="screenshot w400">        
+        <p>Click on that server to see its modules.</p>
+        <p>Select the menu option "Create module" (asterisk icon)</p>
+        <img src="images/quickstart_a5.png" alt="" class="screenshot w400">        
+        <p>Enter the module name, for example, <span class="code">test</span>, and press Ok. 
+          The module <span class="code">test</span> will appear in the module list of 
+          the <span class="code">localhost</span> server.</p>
+        <img src="images/quickstart_a6.png" alt="" class="screenshot w400">
+        <p>Enter the <span class="code">test</span> module and press the prompt icon to access the console.</p>
+        <img src="images/quickstart_a7.png" alt="" class="screenshot w400">
+        <p>Type the command <code>(tts (format-date (date)))</code> and press ENTER or the Execute button. Your android device will give you the time.</p>        
+      </div>
+      
+    {----}
+  </body>
+</html>

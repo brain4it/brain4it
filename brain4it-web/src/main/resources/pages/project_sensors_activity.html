@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>-</title>
+  </head>
+  <body>
+    {--title--}Project - Sensors activity{----}
+
+    {--projects_current--} <span class="sr-only">(current)</span>{----}
+
+    {--projects_active--} active{----}
+
+    {--body--}
+    <h1>Sensors activity</h1>
+
+    <h2>Introduction</h2>
+    <div class="box">
+      <p>
+        <a href="http://sentilo.io">Sentilo</a> is an open source sensor
+        and actuator platform designed to fit in the Smart City architecture
+        of any city looking for openness and easy interoperability.
+        This platform provides a simple
+        <a href="http://www.sentilo.io/xwiki/bin/view/APIDocs/WebHome">HTTP REST API</a>
+        to manage sensory data.
+      </p>
+      <p>
+        The city of Sant Feliu de Llobregat uses Sentilo to publish
+        the data of their sensors. They decide to develope this Braint4it module
+        to detect which sensors have stopped sending data to the platform.
+        This information is provided in two different ways:
+      </p>
+      <ul>
+        <li>An email is sent to the user to report that a sensor is failing</li>
+        <li>The dashboard of the module has a
+          display that shows the IDs of the sensors that are failing.</li>
+      </ul>
+      <p>The following diagram illustrates the functioning of the system:</p>
+
+      <img src="projects/sensors_activity/sensors_activity_schema.svg" alt="">
+    </div>
+
+    <h2>Programming the module</h2>
+    <div class="box">
+      <p>
+        This module has been programmed using the timer functions.
+        The use of these functions is very appropriate to execute repetitive tasks 
+        because they do not consume an executor thread permanently.</p>
+      
+      <p>When the module is started, the code contained in the
+        <span class="code">start</span> variable <code>(spawn (eval main))</code> is evaluated.</p>
+      <p>This code schedules a sensor checking function to be 
+        executed every <span class="code">access_interval_msec</span> milliseconds:
+      </p>
+      <div class="code">
+        <code>
+          (timer-schedule
+            (function
+             ()
+             (try
+              (do
+               (### "Calculates time_reference, checks sensors")
+               (%soft_reset-sensors-failing)
+               (%soft_calculate-reference-timestamp)
+               (%soft_check-sensors)
+               (set variables/active true)
+              )
+             (ex
+               "*" =>
+               (do
+                 (### "When an error takes place, it is saved in a variable named 'error'")
+                 (set error (list (format-date (date)) ex))
+               )
+             )
+           )
+          )
+          0
+          variables/access_interval_msec
+          )
+        </code>
+      </div>
+      <p>The scheduled function performs the following tasks:</p>
+      <p>First cleans the list containing the ID's of
+        the sensors that were failing the in last iteration.
+        After that, a new reference time is calculated as the
+        difference between the current date and the access interval for
+        checking the sensor values. This reference time will be used later in order
+        to decide whether the sensors are working properly or not.</p>
+      <p>Next step is checking the sensors.
+        New values are obtained and evaluated. For each sensor value Sentilo also
+        provides the timestamp of its publication. If that timestamp
+        is older than the previously calculated reference time, then we assume that
+        the sensor is failing and include it in the list of failing sensors.
+        Those sensors without information are considered as if they were
+        broken down too.</p>
+      <p>Failing sensors list is showed in the dashboard and
+        an email is sent to the user by calling this function:
+      </p>      
+      <div class="code">
+        <code>
+          (function (sensor_id sensor_provider)
+          (###
+          "This fuction sends an email to the selected direction in order to inform about the incidence"
+          )
+          (smtp
+          "host" => setup/host
+          "port" => setup/port
+          "from" => setup/from
+          "to" => variables/to
+          "subject" => (concat setup/subject sensor_id)
+          "body" =>
+          (concat
+          setup/body
+          "\n"
+          "Provider: "
+          sensor_provider
+          "\n"
+          "Sensor ID: "
+          sensor_id
+          )
+          )
+          )
+        </code>
+      </div>
+      <p>The message that the user receives contains a brief description of the problem:</p>
+      <img src="projects/sensors_activity/email.png" alt="" class="image">
+      <p>
+        The dashboard of the module gives the user the option of choosing the access interval
+        and the email receiver. Every time the interval is changed the checking function is scheduled again:
+      </p>
+      <div class="code">
+        <code>
+          (function
+          (%soft_header data)
+          (### "Sets the value in the 'range' widget")
+          (set variables/access_interval data)
+          (%soft_calculate-access-interval-sec data)
+          (%soft_calculate-access-interval-msec variables/access_interval_sec)
+          (if
+          variables/active
+          (do
+          (timer-cancel)
+          (eval main)
+          )
+          )
+          (module-notify "@get-access-interval")
+          )
+        </code>
+      </div>
+
+      <img src="projects/sensors_activity/dashboard.png" alt="" class="image">
+      <p>
+        When the module is stopped, the <span class="code">stop</span> variable is evaluated
+        and the scheduled task is cancelled.
+      </p>
+      <p>The module configuration parameters (Sentilo properties, sensors to verify, etc.) are hold in the
+        <span class="code">setup</span> list. 
+      <p>
+    </div>
+
+    <a href="projects/sensors_activity/sensors_activity.snp"
+       download="sensors_activity.snp"
+       class="btn btn-info read-more" role="button">Download module</a>
+
+    {----}
+  </body>
+</html>

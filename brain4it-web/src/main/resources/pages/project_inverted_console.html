@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>-</title>
+  </head>
+  <body>
+    {--title--}Project - Inverted console {----}
+    
+    {--projects_current--} <span class="sr-only">(current)</span>{----}
+    
+    {--projects_active--} active{----}
+        
+    {--body--}
+      <h1>Inverted console</h1>
+
+      <div class="box">
+        <p>@command:</p>
+        <div class="code">
+          <code>
+          (function args
+            (set @command (list args/0 (date)))
+            (module-notify "@command")
+            (watch result)
+            result/0
+          )          
+          </code>
+        </div>
+
+        <p>@result:</p>
+        <div class="code">
+          <code>
+            (function (context data) (set result data)) 
+          </code>
+        </div>
+
+        <p>start:</p>
+        <div class="code">
+          <code>
+            (module-monitor "https://smartcity.santfeliu.cat/brain4it-server-web/modules"
+              "test" "@command"
+              (function (fn cmd tm)
+                (http "POST" "https://smartcity.santfeliu.cat/brain4it-server-web/modules/test/@result"
+                  body => (list (eval cmd/0) cmd/1)
+                )
+              )
+            )  
+          </code>
+        </div>
+                
+      </div>
+      
+    {----}
+  </body>
+</html>

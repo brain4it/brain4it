@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>-</title>
+  </head>
+  <body>
+    {--title--}REST API - Brain4it{----}
+
+    {--rest_api_current--} <span class="sr-only">(current)</span>{----}
+
+    {--reference_active--} active{----}
+
+    {--body--}
+      <h1>REST API</h1>
+
+      <div class="box">
+        <p>
+        All the functionality of the Brain4it servers is exposed through a simple HTTP REST API.
+        This allows third-party applications developed with other programming
+        languages to interact remotely with a brain to read and write data, invoke a
+        function or manage its modules.</p>
+
+        <p>The data format that this API accepts by default is BPL
+          (Brain4it Programming Language), but the POST method also supports
+          JSON and XML formats.</p>
+      </div>
+
+      <h2>Security model</h2>
+
+      <div class="box">
+        <p>The modules of a Brain4it server are usually protected with an access key.
+        This access key is set with a special variable named <code>access-key</code> 
+        in the global scope of the module.</p>
+
+        <p>At server level there is also a general access key defined in a
+        configuration file, that allows to perform any operation on any of
+        its modules.</p>
+
+        <p>To invoke a method of the REST API, will be necessary, in most cases,
+        to provide the access key of the module or the server through 
+        the <span class="code">Access-Key</span> property in the HTTP header:</p>
+        <pre>
+PUT /geopos/elements/car23/coordinates HTTP/1.1
+Host: localhost:9999
+Access-Key: 82769323097141012423
+Content-Type: text/plain; charset=utf-8
+Content-Length: 11
+
+(23.8 89.9)</pre>
+        <p>In production environments it is strongly recommended to configure the server for
+          accepting http secure connections (https:) to avoid compromising the access key.</p>
+      </div>
+
+      <h2>URL format</h2>
+
+      <div class="box">
+        The URL format for all the operations of the REST API is the following:
+        <span class="url">
+          http://&lt;host&gt;:&lt;port&gt;/&lt;base_path&gt;/&lt;module&gt;/&lt;module_path&gt;
+        </span>
+        <div>where:</div>
+        <ul>
+          <li><span class="code">host</span>: is the domain name or ip address of the Brain4it server.</li>
+          <li><span class="code">port</span>: is the listening port of the Brain4it server (typically 9999).</li>
+          <li><span class="code">base_path</span>: in the J2EE Brain4it server the base path is
+            <span class="code">&lt;context_path&gt;/modules</span> 
+            (for example <span class="code">brain4it-server/modules</span>). 
+            All other Brain4it servers omit the base path.
+          </li>
+          <li><span class="code">module</span>: the name of the server module.</li>
+          <li><span class="code">module_path</span>: a path relative to the server module.
+            This path has the same syntax as path references:
+            slash (/) denotes access by name, and colon (:) access by index. Example: /main/rules:2/predicate.</li>
+        </ul>
+        <p class="advanced">
+          When multi-tenant mode is enabled the URL format for all operations also includes the tenant name:
+          <span class="url">
+            http://&lt;host&gt;:&lt;port&gt;/&lt;base_path&gt;/<b>&lt;tenant&gt;</b>/&lt;module&gt;/&lt;module_path&gt;
+          </span>          
+        </p>
+      </div>
+
+      <h2>API summary</h2>
+
+      <div class="box">
+        <ul>
+          <li>HTTP GET method: this method allows to get information from the server.
+             There are 2 operations within this method:
+             <ul>
+               <li><a href="#list_modules">List modules</a></li>
+               <li><a href="#read_module_data">Read module data</a></li>
+             </ul>
+          </li>
+          <li>HTTP PUT method: this method allows to put information into the server.
+             There are 2 operations within this method:
+             <ul>
+               <li><a href="#create_module">Create module</a></li>
+               <li><a href="#write_module_data">Write module data</a></li>
+             </ul>
+          </li>
+          <li>HTTP DELETE method: this method allows to delete information from the server.
+             There are 2 operations within this HTTP method:
+             <ul>
+               <li><a href="#destroy_module">Destroy module</a></li>
+               <li><a href="#delete_module_data">Delete module data</a></li>
+             </ul>
+          </li>
+          <li>HTTP POST method: this method allows to execute code in the server.
+             There are 3 operations within this HTTP method:
+             <ul>
+               <li><a href="#execute_code">Execute code</a></li>
+               <li><a href="#call_exterior_function">Call exterior function</a></li>
+               <li><a href="#watch_exterior_functions">Watch exterior functions</a></li>
+               <li><a href="#unwatch_exterior_functions">Unwatch exterior functions</a></li>
+             </ul>
+          </li>
+        </ul>
+      </div>
+
+      <a name="list_modules">List modules</a>
+      <h2>List modules</h2>
+
+      <div class="box">
+        <p>When the HTTP url points to the modules root
+        (that is <span class="code">module</span> and <span class="code">module_path</span> are not specified), the GET
+        method returns a BPL list describing all the modules that are contained in the server.
+        In this case, no access key is required.
+        </p>
+        <p>Example:</p>
+        <span class="url">http://localhost:9999</span>
+        <pre>
+GET / HTTP/1.1
+Host: localhost:9999</pre>
+<pre>
+HTTP/1.1 200 OK
+Access-Control-Allow-Origin:*
+Access-Control-Expose-Headers: server-time
+Content-Length:95
+Content-Type:text/plain;charset=UTF-8
+Date:Sat, 04 Nov 2017 19:35:56 GMT
+Server-Time: 1509820536367
+Server:Brain4it
+
+(("air1" ("icon" => "air" "description" => "Air conditioner 1")) "biometric" "lights" "main")</pre>
+        <p>The returned list may contain for each module:</p>
+        <ul>
+          <li>A single string representing the name of the module, or</li>
+          <li>A list that contains the name of the module and other list with
+            more descriptive properties like the icon and the description that
+            will be shown in the manager applications.
+          </li>
+        </ul>
+        <p>The descriptive properties of a module are hold in the special
+          variable <code>module-metadata</code> of the module.</p>
+      </div>
+
+      <a name="read_module_data">Read module data</a>
+      <h2>Read module data</h2>
+
+      <div class="box">
+        <p>When the HTTP url references a <span class="code">module</span>, 
+          the GET method will return the data associated to the 
+          <span class="code">module_path</span>.</p>
+        <p>
+          The access key of the module or the server is required 
+          for this operation except when <span class="code">module_path</span> is
+          <code>module-metadata</code>.
+        </p>
+        <p>Example:</p>
+        <span class="url">http://localhost:9999/geopos/car23/coordinates</span>
+        <pre>
+GET /geopos/elements/car23/coordinates HTTP/1.1
+Host: localhost:9999
+Access-Key: 82769323097141012423</pre>
+<pre>
+HTTP/1.1 200 OK
+Access-Control-Allow-Origin:*
+Access-Control-Expose-Headers: server-time
+Content-Length:11
+Content-Type:text/plain;charset=UTF-8
+Date:Sat, 04 Nov 2017 19:35:36 GMT
+Server-Time: 1509820536367
+Server:Brain4it
+
+(23.8 89.9)</pre>
+        <p>If <span class="code">module_path</span> is omitted, all module data (the global scope) will be returned as a BPL list.</p>
+        <p>A error will be returned if <span class="code">module</span> or <span class="code">module_path</span>
+          are invalid.</p>
+      </div>
+
+      <a name="create_module">Create module</a>
+      <h2>Create module</h2>
+
+      <div class="box">
+        <p>The creation of a new module in the server, can be done through a HTTP PUT request  
+          indicating the <span class="code">module</span> name to create in the url.
+          The <span class="code">module_path</span> and the HTTP body must be empty. 
+          The server access key is required in this case.</p>
+        <p>Example:</p>
+        <span class="url">http://localhost:9999/facility</span>
+        <pre>
+PUT /facility HTTP/1.1
+Host: localhost:9999
+Access-Key: 553454422234345345
+Content-Length:0</pre>
+<pre>
+HTTP/1.1 200 OK
+Access-Control-Allow-Origin:*
+Access-Control-Expose-Headers: server-time
+Content-Length:26
+Content-Type:text/plain;charset=UTF-8
+Date:Sat, 04 Nov 2017 19:35:36 GMT
+Server-Time: 1509820536367
+Server:Brain4it
+
+"Module facility created."</pre>
+        <p>If the operation is successful, the server will return a string 
+          indicating that the module was created.</p>
+        <p>A error will be returned if already exists a module with the same name.</p>
+      </div>
+
+      <a name="write_module_data">Write module data</a>
+      <h2>Write module data</h2>
+
+      <div class="box">
+        <p>Module data can be changed with a HTTP PUT request indicating in the url the
+          <span class="code">module</span> and the <span class="code">module_path</span> 
+          of the data to update. The HTTP body must contain data (can not be 0 length) in BPL format.
+          The access key of the module or the server is required in this case.</p>
+        <p>Example:</p>
+        <span class="url">http://localhost:9999/facility/space012/info</span>
+        <pre>
+PUT /facility/space012/info HTTP/1.1
+Host: localhost:9999
+Access-Key: 82769323097141012423
+Content-Length:52
+Content-Type:text/plain;charset=UTF-8
+
+("description" => "Mayor's room" "surface" => 21.2)</pre>
+        <pre>
+HTTP/1.1 200 OK
+Access-Control-Allow-Origin:*
+Access-Control-Expose-Headers: server-time
+Content-Length:4
+Content-Type:text/plain;charset=UTF-8
+Date:Sun, 05 Nov 2017 19:35:36 GMT
+Server-Time: 1509820536367
+Server:Brain4it
+
+null</pre>
+        <p>The server returns the previous data associated with the given <span class="code">module_path</span>.</p>
+        <p>If <span class="code">module_path</span> is omitted, all module data (the global scope) will be replaced by the given HTTP body.</p>
+        <p>A error will be returned if <span class="code">module</span> or <span class="code">module_path</span>
+          are invalid.</p>
+      </div>
+
+      <a name="destroy_module">Destroy module</a>
+      <h2>Destroy module</h2>
+
+      <div class="box">
+        <p>A server module can be destroyed through a HTTP DELETE request indicating in the url
+          the <span class="code">module</span> to destroy. 
+          The <span class="code">module_path</span> must not be specified. 
+          This operation requires the access key of the module or the server.</p>
+        <p>Example:</p>
+        <span class="url">http://localhost:9999/facility</span>
+        <pre>
+DELETE /facility HTTP/1.1
+Host: localhost:9999
+Access-Key: 82769323097141012423</pre>
+        <pre>
+HTTP/1.1 200 OK
+Access-Control-Allow-Origin:*
+Access-Control-Expose-Headers: server-time
+Content-Length:29
+Content-Type:text/plain;charset=UTF-8
+Date:Sun, 05 Nov 2017 19:35:36 GMT
+Server-Time: 1509820536367
+Server:Brain4it
+
+"Module facility destroyed."</pre>
+        <p>If the operation is successful, the server will return a string 
+          indicating that the module was destroyed.</p>
+      </div>
+
+      <a name="delete_module_data">Delete module data</a>
+      <h2>Delete module data</h2>
+
+      <div class="box">
+        <p>Module data can be deleted through a HTTP DELETE request indicating in the url
+          the <span class="code">module</span> and <span class="code">module_path</span> of
+          the data to delete. The access key of the module or the server is required in this case.</p>
+        <p>Example:</p>
+        <span class="url">http://localhost:9999/facility/space012/info</span>
+        <pre>
+DELETE /facility/space012/info HTTP/1.1
+Host: localhost:9999
+Access-Key: 82769323097141012423</pre>
+<pre>
+HTTP/1.1 200 OK
+Access-Control-Allow-Origin:*
+Access-Control-Expose-Headers: server-time
+Content-Length:52
+Content-Type:text/plain;charset=UTF-8
+Date:Sun, 05 Nov 2017 19:35:36 GMT
+Server-Time: 1509820536367
+Server:Brain4it
+
+("description" => "Mayor's room" "surface" => 21.2)</pre>
+        <p>The server returns the data that was associated with the given <span class="code">module_path</span>.</p>
+      </div>
+
+      <a name="execute_code">Execute code</a>
+      <h2>Execute code</h2>
+
+      <div class="box">
+        <p>A BPL expression (or code frament) can be evaluated through a HTTP POST request 
+          passing that expression in the HTTP body and providing in the url the 
+          <span class="code">module</span> in which to do the evaluation.
+          The <span class="code">module_path</span> must not be specified. 
+          This operation requires the access key of the module or the server.</p>
+        <p>Example:</p>
+        <span class="url">http://localhost:9999/facility</span>
+        <pre>
+POST /facility HTTP/1.1
+Host: localhost:9999
+Access-Key: 82769323097141012423
+Content-Length:22
+Content-Type:text/plain;charset=UTF-8
+
+(set counter (+ 2 3))</pre>
+<pre>
+HTTP/1.1 200 OK
+Access-Control-Allow-Origin:*
+Access-Control-Expose-Headers: server-time
+Content-Length:1
+Content-Type:text/plain;charset=UTF-8
+Date:Sun, 05 Nov 2017 19:35:36 GMT
+Server-Time: 1509820536367
+Server:Brain4it
+
+5</pre>
+        <p>The server returns the result of evaluating the given code or expression.</p>
+      </div>
+
+      <a name="call_exterior_function">Call exterior function</a>
+      <h2>Call exterior function</h2>
+
+      <div class="box">
+        <p>Exterior functions are user defined functions specially designed to be 
+          invoked from external applications through the REST API. 
+          These functions are easily recognizable because their name always 
+          starts with the at symbol (@). They take two parameters: 
+          <code>context</code> and <code>body</code>.
+        </p>
+        <p>Example:</p>
+        <div>
+        <code>
+          (set @sum-data 
+            (function 
+              (context body)
+              (eval (append (list +) (parse body "json")))
+            )
+          )
+        </code>
+        </div>
+        <p>An exterior function can be invoked with a HTTP POST request specifying in the url the
+          module (<span class="code">module</span>) and the name (<span class="code">module_path</span>) 
+          of the function.</p>
+        <p>The HTTP body may contain the data to be passed to the exterior function
+          as the <code>body</code> argument. That body can be expressed in 
+          BPL, JSON or XML formats in accordance with the <span class="code">Content-Type</span> header property. 
+          When the <span class="code">Content-Type</span> is <span class="code">text/plain</span> <code>body</code> 
+          will be converted to a BPL object. In the other cases, <code>body</code> will be passed to the function
+          as a string.
+        </p>
+        <p>The <code>context</code> argument is a BPL list that contains the following information:</p>
+        <ul>
+          <li><code>remote-address</code> : the client IP address</li>
+          <li><code>remote-port</code> : the client IP port</li>
+          <li><code>request-headers</code> : a BPL named list containing the request headers. Header names are 
+          <strong>lowercase</strong>. 
+            When the request comes from a dashboard, this list will contain the property <span class="code">session-id</span>
+            whose value is an identifier to track the user session.
+          </li>
+          <li><code>response-headers</code> : a BPL named list to set the response headers. Header names must be 
+            <strong>lowercase</strong>. By default, this list is <code>null</code>.</li>
+        </ul>
+        <p>The result of the function will be sent to the external invoking application.
+          The format in which that result will be sent is determined by the property <span class="code">content-type</span>
+          of <code>response-headers</code>. By default, the result will be encoded as a BPL object. 
+        </p>
+        <p>It is not required to provide the access key when invoking exterior functions. 
+          That does not always means that exterior functions are unprotected because
+          they may implement other security strategies.</p>
+          
+        <p>Example:</p>
+        <span class="url">http://localhost:9999/facility/@sum-data</span>
+        <pre>
+POST /facility/@sum-data HTTP/1.1
+Host: localhost:9999
+Access-Key: 82769323097141012423
+Content-Type: application/json
+Content-Length: 10
+
+[8, 5, 3]</pre>
+<pre>HTTP/1.1 200 OK
+Access-Control-Allow-Origin:*
+Access-Control-Expose-Headers: server-time
+Content-Length:5
+Content-Type:text/plain;charset=UTF-8
+Date:Sat, 04 Nov 2017 19:35:36 GMT
+Server-Time: 1509820536367
+Server:Brain4it
+
+16</pre>
+        <p>The server will return the result of evaluating the exterior function.</p>
+      </div>
+
+      <a name="watch_exterior_functions">Watch exterior function</a>
+      <h2>Watch exterior functions</h2>
+
+      <div class="box">
+        <p>The widgets of a dashboard need to call the exterior functions of 
+          a module to show information to the user.
+          These functions could be invoked doing HTTP 
+          requests to the server at a certain frequency (polling), but when 
+          the function values vary very often, this method has many drawbacks.</p>
+        <p>That's why the Brain4it servers offer a more efficient
+          way to monitor the value returned by exterior functions based on a
+          technique similiar to streaming: the HTTP connection will remain open 
+          and whenever the value returned by a function changes, the server will
+          send that value to the client through the connection using the 
+          standard HTTP chunked transfer encoding.
+        </p>
+        <p>Exterior functions can be monitored doing a HTTP POST request specifying in the url
+          the <span class="code">module</span> where they are defined 
+          and providing in the HTTP body the BPL list that contains the names of the 
+          exterior functions to watch.</p>
+        <p>
+          A special HTTP header property called <span class="code">Monitor</span> 
+          must be specified to inform that this is a monitoring request. The value of 
+          this header property is the interval, in milliseconds, at which the 
+          server will evaluate the given exterior functions. When this value is 0, 
+          the server will only evaluate a function if it receives a change notification 
+          for that function.
+          (See the <a href="library_module.html#an_module-notify"><span class="code">module-notify</span></a> function
+           for more details).</p>
+        <p>It is not required to provide the access key for this operation.</p>
+        <p>Example:</p>
+        <span class="url">http://localhost:9999/facility</span>
+        <pre>
+POST /facility HTTP/1.1
+Host: localhost:9999
+Monitor: 1000
+Content-Type:text/plain; charset=utf-8
+Content-Length:34
+
+("@get-photo" "@display" "@light-level")</pre>
+<pre>
+HTTP/1.1 200 OK
+Access-Control-Allow-Origin: *
+Date:Sat, 04 Nov 2017 19:39:56 GMT
+Server: Brain4it
+Transfer-Encoding: chunked
+
+27
+"1d01e78e-212e-4fe7-bb1d-d28312c4645e"
+
+21
+("@get-value" "A" 1535183881242)
+
+23
+("@light-level" 423 1509820797274)
+
+22
+("@display" "OPEN" 1509820796556)
+
+1
+
+
+23
+("@light-level" 420 1509820799234)
+
+1
+
+
+</pre>
+        <p>The first chunk sent by the server is the monitoring session identifier, a quoted string
+          that will be used later in an unwatch request to finish the monitoring session.
+        </p>
+        <p>The data chunks that follows are BPL lists with three elements: 
+          the function name, the new value returned by the function and 
+          the server time (in milliseconds) when that value was sent. </p>
+        <p>All chunks are ended by a LF (line feed) character followed by  
+          a CR+LF that mandates the chuncked protocol.</p>
+        <p>The server will continue sending data until the client close the connection or 
+          an unwatch request is received.</p>
+        <p>When none of the monitored functions change for a period greater than 30 seconds 
+          (<span class="code">monitorPingTime</span> server parameter) a LF (line feed) character
+          is sent (as a ping message) to check if the connection has been closed.</p>
+      </div>
+
+      <a name="unwatch_exterior_functions">Unwatch exterior function</a>
+      <h2>Unwatch exterior functions</h2>
+
+      <div class="box">
+        <p>An application that has an active monitoring session can
+        inform the server that it is no longer interested in receiving data with an unwatch request. 
+        These requests are identical to watch requests but instead of
+        a list of exterior functions, its body must contain 
+        the monitoring session identifier obtained in the previous watch request.
+       </p>
+        <pre>
+POST /facility HTTP/1.1
+Host: localhost:9999
+Monitor: 1000
+Content-Type:text/plain; charset=utf-8
+Content-Length:39
+
+"1d01e78e-212e-4fe7-bb1d-d28312c4645e"</pre>
+<pre>
+HTTP/1.1 200 OK
+Access-Control-Allow-Origin: *
+Date:Sat, 04 Nov 2017 19:39:59 GMT
+Server: Brain4it
+Content-Type:text/plain; charset=utf-8
+Content-Length:11
+
+"unwatched"</pre>
+
+      </div>
+      
+    {----}
+  </body>
+</html>

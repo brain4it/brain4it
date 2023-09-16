@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>-</title>
+  </head>
+  <body>
+    {--title--}Project - Libelium stations{----}
+    
+    {--projects_current--} <span class="sr-only">(current)</span>{----}
+    
+    {--projects_active--} active{----}
+        
+    {--body--}
+      <h1>Libelium stations</h1>
+
+      <h2>Introduction</h2>
+      <div class="box">
+        <div class="info">
+          <p><a href="http://libelium.com">Libelium</a> is a spanish company specialized in the development and manufacture 
+            of sensory devices.</p>
+          <p>One of its flagship products is the <a href="http://www.libelium.com/products/plug-sense/">Waspmote plug & play</a>, 
+            a sensor box with wireless connectivity that allows you to connect up to 6 probes 
+            to measure temperature, humidity, pressure, pollution, noise and many other atmospheric data.</p>
+          <p><a href="http://sentilo.io">Sentilo</a> is a sensor/actuator platform developed by the Barcelona Council 
+            and adopted by many cities in Catalonia. 
+            This platform provides a simple <a href="http://www.sentilo.io/xwiki/bin/view/APIDocs/WebHome">HTTP REST API</a> 
+            to publish and read the sensory data without dealing with the complexity and heterogeneity of the devices.</p>  
+          
+          <p>The Waspmote can be easily programmed in C++ (in a similar way to Arduino boards) 
+            to send the data of the probes to the <a href="http://sentilo.io">Sentilo</a> platform through a Wifi connection.</p>
+          <p>In this project we will see how to create a Brain4it module with a dashboard to visualize the sensory data provided by 4 Libelium stations 
+            (Waspmote plug & play) integrated in Sentilo.</p>
+        </div>
+        <img src="projects/libelium/libelium.svg" class="image" alt="" />
+      </div>
+      
+      <h2>Programming the module</h2>
+      <div class="box">
+        <div>
+          <p>Each Libelium station publishes a new observation of its sensors in Sentilo every 2 minutes. 
+            The name of these sensors follows this convention:</p>
+          <pre>libelium_&lt;station&gt;_&lt;sensor_type&gt;</pre>
+          Examples: <span class="code">libelium_MAG_tem</span>, <span class="code">libelium_MAG_pre</span>, 
+          <span class="code">libelium_ROS_tem</span>, <span class="code">libelium_ROS_hum</span>, etc. 
+        </div>
+        <p>On start, the Brain4it module creates a subscription to the sensors of the 4 Libelium stations. 
+          This is done by calling the function <span class="code">subscribe_sensor</span> for each station and sensor type 
+          in the <span class="code">start</span> code block:</p>
+        <div class="code">
+          <code>
+            (for-each
+              ("MAG" "ROS" "BRI" "PLA")
+              libelium_station
+              (for-each
+                ("tem" "pre" "hum")
+                sensor_type
+                (subscribe-sensor libelium_station sensor_type)
+              )
+            )
+          </code>
+        </div>
+        <p>Where the <span class="code">subscribe_sensor</span> function is:</p>
+        <div class="code">
+          <code>
+          (function
+            (libelium_station sensor_type)
+            (http
+              "PUT"
+              (concat
+                setup/sentilo_url
+                "/subscribe/data/"
+                setup/provider_id
+                "/libelium_"
+                libelium_station
+                "_"
+                sensor_type
+              )
+              "properties" =>
+              (list "IDENTITY_KEY" => setup/provider_key)
+              "body" => (list "endpoint" => setup/callback)
+              "input-format" => "json"
+              "output-format" => "json"
+            )
+          )          
+          </code>
+        </div>
+        <p>After that, whenever a station publishes a new data for a sensor, Sentilo will invoke the 
+          <span class="code">@callback</span> exterior function:</p>
+        <div class="code">
+          <code>
+            (function
+              (context data)
+              (local
+                info
+                sensor
+                station
+                sensor_type
+                sensor_value
+                last_value
+                timestamp
+                history_values
+              )
+              (set info (parse data "json"))
+              (set sensor (split info/sensor "_"))
+              (set station sensor/1)
+              (set sensor_type sensor/2)
+              (set sensor_value (number info/message))
+              (set timestamp info/time)
+              (### "save last value to history_data")
+              (if
+                (not (has history_data sensor_type))
+                (put history_data sensor_type (list))
+              )
+              (if
+                (not (has (get history_data sensor_type) station))
+                (put (get history_data sensor_type) station (list))
+              )
+              (set
+                history_values
+                (get (get history_data sensor_type) station)
+              )
+              (set
+                last_value
+                (get (get current_data sensor_type) station)
+              )
+              (if
+                last_value
+                (do
+                  (push history_values last_value)
+                  (### "remove oldest value if necessary")
+                  (if
+                    (> (size history_values) 1000)
+                    (remove history_values 0)
+                  )
+                )
+              )
+              (### "save current value to current_data")
+              (if
+                (not (has current_data sensor_type))
+                (put current_data sensor_type (list))
+              )
+              (put
+                (get current_data sensor_type)
+                station
+                (list sensor_value timestamp)
+              )
+              (module-notify (concat "@get-" sensor_type))
+              (module-notify (concat "@get-" sensor_type "-history"))
+            )            
+          </code>
+        </div>
+        <p>This function reads the sensor data and save it in two global lists:</p>
+        <ul>
+          <li>
+            <span class="code">current_data</span>: a list that contains the current data for each sensor type and station.
+          </li>
+          <li>
+            <span class="code">history_data</span>: a list that contains the historic data for each sensor type and station.
+          </li>
+        </ul>
+        <p>These lists are read by the graph widget of the dashboards of this module to plot the sensor values:</p>
+        <img src="projects/libelium/libelium.png" class="image" alt="" />
+      </div>
+
+      <a href="projects/libelium/libelium.snp" 
+         download="libelium.snp"
+         class="btn btn-info read-more" role="button">Download module</a>
+      
+    {----}
+  </body>
+</html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>-</title>
+  </head>
+  <body>
+    {--title--}Architecture - Brain4it{----}
+    
+    {--architecture_current--} <span class="sr-only">(current)</span>{----}
+    
+    {--product_active--} active{----}
+        
+    {--body--}
+      <h1>Architecture</h1>
+
+      <h2>General diagram</h2>
+      <div class="box">
+        <p>This is the general diagram of the Brain4it architechure:</p> 
+        <div class="diagram p50">
+          <div class="image">
+            <img src="images/arch.svg" style="width:500px" alt="brain4it general architechture">
+          </div>
+          <div class="info">
+            <ul>
+              <li>The <strong>Brain4it server</strong> is a software that can run on a 
+                wide varity of devices like computers, smartphones, raspberry robots, etc.
+              It implements the logic that make these devices behave smartly. 
+              That logic is programmed in BPL (Brain4it Programming Language), a 
+              simple but powerfull language specially designed to develop 
+              expert systems and other AI applications.
+              It runs on top of a Java VM and has access to:
+              <ul>
+                <li>External services like messaging systems, sensor/actuator platforms, web services, etc.</li>
+                <li>Hardware resources of the device like GPIO (General Purpose Input Ouput) pins, 
+                sensors, serial ports, camera, audio, screen, etc.</li>
+                <li>Other Brain4it servers, with which it can cooperate.</li>
+              </ul>
+              </li>
+              <li>The <strong>Brain4it manager</strong> is the program that allows 
+                the user to interact with the server. It has tools to program the 
+                server logic and control its operation through the HTTP REST API. 
+                There are 3 manager apps available: for desktop computers, android devices and web browsers.</li>
+              <li>3rd. party applications can also comunicate with the server through the same HTTP REST API 
+                to read or write information or invoke a module function.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      
+      <h2>The server</h2>
+
+      <div class="box">       
+        <p>The server is the "brain" of the device. It is organized in modules, 
+          where each module implements a specific task and do not shares data with others.</p> 
+        <div class="diagram p35">
+          <div class="image">
+            <img src="images/server_components.svg" style="width:300px" alt="server components">
+          </div>
+          <div class="info">
+            <p>Internally, the server has 3 components:</p>
+            <ul>
+              <li>The <strong>RestService</strong> implements a simple HTTP REST interface to read and write module data, invoke functions and
+                manage the server modules. See the <a href="rest_api.html">HTTP REST API documentation</a> for more information.</li>
+              <li>The <strong>ModuleManager</strong> performs all the module management operations: 
+                list, create, load, save, destroy, start and stop modules.
+                Some of these operations are exposed through the REST API while others can be invoked through 
+                the functions of the <a href="library_module.html">Module library</a>.
+                The ModuleManager also manages the libraries that are loaded at server startup. Each library contains a
+                set of built-in functions that allow you to perform different tasks. 
+              </li>
+              <li>The <strong>Store</strong> is responsible of saving the module snapshots in persistent storage. 
+                The default implementation, saves these snapshots in the underlying filesystem.</li>
+            </ul>
+            <p>Currently exists 5 versions of the Brain4it server:</p>
+            <ul>
+              <li><strong>Standalone server</strong>: it is a lightweight server implementation intented for devices with few resources.</li>
+              <li><strong>Server for web containers (J2EE)</strong>: it is a server implementation designed to run in a J2EE web container like 
+              Tomcat or Jetty.</li>
+              <li><strong>Raspberry server</strong>: based on the standalone server, it incorporates functions to access the
+              Raspberry Pi hardware (GPIO pins, serial ports, etc...).</li>
+              <li><strong>Android server</strong>: also based on the standalone server, it offers functions to access the Android device 
+              hardware and software resources (sensors, GPS, text to speech, etc...)</li>
+              <li><strong>Swing server</strong>: it is a standalone server with a screen attached to it where you can 
+                draw graphic primitives, text and images. This server is tyically used as a smart information point.
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <h2>The manager</h2>
+
+      <div class="box">
+        <p>The manager is an application that allows the user to program and control the Brain4it server remotelly 
+          through its HTTP REST API.</p> 
+        <p>The are currently 3 versions available of the manager application:</p>
+        <ul>
+          <li><strong>Desktop</strong>: Java swing application for desktop computers running on Windows, Linux or MacOS.</li>
+          <li><strong>Android</strong>: Native android application for android 4.1 and above.</li>
+          <li><strong>Web</strong>: html5 responsive application that can run on all devices.</li>
+        </ul>
+        <p>All these managers offer the following tools:</p>
+        <ul>
+          <li><strong>Workspace manager</strong>: allows to setup a group of servers and manage its modules.</li>
+          <li><strong>Console</strong>: interactive console to execute commands in a module.</li>
+          <li><strong>Editor</strong>: smart text editor to program code or edit data.</li>
+          <li><strong>Dashboard</strong>: control panel with buttons, leds, gauges and other widgets to send orders to the server
+            and monitor its internal state.</li>
+        </ul>
+        <p>In addition to these tools, the Desktop version also incorporates the <strong>Dashboard designer</strong>, a 
+          visual tool to create control panels in few minutes.</p>
+                 
+      </div>     
+      
+    {----}
+  </body>
+</html>

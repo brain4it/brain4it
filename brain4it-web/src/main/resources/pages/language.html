@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>-</title>
+  </head>
+  <body>
+    {--title--}Language - Brain4it{----}
+    
+    {--language_current--} <span class="sr-only">(current)</span>{----}
+    
+    {--learning_active--} active{----}
+        
+    {--body--}
+      <h1>Language</h1>
+
+      <h2>Characteristics</h2>
+
+      <div class="box">
+        <p>The Brain4it programming language (BPL) is inspired in functional 
+          languages like LISP or Scheme, that have been widely used over the years in the 
+          development of artificial intelligence applications.</p>
+        <p>BPL is a simplified version of these languages that depite of
+          being much smaller, offers similiar possibilities.</p>
+        <p>Its main features are:</p>
+        <ul>
+          <li><strong>Functional</strong>: code is expressed as function calls.</li>
+          <li><strong>Simple</strong>: it only has 4 basic data types and only one data structure, the list. 
+            Its simplicity allows it to work on devices with low memory.</li>
+          <li><strong>Homoiconic</strong>: code and data are represented in the same way. This feature 
+            is specially important in artificial intelligence because it allows 
+            a program to generate and manipulate code very easily. 
+            Doing that with other programming languages like Java or javascript, 
+            is much more complicated or even impossible.</li>
+          <li><strong>Automatic garbage collector</strong>: data is automatically recycled
+            when it is no longer accesible.</li>
+          <li><strong>Multi-threaded</strong>: it supports multiple execution threads that simplifies programming in many situations.</li>
+          <li><strong>Easy to learn</strong>: it can be learn in few minutes.</li>
+        </ul>
+      </div>
+
+      <h2>Basic data types</h2>
+      <div class="box">
+        <p>BPL only supports 3 basic data types:</p> 
+        <ul>
+          <li><strong>boolean</strong>: <code>true</code> or <code>false</code></li>
+          <li><strong>number</strong>: 3 subtypes of number are supported:
+            <ul>
+              <li><strong>integer</strong>: values in the range -(2^31)..(2^31)-1, like <code>23473</code> or <code>-8696</code>.</li>
+              <li><strong>long</strong>: values in the range -(2^63)..(2^63)-1, like <code>87986256763423</code> or <code>-39983266772324</code>.</li>
+              <li><strong>double</strong>: floating point numbers, like <code>42.563</code> and <code>-5.72e9</code>. The special values 
+                <code>NaN</code> (not a number), <code>Infinity</code> and <code>-Infinity</code> are also supported.
+              </li>
+            </ul>
+          <li><strong>string</strong>: a character sequence. Example : <code>"Hello world"</code>.</li>
+        </ul>
+        <p>BPL also defines the literal <strong>null</strong>.</p>
+        <p>All these data types are immutable, which means that its value cannot be changed.</p>
+      </div>
+
+      <h2>References</h2>
+      <div class="box">
+        <p>A <strong>reference</strong> is a name, symbol or path that references an object of any type.</p>
+        <p>There are two types of references:</p>
+        <ul>
+          <li><strong>Hard references</strong>: reference built-in functions like 
+            <code>if</code>, <code>while</code>, <code>sin</code>, <code>+</code>, etc. 
+            Hard references are not assignable, so they always point to the same built-in function.
+          </li>
+          <li><strong>Soft references</strong>: reference data, code fragments or user defined functions. 
+            These references are assignable, because we can change the data they point to, so
+            they are, in fact, like <strong>variables</strong>. Examples: 
+            <code>alfa</code>, <code>public/cars/23/model</code>, <code>@dashboards</code>, <code>get-value</code>, etc.
+          </li>
+        </ul>
+        <p>When a soft reference includes slashes (/) it is a path reference. 
+          Path references indicate a path through a list sctructure to access the data.
+          The components of a path reference can be strings to access by name or 
+          integers to access by index within the list, as discuss below.
+        </p>
+        <p>The name of a non path reference may contain any character except space, slash (/), double quote (") and parenthesis and 
+          the first character can not be a digit.</p>
+        <p>Soft references can not match the name operator <code>=></code>, a built-in function or the literals 
+          <code>null</code>, <code>true</code> and <code>false</code>, <code>NaN</code>, <code>Infinity</code> and <code>-Infinity</code>.</p>
+        <p>All references are immutable because its name can not be changed.</p>
+      </div>
+      
+      <h2>Lists</h2>
+      <div class="box">
+        <p>The <strong>list</strong> is the only data structure supported in the Brain4it programming language.</p> 
+        <p>Lists allow you to represent both data and code. They are expressed by parenthesis and may 
+          contain from 0 to N elements of any type, separated by spaces. Examples:</p>
+        <ul>
+          <li><code>()</code> an empty list.</li>
+          <li><code>(1 2 3 4)</code> a list that contains 4 numbers.</li>
+          <li><code>("red" "green" "blue")</code> a list containing 3 strings.</li>
+          <li><code>(12413 data-on ("on" "of") (3 8 5) 7.8)</code> a list that contains elements of different types and other lists.</li>
+          <li><code>(+ (* 8 a) (* 2.4 b))</code> a list containing the mathematical expression <span class="code">8 * a + 2.4 * b</span>.</li>
+          <li><code>(while (< a 10) (push elems a) (++ a))</code> a list that encodes a fragment of a program.</li>
+        </ul>
+        <p>Elements in a list can be labeled with a name. That name is a string that must be unique within the list. 
+          The arrow (or name) operator <code>=></code> is used to set a name for an element. Examples:</p>
+        <ul>
+          <li><code>("temp" => 25.32)</code> "temp" is the name for the element 25.32</li>
+          <li><code>("us-dollar" => 105.42 "yen" => 0.34)</code> a list that contains 2 numbers labeled with names "us-dollar" and "yen".</li>
+          <li><code>("red" => "FF0000" "green" => "00FF00" "blue" => "0000FF")</code> a list that contains 3 strings labeled with names "red", "green" and "blue".</li>
+          <li><code>(number "100100100" "radix" => 2)</code> a list with 3 elements where the last one has the name "radix".</li>          
+        </ul>
+        <p>Elements in a list can be accessed by position or by name. 
+          For example, if we assign the variable <code>persons</code> this list:</p>
+        <p><code>(("name" => "John" "age" => 34 "0" => 45) ("name" => "Mary" "age" => 31))</code></p>
+        <ul>
+          <li>the path reference <code>persons/0</code> will point to <code>("name" => "John" "age" => 34)</code></li>
+          <li>the path reference <code>persons/0/age</code> will point to <code>34</code> and</li>
+          <li>the path reference <code>persons/1/name</code> will point to <code>"Mary"</code></li>
+          <li>the path reference <code>persons/0/"0"</code> will point to <code>45</code></li>
+        </ul>
+        <p>Later we will see in more detail how to access the elements of a list.</p>
+        <p>A list is mutable because you can add and remove elements to it.</p>
+      </div>
+
+      <h2>Evaluation</h2>
+      <div class="box">
+        <p>The Brain4it programming language has the following evaluation rules:</p>
+        <ul>
+          <li>All basic data types evaluate to themselves.</li>
+          <li>A hard reference evaluates to itselve.</li>
+          <li>A soft reference evaluates to the data that it is referencing.</li>
+          <li>All lists evaluate to themselves except if the first element references a function. 
+            In that case, the result of the evaluation is the value obtained by invoking that function 
+            passing the rest of elements of the list as arguments. 
+          </li>          
+        </ul>
+        <p>Examples:</p>
+        <ul>
+          <li><code>null</code> evaluates to <code>null</code></li>
+          <li><code>true</code> evaluates to <code>true</code></li>
+          <li><code>4.38</code> evaluates to <code>4.38</code></li>
+          <li><code>"Hello world"</code> evaluates to <code>"Hello world"</code></li>
+          <li><code>()</code> evaluates to <code>()</code></li>
+          <li><code>(1 2 3)</code> evaluates to <code>(1 2 3)</code></li>
+          <li><code>(+ 3 4)</code> evaluates to <code>7</code>. + is the built-in sum function, and numbers 3 and 4 are the arguments passed to that function.</li>
+          <li><code>(if (> 3 2) "GREATER" "LOWER")</code> evaluates to <code>"GREATER"</code>.</li>
+          <li><code>(sort (4 1 7 2))</code> evaluates to <code>(1 2 4 7)</code>.</li>
+          <li><code>(data 3 4)</code> evaluates to <code>(data 3 4)</code> because <code>data</code> is not a function.</li>
+          <li><code>(fact 5)</code> evaluates to <code>120</code> because <code>fact</code> 
+            is a user function that implements the factorial.</li>
+        </ul>
+      </div>
+      
+      <h2>Functions</h2>
+      <div class="box">
+        <p>The Brain4it programming language has 2 types of functions:</p>
+        <ul>
+          <li><strong>Built-in functions</strong> to 
+            perform basic tasks like conditionals, loops, list manipulation, 
+            arithmetic and logic operations, network access, etc.</li>
+          <li><strong>User defined functions</strong> that combining built-in 
+            functions and other user defined funcions can perform more complex tasks.</li>
+        </ul>
+      </div>
+
+      <h2>Built-in functions</h2>
+      <div class="box">
+        <p>BPL has built-in functions to perform basic operations like assigment of variables, conditionals and loops. 
+          Also offers a rich set of functions to work with lists, strings, numbers and dates. 
+          Next we will see some of the most common built-in functions:</p> 
+        <p>The assigment of variables is done through the <code>set</code> function.</p>
+        <code>(set result (+ 4 5))</code>
+        <p>In this example, the variable (or reference) <code>result</code> takes the value 9.</p>
+        <p class="advanced">The <code>set</code> function, like many other built-in functions, do not evaluate 
+          the reference that is going to assign a value (<code>result</code> in the example).
+          Only when the first argument is not yet a reference the <code>set</code> function will 
+          evaluate it to get the final reference, like in this example:
+          <code>(set (get result) 8)</code> where the value <code>8</code> will be assigned 
+          to the reference pointed by <code>result</code>.
+        </p>
+        <br>
+        <p>A conditional instruction can be done with the <code>if</code> function. Its syntax is:</p>
+        <div class="code">
+          <code>
+            (if 
+              condition 
+              action_when_true 
+              action_when_false
+            )
+          </code>
+        </div>
+        <p>Example:</p>
+        <code>(if (> level 7.5) "OK" "KO")</code>
+        <p>If the value of <code>level</code> is greater than <code>7.5</code> the funtion will return 
+          <code>"OK"</code>, otherwise will return <code>"KO"</code>.</p>
+        
+        <p>A sequence of actions can be grouped with the <code>do</code> function:</p>
+        <div class="code">
+          <code>
+            (if (> level 7.5)
+              (do
+                (send_email "OK")
+                (switch_alarm 0)
+              )
+              (do
+                (open_door)
+                (send_email "KO")
+                (switch_alarm 1)
+              )
+            )
+          </code>
+        </div>
+        <br>
+        
+        <p>When you have to code an if-then-else cascade its more convenient to use the <code>cond</code> function:</p>
+        <div class="code">
+          <code>
+            (cond 
+              (when condition_1 action ... action)
+              ... 
+              (when condition_n action ... action)
+            )
+          </code>
+        </div>
+        <p>The <code>cond</code> function only executes the actions of 
+          the first <code>when</code> clause which condition evaluates to <code>true</code>.</p>
+        <p>Example:</p>
+        <div class="code">
+          <code>
+            (cond 
+              (when (= state 1) (set speed 4))
+              (when (= state 2) (set speed -4))
+              (when true (set speed 0))
+            )
+          </code>
+        </div>
+        <p>In that example, if the initial value of <code>state</code> is <code>1</code> 
+          the variable <code>speed</code> will take the value <code>4</code>.</p>
+
+        <br>
+        <p>For doing loops, BPL has the <code>while</code> function, that works 
+          like the <code>while</code> statement of many other programming languages:</p>
+        <div class="code">
+          <code>
+            (while 
+              condition 
+              action ... action
+            )
+          </code>
+        </div>
+        <p>while the condition evaluates to <code>true</code>, the actions inside the <code>while</code> 
+          will be executed.</p>
+        <p>Example:</p>
+        <div class="code">
+          <code>
+            (while (>= a 0)
+              (-- a 2)
+            )
+          </code>
+        </div>
+        <p>In that example, variable <code>a</code> will be decremented by <code>2</code> 
+          until its value be less than <code>0</code>.</p>
+        
+        <br>
+        <p>An alternative to the <code>while</code> function is the <code>for</code> function, 
+          that has a syntax pretty similiar to the <code>for</code> statement of C like languages:</p>
+        <div class="code">
+          <code>
+            (for 
+              initialization_code condition iteration_code
+              action ... action
+            )
+          </code>
+        </div>
+        <p>that is equivalent to:</p>
+        <div class="code">
+          <code>
+            (do
+              initialization_code
+              (while condition
+                action
+                ...
+                action
+                iteration_code
+              )
+            )
+          </code>
+        </div>          
+        <p>Example:</p>
+        <div class="code">
+          <code>
+            (for (set i 0) (&lt; i 10) (++ i)
+              (prepare_data i)
+              (send_data i)
+            )
+          </code>
+        </div>
+        <p>That code will execute <code>prepare_data</code> and <code>send_data</code>
+          10 times.</p>
+        
+        <p class="advanced">As you probably have guessed, the arguments of a built-in function
+          are not evaluated "a priori". The function evaluate them only when it considers that it is necessary.
+          Other programming languages like C, Java or Javascript work different because
+          they evaluate all the arguments before calling a function.
+        </p>
+
+        <br>
+        <p>The more common built-in functions to manage lists are <code>list</code>, 
+          <code>get</code>, <code>put</code> and <code>remove</code>.</p>
+        <p>The <code>list</code> function creates a new list and adds to it the evaluation of its arguments:</p>
+        <p>Example:</p>
+        <div class="code">
+          <code>(list (+ 3 4) "a" => (- 5))</code>
+        </div>
+        <p>will return <code>(7 "a" => -5)</code></p>
+        
+        <p>The <code>get</code> function allows you to obtain an element of a list 
+          accessing by index or by name. 
+          Its general form is:</p>
+          <code>(get lst spec)</code>
+        <p>where <code>lst</code> is the list, and <code>spec</code> is the index or name.</p>
+        <p>Examples:</p>
+          <code>(get (1 2 "a" => 3) 1)</code>
+        <p>In that example the function will return the element at index <code>1</code>, 
+          which is the value <code>2</code> (the index of the first element is 0).</p>
+          <code>(get (1 2 "a" => 3) "a")</code>
+        <p>here the <code>get</code> function will return the element whose name is <code>"a"</code>, 
+          which is the value <code>3</code>.</p>
+
+        <br>
+        <p>To put an element into a list, BPL has the <code>put</code> function. Its syntax is:</p>
+          <code>(put lst spec value)</code>
+        <p>where <code>lst</code> is the list, <code>spec</code> is the index or name 
+          and <code>value</code> the element to put.</p>
+        <p>Examples:</p>
+        <div class="code">
+          <code>
+            (do
+              (set my_list (1 2 "a" => 3))
+              (put my_list 0 "Mary")
+              (put my_list "a" "Rick")
+              (put my_list 5 99)
+            )
+          </code>
+        </div>
+        <p>After executing that code, variable <code>my_list</code> will be:</p>
+          <code>("Mary" 2 "a" => "Rick" null null 99)</code>
+        <p>When the specified index is outside the size of the list, 
+          that list is automatically enlarged to put the element, filling with <code>null</code> 
+          the new positions in the list.</p>
+        <p>Removing elements from a list is done with the <code>remove</code> function, that has this syntax:</p>
+        <code>(remove lst spec)</code>
+        <p>where <code>lst</code> is the list, and <code>spec</code> is the index or name of the element to remove.</p>
+         
+        <br>
+        <p>Built-in functions are organized in libraries. 
+          The <span class="code">Core</span> library contains the basic functions that all programs need
+          and is always present in the Brain4it servers.</p>
+        <p>Some other libraries may also be available to access external services 
+          or hardware resources.
+          See the <a href="libraries.html">Library catalog</a> for more information.
+        </p>
+      </div>
+
+      <h2>User defined functions</h2>
+      <div class="box">
+        <p>An anonymous user function is defined this way:</p>
+        <div class="code">
+          <code>
+            (function (parameter ... parameter)
+               action ... action)
+          </code>
+        </div>
+        <p>where the <code>parameter</code> elements represent the 
+          parameters that takes the function, 
+          and the <code>action</code> elements the actions to execute.</p>
+        <p>The value returned by the function is the result of evaluating the last action.</p>
+        <p>Example:</p>
+          <code>(function (x y) (* x (sin y)))</code>
+        <p>That function takes two parameters x and y and will return the result of evaluating
+          <span class="code">x * sin(y)</span>.
+        </p>
+        <p>We can invoke an anonymous function using the <code>call</code> function:</p>
+          <code>(call (function (x y) (* x (sin y))) 45.2 3.6)</code>
+        <p>To give that function a name, assign the function to a variable:</p>
+          <code>(set sin_product (function (x y) (* x (sin y))))</code>
+        <p>and then invoke the function with a calling list like this:</p>
+        <code>(sin_product 45.2 3.6)</code>
+        
+        <p>The parameters of a user defined function can be defined in three ways:</p>
+        <ul>
+          <li>as a reference (<code>x</code>) : the value of the parameter (<code>x</code>) is taken from the 
+            calling list accessing it by the position of this parameter.</li>
+          <li>as a named reference (<code>"n" => x</code>) : the value of the parameter (<code>x</code>)
+            is taken from the calling list accessing it by the name of the reference (<code>"n"</code>).</li>
+          <li>as a string (<code>"x"</code>) : the value of the parameter (<code>x</code>) is taken from the 
+            calling list accessing it by this string (<code>"x"</code>). That is equivalent to <code>"x" => x</code>.</li>
+        </ul>
+        <p>When a parameter is not specified in the calling list, its value 
+          will be <code>null</code>.
+        </p>
+        <p>For example, if we want to define a function that takes a mandatory 
+          parameter <code>value</code> and 2 optional parameters <code>offset</code> and <code>factor</code>,
+          we can define it like this:
+        </p>
+        <div class="code">
+          <code>
+            (set fn 
+              (function (value "offset" "factor" => f) (* f (+ value offset))) 
+            )
+          </code>
+        </div>
+        <p>If we invoke that function with this calling list:</p>
+          <code>(fn 7)</code>
+        <p><code>offset</code> and <code>f</code> will be <code>null</code> and
+          the function will return the value <code>7</code>, but in this case:</p>
+          <code>(fn 7 "offset" => 5)</code>
+        <p>only <code>f</code> will be <code>null</code> and the result will be 
+          <code>12</code>. In this other call:</p>
+          <code>(fn 7 "factor" => 2)</code>
+        <p><code>offset</code> will be <code>null</code> and the returned value 
+          will be <code>14</code> and here:</p>
+          <code>(fn 7 "offset" => 5 "factor" => 2)</code>
+        <p>we will obtain the value <code>24</code>.</p>
+        
+        <p class="advanced">User defined functions unlike built-in functions receive 
+          its arguments already evaluated. If you need to pass an expression 
+          to a user defined function without evaluating it, use the <code>quote</code> function.
+          Example: <code>(process_data (quote (+ 1 2)))</code>. The <code>process_data</code> function
+          may evaluate that argument with the <code>eval</code> function.
+        </p>
+        
+        <p>BPL supports recursion, that is functions that call themselves.</p>
+        <p>For example, the factorial function can be defined in this way:</p>
+        <div class="code">
+          <code>
+            (set fact 
+              (function (x) 
+                (if (&lt; x 1) 1 (* x (fact (- x 1))))
+              )
+            )
+          </code>
+        </div>        
+        
+      </div>
+
+      <h2>Exceptions</h2>
+      <div class="box">
+        <p>BPL supports exceptions as the Java programming language.</p>
+        <p>Exceptions are thrown in these cases:</p>
+        <ul>
+          <li>When an error occurs inside a built-in function.</li>
+          <li>When an executor thread is interrupted with the <code>kill</code> function.</li>
+          <li>When inkoving the <code>throw</code> function</li>
+        </ul>
+        <p>Exceptions can be handled with the <code>try</code> function, that works 
+          like the Java <span class="code">try-catch-finally</span> statement. Its general syntax is:</p>
+          <div class="code">
+            <code>
+              (try 
+                main_action 
+                (ex_var 
+                   catch_action ... catch_action
+                ) 
+                finally_action
+              )
+            </code>
+          </div>
+        <p>Let's see an example:</p>
+        <div class="code">
+          <code>
+            (set res (get_resource))
+            (try
+              (do
+                (process_resource res)
+                (notify_result res)
+              )
+              (ex
+                "ConnectException" => (abort_process)
+                "SQLException" => (abort_process)
+                "IOException" => (process_resource res)
+                "*" => (notify_error ex)
+              )
+              (release_resource res)
+            )
+          </code>
+        </div>
+        <p>When an exception occurs the <span class="code">ex_var</span> variable (<code>ex</code> in the example) will contain a list like this:</p>
+        <div class="code">
+          <code>
+            (
+              "ConnectException" 
+              "message" => "Can't connect to http://brain4it.org" 
+              "code" => (http "GET" url)
+              "stack" => (do_work process_resource)
+            )
+          </code>
+        </div>
+        <p>where the first element is the exception type (usually the simple name of the Java Exception class)
+          and the next elements (not always present) are the detail of the exception:</p>
+        <ul>
+          <li><span class="code">message</span>: a message that gives more information about the exception.</li>
+          <li><span class="code">code</span>: the statement that thrown the exception.</li>
+          <li><span class="code">stack</span>: the user functions call stack of the exception.</li>         
+        </ul>
+        <p>The executed <span class="code">catch_action</span> is that whose name matches the exception type (<code>(abort_process)</code> in the example).</p>
+        <p>If there is no <span class="code">catch_action</span> that matches the exception type, then the <span class="code">catch_action</span>
+          whose name is <code>"*"</code> will be executed.</p>
+        <p>If the <span class="code">main_action</span> throws an exception that is not handled by any <span class="code">catch_action</span> 
+          that exception will be propagated to the superior function.</p>
+        <p>The <span class="code">finally_action</span> will always be executed whatever an exception is thrown or not.</p>
+        <p>The value returned by the <code>try</code> function is the result of 
+          evaluating the <span class="code">main_action</span> or in case that <span class="code">main_action</span> throws an exception, 
+          the result of evaluating the <span class="code">catch_action</span> that handles that exception.</p>
+        <p>The <code>try</code> function differs from the Java <span class="code">try-catch-finally</span> statement in these aspects:</p>
+        <ul>
+          <li>The inheritance of the Exception class is ignored. A <span class="code">catch_action</span> will only be executed if its name matches the exception type.</li>
+          <li>The <span class="code">InterruptedException</span>s can not be catched. 
+            This is so to ensure that the <code>kill</code> function always force the interruption of the executor thread.</li>
+          <li>The value returned by <span class="code">finally_action</span> is ignored.</li>
+        </ul>
+        <p>The <code>throw</code> function allow us to throw an exception. Example:</p>
+        <div class="code">
+          <code>(throw "UserError" "The value entered must be positive")</code>
+        </div>
+        <p>where the first argument is the exception type and the second argument (optional) is the message of the exception.</p>
+        <p>The <code>throw</code> function can also accept an exception list as the first argument:</p>
+        <div class="code">
+          <code>(throw ("UserError" "message" => "The value entered must be positive"))</code>
+        </div>        
+      </div>
+      
+      <h2>Multi-threading</h2>
+      <div class="box">
+        <p>The Brain4it programming language supports running code in multiple execution threads.</p>
+        <p>Every time a command is launched, the server creates an executor thread that will run that command 
+          until it ends.</p>
+        <p>We can list all the executors currently running within a module with the <code>executors</code> function:</p>
+        <code>(executors)</code>
+        <p>the result could be a list like this:</p>
+        <code>("45" => (while true (eval rules) (sleep 1000)) "47" => (executors))</code>
+        <p>This list contains for each executor the code that it is running labeled with 
+          the <span class="code">executor_id</span>, the executor identifier.</p>
+        <p>If we want to interrupt the executor identified by <code>"45"</code>, simple type:</p>
+        <code>(kill 45)</code>
+        <p>
+          This command invokes the <span class="code">Thread.interrupt()</span> Java method on the executor thread
+          to force its finalization.</p>
+        <p>Sometimes we want to run a code without waiting for the result. That
+          can be achived with the <code>spawn</code> function:</p>
+        <code>(spawn (do (sleep 5000) (beep))</code>
+        <p><code>spawn</code> creates the new executor thread and immedialety returns its <span class="code">executor_id</span>.</p>
+        <p>To synchronize multiple executor threads, BPL offers functions similiar to those 
+          that exists in the Java programming language: <code>sync</code>, <code>wait</code> and <code>notify</code>. 
+          See the core library documentation for details.</p>
+      </div>
+      
+      <h2>Scopes</h2>
+      <div class="box">
+        <p>All executor threads running inside a Brain4it server see two variable scopes:</p>
+        <ul>
+          <li><strong>The global scope</strong>: a scope shared with other executors created in the same server module.</li>
+          <li><strong>The local scope</strong>: a scope that is specific to that executor and normally 
+            it is not shared with other executors.</li>
+        </ul>
+        <p>Every time we call a function, a new local scope is created. 
+          The arguments of the function are put into that scope.
+          When the function returns, the scope is destroyed.</p>
+        
+        <p>If a variable is set with a statement like this:</p>
+        <code>(set alfa 9)</code>
+        <p>that variable will be created in the global scope (also inside a function) and thus will be visible by other executors in the 
+          same module.
+        </p>
+        <p>If we want to create a variable in local scope we must declare the variable this way:</p>
+        <code>(local alfa)</code>
+        <p>That variable will last as much as the local scope where it was created.</p>
+        
+        <p>Variable scopes in BPL are implemented as lists. 
+          We can obtain the global scope list with the <code>global-scope</code> function:</p>
+        <code>(global-scope)</code>
+        <p>that may return a list like this:</p>
+        <code>("alfa" => 9 "square" => (function (x) (* x x)))</code>
+        
+        <p>The local scope is obtained with the <code>local-scope</code> function.
+          
+        <p>Both scopes, global and local, can be manipulated as normal lists.</p>
+        
+        <p>To remove a variable from the scope where it is defined, 
+          you can use the <code>delete</code> function:</p>
+        <code>(delete alfa)</code>
+
+        <p>To check if a variable is defined in the current scopes (local or global), 
+          use the <code>exists</code> function:</p>
+        <code>(exists alfa)</code>
+      </div>
+            
+    {----}
+  </body>
+</html>

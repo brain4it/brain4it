@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>-</title>
+  </head>
+  <body>
+    {--title--}Dashboards - Brain4it{----}
+    
+    {--dashboards_current--} <span class="sr-only">(current)</span>{----}
+    
+    {--learning_active--} active{----}
+        
+    {--body--}
+      <h1>Dashboards</h1>
+       
+      <p>Dashboards are high level cutomizable user interfaces supported by all 
+        Brain4it Managers that interact with a server module through the HTTP REST API.</p>
+      <p>
+        A dashboard can contain widgets of different types (buttons, leds, displays, switches, ...), some of them
+        show data from the server while others send orders or data to the server.
+      </p>
+
+      <p>The complete list of widget types available is shown in the <a href="widgets.html">widgets</a> reference page.</p>
+      
+      <h2>Visual dashboard design</h2>
+      <p>The Brain4it manager for desktop computers (manager-swing) 
+        has a <a href="https://en.wikipedia.org/wiki/WYSIWYG">WYSIWYG</a> visual tool for designing dashboards very quickly. 
+      </p>
+      <p>To create a dashboard, follow these steps:</p>
+
+      <h3>Step 1: Open designer</h3>
+      <div class="box">
+        <p>Select the module where you want to create the dashboard and choose the option 
+          <span class="path">View > Designer</span> from the menu. A designer panel will appear on the right.</p>
+        <img src="images/dashboards_1.png" alt="" class="screenshot">
+      </div>
+
+      <h3>Step 2: Change the dashboard settings</h3>
+      <div class="box">
+        <p>Set the width and height of the grid where you will be place the widgets of the dashboard. 
+          With the strech option checked, the grid will expand to fit all the screen.
+        </p>  
+        <p>Next you can set the value of the polling interval, in milliseconds. 
+          The server will evaluate the exterior functions specified in the widgets at this interval.
+          When the polling interval is 0, the server will only evaluate an exterior function when it receives 
+          a change notification for that function. See the 
+          <a href="library_module.html#an_module-notify">module-notify</a>
+          function and the <a href="restapi.html">REST API</a> documentation to know more about exterior functions.
+        </p>
+      </div>
+
+      <h3>Step 3: Add widgets to the dashboard and set their properties</h3>
+      <div class="box">
+        <p>To add a widget to the dashboard drag it from the palette and drop it to the desired cell.
+          You can change its position by dragging it with the mouse.
+          You can also resize it by streching the widget by its edges.
+        </p>
+        <img src="images/dashboards_2.png" alt="" class="screenshot">
+        <p>
+          To configure a widget, select it with the mouse. 
+          Its properties will be shown in the properties panel on the right.
+          Some of them allow you to change the aspect of the widget while others
+          let you specify the name of the exterior functions that will be called 
+          to exchange data with the Brain4it module.
+        </p>
+      </div>
+
+      <h3>Step 4: Save the dashboard</h3>
+      <div class="box">
+        <p>Once the design of the dashboard is completed, set its name in the path field 
+          (for example <span class="code">dashboard</span>) and press the "Save" button.</p>
+        <p>
+        <img src="images/dashboards_3.png" alt="" class="screenshot">
+        Your module may have as many dashboards as you want, simply give them a different name.
+        </p>
+      </div>
+
+      <h3>Step 5: Create the @dashboards function</h3>
+      <div class="box">
+        <p>
+          The managers always invoke the exterior function <code>@dashboards</code> to get the list 
+          of all the dashboards available for the current module. This function may be defined like this:</p>
+          <code>
+            (function (context data)
+              (list "Control" => dashboard)
+            )
+          </code>
+        <p>
+          The name "Control" is the label that will be displayed for this <code>dashboard</code> in the manager applications.          
+        </p>
+        <p>The list of dashboards returned by the <code>@dashboards</code> function may change according with
+          the credentials presented by the user in the <code>context/request-headers</code>.</p>
+      </div>
+      
+    {----}
+  </body>
+</html>

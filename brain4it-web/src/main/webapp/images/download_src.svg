@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   viewBox="0 0 64 64"
+   version="1.1"
+   id="svg9"
+   sodipodi:docname="gear.svg"
+   width="64"
+   height="64"
+   inkscape:version="0.92.2 5c3e80d, 2017-08-06">
+  <metadata
+     id="metadata15">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs13" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="640"
+     inkscape:window-height="480"
+     id="namedview11"
+     showgrid="true"
+     inkscape:snap-global="false"
+     showguides="false"
+     inkscape:zoom="5.3695921"
+     inkscape:cx="26.765734"
+     inkscape:cy="33.218873"
+     inkscape:current-layer="svg9">
+    <inkscape:grid
+       type="xygrid"
+       id="grid825" />
+  </sodipodi:namedview>
+  <g
+     data-name="1"
+     id="_1"
+     style="fill:#666666;fill-opacity:1"
+     transform="matrix(0.07012511,0,0,0.07012511,13.510605,14.484803)">
+    <path
+       d="m 293.9,450 h -60.37 a 15,15 0 0 1 -14.92,-13.42 l -4.47,-42.09 a 152.77,152.77 0 0 1 -18.25,-7.56 L 163,413.53 a 15,15 0 0 1 -20,-1.06 l -42.69,-42.69 a 15,15 0 0 1 -1.06,-20 l 26.61,-32.93 A 152.15,152.15 0 0 1 118.29,298.6 L 76.13,294.1 A 15,15 0 0 1 62.71,279.19 V 218.81 A 15,15 0 0 1 76.13,203.9 l 42.09,-4.47 a 152.15,152.15 0 0 1 7.57,-18.25 L 99.18,148.25 a 15,15 0 0 1 1.06,-20 l 42.69,-42.69 a 15,15 0 0 1 20,-1.06 l 32.93,26.6 a 152.77,152.77 0 0 1 18.25,-7.56 l 4.47,-42.09 A 15,15 0 0 1 233.53,48 h 60.37 a 15,15 0 0 1 14.92,13.42 l 4.46,42.09 a 152.91,152.91 0 0 1 18.26,7.56 l 32.92,-26.6 a 15,15 0 0 1 20,1.06 l 42.69,42.69 a 15,15 0 0 1 1.06,20 l -26.61,32.93 a 153.8,153.8 0 0 1 7.57,18.25 l 42.09,4.47 a 15,15 0 0 1 13.41,14.91 v 60.38 A 15,15 0 0 1 451.3,294.1 l -42.09,4.47 a 153.8,153.8 0 0 1 -7.57,18.25 l 26.61,32.93 a 15,15 0 0 1 -1.06,20 l -42.69,42.72 a 15,15 0 0 1 -20,1.06 l -32.92,-26.6 a 152.91,152.91 0 0 1 -18.26,7.56 l -4.46,42.09 A 15,15 0 0 1 293.9,450 Z M 247,420 h 33.39 l 4.09,-38.56 a 15,15 0 0 1 11.06,-12.91 123,123 0 0 0 30.16,-12.53 15,15 0 0 1 17,1.31 l 30.16,24.37 23.61,-23.61 L 372.06,328 a 15,15 0 0 1 -1.31,-17 122.63,122.63 0 0 0 12.49,-30.14 15,15 0 0 1 12.92,-11.06 l 38.55,-4.1 v -33.39 l -38.55,-4.1 A 15,15 0 0 1 383.24,217.15 122.63,122.63 0 0 0 370.75,187 a 15,15 0 0 1 1.31,-17 l 24.37,-30.16 -23.61,-23.61 -30.16,24.37 a 15,15 0 0 1 -17,1.31 123,123 0 0 0 -30.14,-12.49 15,15 0 0 1 -11.06,-12.91 L 280.41,78 H 247 l -4.09,38.56 a 15,15 0 0 1 -11.07,12.91 122.79,122.79 0 0 0 -30.11,12.53 15,15 0 0 1 -17,-1.31 l -30.13,-24.41 -23.6,23.61 24.38,30.16 a 15,15 0 0 1 1.3,17 123.41,123.41 0 0 0 -12.49,30.14 15,15 0 0 1 -12.91,11.06 l -38.56,4.1 v 33.38 l 38.56,4.1 a 15,15 0 0 1 12.91,11.06 123.41,123.41 0 0 0 12.48,30.11 15,15 0 0 1 -1.3,17 l -24.37,30.11 23.61,23.61 30.17,-24.37 a 15,15 0 0 1 17,-1.31 122.79,122.79 0 0 0 30.13,12.49 15,15 0 0 1 11.07,12.91 z M 449.71,279.19 Z"
+       id="path4"
+       style="fill:#666666;fill-opacity:1"
+       inkscape:connector-curvature="0" />
+    <path
+       d="M 263.71,340.36 A 91.36,91.36 0 1 1 355.08,249 91.46,91.46 0 0 1 263.71,340.36 Z m 0,-152.72 A 61.36,61.36 0 1 0 325.08,249 61.43,61.43 0 0 0 263.71,187.64 Z"
+       id="path6"
+       style="fill:#666666;fill-opacity:1"
+       inkscape:connector-curvature="0" />
+  </g>
+  <ellipse
+     style="opacity:1;fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#666666;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke"
+     id="path827"
+     cx="31.808395"
+     cy="32.010754"
+     rx="23.853209"
+     ry="23.764864" />
+</svg>

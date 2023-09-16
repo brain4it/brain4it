@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>-</title>
+  </head>
+  <body>
+    {--title--}Modules - Brain4it{----}
+    
+    {--modules_current--} <span class="sr-only">(current)</span>{----}
+    
+    {--learning_active--} active{----}
+        
+    {--body--}
+      <h1>Modules</h1>
+      
+      <div class="box">
+        <div class="diagram p50">
+          <div class="info">
+            <p>A Brain4it <strong>module</strong> is an application than runs inside a Brain4it server.</p>
+            <p>Important things you need to know about modules:</p>   
+            <ul>
+              <li>Manager applications allow you to create and destroy a module
+                through the <a href="rest_api.html">REST API</a> of a Brain4it server. 
+                The <strong>server access key</strong> is required to perform these operations. 
+                See the <a href="server_setup.html">server setup</a> to find out how to change the server access key.        
+              </li>
+              <li>A module has a unique name within the server.</li>
+              <li>It contains the code and data (lists and literals) of the application.</li>
+              <li>Its content is isolated from other modules.</li>
+              <li>All elements inside a module (lists and literals) can be referenced by a URL.</li>
+              <li>The HTTP GET, PUT and DELETE methods of the <a href="rest_api.html">REST API</a> of a Brain4it server 
+                allow you to read, write and delete any content of the module. 
+                To call these methods the <strong>module access key</strong> (or server access key) must be specified in the <span class="code">Access-Key</span> request header. 
+                If no access key is specified, the module content can not be read or modified. The value of the module access key is defined by the
+                <code>access-key</code> variable.</li>
+              <li>A module may have <strong>exterior function</strong>s that expose some functionality of the application. 
+                These functions are easily recognizable because their name starts with the at symbol (@).
+                No access key is required to invoke an exterior function, but it may implement other security mechanisms instead (like basic authentication).</li>
+              <li>The values returned by exterior functions can be monitored efficiently through the <a href="rest_api.html#watch_exterior_functions">REST API</a>.</li>
+              <li>A module could have one o more <strong>dashboard</strong>s. A dashboard is a user interface that contains widgets 
+                (like buttons, sliders, displays, etc.) to show information or send orders to the module by calling its external functions. 
+                See the <a href="dashboards.html">dashboard design guide</a> to learn how to create a dashboard.</li>
+              <li><strong>Snapshot</strong>s of the module content can be generated and saved in persistent storage with the <code>module-save</code> function.                
+                These snapshots can be loaded into the module memory with the <code>module-load</code> function. 
+                Consult the <a href="library_module.html">module library</a> to know more about these functions.<br>
+                Each snapshot has a unique name within the module. By default that name is "head".<br>
+                When the server is stopped, all its modules are saved automatically as the "head" snapshot.
+                When the server is started again, all its modules are loaded with the content of its "head" snapshot.
+              </li>
+              <li>The desktop manager application can import and export module snapshots represented as text files. 
+                These snapshots can be imported later into modules of the same or other servers.</li>
+              <li>When a module is started (at server startup), the code of the <code>start</code> variable is evaluated 
+                to perform initialization tasks.</li>
+              <li>When a module is stopped (at server shutdown), the code of the <code>stop</code> variable 
+                is evaluated to perform cleanup tasks. After that, any running executor in this module is interrupted.</li>
+            </ul>
+          </div>
+          <div class="image">
+            <img src="images/module.svg" style="width:500px" alt="brain4it module structure">
+          </div>
+        </div>
+      </div>
+    {----}
+  </body>
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>-</title>
+  </head>
+  <body>
+    {--title--}Project - Accelerometer{----}
+    
+    {--projects_current--} <span class="sr-only">(current)</span>{----}
+    
+    {--projects_active--} active{----}
+        
+    {--body--}
+      <h1>Accelerometer</h1>
+
+      <div class="box">
+        <p>This module shows how a dashboard can remotely display data 
+          from a sensor in real time.</p>
+        <p>The sensor chosen in this example is the accelerometer of an 
+          Android device but the same could be done with other sensors.</p>
+        <p>The module has a dashboard with just two widgets: a graph and a switch.</p>
+        <p>The switch is bound to the <span class="code">@active</span> exterior function:</p>
+        <div class="code">
+          <code>
+            (function
+              (context act)
+              (if
+                (= act null)
+                active
+                (if act (register_acc) (unregister_acc))
+              )
+            )
+          </code>
+        </div>
+        <p>When the switch is activated, the <span class="code">register_acc</span>
+          function is called to register a listener for the accelerator data. This is done through the 
+          <a href="library_android.html#an_sensor"><span class=code">sensor</span></a> function of the android Library:</p>
+          <div class="code">
+            <code>      
+            (function
+              ()
+              (if
+                (not active)
+                (do
+                  (sensor
+                    "register"
+                    "accelerometer"
+                    (function
+                      (d)
+                      (set accelerometer/x d/2)
+                      (set accelerometer/y d/3)
+                      (set accelerometer/z d/4)
+                      (### "Update the graph widget")
+                      (module-notify "@get-value")
+                    )
+                  )
+                  (set active true)
+                  (### "Update the switch widget")
+                  (module-notify "@active")
+                )
+              )
+            )
+          </code>
+        </div>
+        <p>After that, the accelerometer data          
+          is saved in the <span class="code">accelerator</span> variable 
+          <code>("x" => -0.061676025390625 "y" => 5.7689208984375 "z" => 8.949508666992188)</code>
+          and displayed in the graph widget.</p>
+        <p>When the user deactivates the switch, the <span class="code">unregister_acc</span>
+          funcion is called to remove the listener of the accelerator data.</p>        
+        <div class="code">
+          <code>
+            (function
+              ()
+              (if
+                active
+                (do
+                  (sensor "unregister" "accelerometer")
+                  (set active false)
+                  (module-notify "@active")
+                )
+              )
+            )
+          </code>
+        </div>
+        
+        <p>This is how the dashboard looks like when accelerator data is being captured:</p>
+        <img src="projects/accelerometer/accelerometer_full.png" class="screenshot_vertical" alt="" />
+        
+        <p>Note that the dashboard can display the accelerometer data in real 
+          time even when we are connected remotelly.</p>
+        
+      </div>
+
+      <a href="projects/accelerometer/accelerometer.snp" 
+         download="accelerometer.snp"
+         class="btn btn-info read-more" role="button">Download module</a>
+      
+    {----}
+  </body>
+</html>

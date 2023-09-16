@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>-</title>
+  </head>
+  <body>
+    {--title--}Server setup - Brain4it{----}
+    
+    {--server_setup_current--} <span class="sr-only">(current)</span>{----}
+    
+    {--reference_active--} active{----}
+        
+    {--body--}
+      <h1>Server setup</h1>
+
+      <h2>Standalone based servers</h2>
+
+      <div class="box">
+        <p>The <strong>standalone</strong>, <strong>raspberrypi</strong> and <strong>swing</strong> 
+          servers are packaged as a zip file that contains scripts 
+          (under the <span class="code">bin</span> directory) to start an stop the server.
+        </p>
+        <p>
+          When these servers are started they take the configuration parameters 
+          from the file located in <span class="code">conf/server.properties</span>.
+        </p>        
+        <p>The parameters that can be set in this file are the following:</p>
+        <ul>
+          <li><span class="code">port</span>: the TCP port through which the server will accept connections. 
+            The port by default is <span class="code">9999</span>.</li>
+          <li><span class="code">shutdownFile</span>: the path of the shutdown file. 
+            When this file is specified, the server creates it on startup and shuts down when it is removed.</li>
+          <li><span class="code">multiTenant</span>: a boolean (<span class="code">true</span> or <span class="code">false</span>) 
+            that enables the multi-tenant mode. By default <span class="code">multiTenant</span> is <span class="code">false</span>.</li>        
+          <li><span class="code">accessKey</span>: the server access key. That key grants access to all modules in the server. 
+            By default its value is null and the server is unprotected.</li>
+          <li><span class="code">accessKeyFile</span>: the path of the access key file used in multi-tenant mode. 
+            That file is a Java properties file that contains for each tenant its server access key (<span class="code">tenant=accessKey</span>).</li>
+          <li><span class="code">libraries</span>: a comma separated string that contains the name of the libraries to load at startup.
+            By default, only <span class="code">Core</span> and <span class="code">Module</span> libraries are loaded.</li>
+          <li><span class="code">keyStoreFile</span>: the path of the key store file to enable secure server connections.</li>
+          <li><span class="code">keyStoreType</span>: the type of the key store file. By default that type is <span class="code">PKCS12</span>.</li>
+          <li><span class="code">keyStorePass</span>: the key store password.</li>
+          <li><span class="code">keyPass</span>: the key password.</li>
+          <li><span class="code">sslProtocol</span>: the secure sockets layer protocol. By default <span class="code">sslProtocol</span> is <span class="code">TLS</span>.</li>
+          <li><span class="code">storeClass</span>: the full Java class name of the server store. 
+            By default <span class="code">storeClass</span> is <span class="code long">org.brain4it.server.store.FileSystemStore.</span></li>     
+          <li><span class="code">basePath</span>: the path where the <span class="code">FileSystemStore</span> will save the module data.
+            By default that path is <span class="code">System.getProperty("user.home") + "/brain4it_modules"</span></li>        
+          <li><span class="code">maxWaitTime</span>: the maximum number of seconds to wait for a result in a POST call (command execution or exterior function invocation). 
+            By default its value is <span class="code">300</span> seconds (5 minutes).</li>
+          <li><span class="code">monitorMaxWaitTime</span>: the maximum number of seconds to wait for an exterior function to return a value in a monitoring session. 
+            By default its value is <span class="code">10</span> seconds.</li>          
+          <li><span class="code">monitorPingTime</span>: the time in seconds between two consecutive ping messages sent to the client. 
+            Ping messages are sent to check if connection has been closed.
+            By default <span class="code">monitorPingTime</span> is <span class="code">30</span> seconds.
+            See <a href="rest_api.html#watch_exterior_functions">Watch exterior functions</a> for more details.</li>
+          <li><span class="code">keepAliveTime</span>: the maximum time in seconds that the server will keep an 
+            idle socket open in HTTP persistent connections. By default <span class="code">keepAliveTime</span> is 5 seconds.</li>
+        </ul>
+        <p class="advanced">
+          To load an additional library on these servers copy its jar file (and others it depends on) in the 
+          <span class="code">lib</span> directory of the server and add the library name to the <span class="code">libraries</span> 
+          property of <span class="code">conf/server.properties</span> file.
+        </p>
+      </div>
+
+      <h2>J2EE server</h2>
+
+      <div class="box">
+        <p>The <strong>J2EE</strong> server is intented to run on a web container like <strong>Tomcat</strong> or <strong>Jetty</strong>
+          and is packaged as a war file.
+          It can be configured through the context parameters of the web application file 
+          (located in <span class="code">WEB-INF/web.xml</span>).
+        </p>
+        <p>The configuration (context) parameters that this server accepts are the following:</p>
+        <ul>
+          <li><span class="code">basePath</span>: the path where the <span class="code">FileSystemStore</span> will save the module data.
+            By default that path is <span class="code">System.getProperty("user.home") + "/brain4it_modules"</span></li>
+          <li><span class="code">multiTenant</span>: a boolean (<span class="code">true</span> or <span class="code">false</span>) 
+            that enables the multi-tenant mode. By default <span class="code">multiTenant</span> is <span class="code">false</span>.</li>        
+          <li><span class="code">accessKey</span>: the server access key. That key grants access to all modules in the server. 
+            By default its value is null and the server is unprotected.</li>
+          <li><span class="code">accessKeyFile</span>: the path of the access key file used in multi-tenant mode. 
+            That file is a Java properties file that contains for each tenant its server access key (<span class="code">tenant=accessKey</span>).</li>
+          <li><span class="code">libraries</span>: a comma separated string that contains the name of the libraries to load at startup.
+          <li><span class="code">maxWaitTime</span>: the maximum number of seconds to wait for a result in a POST call (command execution or exterior function invocation). 
+            By default its value is <span class="code">300</span> seconds (5 minutes).</li>
+          <li><span class="code">monitorMaxWaitTime</span>: the maximum number of seconds to wait for an exterior function to return a value in a monitoring session. 
+            By default its value is <span class="code">10</span> seconds.</li>          
+          <li><span class="code">monitorPingTime</span>: the time in seconds between two consecutive ping messages sent to the client. 
+            Ping messages are sent to check if connection has been closed.
+            By default <span class="code">monitorPingTime</span> is <span class="code">30</span> seconds.
+            See <a href="rest_api.html#watch_exterior_functions">Watch exterior functions</a> for more details.</li>     
+        </ul>
+        <p>Secure server connections must be configured in the web container (<span class="code">server.xml</span> file in Tomcat)</p>
+
+        <p class="advanced">
+          To load an additional library on this server copy its jar file (and others it depends on) in the 
+          <span class="code">WEB-INF/lib</span> directory of the web applitation and add the library name to the <span class="code">libraries</span> 
+          property of <span class="code">WEB-INF/web.xml</span> file.
+        </p>
+      </div>
+      
+      <h2>Android server</h2>
+
+      <div class="box">
+        <p>The <strong>android</strong> server is packaged as a apk file and only accepts the following configuration
+          parameters that can be set through the setup menu of the application:</p>
+        <ul>
+          <li><span class="code">Server port</span>: the TCP port through which the server will accept connections. 
+            A number in the range 1024-65535. The port by default is <span class="code">9999</span>.</li>
+          <li><span class="code">Access Key</span>: the server access key. That key grants access to all modules in the server. 
+            By default its value is null and the server is unprotected.</li>
+        </ul>        
+      </div>
+      
+    {----}
+  </body>
+</html>

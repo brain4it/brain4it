@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>-</title>
+  </head>
+  <body>
+    {--title--}Project - Frogbot{----}
+    
+    {--projects_current--} <span class="sr-only">(current)</span>{----}
+    
+    {--projects_active--} active{----}
+        
+    {--body--}
+      <h1>The Frogbot</h1>
+
+      <h2>Introduction</h2>
+      <div class="box">
+        <div class="info">
+        <p>The frogbot is a simple 3D printed robot controlled by Raspberry PI and Brain4it.</p>
+        <p>It is powered by two low cost DC motors and six AA batteries.</p>
+        <p>To avoid obstacles, it incorporates an ultrasonic sensor on its front part.</p>
+        <p>You can program the Frogbot with Brain4it to make it execute a certain routine by its own.
+          If the Raspberry is connected to your wifi network, you can also remotelly control it with your smartphone 
+          through a Brain4it dashboard.
+        </p>
+        </div>
+        <img src="projects/frogbot/frogbot1.jpg" class="image" alt="" />
+      </div>
+
+      <h2>Design</h2>
+      <div class="box">
+        <p>The frogbot was designed to be easy to print. Next you can view the robot in 3D and download its parts in STL format.
+        </p>
+        <a href="view3d/view3d.html?model=projects/frogbot/frogbot.json" title="view model in 3D">
+          <img src="projects/frogbot/frogbot3d.png" alt="" class="image" />
+        </a>
+      </div>
+
+      <h2>Electronics</h2>
+      <div class="box">
+        <p>To make the frogbot you will also need the these components:</p>
+        <ul>
+          <li>Raspberry Pi B+</li>
+          <li>TB6612FNG Sparkfun motor driver</li>
+          <li>LM2596 RioRand switch regulator module</li>
+          <li>2 * DC gear motor 3-6V</li>
+          <li>HC-SR04 ultrasonic sensor</li>
+          <li>2 * 5mm led</li>
+          <li>M4 threaded rod (1 meter)</li>
+          <li>2 * rubber bands</li>
+          <li>20 * M4 nuts</li>
+          <li>2x3 AA battery holder</li>
+          <li>6 * AA batteries</li>
+          <li>headers, wires and PCB</li>
+        </ul>
+        <p>The following scheme shows how to connect the components:</p>
+        <img src="projects/frogbot/frogbot_scheme.svg" class="image" alt="circuit scheme" />
+      </div>
+
+      <h2>Brain4it Code</h2>
+      <div class="box">
+        <p>The Brain4it server for Raspberry Pi has specific functions to read 
+          <code>(gpio-read pin)</code> and write <code>(gpio-write pin value)</code> 
+          the GPIO pins of the device (See the <a href="library_raspberrypi.html">RaspberryPi library</a> documentation 
+          to know more about the operation of these functions).</p>
+        <p>          
+          Each motor of the robot is controlled by 3 GPIO pins: 2 pins control the direction of rotation while 
+          the third controls the motor speed by PWM
+          (<a href="https://en.wikipedia.org/wiki/Pulse-width_modulation">pulse wide modulation</a>). 
+          All these pins are connected to the inputs of the TB6612 motor controller as shown in the circuit.
+        </p>
+        
+        <p>At start, the Brain4it module initializes the operation mode of all the GPIO pins with the 
+          the function <code>(gpio-mode pin mode)</code>, where mode can be:</p>
+        <ul>
+          <li><strong>in</strong>: pin configured to read</li>
+          <li><strong>out</strong>: pin configured to write</li>
+          <li><strong>pwm</strong>: pin configured to generate a PWM signal</li>
+        </ul>          
+        <p>The function call <code>(gpio-pwmc 8 100)</code> sets the clock divider (8) and the value range (0..100) 
+          for PWM pins. With this setup, the frecuency of the signal will be 24KHz, 
+          high enough to prevent it from being audible.
+        </p>
+        
+        <p>This is the code that is executed at startup (<span class="code">start</span> variable):</p>
+
+        <div class="code">
+          <code>
+            (do
+              (### "set pin mode operation")
+              (gpio-mode setup/BUTTON "in")
+              (gpio-mode setup/RED "out")
+              (gpio-mode setup/GREEN "out")
+              (gpio-mode setup/LEFT_PWM "pwm")
+              (gpio-mode setup/LEFT_1 "out")
+              (gpio-mode setup/LEFT_2 "out")
+              (gpio-mode setup/RIGHT_PWM "pwm")
+              (gpio-mode setup/RIGHT_1 "out")
+              (gpio-mode setup/RIGHT_2 "out")
+              (gpio-mode setup/STANDBY "out")
+              (gpio-mode setup/ECHO "in")
+              (gpio-mode setup/TRIGGER "out")
+              (### "set default pin values")
+              (gpio-write setup/GREEN 1)
+              (gpio-write setup/RED 0)
+              (gpio-write setup/STANDBY 1)
+              (gpio-pwmc 8 100)
+            ) 
+          </code>
+        </div>
+        
+        <p>This module defines the function <code>(%soft_motors left right)</code> to set the 
+          speed of the motors. The arguments <span class="code">left</span> and <span class="code">right</span> 
+          represent the motor power (in the range -100..100) of the left and right motors, respectivelly. 
+          The signum of these arguments indicates the direction of rotation. 
+          Calling <code>(motors 50 50)</code> will cause the robot to advance at half power (50%),
+          while calling <code>(motors 100 -100)</code> will cause the robot to rotate clockwise at full power.
+          The source code of this function is shown below:</p>
+        
+        <div class="code">
+          <code>
+            (function (%soft_left right)
+              (### "left and right in range (-100..100)")
+              (### left_motor)
+              (gpio-write LEFT_1 (if (> left 0) 1 0))
+              (gpio-write LEFT_2 (if (< left 0) 1 0))
+              (gpio-pwm LEFT_PWM (abs left))
+              (### right_motor)
+              (gpio-write RIGHT_1 (if (< right 0) 1 0))
+              (gpio-write RIGHT_2 (if (> right 0) 1 0))
+              (gpio-pwm RIGHT_PWM (abs right))
+            )            
+          </code>
+        </div>
+        
+        <p>The <span class="code">distance</span> function mesures the distance (in cm) 
+          to the object located in front of the robot.</p>
+        <p>It generates a high pulse of a duration of 10 microseconds in the TRIGGER pin
+          of the HC-SR04 sensor to send an ultrasonic signal. 
+          Then the function invokes <code>(gpio-pulse-in ECHO 1 5000000)</code> to measure the time 
+          it takes for the echo of that signal to return to the sensor.</p>
+        <p>The distance to the obstacle is the result of dividing that time by 100:</p>
+        <div class="code">
+          <code>
+            (function ()
+              (local duration)
+              (gpio-write TRIGGER 0)
+              (delay 2)
+              (gpio-write TRIGGER 1)
+              (delay 10)
+              (gpio-write TRIGGER 0)
+              (set duration (gpio-pulse-in ECHO 1 500000))
+              (round (/ duration 100))
+            )            
+          </code>
+        </div>
+        
+        <p>To remotelly control the robot this module has the following dashboard:</p>
+        <img src="projects/frogbot/frogbot_dashboard.png" class="screenshot_vertical" alt="" />
+        <ul>
+          <li>The <strong>stick</strong> widget controls the direction and speed of the robot. 
+            Moving the stick up or down makes the robot advance forward or backward. 
+            Moving the stick left or right makes the robot turn or rotate in that direction.</li>
+          <li>The <strong>range</strong> widget is a speed limiter, that sets the maximum operating power of the motors.</li>
+          <li>The <strong>display</strong> widget shows the power applied to each motor and the distance to the obstacle at real time.</li>
+          <li>The <strong>switch</strong> widget allows you to start and stop the robot main loop.</li>
+        </ul>
+        <p>The stick widget sends to the Brain4it server the coordinates (x, y) 
+          of the end of the stick respect the widget center. The function <span class="code">@control</span> 
+          converts these coordinates to the left (<span class="code">mot_target/left</span>) and right (<span class="code">mot_target/right</span>) 
+          power arguments expected by the <span class="code">motors</span> function:</p>
+       
+        <div class="code">
+          <code>
+          (function (context data)
+            (set-local dx (first data))
+            (set-local dy (last data))
+            (set-local left
+              (round
+                (*
+                  maxpower
+                  setup/SQRT2
+                  (- (* setup/COSA dx) (* setup/SINA dy))
+                )
+              )
+            )
+            (set-local right
+              (round
+                (*
+                  maxpower
+                  setup/SQRT2
+                  (+ (* setup/SINA dx) (* setup/COSA dy))
+                )
+              )
+            )
+            (### "left and right in [-maxpower..maxpower]")
+            (cond
+              (when (< left (- maxpower))
+                (set left (- maxpower))
+              )
+              (when (> left maxpower)
+                (set left maxpower)
+              )
+            )
+            (cond
+              (when (< right (- maxpower))
+                (set right (- maxpower))
+              )
+              (when (> right maxpower)
+                (set right maxpower)
+              )
+            )
+            (set mot_target (list "left" => left "right" => right))
+          )
+          </code>
+        </div>
+        <p>The calculated power (mot_target) is not directly applied to the motors. That task is performed by
+          the <span class="code">main_loop</span> function:</p>
+
+        <div class="code">
+          <code>
+          (try
+            (do
+              (set mot_actual/left 0)
+              (set mot_actual/right 0)
+              (while running
+                (### "take next motor power")
+                (set mot_next mot_target)
+                (### "calculate distance")
+                (set dist (%soft_distance))
+                (### "check for collision")
+                (set collision_risk (check_collision))
+                (### "evaluate control rules")
+                (eval rules)
+                (### "apply next motor power")
+                (when (!= mot_next mot_actual)
+                  (set mot_actual (clone mot_next))
+                  (motors mot_actual/left mot_actual/right)
+                  (module-notify "@display")
+                )
+              )
+            )
+            (ex)
+            (do
+              (motors 0 0)
+              (set mot_actual/left 0)
+              (set mot_actual/right 0)
+              (gpio-write setup/RED 0)
+            )
+          )
+          </code>
+        </div>
+        <p>The <span class="code">main_loop</span> is responsible for giving power to the motors according 
+          to the user's request (mot_target), but prevents the robot from colliding against an obstacle.</p>
+        <p>To achieve this, it measures, in each iteration, the distance to the obstacle that is in front 
+          of the robot and activates the <span class="code">collision_risk</span> variable if there is a risk of collision.</p>
+        <p>When <span class="code">collision_risk</span> is <code>true</code>, 
+          the control <span class="code">rules</span> prevents the robot from advancing even though the user 
+          insists on doing so:</p>
+        <div class="code">
+          <code>
+          (do
+            (when collision_risk
+              (if (> mot_next/left 0) (set mot_next/left 0))
+              (if (> mot_next/right 0) (set mot_next/right 0))
+            )
+          )
+          </code>
+        </div>
+      </div>
+
+      <h2>See it in action</h2>
+      <div class="box">
+        <p>In this video you can see the frogbot in action.</p>
+        <video width="600" controls style="max-width: 100%">
+          <source src="projects/frogbot/frogbot.mp4" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>     
+      </div>
+
+    <a href="projects/frogbot/frogbot.snp"
+       download="frogbot.snp"
+       class="btn btn-info read-more" role="button">Download module</a>
+      
+    {----}
+  </body>
+</html>

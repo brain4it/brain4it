@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>-</title>
+  </head>
+   {--title--}Project - Wifi display{----}
+
+    {--projects_current--} <span class="sr-only">(current)</span>{----}
+
+    {--projects_active--} active{----}
+
+    {--body--}
+      <h1>Wifi display</h1>
+
+      <h2>Introduction</h2>
+      <div class="box">
+        <p>
+          This device is a 2x16 character display connected to a WiFi network that
+          shows the messages that it receives though an HTTP interface.
+        </p>
+        
+        <p>You can use this small screen to show information from remote
+           systems, such as a Brain4it server.</p>
+        
+        <p>
+          Next we will see how to build this device 
+          and how to program a Brain4it module to show information on its screen.
+        </p>
+
+        <img src="projects/wifi_display/wifi_display1.jpg" class="image" alt="" />
+      </div>
+
+	   <h2>Design</h2>
+      <div class="box">
+        <p>The WiFi display consists of a 3D printed box that contains several electronic components: 
+          a small LCD screen (<span class="code">LCD1602</span> with an <span class="code">I2C</span> interface) 
+          and a Wemos module (based on the <span class="code">ESP8266 ESP-12E</span> microcontroller) 
+          that offers WiFi connectivity.</p>
+        
+        <p>The box is made of 2 parts: the base and the cover. 
+          You can view the box and its parts in 3D and download them in STL format through the following links:</p>
+        
+        <ul>
+          <li><a href="view3d/view3d.html?model=projects/wifi_display/wifi_display.json">View 3D model</a></li>
+          <li>Base 
+            (<a href="view3d/view3d.html?model=projects/wifi_display/base.stl">Base</a>, 
+            <a href="projects/wifi_display/base.stl" download="base.stl">download STL</a>)
+          </li>
+          <li>Cover 
+            (<a href="view3d/view3d.html?model=projects/wifi_display/cover.stl">Cover</a>, 
+            <a href="projects/wifi_display/cover.stl" download="cover.stl">download STL</a>)
+          </li>
+        </ul>          
+
+      </div>
+	  
+	  <h2>Electronics</h2>
+      <div class="box">
+        <p>This is the component list:</p>
+        <ul>
+          <li>LCD1602 2x16 + interface I2c.</li>
+          <li>Wemos D1 mini module (ESP8266 ESP-12E).</li>
+          <li>Wires and M3 screws.</li>
+          <li>5V DC adapter</li>          
+        </ul>
+		
+        <p>The following diagram illustrates the wiring of the components:</p>
+
+        <img src="projects/wifi_display/wifi_display_scheme.svg" class="image" alt="" />
+      </div>
+	  	  
+    <h2>Programming the Wemos module:</h2>
+		
+		<div class="box">
+      <p>
+        The program that runs in the Wemos module is a C++ <span class="code">Sketch</span> developed 
+        with the Arduino IDE version 1.8.6. This <span class="code">Sketch</span> processes 
+        the information received through the network and displays it on the screen:
+      </p>
+      
+<pre>
+  #include &lt;ESP8266WebServer.h&gt;
+  #include &lt;Wire.h&gt; 
+  #include &lt;LiquidCrystal_I2C.h&gt;
+
+  const char* ssid = "xxxxxxxx";
+  const char* password = "xxxxxxx";
+
+  ESP8266WebServer server(80);
+  LiquidCrystal_I2C lcd(0x27,16,2);
+
+  // Definition of data structures and variables
+  /*
+    The string received from Brain4it will contain the messages to show 
+    on the display in this format (JSON):
+
+     "[[row, colX1, colX2, message, delay, scroll, mode], ... ]"
+
+     Example:
+
+     String(
+        "[[0,0,16,\"09:00 Reunio del Govern Fins a les 10:00                       \",650,1,1]"
+        ",[0,0,16,\"12:30 Reunio Associacions del barris y altres Fins a les 14:30 \",650,1,1]"
+        ",[0,0,16,\"15:00 Conferencia de la dona y el nens ... Fins a les 15:30    \",650,1,1]"
+        ",[0,0,16,\"16:00 Reunio del Govern Fins a les 17:00                       \",650,1,1]"
+        ",[0,0,16,\"18:00 Reunio Associacions del barris y altres Fins a les 18:30 \",650,1,1]"
+        ",[0,0,16,\"19:00 Conferencia de la dona y el nens ... Fins a les 20:30    \",650,1,1]]");
+  */
+  // loads into variables the data obtained from the corportate agenda 
+  void ver_recibido()
+  {
+    …
+  }
+  …
+
+  void setup(void) 
+  {
+    Serial.begin(115200);  
+    // display initialization
+    …
+    // connect to the wifi network
+    …  
+    // define the method that Brain4it will invoke to send the messages to show
+    server.on("/ver", HTTP_POST, cargarVariables);    	  
+    server.begin();
+    … 
+  }
+
+  void loop(void) 
+  {
+    // handle HTTP requests  
+    server.handleClient();   
+
+    // When data is recibed (datos_recibidos) show it on the display
+    // depending on visualization mode
+    if (datos_recibidos) 
+    {  
+      switch (modo_visualizar)
+      {
+        case 1: visualizar_modo1();
+          break;
+        case 2: visualizar_modo2();
+          break;
+        case 3: visualizar_modo3();
+          break;
+        case 4: visualizar_modo4();
+          break;
+      }    
+    }
+
+    delay(50);
+  }
+
+  // Mode 1 = visualize tabla_display message to message
+  void visualizar_modo1()
+  {
+    …
+    salir_bucle = 1;
+  }
+  …
+  // Mode 4 = each line is divided in 2 parts (0-7, 8-16)
+  void visualizar_modo4()
+  {
+  }
+
+  // print a message in the given coordinates (column, row)
+  void imprime_display(int column, int row, String message) 
+  {  
+    …
+    server.handleClient(); // process new HTTP requests while displaying messages 
+  }
+</pre>
+      </div>
+
+      <h2>Programming the Brain4it module</h2>
+      <div class="box">
+        <p>We have placed this device at the entrance of a
+          meeting room of a municipal facility. The screen shows the
+          start time and the description of the event that is taking place
+          in that room, information that comes from the corporate agenda.
+        <p>
+        <p> 
+		      The following Brain4it module gets the current event data 
+          from the corporate agenda and send it to the wifi display.
+        </p>
+        <p>
+          The access to the agenda is made via web service call. The obtained
+          information is sent to the display through an HTTP POST request.
+        </p>
+        
+        <div class="code">
+          <code>
+            (function
+			(ctx data)
+			(local nowdt)
+			(try
+				(do
+					(set nowdt (format-date (date) "yyyyMMdd"))
+					(### "get the list of events to display from the corporate agenda")
+					(set events (next-events 50))
+					(if	events
+						(do
+							(### "filter events by dates")
+							(set eventos
+								(find events
+									e
+									(and 	
+										(>= nowdt (substring (get e 1) 0 8))
+										(<= nowdt (substring (get e 2) 0 8))
+									)
+								)
+							)
+						)
+					)
+					(###  "format events, if list is empty => room is available")
+					(if eventos
+						(set events
+							(añade-espacios (crear-lista-eventos eventos))
+						)
+					)
+					(###  "Send the events list to the Wemos to show it on the display")
+					(http  	"POST"  (concat setup/ip_acceso_wimos "/ver")
+							"body" => (string events "format" => "json")      
+					)
+				)
+				(ex "*" => (set errorWi (list (format-date (date)) ex)))
+			)
+		)
+          </code>
+        </div>
+      </div>
+    
+	  <h2>Device in action</h2>
+    <div class="box">
+      <p>In these images we can see the device working in different stages:</p>
+      <img src="projects/wifi_display/wifi_display2.jpg" class="image" alt="" />
+      <img src="projects/wifi_display/wifi_display3.jpg" class="image" alt="" />        
+    </div>
+    
+		<a href="projects/wifi_display/wifidisplay.snp"
+         download="wifidisplay.snp"
+         class="btn btn-info read-more" role="button">Download module Brain4it</a>
+		<a href="projects/wifi_display/wifidisplay.ino"
+         download="wifidisplay.ino"
+         class="btn btn-info read-more" role="button">Download Sketch</a>
+
+    {----}
+  </body>
+</html>

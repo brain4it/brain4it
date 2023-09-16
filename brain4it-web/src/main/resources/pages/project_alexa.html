@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>-</title>
+  </head>
+  <body>
+    {--title--}Project - Alexa {----}
+    
+    {--projects_current--} <span class="sr-only">(current)</span>{----}
+    
+    {--projects_active--} active{----}
+        
+    {--body--}
+      <h1>Amazon Alexa integration</h1>
+
+      <h2>Introduction</h2>
+
+      <div class="box">
+        <p><strong>Amazon Alexa</strong> is a cloud-connected voice assistant that can be easily programmed 
+          to send requests to remote services that perform a variety of tasks 
+          such as turning lights on and off, opening doors, reading news or predicting weather.
+        </p>
+        <p>Alexa usually runs on Amazon Echo smart speakers, but it can also run on smartphones.</p>
+        <p>To invoke an external service with a voice command it is required to develop a Skill, that is an Alexa
+          application that runs in the Amazon cloud.</p>
+        <p>In this project we will show how to develop a Skill that invokes actions of a Brain4it 
+          module through different voice commands.</p>
+      </div>
+      
+      <h2>Programming the Alexa Skill</h2>
+      <div class="box">
+        <p>To create an Alexa Skill follow the next steps:</p>
+        <ul>
+          <li>Enter the <a href="https://developer.amazon.com/alexa/console/ask" target="_blank" 
+                 title="new window">Alexa developer console</a> with your Amazon account.</li>
+          <li>Push the <strong>Create Skill</strong> button.</li>
+          <li>Give the Skill a name, for example "Brain4it" and choose your default language 
+            and the <strong>Custom</strong> model. Finally press the <strong>Create Skill</strong> button.</li>
+          <li>Once the Skill is created, you will enter the programming console.
+              <img src="projects/alexa/alexa_screenshot1.png" class="screenshot" alt="console screenshot">
+          </li>
+          <li>Enter the <strong>Invocation</strong> menu to specify the words that will activate your Skill. Read the
+              note below to know about the invocation name requirements. In this example we choose the words "robot brain". 
+              Whenever we say "Alexa, ask robot brain..." our Skill will be invoked.</li>
+          <li>Next we must define our custom intents. An <strong>intent</strong> represents an action that 
+            fulfills a user's spoken request. Press the <strong>add</strong> button on the intents menu. 
+            Give the intent a name, for example "sum", and associate one or more utterances to it. 
+            An <strong>utterance</strong> is a sequence of words that will fire the intent. 
+            These utterances may have <strong>slots</strong>, that are like predefined parameters.
+            In this example we add the utterance "sum {number_a} plus {number_b}" where 
+            <span class="code">number_a</span> and <span class="code">number_b</span> are slots of type
+            <span class="code">AMAZON.NUMBER</span>. If we say "Ask robot brain sum 4 plus 7", 
+            Alexa will send the intent "sum" with slots 4 and 7 to the Brain4it module as a JSON message.
+          </li>
+          <li>The last step is to define the URL of the Brain4it service that will process the JSON messages sent by Alexa.
+            Go to <strong>Endpoints</strong> menu, select <strong>HTTPS</strong> and enter the URL of the Brain4it external function that will receive the requests.
+            For example: <span class="code">https://www.smarthomedemo.org/brain4it-server-web/modules/alexa/@endpoint</span>. 
+            Press <strong>Save Endpoints</strong> button to save changes.
+          </li>
+          <li>Finally, push the <strong>Save model</strong> and <strong>Build model</strong> buttons to build your Skill. 
+            When the build process finish, your Skill will be ready for testing, 
+            but before that we must program the Brain4it module.</li>                
+        </ul>
+      </div>
+
+      <h2>Programming the Brain4it module</h2>
+      
+      <div class="box">
+        <p>For each intent Alexa performs an HTTP POST request to our endpoint passing a JSON object that contains 
+          the intent name and the values of its slots:</p>
+        
+        <div class="code">
+          <pre>
+{
+  "version": "1.0",
+  "session": {
+    "new": true,
+    "sessionId": "amzn1.echo-api.session.0ac9a463-bfe7-4192-9b72-30e3efd25373",
+    "application": {
+      "applicationId": "amzn1.ask.skill.7a543b88-f041-4a61-9d60-20a6622393bf"
+    },
+    "user": {
+      "userId": "amzn1.ask.account.AHL5GWE6HXWGHTMLPWSX65WO..."
+    }
+  },
+  "context": {
+    "System": {
+      "application": {
+        "applicationId": "amzn1.ask.skill.7a543b88-f041-4a61-9d60-20a6622393bf"
+      },
+      "user": {
+        "userId": "amzn1.ask.account.AHL5GWE6HXWGHTMLPWSX65W..."
+      },
+      "device": {
+        "deviceId": "amzn1.ask.device.AFUZX7KVT6KT724...",
+        "supportedInterfaces": {}
+      },
+      "apiEndpoint": "https://api.eu.amazonalexa.com",
+      "apiAccessToken": "eyJ0eXAiOiJKV1QiLCJhb..."
+    },
+    "Viewport": {
+      "experiences": [
+        {
+          "arcMinuteWidth": 246,
+          "arcMinuteHeight": 144,
+          "canRotate": false,
+          "canResize": false
+        }
+      ],
+      "shape": "RECTANGLE",
+      "pixelWidth": 1024,
+      "pixelHeight": 600,
+      "dpi": 160,
+      "currentPixelWidth": 1024,
+      "currentPixelHeight": 600,
+      "touch": [
+        "SINGLE"
+      ]
+    }
+  },
+  "request": {
+    "type": "IntentRequest",
+    "requestId": "amzn1.echo-api.request.2ef418c7-517f-405a-84b4-163782a9beae",
+    "timestamp": "2018-12-21T16:41:26Z",
+    "locale": "en-US",
+    "intent": {
+      "name": "add",
+      "confirmationStatus": "NONE",
+      "slots": {
+        "number_a": {
+          "name": "number_a",
+          "value": "3",
+          "confirmationStatus": "NONE",
+          "source": "USER"
+        },
+        "number_b": {
+          "name": "number_b",
+          "value": "4",
+          "confirmationStatus": "NONE",
+          "source": "USER"
+        }
+      }
+    }
+  }
+}          
+          </pre>
+        </div>
+        <p>The endpoint performs the corresponding action and 
+          returns a JSON object that may indicate a text to speech:</p>
+        <div class="code">
+          <pre>
+{
+  "body": {
+    "version": "1.0",
+    "response": {
+      "outputSpeech": {
+        "type": "PlainText",
+        "text": "The result of the operation is 7"
+      }
+    }
+  }
+}
+          </pre>
+        </div>
+        
+        <p>So the external function that will process the Alexa requests could be like this:</p>
+
+        <div class="code">
+          <code>
+            (function (context json)
+              (local response type locale text intent intent_func)
+              (set message (parse json "format" => "json"))
+              (set type message/request/type)
+              (set locale message/request/locale)
+              (if (not (has MESSAGES locale)) (set locale "en-US"))
+              (cond
+                (when (= type "LaunchRequest")
+                  (set text (get (get MESSAGES locale) "ready"))
+                )
+                (when (= type "IntentRequest")
+                  (set intent message/request/intent)
+                  (set intent_func (get intents intent/name))
+                  (set text (call intent_func intent locale))
+                )
+                (when true
+                  (set text (get (get MESSAGES locale) "unsupported"))
+                )
+              )
+              (set context/response-headers
+                ("content-type" => "application/json")
+              )
+              (set response
+                (list
+                  "version" => "1.0"
+                  "response" =>
+                  (list
+                    "outputSpeech" =>
+                    (list "type" => "PlainText" "text" => text)
+                  )
+                )
+              )
+              (string response "format" => "json")
+            )
+          </code>
+        </div>
+        <p>For each intent type, a function with the intent name must be declared inside the <span class="code">intents</span> list:</p>
+        
+        <div class="code">
+          <code>
+            (
+              "sum" =>
+              (function (%soft_intent locale)
+                (local number_a number_b)
+                (set number_a (number intent/slots/number_a/value))
+                (set number_b (number intent/slots/number_b/value))
+                (concat
+                  (get (get MESSAGES locale) "sum")
+                  (+ number_a number_b)
+                )
+              )
+              "open_door" =>
+              (function (%soft_intent locale)
+                (open_door)
+                (get (get MESSAGES locale) "open_door")
+              )
+              ...
+            )            
+          </code>
+        </div>
+          
+        <p>These functions return the text that Alexa will play on the smart speaker.</p>
+        <p>The <span class="code">sum</span> function adds the values of the <span class="code">number_a</span> 
+          and <span class="code">number_b</span> slots 
+          and returns a message with the result of this operation.</p>
+        <p>If we say "Ask robot brain sum 3 plus 4" the <span class="code">sum</span> function will 
+          be invoked and Alexa will respond: "The result of this operation is 7."</p>
+                  
+      </div>
+
+      <a href="projects/alexa/alexa.snp" 
+         download="alexa.snp"
+         class="btn btn-info read-more" role="button">Download module</a>
+      
+    {----}
+  </body>
+</html>

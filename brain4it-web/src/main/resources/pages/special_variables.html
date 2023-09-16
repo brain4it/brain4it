@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>-</title>
+  </head>
+  <body>
+    {--title--}Special variables - Brain4it{----}
+    
+    {--special_variables_current--} <span class="sr-only">(current)</span>{----}
+    
+    {--reference_active--} active{----}
+        
+    {--body--}
+      <h1>Special variables</h1>
+      
+      <div class="box">
+        Brai4it modules have some special variables that are described below:
+        <ul>
+          <li><span class="code">module-metadata</span>: a list that contains properties that provide information about the module. Example:
+            <div class="code">
+            <code>
+              ("icon" => "sensors" 
+              "description" => "Libelium stations" 
+              "author" => "Mike"
+              )
+            </code>
+            </div>
+            <p>All Brain4it managers show a list of the modules that are contained in a server. Each module in that list is displayed
+              with an icon and a label that are set respectively with the <span class="code">icon</span> and <span class="code">description</span>
+              properties of <span class="code">module-metadata</span>.</p>
+            <p>In addition to these properties any other can be added to provide more information about the module.</p>
+            <p>All the content of <span class="code">module-metadata</span> is always be visible for everyone.</p>
+          </li>
+          <li>
+            <span class="code">access-key</span>: a string that contains the key required to access the module data through the REST API. 
+            You can find more information about the Brain4it security model in the <a href="restapi.html">REST API</a>.</li> 
+          <li><span class="code">start</span>: a code block that will be executed when module is started. 
+            This code is intented to perform initialization tasks and must return as soon as possible. Example:
+            <div class="code">
+            <code>
+              (do
+                (subscribe_sensor)
+                (open_db_connection)
+                (spawn (eval loop))
+              )
+            </code>
+            </div>
+          </li>
+          <li><span class="code">stop</span>: a code block that will be executed when module is stopped. 
+            This code is intented to perform cleanup tasks and must return as soon as possible. Example:
+            <div class="code">
+            <code>
+              (do
+                (close_db_connection)
+                (unsubscribe_sensor)
+              )
+            </code>
+            </div>
+          </li>
+          <li><span class="code">@dashboards</span>: a exterior function that returns a list containing the definitions 
+            of all the dashboards offered by this module. Example:
+            <div class="code">
+            <code>
+              (function (context data)
+                (list "Control panel" => control_dashboard
+                      "Activity log" => log_dashboard
+                )
+              )
+            </code>
+            </div>
+            <p>The managers call this function every time the user opens the dashboards view.</p>
+          </li>
+        </ul>
+      </div>
+    {----}
+  </body>
+</html>

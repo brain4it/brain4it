@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Brain4it - view3d</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <meta name="description" content="interactive 3d model viewer">
+    <meta name="author" content="Ajuntament de Sant Feliu de Llobregat">
+    <link rel="apple-touch-icon" sizes="180x180" href="favicons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../favicons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../favicons/favicon-16x16.png">
+    <link rel="manifest" href="../favicons/manifest.json">
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/brain4it.css" rel="stylesheet">
+    <style>
+      body 
+      {
+        background:#777;
+        padding:0;
+        margin:0;
+        overflow:hidden;
+        position:absolute;
+        top:0;
+        bottom:0;
+        left:0;
+        right:0;
+      }
+      #loading
+      {
+        position: absolute;
+        top:50%;
+        left:50%;
+        display:inline-block;
+        padding:4px;
+        width: 140px;
+        background-color: red;
+        border-radius: 8px;
+        margin-left: -70px;
+        margin-top: -12px;
+        text-align: center;
+        color: white;
+        font-family: "Arial";
+        font-size: 20px;
+        display:none;
+      }
+      #container
+      {
+        position: absolute;
+        top: 74px;
+        left:0;
+        right:0;
+        bottom:0;
+      }
+      #selection
+      {
+        position: absolute;
+        bottom: 0;
+        left:0;
+        right: 0;
+        height: 28px;
+        padding: 4px;
+      }
+      #download_stl
+      {
+        position: absolute;
+        background-color: #3355ff;
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        bottom: 5%;
+        right: 5%;
+      }
+      #download_stl img
+      {
+        position: absolute;
+        top: 12px;
+        left: 12px;
+        width: 24px;
+        height: 24px;
+      }
+    </style>
+  </head>
+  <body>
+
+    <nav class="navbar navbar-expand-md navbar-light fixed-top">
+      <a class="navbar-brand" href="../index.html">
+        <img src="../images/brain4it.svg" alt="Brain4it" class="brain4it_logo">
+      </a>    
+      <button class="navbar-toggler" type="button" data-toggle="collapse" 
+              data-target="#navbarCollapse" aria-controls="navbarCollapse" 
+              aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarCollapse">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" 
+               href="#" id="dropdown03" 
+               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">View</a>
+            <div class="dropdown-menu" aria-labelledby="dropdown03">
+              <a class="dropdown-item" href="#" onclick="hideSelection();">Hide selection</a>
+              <a class="dropdown-item" href="#" onclick="hideOther();">Hide other</a>
+              <a class="dropdown-item" href="#" onclick="showAll();">Show all</a>
+              <a class="dropdown-item" href="#" onclick="showByType(scene, 'printed_part');">Show printed parts</a>
+              <a class="dropdown-item" href="#" onclick="showByType(scene, 'component');">Show components</a>
+            </div>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" 
+               href="#" id="dropdown02" 
+               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Camera</a>
+            <div class="dropdown-menu" aria-labelledby="dropdown02">
+              <a class="dropdown-item" href="#" onclick="setCamera(0, -1, 0);">Front</a>
+              <a class="dropdown-item" href="#" onclick="setCamera(0, 1, 0);">Back</a>
+              <a class="dropdown-item" href="#" onclick="setCamera(1, 0, 0);">Left</a>
+              <a class="dropdown-item" href="#" onclick="setCamera(-1, 0, 0);">Right</a>
+              <a class="dropdown-item" href="#" onclick="setCamera(0, 0, 1);">Top</a>
+            </div>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#" onclick="downloadSTL();">Download STL</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+    <div id="container">
+      <div id="loading">Loading...</div>
+    </div>
+
+    <div id="selection">
+    </div>
+
+    <a href="javascript:downloadSTL();" id="download_stl" 
+      title ="Download STL" style="display:none">
+      <img src="images/download_stl.svg" alt="download STL">
+    </a>
+    
+    <a id="download_link" style="display:none"></a>
+    
+    <script src="js/three.min.js"></script>
+    <script src="js/CJSONLoader.js"></script>
+    <script src="js/STLLoader.js"></script>
+    <script src="js/STLExporter.js"></script>
+    <script src="js/OrbitControls.js"></script>
+    <script src="js/Detector.js"></script>
+    <script src="js/stats.min.js"></script>
+    <script src="js/view3d.js"></script>
+    <script src="../js/jquery-3.2.1.min.js"></script>
+    <script src="../js/popper.min.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
+    
+  </body>
+</html>

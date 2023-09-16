@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>-</title>
+  </head>
+  <body>
+    {--title--}Project - Davis stations{----}
+
+    {--projects_current--} <span class="sr-only">(current)</span>{----}
+
+    {--projects_active--} active{----}
+
+    {--body--}
+    <h1>Davis stations</h1>
+
+    <h2>Introduction</h2>
+    <div class="box">
+      <p>
+        The municipality of Sant Feliu de Llobregat owns two 
+        <a href="https://www.davisinstruments.com/weather-monitoring/">Davis Instruments</a> Vantage Pro stations that 
+        have multiple sensors to measure the weather conditions.
+        External applications can read the data from these sensors through the Vantage Serial Protocol, 
+        a propietary protocol of Davis Instruments.
+        Brain4it has a library which is able to communicate with Davis stations using the mentioned serial protocol.</p>
+      <p>
+        This Brain4it module connects to these weather stations at a certain frequency to get the sensor data and publish it 
+        on the <a href="http://sentilo.io">Sentilo</a> platform.
+      </p>
+      <p>
+        <a href="http://sentilo.io">Sentilo</a> is an open source sensor
+        and actuator platform designed to fit in the Smart City architecture
+        of any city looking for openness and easy interoperability.
+        This platform provides a simple
+        <a href="http://www.sentilo.io/xwiki/bin/view/APIDocs/WebHome">HTTP REST API</a>
+        to manage sensory data.
+      </p>
+      <p>The following diagram illustrates the functioning of the system:</p>
+
+      <img src="projects/davis/davis_schema.svg" alt="" class="image">
+
+    </div>
+
+    <h2>Programming the module</h2>
+    <div class="box">
+      <p>
+        Instead of having a loop that connects to the stations and then sleeps for a while, 
+        this module use the <a href="library_core.html#an_timer-schedule">timer-schedule</a> function 
+        to schedule a task that will read the weather data at a certain frequency.</p>
+      <p>
+        This method is more efficient that the loop because it does not consumes an executor thread permanently.</p>
+      <p>
+        When the module is stopped, the 
+        <a href="library_core.html#an_timer-cancel">timer-cancel</a> function is called to cancel future executions
+        of the task.</p>
+      <p>While the module is running, all the scheduled tasks within the module can be listed using
+        <a href="library_core.html#an_timer-tasks">timer-tasks</a> function.
+      </p>
+      <p>Once the module is initiated, the code contained in the
+        <span class="code">start</span> variable
+        <code>(spawn (eval main))</code>
+        is executed and a function is scheduled for execution at intervals of 
+        <code>(* 1000 setup/access_interval_sec)</code> milliseconds.
+      </p>
+      <p>The <span class="code">main</span> variable contains this code:</p>
+      <div class="code">
+        <code>
+          (timer-schedule
+          (function
+          ()
+          (try
+          (do
+          (### "New values are generated")
+          (%soft_generate-data)
+          )
+          (ex
+          "*" =>
+          (do
+          (###
+          "When an error takes place, it is saved in a variable named 'error'"
+          )
+          (set error (list (format-date (date)) ex))
+          )
+          )
+          )
+          )
+          0
+          (* 1000 setup/access_interval_sec)
+          )
+        </code>
+      </div>
+      <p>
+        Every time this code is executed, weather data is obtained and published on Sentilo.</p>
+      <p>Once the data is acquired from the station, it is parsed and transformed to publish it on Sentilo.</p>
+      <p>Before the information is published, the module assures that all the data is correct verifying that
+        the sensor values are in a valid range.
+        At this point, the weather information is ready for being uploaded to the platform.
+      </p>
+      <div class="code">
+        <code>
+          (function
+          (%soft_ctx info)
+          (local data)
+          (### "data format: " ("AJU" "tem" => 27.4 "hum" => 78.4 ... "winddir" => 45))
+          (for-each
+          setup/stations
+          station
+          (do
+          (set
+          data
+          (weather-station component-name (concat station/ip ":" station/port))
+          )
+          (local node now sensor-value sensor-type)
+          (set node station/id)
+          (### "add to current data")
+          (if (not (has node-data node)) (put node-data node (list)))
+          (### "delete from data not relevant information")
+          (%soft_delete-info data)
+          (### "set data names as required by this module")
+          (%soft_parse-data data)
+          (### "check data")
+          (for-each
+          (names data)
+          sensor
+          (set sensor-value (get data sensor))
+          (set sensor-type (get sensor-types sensor))
+          (if
+          (<= sensor-type/min sensor-value sensor-type/max)
+          null
+          (remove data sensor)
+          )
+          )
+          (append (get node-data node) data)
+          (set now (date))
+          (put (get node-data node) "update" now)
+          (### "add to history data")
+          (%soft_add-history-data node data now)
+          (### "publish data")
+          (sentilo/publish node data)
+          (module-notify "@display")
+          (### "return node config")
+          (%soft_get-node-config node)
+          )
+          )
+          )
+        </code>
+      </div>
+      <p>
+        The <span class="code">stop</span> variable contains the code block that will be executed the module is stopped.
+        This code will call the <span class="code">timer-cancel</span> function to cancel the scheduled task. 
+      </p>
+      <div class="code">
+        <code>
+          (do
+          (### "Stops the module")
+          (timer-cancel)
+          )
+        </code>
+      </div>
+      <p>
+        In addition to publishing data on Sentilo, this module also shows the information on 10 different dashboards:
+      </p>
+      <ul>
+        <li>'Data by node' dashboard shows the weather data on a 'display' widget for each station.</li>
+        <li>'Temperature', 'Rain', 'Pressure', 'Wind direction', 'Wind speed', 'UV index', 
+          'Solar radiation' and 'Humidity' dashboards use a 'graphic' widget to display the values of these sensors
+          over time.</li>
+        <li>'Indicators' dashboard contains multiple 'indicator' widgets, one for each sensor, to provide a global
+            view of the weather conditions.</li>
+      </ul>
+      <img src="projects/davis/dashboard.png" alt="" class="image">
+      <p>The module configuration parameters (access_interval_sec, Davis stations, 
+        Sentilo instances, etc.) are hold in the <span class="code">setup</span> list. 
+      </p>
+    </div>
+    <a href="projects/davis/davis.snp"
+       download="davis.snp"
+       class="btn btn-info read-more" role="button">Download module</a>
+
+    {----}
+  </body>
+</html>

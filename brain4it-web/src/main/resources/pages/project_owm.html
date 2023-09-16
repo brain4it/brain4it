@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>-</title>
+  </head>
+  <body>
+    {--title--}Project - OpenWeatherMap forecast {----}
+    
+    {--projects_current--} <span class="sr-only">(current)</span>{----}
+    
+    {--projects_active--} active{----}
+        
+    {--body--}
+      <h1>OpenWeatherMap forecast</h1>
+
+      <div class="box">
+        <p><a href="http://openweathermap.org">OpenWeatherMap</a> is a web that provides multiple weather services
+          through a HTTP API.
+        </p>
+        <p>This brain4it module uses the OpenWeatherMap API to show the weather forecast for a given location.</p>
+
+        <p>First of all, you must obtain an
+            <a href="https://openweathermap.org/appid">API key (appid)</a> to use the API. 
+            For doing that, you must create an account in OpenWeatherMap but it has no cost.
+        </p>
+        
+        <p>Once you have the <span class="code">appid</span>, choose your 
+          <span class="code">location_id</span> from 
+          <a href="http://openweathermap.org/help/city_list.txt">http://openweathermap.org/help/city_list.txt</a> 
+          and put both in the <span class="code">setup</span> list:</p>
+        <div class="code">
+          <code>
+          (
+            "location_id" => "&lt;your_location_id&gt;"
+            "app_id" => "&lt;your_app_id&gt;"
+            "read_interval_hours" => 1
+          )            
+          </code>
+        </div>
+          
+        <p>The <span class="code">read_weather</span> and <span class="code">read_forecast</span> functions 
+          of this module read the current weather data and the weather forecast data respectivelly. 
+          These functions make a HTTP call to the corresponding
+          OpenWeatherMap service and save the result in a variable:</p>
+        <div class="code">
+          <code>
+          (function
+            ()
+            (set
+              weather
+              (get
+                (http
+                  "GET"
+                  (concat
+                    "http://api.openweathermap.org/data/2.5/weather?id="
+                    setup/location_id
+                    "&APPID="
+                    setup/app_id
+                  )
+                  "output-format" => "json"
+                )
+                "body"
+              )
+            )
+            (module-notify "@display")
+            weather
+          )
+          </code>
+        </div>
+        
+        <p>These functions are called at regular intervals inside the 
+          <span class="code">loop</span> code block:</p>
+        
+        <div class="code">
+          <code>
+          (while
+            true
+            (try
+              (do
+                (read_weather)
+                (read_forecast)
+                (for-each rules rule (eval rule))
+              )
+              (ex "*" => (set error (list ex (format-date (date)))))
+            )
+            (sleep (* setup/read_interval_hours 3600000))
+          )
+          </code>
+        </div>
+        <p>After getting the <span class="code">weather</span> and <span class="code">forecast</span>
+          data the rules contained in the <span class="code">rules</span> 
+          list are executed to perform the tasks that you desire.</p>
+
+        <p>The dashboard of this module has a display widget that shows the 
+          current weather data (temperature, humidity and pressure) 
+          and the forecast for the next 9 hours:</p>
+                
+        <img src="projects/owm/owm.png" alt="" class="image" />
+      </div>
+
+      <a href="projects/owm/owm.snp" 
+         download="owm.snp"
+         class="btn btn-info read-more" role="button">Download module</a>
+      
+    {----}
+  </body>
+</html>

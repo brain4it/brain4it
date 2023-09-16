@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>-</title>
+  </head>
+  <body>
+    {--title--}Project - Calculator {----}
+    
+    {--projects_current--} <span class="sr-only">(current)</span>{----}
+    
+    {--projects_active--} active{----}
+        
+    {--body--}
+      <h1>Calculator</h1>
+
+      <div class="box">
+        <div class="info">
+        <p>
+          This Brain4it module implements a simple calculator 
+          that can perform the four basic arithmetic operations: sum, subtract,
+          multiply and division.
+          It's is a good example to understand how the Brain4it dashboards work.
+        </p>  
+        <p>
+          As shown in the image, the dashboard of this module paints a 
+          3 line display and a numeric pad with some additional keys.
+        </p>
+        <p>Internally, this module stores 3 variables:</p>
+        <ul>
+          <li><span class="code">previous_value</span>: the previous entered number.</li>
+          <li><span class="code">operator</span>: the operator selected (a reference to +, -, * or /).</li> 
+          <li><span class="code">current_value</span>: the number that is being entered.</li>
+        </ul>
+        <p>The display widget shows the text returned by the <span class="code">@display</span> exterior function, 
+          that is the result of concatenating the previous variables:
+        </p>
+        <div class="code">
+          <code>
+            (function
+              (context data)
+              (concat
+                (if
+                  (= null previous_value)
+                  ""
+                  (concat previous_value "\n")
+                )
+                (if (= null operator) "" (concat operator "\n"))
+                current_value
+              )
+            )
+          </code>
+        </div>
+
+        <p>When a numeric button is pressed the <span class="code">@digit</span> function is invoked to 
+          append the corresponding digit to the <span class="code">current_value</span> variable:
+        </p>
+        <div class="code">
+          <code>
+            (function
+              (context digit)
+              (set current_value (concat current_value digit))
+              (module-notify "@display")
+            )
+          </code>
+        </div>
+        <p>  
+          The module-notify function is called to notify the clients that the value of 
+          <span class="code">@display</span> has changed.
+        </p>
+        <p>
+          When the user press a operator button (+, -, *, /) the 
+          <span class="code">@operator</span> function is executed:</p>
+        <div class="code">
+          <code>
+          (function
+            (context key)
+            (do_operation)
+            (set current_value "")
+            (set operator (reference key))
+            (module-notify "@display")
+          )
+          </code>
+        </div>
+        <p>This function stores in the <span class="code">operator</span> 
+          variable the selected operator and calls the <span class="code">do_operation</span>
+          function to perform the corresponding arithmetic operation:</p>
+        <div class="code">
+          <code>
+          (function
+            ()
+            (if
+              (> (length current_value) 0)
+              (do
+                (set current_value (number current_value))
+                (set
+                  previous_value
+                  (if
+                    (= null operator)
+                    current_value
+                    (if
+                      (= null previous_value)
+                      (eval (list operator current_value))
+                      (eval
+                        (list operator previous_value current_value)
+                      )
+                    )
+                  )
+                )
+              )
+            )
+          )          
+          </code>
+        </div>
+        
+        </div>
+        <img src='projects/calculator/calculator_full.png' alt="" class="image" />       
+      </div>
+
+      <a href="projects/calculator/calculator.snp" 
+         download="calculator.snp"
+         class="btn btn-info read-more" role="button">Download module</a>
+      
+    {----}
+  </body>
+</html>

@@ -222,16 +222,6 @@
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-war-plugin</artifactId>
-        <version>3.4.0</version>
-        <configuration>
-          <dependentWarExcludes>*.jar</dependentWarExcludes>
-          <failOnMissingWebXml>false</failOnMissingWebXml>
-          <packagingExcludes>WEB-INF/lib/*.jar</packagingExcludes>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
         <version>2.8</version>
         <executions>
@@ -262,7 +252,7 @@
         <executions>
           <execution>
             <id>doc</id>
-            <phase>install</phase>
+            <phase>prepare-package</phase>
             <goals>
               <goal>java</goal>
             </goals>
@@ -276,7 +266,7 @@
           </execution>
           <execution>
             <id>merge_libraries</id>
-            <phase>install</phase>
+            <phase>prepare-package</phase>
             <goals>
               <goal>java</goal>
             </goals>
@@ -291,7 +281,7 @@
           </execution>
           <execution>
             <id>merge_pages</id>
-            <phase>install</phase>
+            <phase>prepare-package</phase>
             <goals>
               <goal>java</goal>
             </goals>
@@ -313,7 +303,7 @@
         <executions>
           <execution>
             <id>replaceTokens</id>
-            <phase>install</phase>
+            <phase>prepare-package</phase>
             <goals>
               <goal>replace</goal>
             </goals>
@@ -342,6 +332,16 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-site-plugin</artifactId>
         <version>3.7.1</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-war-plugin</artifactId>
+        <version>3.4.0</version>
+        <configuration>
+          <dependentWarExcludes>*.jar</dependentWarExcludes>
+          <failOnMissingWebXml>false</failOnMissingWebXml>
+          <packagingExcludes>WEB-INF/lib/*.jar</packagingExcludes>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

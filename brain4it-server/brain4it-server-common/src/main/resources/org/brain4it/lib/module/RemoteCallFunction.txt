@@ -1,24 +1,52 @@
-(RemoteCall (remote-call function_url arg) 
+(RemoteCall (remote-call function_setup arg)
   result
   where =>
   (
-    function_url => ("string" 1 1)
+    function_setup => ("list" 1 1)
+    url => ("string" 0 1)
+    request_headers => ("list" 0 1)
+    tenant => ("string" 0 1)
+    module => ("string" 0 1)
+    function => ("string" 0 1)
     arg => ("list" 0 N)
     result => ("object" 1 1)
   )
   examples =>
   (
     (
-      (remote-call "https://localhost:9999/cars/@get-detections")
-      56356
+      (remote-call ("url" => "https://localhost:9999/cars/@get-detections"
+                    "request-headers" => ("access-key" => "1234")))
+      (("car" 123) ("truck" 23))
     )
     (
-      (remote-call "https://localhost:9999/lib/math/@distance-to" x y)
+      (remote-call ("tenant" => "libs"
+                    "module" => "math"
+                    "function" => "fn/@distance-to"
+                    "request-headers" => ("access-key" => "1234")) x y)
       7.5456456
     )
     (
       (do
-        (set setup/remote-modules/math "https://localhost:9999/lib/math")
+        (set rc/distance-to ("module" => "math" "function" => "fn/@distance-to"))
+        (remote-call rc/distance-to x y)
+      )
+      7.5456456
+    )
+    (
+      (do
+        (set math (function (fn)
+          (list "module" => "math" "function" => (concat "@" fn))))
+        (remote-call (%soft_math "sum") 1 2 3)
+      )
+      6
+    )
+    (
+      (remote-call "https://localhost:9999/libs/math/@distance-to" x y)
+      7.5456456
+    )
+    (
+      (do
+        (set setup/remote-modules/math "https://localhost:9999/libs/math")
         (remote-call "math:@distance-to" x y)
       )
       7.5456456

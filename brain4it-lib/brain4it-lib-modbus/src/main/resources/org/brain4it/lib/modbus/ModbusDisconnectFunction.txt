@@ -1,0 +1,17 @@
+(ModbusDisconnect (modbus-disconnect mid)
+  result
+  where =>
+  (
+    mid => ("string" 1 1)
+    result => ("string" 1 1)
+  )
+  examples =>
+  (
+    (
+      (modbus-disconnect "109afd7c87634705b2e627cf8c7d51de")
+      "disconnected"
+    )
+  )
+  bundle => "org.brain4it.lib.ModbusLibrary"
+)
+ 

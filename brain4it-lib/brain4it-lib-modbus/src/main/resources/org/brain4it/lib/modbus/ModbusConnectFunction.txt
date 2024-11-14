@@ -1,0 +1,17 @@
+(ModbusConnect (modbus-connect host => host port => port keep-alive => keep_alive) mid
+  where =>
+  (
+    host => ("string" 0 1)
+    port => ("number" 0 1)
+    keep_alive => ("boolean" 0 1)
+    mid => ("string" 1 1)
+  )
+  examples =>
+  (
+    (
+      (set mid (modbus-connect host => "10.70.2.70" keep-alive => true))
+      "109afd7c87634705b2e627cf8c7d51de"
+    )
+  )
+  bundle => "org.brain4it.lib.ModbusLibrary"
+)

@@ -53,6 +53,11 @@
     </dependency>
     <dependency>
       <groupId>org.brain4it</groupId>
+      <artifactId>brain4it-lib-modbus</artifactId>
+      <version>${brain4it-version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.brain4it</groupId>
       <artifactId>brain4it-lib-mqtt</artifactId>
       <version>${brain4it-version}</version>
     </dependency>
@@ -259,7 +264,7 @@
             <configuration>
               <mainClass>org.brain4it.help.WebHelpPrinter</mainClass>
               <arguments>
-                <argument>Core,Database,Mail,Management,Mqtt,Neural,Nlp,Tts,Vision,Weather,Kafka,Xmpp,Module,Android,RaspberryPi,Serial,Swing</argument>
+                <argument>Core,Database,Mail,Management,Modbus,Mqtt,Neural,Nlp,Tts,Vision,Weather,Kafka,Xmpp,Module,Android,RaspberryPi,Serial,Swing</argument>
                 <argument>${basedir}/target/libraries</argument>
               </arguments>
             </configuration>

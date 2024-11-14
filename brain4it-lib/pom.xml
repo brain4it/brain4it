@@ -29,6 +29,7 @@
     <module>brain4it-lib-database</module>
     <module>brain4it-lib-mail</module>
     <module>brain4it-lib-management</module>
+    <module>brain4it-lib-modbus</module>
     <module>brain4it-lib-mqtt</module>
     <module>brain4it-lib-neural</module>
     <module>brain4it-lib-nlp</module>

@@ -1,0 +1,24 @@
+(ModbusRead (modbus-read mid 
+  registers => registers 
+  server => server 
+  address => address 
+  quantity => quantity)
+  result
+  where =>
+  (
+    mid => ("string" 1 1)
+    registers => ("string" 0 1)
+    server => ("number" 0 1)
+    address => ("number" 0 1)
+    quantity => ("number" 0 1)
+  )
+  examples =>
+  (
+    (
+      (modbus-read mid registers => "holding" server => 2 address => 12087 quantity => 5)
+      (45 0 12 3 0)      
+    )
+  )
+  bundle => "org.brain4it.lib.ModbusLibrary"
+)
+ 

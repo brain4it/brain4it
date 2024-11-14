@@ -53,6 +53,11 @@
         </dependency>
         <dependency>
           <groupId>org.brain4it</groupId>
+          <artifactId>brain4it-lib-modbus</artifactId>
+          <version>${brain4it-version}</version>
+        </dependency>
+        <dependency>
+          <groupId>org.brain4it</groupId>
           <artifactId>brain4it-lib-mqtt</artifactId>
           <version>${brain4it-version}</version>
         </dependency>

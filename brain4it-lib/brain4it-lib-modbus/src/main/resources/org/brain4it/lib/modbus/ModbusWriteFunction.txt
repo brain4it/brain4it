@@ -1,0 +1,30 @@
+(ModbusWrite (modbus-write mid 
+  server => server 
+  address => address 
+  value => value)
+  result
+  where =>
+  (
+    mid => ("string" 1 1)
+    server => ("number" 0 1)
+    address => ("number" 0 1)
+    value => ("object" 1 1)
+  )
+  examples =>
+  (
+    (
+      (modbus-write mid server => 2 address => 1 value => 5)
+      5      
+    )
+    (
+      (modbus-write mid server => 2 address => 1 value => (5 6 2))
+      (5 6 2)      
+    )
+    (
+      (modbus-write mid server => 2 address => 7 value => (true false false))
+      (true false false)      
+    )
+  )
+  bundle => "org.brain4it.lib.ModbusLibrary"
+)
+ 

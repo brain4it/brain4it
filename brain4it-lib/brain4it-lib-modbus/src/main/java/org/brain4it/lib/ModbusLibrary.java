@@ -38,6 +38,7 @@ import java.util.UUID;
 import org.brain4it.lib.modbus.ModbusConnectFunction;
 import org.brain4it.lib.modbus.ModbusDisconnectFunction;
 import org.brain4it.lib.modbus.ModbusReadFunction;
+import org.brain4it.lib.modbus.ModbusWriteFunction;
 
 
 /**
@@ -61,6 +62,7 @@ public class ModbusLibrary extends Library
     functions.put("modbus-connect", new ModbusConnectFunction(this));
     functions.put("modbus-disconnect", new ModbusDisconnectFunction(this));
     functions.put("modbus-read", new ModbusReadFunction(this));
+    functions.put("modbus-write", new ModbusWriteFunction(this));
   }
 
   @Override

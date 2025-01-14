@@ -118,7 +118,7 @@ public class ModbusTest
           count++;
         }
 
-        //m.writeSingleRegister(1, 14011, 0);
+        m.writeSingleRegister(1, 14011, 0);
 
         // also since 1.2.8.4 you can create your own request and process it with the master
 //        offset = 0;

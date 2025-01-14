@@ -31,6 +31,7 @@
 package org.brain4it.lib.modbus;
 
 import com.intelligt.modbus.jlibmodbus.master.ModbusMaster;
+import org.brain4it.lang.BException;
 import org.brain4it.lang.BList;
 import org.brain4it.lang.Context;
 import org.brain4it.lib.ModbusLibrary;
@@ -39,9 +40,9 @@ import org.brain4it.lib.ModbusLibrary;
  *
  * @author realor
  */
-public class ModbusReadFunction extends ModbusFunction
+public class ModbusWriteFunction extends ModbusFunction
 {
-  public ModbusReadFunction(ModbusLibrary library)
+  public ModbusWriteFunction(ModbusLibrary library)
   {
     super(library);
   }
@@ -52,9 +53,6 @@ public class ModbusReadFunction extends ModbusFunction
     String masterId = (String)context.evaluate(args.get(1));
     if (masterId == null) throw new Exception("masterId is required");
 
-    String registers = (String)context.evaluate(args.get("registers"));
-    if (registers == null) registers = "holding";
-
     Object value;
     value = context.evaluate(args.get("server"));
     int server = value == null ? 1 : ((Number)value).intValue();
@@ -62,51 +60,50 @@ public class ModbusReadFunction extends ModbusFunction
     value = context.evaluate(args.get("address"));
     int address = value == null ? 0 : ((Number)value).intValue();
 
-    value = context.evaluate(args.get("quantity"));
-    int quantity = value == null ? 1 : ((Number)value).intValue();
+    value = context.evaluate(args.get("value"));
 
     ModbusMaster master = library.getMaster(masterId);
     if (master == null) throw new Exception("Invalid masterId");
-    BList result = null;
-    switch (registers)
+
+    if (value instanceof Number)
     {
-      case "holding":
-        result = toList(master.readHoldingRegisters(server, address, quantity));
-        break;
-
-      case "input":
-        result = toList(master.readInputRegisters(server, address, quantity));
-        break;
-
-      case "coils":
-        result = toList(master.readCoils(server, address, quantity));
-        break;
-
-      case "discrete":
-        result = toList(master.readDiscreteInputs(server, address, quantity));
-        break;
-
+      int intValue = ((Number)value).intValue();
+      master.writeSingleRegister(server, address, intValue);
     }
-    return result;
-  }
-
-  private BList toList(int[] registers)
-  {
-    BList list = new BList(registers.length);
-    for (int i = 0; i < registers.length; i++)
+    else if (value instanceof Boolean)
     {
-      list.add(registers[i]);
+      master.writeSingleCoil(server, address, (Boolean)value);
     }
-    return list;
-  }
-
-  private BList toList(boolean[] registers)
-  {
-    BList list = new BList(registers.length);
-    for (int i = 0; i < registers.length; i++)
+    else if (value instanceof BList)
     {
-      list.add(registers[i]);
+      BList list = (BList)value;
+      int size = list.size();
+      if (size > 0)
+      {
+        Object first = list.get(0);
+        if (first instanceof Number)
+        {
+          int[] intArray = new int[size];
+          for (int i = 0; i < size; i++)
+          {
+            Number item = (Number)list.get(i);
+            intArray[i] = item.intValue();
+          }
+          master.writeMultipleRegisters(server, address, intArray);
+        }
+        else if (first instanceof Boolean)
+        {
+          boolean[] boolArray = new boolean[size];
+          for (int i = 0; i < size; i++)
+          {
+            Boolean item = (Boolean)list.get(i);
+            boolArray[i] = item;
+          }
+          master.writeMultipleCoils(server, address, boolArray);
+        }
+        else throw new BException("Invalid value type");
+      }
     }
-    return list;
+    return value;
   }
 }

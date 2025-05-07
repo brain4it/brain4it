@@ -4,6 +4,13 @@
     "key-deserializer" => key_deserializer
     "value-deserializer" => value_deserializer
     "group-id" => group_id
+    "enable-auto-commit" => enable_auto_commit
+    "auto-commit-interval" => auto_commit_interval
+    "auto-offset-reset" => auto_offset_reset
+    "max-poll-records" => max_poll_records
+    "max-poll-interval" => max_poll_interval
+    "session-timeout" => session_timeout
+    "heartbeat-interval" => heartbeat_interval
   )
   consumer_id
   where =>
@@ -12,14 +19,22 @@
     key_deserializer => ("string" 0 1)
     value_deserializer => ("string" 0 1)
     group_id => ("string" 0 1)
+    enable_auto_commit => ("boolean" 0 1)
+    auto_commit_interval => ("integer" 0 1)
+    auto_offset_reset => ("string" 0 1)
+    max_poll_records => ("integer" 0 1)
+    max_poll_interval => ("integer" 0 1)
+    session_timeout => ("integer" 0 1)
+    heartbeat_interval => ("integer" 0 1)
     consumer_id => ("string" 1 1)
   )
   examples =>
   (
     ((kafka-consumer "localhost:9092") "c1a3de99eb26446d0965a044ac89632f8")
-    ((kafka-consumer ("10.0.0.1.90:9092" "10.0.0.2.90:9092")) "c1a3de99eb26446d0965a044ac89632f8")
+    ((kafka-consumer ("10.0.0.1:9092" "10.0.0.2:9092")) "c1a3de99eb26446d0965a044ac89632f8")
     ((kafka-consumer "localhost:9092" "value-deserializer" => "DoubleDeserializer") "c1a3de99eb26446d0965a044ac89632f8")
     ((kafka-consumer "localhost:9092" "group-id" => "pollution-data-workers") "c1a3de99eb26446d0965a044ac89632f8")
+    ((kafka-consumer "localhost:9092" "max-poll-records" => 100 "session-timeout" => 15000) "c1a3de99eb26446d0965a044ac89632f8")
   )
   bundle => "org.brain4it.lib.KafkaLibrary"
 )

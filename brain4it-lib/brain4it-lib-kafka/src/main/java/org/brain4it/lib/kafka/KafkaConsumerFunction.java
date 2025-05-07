@@ -10,7 +10,7 @@
  * 
  * Alternatively, you may redistribute and/or modify this program under the 
  * terms of the GNU Lesser General Public License as published by the Free 
- * Software Foundation; either  version 3 of the License, or (at your option) 
+ * Software Foundation; either version 3 of the License, or (at your option) 
  * any later version. 
  *   
  * Unless required by applicable law or agreed to in writing, software 
@@ -45,7 +45,6 @@ import org.apache.kafka.clients.consumer.KafkaConsumer;
  */
 public class KafkaConsumerFunction implements Function
 {
-
   protected KafkaLibrary library;
 
   public KafkaConsumerFunction(KafkaLibrary library)
@@ -53,28 +52,29 @@ public class KafkaConsumerFunction implements Function
     this.library = library;
   }
 
-  /**
-   * Generic call from Brain4IT:
-   * <code>(kafka-consumer servers key-serializer value-serializer)</code>
-   *
-   * @param context Brain4IT context
-   * @param args Positional arguments: bootstrap server url list. Named,
-   * optional arguments: key-serializer classname, value-serializer classname,
-   * consumer group-id
-   * @return String consumer id
-   * @throws Exception
-   */
   @Override
   public String invoke(Context context, BList args) throws Exception
   {
     // positional arguments
     Utils.checkArguments(args, 1);
     Object serversRaw = context.evaluate(args.get(1));
+    if (serversRaw == null) {
+      throw new IllegalArgumentException("servers cannot be null");
+    }
+
     // named and optional arguments
     Object keyDeserializer = context.evaluate(args.get("key-deserializer"));
     Object valueDeserializer = context.evaluate(args.get("value-deserializer"));
     Object consumerGroupId = context.evaluate(args.get("group-id"));
-    // fill optional arguments with default values if not provided
+    Object autoCommit = context.evaluate(args.get("enable-auto-commit"));
+    Object autoCommitInterval = context.evaluate(args.get("auto-commit-interval"));
+    Object autoOffsetReset = context.evaluate(args.get("auto-offset-reset"));
+    Object maxPollRecords = context.evaluate(args.get("max-poll-records"));
+    Object maxPollInterval = context.evaluate(args.get("max-poll-interval"));
+    Object sessionTimeout = context.evaluate(args.get("session-timeout"));
+    Object heartbeatInterval = context.evaluate(args.get("heartbeat-interval"));
+
+    // fill in defaults
     if (keyDeserializer == null)
     {
       keyDeserializer = "org.apache.kafka.common.serialization.StringDeserializer";
@@ -83,41 +83,107 @@ public class KafkaConsumerFunction implements Function
     {
       valueDeserializer = "org.apache.kafka.common.serialization.StringDeserializer";
     }
-    // Consumer groups are used to distribute the messages of a given topic
-    // To receive all messages from a topic, a consumer must use a unique group
+    if (autoCommit == null)
+    {
+      autoCommit = false; // Ensure boolean
+    }
+    if (autoCommitInterval == null)
+    {
+      autoCommitInterval = 5000; // Kafka default
+    }
+    if (autoOffsetReset == null)
+    {
+      autoOffsetReset = "latest"; // Your requirement
+    }
+    if (maxPollRecords == null)
+    {
+      maxPollRecords = 10; // Your requirement
+    }
+    if (maxPollInterval == null)
+    {
+      maxPollInterval = 300000; // Reduced to Kafka default
+    }
+    if (sessionTimeout == null)
+    {
+      sessionTimeout = 10000; // Kafka default
+    }
+    if (heartbeatInterval == null)
+    {
+      heartbeatInterval = 3000; // Kafka default
+    }
+
+    // Consumer groups
     String appId = KafkaLibrary.CONSUMER_SUFFIX + KafkaLibrary.randomId();
     if (consumerGroupId == null)
     {
       consumerGroupId = appId;
     }
 
-    // servers.
-    // Throws an exception if conditions are nor met or casting fails
+    // servers
     String serversStr = KafkaLibrary.flattenInput(serversRaw);
+    if (serversStr == null || serversStr.trim().isEmpty()) {
+      throw new IllegalArgumentException("servers cannot be empty");
+    }
 
-    // serializers
-    // Expect either:
-    // - complete classnames like "org.apache.kafka.common.serialization.StringDeserializer"
-    // - classname base like "StringDeserializer", that we complete assuming its package
-    if (!((String) keyDeserializer).contains("."))
+    // deserializers: prepend package if no dots
+    if (keyDeserializer instanceof String && !((String) keyDeserializer).contains("."))
     {
       keyDeserializer = "org.apache.kafka.common.serialization." + keyDeserializer;
     }
-    if (!((String) valueDeserializer).contains("."))
+    if (valueDeserializer instanceof String && !((String) valueDeserializer).contains("."))
     {
       valueDeserializer = "org.apache.kafka.common.serialization." + valueDeserializer;
+    }
+
+    // validate numeric properties
+    int commitIntervalMs = toInt(autoCommitInterval, "auto.commit.interval.ms");
+    int pollIntervalMs = toInt(maxPollInterval, "max.poll.interval.ms");
+    int pollRecords = toInt(maxPollRecords, "max.poll.records");
+    int sessionTimeoutMs = toInt(sessionTimeout, "session.timeout.ms");
+    int heartbeatIntervalMs = toInt(heartbeatInterval, "heartbeat.interval.ms");
+
+    // validate heartbeat vs session timeout
+    if (heartbeatIntervalMs >= sessionTimeoutMs) {
+      throw new IllegalArgumentException("heartbeat.interval.ms (" + heartbeatIntervalMs +
+          ") must be less than session.timeout.ms (" + sessionTimeoutMs + ")");
     }
 
     // fill in properties
     Properties properties = new Properties();
     properties.put("bootstrap.servers", serversStr);
-    properties.put("group.id", consumerGroupId);
-    properties.put("key.deserializer", keyDeserializer);
-    properties.put("value.deserializer", valueDeserializer);
-    KafkaConsumer<Object, Object> app = new KafkaConsumer<>(properties);
+    properties.put("group.id", consumerGroupId.toString());
+    properties.put("key.deserializer", keyDeserializer.toString());
+    properties.put("value.deserializer", valueDeserializer.toString());
+    properties.put("enable.auto.commit", autoCommit); // Ensure boolean true/false
+    properties.put("auto.commit.interval.ms", String.valueOf(commitIntervalMs));
+    properties.put("auto.offset.reset", autoOffsetReset.toString());
+    properties.put("max.poll.interval.ms", String.valueOf(pollIntervalMs));
+    properties.put("max.poll.records", String.valueOf(pollRecords));
+    properties.put("session.timeout.ms", String.valueOf(sessionTimeoutMs));
+    properties.put("heartbeat.interval.ms", String.valueOf(heartbeatIntervalMs));
 
-    // save the app in the shared map
-    return library.putConsumer(app, appId);
+    try {
+      KafkaConsumer<Object, Object> app = new KafkaConsumer<>(properties);
+      return library.putConsumer(app, appId);
+    } catch (Exception e) {
+      throw new RuntimeException("Failed to construct Kafka consumer", e);
+    }
   }
 
+  private int toInt(Object value, String propertyName) {
+    if (value == null) {
+      throw new IllegalArgumentException(propertyName + " cannot be null");
+    }
+    try {
+      if (value instanceof Number) {
+        return ((Number) value).intValue();
+      } else if (value instanceof String) {
+        return Integer.parseInt((String) value);
+      } else {
+        throw new IllegalArgumentException(propertyName + " must be a number or numeric string, got: " + value);
+      }
+    } catch (NumberFormatException e) {
+      throw new IllegalArgumentException("Invalid " + propertyName + ": " + value, e);
+    }
+  }
 }

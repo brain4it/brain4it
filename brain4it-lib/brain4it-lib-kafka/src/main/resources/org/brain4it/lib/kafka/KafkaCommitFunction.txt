@@ -1,0 +1,16 @@
+(KafkaCommit
+  (
+    kafka-commit consumer_id
+  )
+  consumer_id
+  where =>
+  (
+    consumer_id => ("string" 1 1)
+  )
+  examples =>
+  (
+    ((kafka-commit "c1a3de99eb26446d0965a044ac89632f8") "true/exception")
+  )
+  bundle => "org.brain4it.lib.KafkaLibrary"
+)
+

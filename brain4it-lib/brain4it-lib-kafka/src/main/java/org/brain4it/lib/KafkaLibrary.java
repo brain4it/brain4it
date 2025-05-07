@@ -31,7 +31,6 @@
 package org.brain4it.lib;
 
 import java.util.ArrayList;
-import org.brain4it.lib.kafka.KafkaConsumerFunction;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -67,6 +66,7 @@ public class KafkaLibrary extends Library
   public void load()
   {
     functions.put("kafka-consumer", new KafkaConsumerFunction(this));
+    functions.put("kafka-commit", new KafkaCommitFunction(this));
     functions.put("kafka-producer", new KafkaProducerFunction(this));
     functions.put("kafka-send", new KafkaSendFunction(this));
     functions.put("kafka-poll", new KafkaPollFunction(this));
